@@ -3,7 +3,7 @@ OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.
 BASEFILES = README COPYING Vera.ttf gravit.cfg demo.cfg ChangeLog particle.png
 
 CFLAGS = -O4 -Wall `sdl-config --cflags`
-LDFLAGS = -lGL -lGLU -lGLEW -lSDL_ttf -lSDL_image `sdl-config --libs`
+LDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lGLEW -lSDL_ttf -lSDL_image `sdl-config --libs`
 
 DISTDIR = gravit-0.2-devel
 
