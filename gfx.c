@@ -92,6 +92,7 @@ int gfxInit() {
     if (!SDL_SetVideoMode(conf.screenW, conf.screenH, conf.gfxInfo->vfmt->BitsPerPixel, flags )) {
 
 		dlog(le, "SDL_SetVideoMode failed");
+		dlog(le, SDL_GetError());
 		return 0;
 
 	}
