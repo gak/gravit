@@ -76,7 +76,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdio.h>
 #include <stdarg.h>
 
-#define dlog(x,y)
+#define dlog(x,y) conAdd(2,y)
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
 

@@ -37,7 +37,7 @@ void loadDefaults() {
 	conf.screenH = 480;
 	conf.screenFS = 0;
 
-#if 1
+#if 0
 	conf.screenW = 1280;
 	conf.screenH = 1024;
 	conf.screenFS = 1;
@@ -231,7 +231,7 @@ void run() {
 
 int main(int argc, char *argv[]) {
 
-	if (!init()) {
+	if (init()) {
 
 		dlog(2, "There has been an error on start-up. This is probably due to not being able to test on many computers");
 
