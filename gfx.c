@@ -54,11 +54,11 @@ int gfxInit() {
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
-//            dlog(le, "SDL Init failed");
+            dlog(le, "SDL Init failed");
             return 0;
 
     }
-	
+
     if (TTF_Init()) {
 
             dlog(le, "SDL_ttf Init failed");
@@ -76,7 +76,7 @@ int gfxInit() {
     SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, conf.screenBPP );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	
+
 	SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
 
@@ -85,7 +85,12 @@ int gfxInit() {
 	if (conf.screenFS)
 		flags |= SDL_FULLSCREEN;
 
-    SDL_SetVideoMode(conf.screenW, conf.screenH, conf.gfxInfo->vfmt->BitsPerPixel, flags );
+    if (!SDL_SetVideoMode(conf.screenW, conf.screenH, conf.gfxInfo->vfmt->BitsPerPixel, flags )) {
+
+		dlog(le, "SDL_SetVideoMode failed");
+		return 0;
+
+	}
 
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_SMOOTH);
@@ -131,13 +136,13 @@ void drawFrame() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
  	gluPerspective(45,(GLfloat)conf.screenW/(GLfloat)conf.screenH,0.1f,10000000.0f);
-	
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	/*
 	gluLookAt(
-		
+
 		0, 0, view.zoom,
 		0, 0, 0,
 		0, 1, 0);
@@ -183,7 +188,7 @@ void drawFrame() {
 			p = 0;
 
 			glBegin(GL_LINE_STRIP);
-			
+
 			if (view.tailLength == -1)
 				k = 0;
 			else if (state.currentFrame < (view.tailLength+2))
@@ -196,7 +201,7 @@ void drawFrame() {
 
 				if (j >= state.historyFrames)
 					continue;
-		
+
 				p = state.particleHistory + state.particleCount * j + i;
 				pd = state.particleDetail + i;
 
@@ -217,7 +222,7 @@ void drawFrame() {
 				view.verticies++;
 
 			}
-				
+
 			p = state.particleHistory + state.particleCount * state.currentFrame + i;
 
 			glVertex3fv(p->pos);
@@ -263,7 +268,7 @@ void drawAxis() {
 		glVertex3f(-100,100,0);
 
 	glEnd();
-	
+
 	glBegin(GL_LINES);
 
 		// x plane
@@ -296,7 +301,7 @@ void drawRGB() {
 	float step = .01f;
 
 	drawFrameSet2D();
-	
+
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -320,7 +325,7 @@ void drawRGB() {
 }
 
 void drawAll() {
-	
+
 	glDepthMask(GL_TRUE);
 
 	glClearColor(0,0,0,0);

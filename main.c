@@ -70,7 +70,7 @@ void cleanMemory() {
 void viewInit() {
 
 	view.rot[0] = view.rot[1] = view.rot[2] = 0;
-	view.zoom = 1000;
+	view.zoom = 10000;
 	view.textMode = view.textMode;
 	memset(view.pos, 0, sizeof(view.pos));
 	memset(view.face, 0, sizeof(view.face));
@@ -95,7 +95,7 @@ void viewInit() {
 	view.verboseMode = 0;
 
 	cmdFps(NULL);
-	
+
 	#ifndef NO_GUI
 	memset(view.keys, 0, sizeof(view.keys));
 	#endif
@@ -138,10 +138,16 @@ int init() {
 
 	fpsInit();
 
-	conAdd(0, "Graviton version 0.1, Copyright (C) 2003-2005 Gerald Kaszuba");
-	conAdd(0, "Graviton comes with ABSOLUTELY NO WARRANTY");
-	conAdd(0, "This is free software, and you are welcome to redistribute it");
-	conAdd(0, "under certain conditions; for details read the COPYING text file.");
+	conAdd(1, "Welcome to Graviton!");
+
+#ifndef NO_GUI
+
+	conAdd(0, "Quick Start:");
+	conAdd(0, "Hit F2 a few times then F6 to start recording.");
+	conAdd(0, "After a recording 50 frames or so, press F5 to stop then F3 to play what you have recorded.");
+	conAdd(0, "Use the mouse to rotate your view. Try changing the tail length by pressing N a few times.");
+
+#endif
 
 	return 0;
 
@@ -162,7 +168,7 @@ void run() {
 		while (view.dt <= view.ft) {
 
 			view.dt = getMS() - fs;
-			
+
 			if (view.dt > 1000)
 				SDL_Delay(0);
 			else
@@ -225,9 +231,15 @@ void run() {
 
 int main(int argc, char *argv[]) {
 
-	init();
+	if (!init()) {
 
-	run();
+		dlog(2, "There has been an error on start-up. This is probably due to not being able to test on many computers");
+
+	} else {
+
+		run();
+
+	}
 
 	cleanMemory();
 
@@ -279,4 +291,4 @@ BOOL WINAPI RegisterDialogClasses(HANDLE hInst)
 }
 
 */
- 
+

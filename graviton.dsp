@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Gdi32.lib Advapi32.lib SCRNSAVE.LIB User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib kernel32.lib glut32.lib /nologo /subsystem:console /machine:I386 /nodefaultlib
+# ADD LINK32 user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib kernel32.lib /nologo /subsystem:console /machine:I386 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "graviton - Win32 Debug"
 
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 Gdi32.lib Advapi32.lib SCRNSAVE.LIB User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib kernel32.lib glut32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib /pdbtype:sept
+# ADD LINK32 Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib kernel32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib /pdbtype:sept
 
 !ENDIF 
 

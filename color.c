@@ -27,7 +27,7 @@ void setColorsByVel() {
 	particle_t *p;
 	particleDetail_t *pd;
 	float d;
-	float velMax;
+	float velMax = 0;
 	float velSpeed;
 
 	VectorNew(zero);
@@ -44,7 +44,7 @@ void setColorsByVel() {
 			conAdd(1, "VelSpeed < 0!");
 
 		if (i == 0) {
-		
+
 			velMax = velSpeed;
 
 		} else {
@@ -60,7 +60,7 @@ void setColorsByVel() {
 
 		p = getParticleFirstFrame(i);
 		pd = getParticleDetail(i);
-		
+
 		distance(zero, p->vel, velSpeed);
 
 		d = velSpeed / velMax;
@@ -83,7 +83,7 @@ void setColorsByMass() {
 		pd = getParticleDetail(i);
 
 		if (i == 0) {
-		
+
 			state.massRange[0] = pd->mass;
 			state.massRange[1] = pd->mass;
 
@@ -103,7 +103,7 @@ void setColorsByMass() {
 
 		p = getParticleCurrentFrame(i);
 		pd = getParticleDetail(i);
-		
+
 		d = pd->mass / state.massRange[1];
 		gfxNormalToRGB(pd->col, (float)fabs(d));
 
@@ -124,7 +124,7 @@ void setColorsByMass() {
 void setColors() {
 
 	switch (view.particleColorMode) {
-		
+
 		case 1: setColorsByMass(); break;
 		default: setColorsByVel(); break;
 

@@ -48,7 +48,7 @@ void processFramePP(int start, int amount) {
 			}
 
 			p2 = state.particleHistory + state.particleCount*state.frame + j;
-			
+
 			dv[0] = p1->pos[0] - p2->pos[0];
 			dv[1] = p1->pos[1] - p2->pos[1];
 			dv[2] = p1->pos[2] - p2->pos[2];
@@ -59,7 +59,7 @@ void processFramePP(int start, int amount) {
 
 			// get distance^2 between the two
 			inverseSquareDistance = dv2[0] + dv2[1] + dv2[2];
-			
+
 			force = -0.00001f * p1->mass * p2->mass / inverseSquareDistance;
 
 			p1->vel[0] += dv[0] * force;

@@ -56,10 +56,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
+	// this removes the header requirement for glext.h in gl.h
+	#define GL_GLEXT_LEGACY
+
 	#include <SDL.h>
 	#include <SDL_ttf.h>
 	#include <SDL_opengl.h>
-	#include <GL/glut.h>
 
 #else
 
@@ -216,7 +218,7 @@ typedef struct view_s {
 	int keys[SDLK_LAST];
 #endif
 
-	float pos[3];
+	float pos[3];	// todo, position of camera
 	float face[3];
 
 	float tailWidth;
@@ -288,7 +290,7 @@ typedef struct otinfo_s {
 
 // for otComputeParticleToTreeRecursive
 typedef struct pttr_s {
-	
+
 	particle_t *p;
 	particleDetail_t *pd;
 	struct node_s *n;
