@@ -58,6 +58,7 @@ echo '</table>';
 
 <a href="video/gravit-001.avi">Zoomed in on a galaxy showing off v0.2 effects</a> - 9s, 1.1MB, 800x600<br>
 <a href="video/gravit-002.avi">Many galaxies showing off v0.2 effects</a> - 30s, 3.6MB, 1280x1024<br>
+<a href="video/gravit-003.avi">Another v0.2 demo, draws an OctTree</a> - 36s, 4.0MB, 800x600<br>
 
 <h2>Features</h2>
 <li>It looks pretty :)</li>
@@ -70,7 +71,7 @@ echo '</table>';
 
 <h2>Details</h2>
 <li>So far Gravit has been tested on Windows XP and Linux Slackware.</li>
-<li>It is written in C and uses SDL, SDL_ttf and OpenGL.</li>
+<li>It is written in C and uses SDL, SDL_ttf, SDL_image and OpenGL.</li>
 <li>It uses the <a href="http://www.amara.com/papers/nbody.html#tcu">Barnes-Hut Algorithm</a> (with room for optimisation).</li>
 <li>Gravit was called Graviton, but i changed the name because someone already used Graviton for their project!</li>
 
