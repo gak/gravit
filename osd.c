@@ -1,3 +1,24 @@
+/*
+
+Graviton - A gravity simulator
+Copyright 2003-2005 Gerald Kaszuba
+
+Graviton is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Graviton is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Graviton; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
 #include "graviton.h"
 
 #ifndef NO_GUI
@@ -19,8 +40,8 @@ void drawOSD() {
 	glColor4f(1,1,1,0.5f);
 
 	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
-	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 3.0f, "graviton v2.0");
-	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 2.0f, "Copyright 2003-2005 Gerald Kaszuba");
+	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 3.0f, GRAVITON_VERSION);
+	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 2.0f, GRAVITON_COPYRIGHT);
 
 	y = 10;
 	x = 10;
@@ -116,6 +137,7 @@ void drawOSD() {
 	}
 
 	conDraw();
+	
 #if 0
 	{
 
