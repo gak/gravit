@@ -19,38 +19,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
-#ifndef COMMAND_H_
-#define COMMAND_H_
+#include "graviton.h"
 
-typedef struct cmd_s {
+int configRead(char *filename) {
 
-	char *cmd;
-	void (*func)(char *);
-	float *fVar;
-	int *iVar;
+	FILE *fp;
+	char buffer[1024];
 
-} cmd_t;
+	fp = fopen(filename, "rb");
+	if (!fp) {
 
-extern cmd_t cmd[];
+		conAdd(2, "Could not open script");
+		return 0;
 
-void cmdExecute(char *command);
-int cmdFind(char *string);
-char *cmdGetCommand(int i);
+	}
 
-void cmdQuit(char *args);
-void cmdPause(char *args);
-void cmdPlay(char *args);
-void cmdRestart(char *arg);
-void cmdSaveFrame(char *arg);
-void cmdSaveFrameDump(char *arg);
-void cmdLoadFrameDump(char *arg);
-void cmdRecord(char *arg);
-void cmdStop(char *arg);
-void cmdStart(char *arg);
-void cmdFps(char *arg);
-void cmdSpawn(char *arg);
-void cmdStatus(char *arg);
-void cmdFontFile(char *arg);
-void cmdRunScript(char *arg);
+	while (fgets(buffer, 1024, fp)) {
+	int len = strlen(buffer) - 1;
 
-#endif
+		while (len >= 0 && (isspace(buffer[len]) || buffer[len] == 13 || buffer[len] == 10)) buffer[len--] = 0;
+		if (len <= 0 || buffer[0] == '#') continue;
+		cmdExecute(buffer);
+	}
+
+	return 1;
+
+}

@@ -76,7 +76,7 @@ void viewInit() {
 	view.pos[2] -= 30;
 
 	view.tailWidth = 1.0f;
-	view.tailLength = 0;
+	view.tailLength = 32;
 	view.tailOpacity = 0.5f;
 	view.tailFaded = 1;
 	view.tailSkip = 4;

@@ -26,6 +26,7 @@ static cmd_t cmd[] = {
 	//	   cmd				func			varf,	vari
 	{ "quit",			cmdQuit,			NULL,	NULL }
 
+	,{ "exec",			cmdRunScript,		NULL,	NULL }
 
 	,{ "memoryavailable",		NULL,		NULL,	&conf.memoryAvailable }
 
@@ -483,9 +484,19 @@ else
 void cmdFontFile(char *arg) {
 
     char *sz;
-
 	sz = strtok(arg, " ");
-
+	if (!sz)
+		return;
 	strncpy(conf.fontFile, arg, MAX_FONT_LENGTH);
+
+}
+
+void cmdRunScript(char *arg) {
+
+    char *sz;
+	sz = strtok(arg, " ");
+	if (!sz)
+		return;
+	configRead(sz);
 
 }

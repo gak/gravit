@@ -97,6 +97,10 @@ SOURCE=.\command.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\config.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\console.c
 # End Source File
 # Begin Source File
