@@ -4,7 +4,7 @@ OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.
 CFLAGS = -g -O4 -Wall `sdl-config --cflags`
 LDFLAGS = -lGL -lGLU -lSDL_ttf `sdl-config --libs`
 
-DISTDIR = gravit-0.1
+DISTDIR = gravit-0.2-devel
 
 all: dep final
 
@@ -44,3 +44,6 @@ packagewinsdl:
 	rm -fr $(DISTDIR)
 
 packageall: packagesrc packagewin packagewinsdl
+
+copy:
+	cp dist/$(DISTDIR)-* /www/gravit/dist/
