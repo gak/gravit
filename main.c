@@ -115,7 +115,7 @@ int init() {
 	state.memoryAllocated = 0;
 	loadDefaults();
 
-	configRead("graviton.cfg");
+	configRead("gravit.cfg");
 
 #ifndef NO_GUI
 
