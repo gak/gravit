@@ -202,7 +202,7 @@ void drawFrame() {
 
 		float pointRange[2];
 
-		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glEnable(GL_POINT_SMOOTH);
 
@@ -226,7 +226,6 @@ void drawFrame() {
 	
 		float quadratic[] =  { 0.0f, 0.0f, 0.01f };
 		
-//		if (!GL_ARB_point_parameters || !GL_ARB_point_sprite) {
 		if (!conf.supportPointParameters || !conf.supportPointSprite) {
 
 			conAdd(1, "Sorry, Your video card does not support GL_ARB_point_parameters and/or GL_ARB_point_sprite.");

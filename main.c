@@ -92,7 +92,7 @@ void viewInit() {
 
 	view.particleColourMode = CM_MASS;
 	view.particleRenderMode = 0;
-	view.particleRenderTexture = 0;
+	view.particleRenderTexture = 1;
 
 	view.particleSizeMin = 4;
 	view.particleSizeMax = 1024;

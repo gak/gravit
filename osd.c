@@ -139,7 +139,7 @@ void drawOSD() {
 		WHITEHEADINGNL("Other");
 
 		DUHC();
-		DUH("t", "display last oct tree");
+		DUH("T", "display last oct tree");
 		DUH("` (above TAB)", "use the console");
 
 	}
@@ -166,7 +166,8 @@ void drawOSD() {
 		DUHC();
 		DUH("X", "tail fade");
 		DUH("C V", "tail opacity");
-		DUH("B N M", "tail length less/more/all");
+		DUH("B N", "tail length less/more");
+		DUH("M", "tail length infinite/none");
 		DUH(", (comma) . (period)", "tail resolution");
 		DUH("; (semicolon) ' (quote)", "tail width");
 

@@ -310,20 +310,19 @@ void otDrawTreeRecursive(node_t *n) {
 void otDrawTree() {
 
 	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 
 	switch (view.drawTree) {
 	
 	// line mode
 	case 1:
 	default:
-		glEnable(GL_BLEND);
 		glLineWidth(1.0f);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		break;
 
 	// fill mode
 	case 2:
-		glEnable(GL_BLEND);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
 

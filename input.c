@@ -108,7 +108,8 @@ int processKeys() {
 				break;
 
 			case SDLK_t:
-				view.drawTree = (!view.drawTree)?1:0;
+				if (++view.drawTree == 3)
+					view.drawTree = 0;
 				conAdd(1, "drawTree set to %i", view.drawTree);
 				break;
 
@@ -122,7 +123,7 @@ int processKeys() {
 			case SDLK_l:
 				view.blendMode ++;
 				if (view.blendMode == 5)
-					view.blendMode = 1;
+					view.blendMode = 0;
 				conAdd(1, "Blend mode set to: %i", view.blendMode);
 				break;
 
@@ -168,8 +169,13 @@ int processKeys() {
 				break;
 
 			case SDLK_m:
-				view.tailLength = -1;
-				conAdd(0, "tailLength set to infinite!");
+				if (view.tailLength == -1) {
+					view.tailLength = 0;
+					conAdd(0, "tailLength set to 0");
+				} else {
+					view.tailLength = -1;
+					conAdd(0, "tailLength set to infinite!");
+				}
 				break;
 
 			case SDLK_n:
@@ -223,7 +229,7 @@ int processKeys() {
 				conAdd(0, "tailSkip set to %i", view.tailSkip);
 				break;
 
-			case '\'':
+			case SDLK_QUOTE:
 				view.tailWidth += 1;
 				if (view.tailWidth > 10)
 					view.tailWidth = 10;
