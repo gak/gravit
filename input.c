@@ -230,7 +230,7 @@ int processKeys() {
 				conAdd(0, "tailWidth set to %.0f", view.tailWidth);
 				break;
 
-			case ';':
+			case SDLK_SEMICOLON:
 				view.tailWidth -= 1;
 				if (view.tailWidth < 1)
 					view.tailWidth = 1;

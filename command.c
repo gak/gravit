@@ -70,6 +70,7 @@ static cmd_t cmd[] = {
 	,{ "particlecount",			NULL,				NULL, &state.particlesToSpawn }
 
 	,{ "particlerendermode",	NULL,				NULL, &view.particleRenderMode }
+	,{ "particlerendertexture",	NULL,				NULL, &view.particleRenderTexture }
 	,{ "particlecolourmode",	NULL,				NULL, &view.particleColourMode }
 	,{ "particlesizemin",			NULL,			&view.particleSizeMin, NULL }
 	,{ "particlesizemax",			NULL,			&view.particleSizeMax, NULL }

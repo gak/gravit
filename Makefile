@@ -34,17 +34,16 @@ packagewin:
 	if [ -d $(DISTDIR) ]; then rm -fr $(DISTDIR); fi
 	mkdir $(DISTDIR)
 	cp $(BASEFILES) Release/gravit.exe $(DISTDIR)
+	cd $(DISTDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
 	zip -r dist/$(DISTDIR)-win32.zip $(DISTDIR)
-	rm -fr $(DISTDIR)
+	#rm -fr $(DISTDIR)
 
-packagewinsdl:
+packagewindll:
 	if [ -d $(DISTDIR) ]; then rm -fr $(DISTDIR); fi
 	mkdir $(DISTDIR)
 	cp $(BASEFILES) Release/gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll jpeg.dll libpng13.dll zlib1.dll glew32.dll $(DISTDIR)
+	cd $(DISTDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
 	zip -r dist/$(DISTDIR)-win32-dll.zip $(DISTDIR)
 	rm -fr $(DISTDIR)
 
 packageall: packagesrc packagewin packagewinsdl
-
-copy:
-	cp dist/$(DISTDIR)-* /www/gravit/dist/

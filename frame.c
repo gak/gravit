@@ -219,7 +219,9 @@ void processFrame() {
 	state.currentFrame = state.frame;
 
 }
+
 #if 0
+// slow
 void processCollisions() {
 
 	int i,j;
@@ -273,6 +275,7 @@ void processCollisions() {
 
 #if 0
 
+// slow/unrealistic
 void forceToCenter() {
 
 	int i;

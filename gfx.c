@@ -204,7 +204,7 @@ void drawFrame() {
 	if (view.particleRenderMode == 0) {
 
 		float pointRange[2];
-	
+
 		glEnable(GL_DEPTH_TEST);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glEnable(GL_POINT_SMOOTH);
@@ -239,8 +239,6 @@ void drawFrame() {
 
 		}
 
-		glBindTexture(GL_TEXTURE_2D, particleTextureID);
-
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_POINT_SMOOTH);
 
@@ -251,7 +249,15 @@ void drawFrame() {
 
 		glPointSize( view.particleSizeMax );
 		
-		glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );	// lets you put textures on the sprite
+		// lets you put textures on the sprite
+		// doesn't work on some cards for some reason :(
+		// so i had to make textures an option with this mode
+		if (view.particleRenderTexture) {
+			glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+			glBindTexture(GL_TEXTURE_2D, particleTextureID);
+		} else {
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 
 		glEnable( GL_POINT_SPRITE_ARB );
 
@@ -276,12 +282,19 @@ void drawFrame() {
 
 	if (view.particleRenderMode == 1 && GL_ARB_point_parameters && GL_ARB_point_sprite) {
 
-		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable( GL_POINT_SPRITE_ARB );
 
 	}
 
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	if (view.tailLength > 0 || view.tailLength == -1) {
+
+		// Not sure why this helps but,
+		// it is a fix for one case where only points are drawn instead of lines
+		// on radeon 9600 after switching to particlerendermode 0 from 1
+		if (view.particleRenderMode == 0)
+			glLineWidth(view.tailWidth+1);
 
 		glLineWidth(view.tailWidth);
 

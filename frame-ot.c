@@ -407,7 +407,7 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 					dv[2] = info->p->pos[2] - b->cm[2];
 
 					if (d) {
-						force = -0.00001f * info->pd->mass * b->mass / d;
+						force = G * info->pd->mass * b->mass / d;
 						info->p->vel[0] += dv[0] * force;
 						info->p->vel[1] += dv[1] * force;
 						info->p->vel[2] += dv[2] * force;

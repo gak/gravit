@@ -284,6 +284,11 @@ typedef struct view_s {
 
 	int particleColourMode;	// 0 for colour based on mass, 1 for colour based on velocity
 	int particleRenderMode;	// 0 for standard GL_POINT, 1 for GL_ARB_point_sprite
+	
+	// in particleRenderMode 1, you can render a texture onto the point
+	// this doesnt work in some implementations...
+	int particleRenderTexture;
+	
 	float particleSizeMin;	// can be anything 0 or higher
 	float particleSizeMax;	// -1 for the maximum supported. if its bigger then supported, it will simply use the supported value.
 
