@@ -77,7 +77,6 @@ void loadParticleTexture() {
 int gfxInit() {
 
 	int flags;
-	GLenum err;
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
@@ -124,11 +123,6 @@ int gfxInit() {
 
 	}
 
-	err = glewInit();
-	if (GLEW_OK != err) {
-		dlog(le, va("Error: %s\n", glewGetErrorString(err)));
-	}
-
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
@@ -139,6 +133,9 @@ int gfxInit() {
 		return 0;
 
 	loadParticleTexture();
+
+	checkPointParameters();
+	checkPointSprite();
 
 	SDL_WM_SetCaption("Gravit", "");
 
@@ -229,7 +226,8 @@ void drawFrame() {
 	
 		float quadratic[] =  { 0.0f, 0.0f, 0.01f };
 		
-		if (!GL_ARB_point_parameters || !GL_ARB_point_sprite) {
+//		if (!GL_ARB_point_parameters || !GL_ARB_point_sprite) {
+		if (!conf.supportPointParameters || !conf.supportPointSprite) {
 
 			conAdd(1, "Sorry, Your video card does not support GL_ARB_point_parameters and/or GL_ARB_point_sprite.");
 			conAdd(1, "This means you can't have really pretty looking particles.");
@@ -240,7 +238,7 @@ void drawFrame() {
 		}
 
 		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_POINT_SMOOTH);
+		glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
 		glPointParameterfvARB( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
 
@@ -280,7 +278,7 @@ void drawFrame() {
 	}
 	glEnd();
 
-	if (view.particleRenderMode == 1 && GL_ARB_point_parameters && GL_ARB_point_sprite) {
+	if (view.particleRenderMode == 1 && conf.supportPointParameters && conf.supportPointSprite) {
 
 		glDisable( GL_POINT_SPRITE_ARB );
 
@@ -506,7 +504,38 @@ void drawCube() {
 
 void checkPointParameters() {
 
+	const char *extList;
+
+	conf.supportPointParameters = 0;
+
+	extList = glGetString(GL_EXTENSIONS);
+
+	if (strstr(extList, "GL_ARB_point_parameters") == 0) {
+		return;
+	}
+
+	glPointParameterfARB = (FPglPointParameterfARB) SDL_GL_GetProcAddress("glPointParameterfARB");
+	glPointParameterfvARB = (FPglPointParameterfvARB) SDL_GL_GetProcAddress("glPointParameterfvARB");
 	
+	if (!glPointParameterfARB || !glPointParameterfvARB)
+		return;
+
+	conf.supportPointParameters = 1;
+
+}
+
+void checkPointSprite() {
+
+	const char *extList;
+
+	conf.supportPointSprite = 0;
+
+	extList = glGetString(GL_EXTENSIONS);
+
+	if (strstr(extList, "GL_ARB_point_sprite") == 0)
+		return;
+
+	conf.supportPointSprite = 1;
 
 }
 

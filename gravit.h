@@ -60,14 +60,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <dirent.h>
 	#include <sys/stat.h>
 
+	// used for the opengl extensions
+	#ifndef APIENTRY
+	#define APIENTRY
+	#endif
+
 #endif
 
 #ifndef NO_GUI
 
 	// this removes the header requirement for glext.h in gl.h
 	#define GL_GLEXT_LEGACY
-
-	#include <GL/glew.h>
 
 	#include <SDL.h>
 	#include <SDL_ttf.h>
@@ -161,6 +164,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
+// function pointers for gl extensions
+typedef void (APIENTRY *FPglPointParameterfARB)(GLenum, GLfloat);
+typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, GLfloat*);
+
+FPglPointParameterfARB glPointParameterfARB;
+FPglPointParameterfvARB glPointParameterfvARB;
+
+// gl defines
+#define GL_POINT_SIZE_MIN_ARB 0x8126
+#define GL_POINT_SIZE_MAX_ARB 0x8127
+#define GL_POINT_FADE_THRESHOLD_SIZE_ARB 0x8128
+#define GL_POINT_DISTANCE_ATTENUATION_ARB 0x8129
+
+#define GL_POINT_SPRITE_ARB 0x8861
+#define GL_COORD_REPLACE_ARB 0x8862
+
 typedef struct conf_s {
 
 	int screenBPP;
@@ -168,6 +187,9 @@ typedef struct conf_s {
 	int screenH;
 	int screenFS;
 	int screenAA;
+
+	int supportPointSprite;
+	int supportPointParameters;
 
 	char fontFile[MAX_FONT_LENGTH];
 	int fontSize;
@@ -408,6 +430,8 @@ void drawFrame();
 void drawFrameSet2D();
 void drawFrameSet3D();
 int gfxInit();
+void checkPointParameters();
+void checkPointSprite();
 
 // color.c
 void setColours();
