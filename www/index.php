@@ -54,6 +54,13 @@ echo '</table>';
 
 ?>
 
+<h2>Demonstration Video</h2>
+
+These videos have a high resolution to decently demonstrate Gravit. They are encoded with XVID.<br><br>
+
+<a href="video/gravit-001.avi">Zoomed in on a galaxy</a> - 26s, 16MB, 720x576<br>
+<a href="video/gravit-002.avi">When galaxies collide</a> - 42s, 13MB, 720x576<br>
+
 <h2>Features</h2>
 <li>It looks pretty :)</li>
 <li>You can record, then play back at any speed</li>
@@ -67,27 +74,39 @@ echo '</table>';
 <li>So far Gravit has been tested on Windows XP and Linux Slackware.</li>
 <li>It is written in C and uses SDL, SDL_ttf and OpenGL.</li>
 <li>It uses the <a href="http://www.amara.com/papers/nbody.html#tcu">Barnes-Hut Algorithm</a> (with room for optimisation).</li>
+<li>Gravit was called Graviton, but i changed the name because someone already used Graviton for their project!</li>
 
 <h2>Download</h2>
 
-<b>Note</b>: This version is for the most part un-tested. This means Gravit 0.1 may not even run on your computer! Read the README file included for information.<br><br>
+If you're unsure of things, get the stable version otherwise the development release shouldn't be too bad!<br>
+Read the <a href="dist/ChangeLog">ChangeLog</a> for the latest release details.<br>
 
 <?
 
 function showFile($file, $desc) {
 
-	echo "<a href=\"dist/$file\">$desc</a> (".number_format(filesize("dist/$file"))." bytes)<br>";
+	echo "<a href=\"dist/$file\">$file</a> $desc (".number_format(filesize("dist/$file"))." bytes)<br>";
 
 }
 
 function showFiles($ver) {
 
-	showFile("gravit-$ver-win32-sdl.zip", "Gravit $ver for Windows with SDL and SDL_ttf (Recommended)");
-	showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows (If you have SDL/SDL_ttf already)");
+	showFile("gravit-$ver-win32-sdl.zip", "Gravit $ver for Windows with SDL and SDL_ttf");
+	showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows");
 	showFile("gravit-$ver-src.tgz", "Gravit $ver Source Code");
 	
 }
 
+function showFileHeading($s) {
+
+	echo "<h3>$s</h3>";
+
+}
+
+showFileHeading("Latest Development Release");
+showFiles("0.2-devel");
+
+showFileHeading("Latest Stable Release");
 showFiles("0.1");
 
 ?>
@@ -98,7 +117,6 @@ showFiles("0.1");
 <li>Scriptable spawn locations</li>
 <li>Complete Save/Load functionality</li>
 <li>Replace GL_POINT with billboarding</li>
-<li>Screenshot/Record Key</li>
 <li>Be more user friendly!</li>
 </body>
 
