@@ -80,9 +80,28 @@ void conDraw() {
 
 	if (view.consoleMode) {
 
-		// draw cursor
+		int inputBoxMargin = 3;
+
+		// cursor position
 		y = conf.screenH - 10 - fontHeight;
 
+		// draw box
+		glDisable(GL_BLEND);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBegin(GL_QUADS);
+
+		glColor4f(0,0,.5f,.5f);
+		glVertex2f(x - inputBoxMargin, y + fontHeight + inputBoxMargin);	// bot left
+		glVertex2f(x - inputBoxMargin, y - inputBoxMargin);					// top left
+		
+		glColor4f(0,0,0,0);
+		glVertex2f(x + conf.screenW / 2, y - inputBoxMargin);				// top right
+		glVertex2f(x + conf.screenW / 2, y + fontHeight + inputBoxMargin);	// bot right
+
+		glEnd();
+
+		// draw cursor
 		currentTime = SDL_GetTicks();
 
 		if (conBlinkTime + CONSOLE_BLINK_TIME < currentTime) {
@@ -115,7 +134,7 @@ void conDraw() {
 	}
 
 	// draw console history
-	y = conf.screenH - 10 - fontHeight * 2;
+	y = conf.screenH - 15 - fontHeight * 2;
 
 	for (i = 0; i < CONSOLE_HISTORY; i++) {
 
