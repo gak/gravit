@@ -18,7 +18,7 @@ a:hover { color: red; text-decoration: underline; }
 <h1>Gravit</h1>
 
 <h2>About</h2>
-Gravit is a gravity simulator which runs under Linux and Windows. It's released under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a> which makes it free.
+Gravit is a gravity simulator which runs under Linux and Windows. It's released under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a> which makes it free. It uses simple newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. It records the history of each particle so it can animate and display a path of its travels. At any stage you can rotate your view in 3D and zoom in and out. Gravit uses OpenGL with <a href="http://www.libsdl.org/">SDL</a> and <a href="http://www.libsdl.org/projects/SDL_ttf/">SDL_ttf</a>.
 
 <h2>Screen Shots</h2>
 
