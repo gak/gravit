@@ -1,5 +1,7 @@
 #include "graviton.h"
 
+#ifndef NO_GUI
+
 void drawFrameSet2D() {
 
 	glMatrixMode(GL_PROJECTION);
@@ -104,9 +106,7 @@ void drawFrame() {
 	setColors();
 
 	drawFrameSet3D();
-/*
-	glTranslatef(state.center[0],state.center[1], state.center[2]-view.zoom);
-*/
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
  	gluPerspective(45,(GLfloat)conf.screenW/(GLfloat)conf.screenH,0.1f,10000000.0f);
@@ -124,9 +124,6 @@ void drawFrame() {
 
 	glTranslatef(0, 0, -view.zoom);
 
-//	glRotatef(view.rot[0],1,0,0);
-//	glRotatef(view.rot[1],0,1,0);
-//	glRotatef(view.rot[2],0,0,1);
 	glMultMatrixf(view.mat1);
 	glMultMatrixf(view.mat2);
 
@@ -147,14 +144,9 @@ void drawFrame() {
 		p = state.particleHistory + state.particleCount * state.currentFrame + i;
 		pd = state.particleDetail + i;
 
-//		memcpy(sc, pd->col, sizeof(float)*3);
 		glColor4fv(pd->col);
 
-#ifdef GRAV_SSE		
-		glVertex3f(p->pos.m128_f32[0],p->pos.m128_f32[1],p->pos.m128_f32[2]);
-#else	
 		glVertex3fv(p->pos);
-#endif
 
 		view.verticies++;
 
@@ -199,11 +191,7 @@ void drawFrame() {
 				sc[3] *= c;
 				glColor4fv(sc);
 
-#ifdef GRAV_SSE		
-				glVertex3f(p->pos.m128_f32[0],p->pos.m128_f32[1],p->pos.m128_f32[2]);
-#else	
 				glVertex3fv(p->pos);
-#endif
 
 				view.verticies++;
 
@@ -211,11 +199,7 @@ void drawFrame() {
 				
 			p = state.particleHistory + state.particleCount * state.currentFrame + i;
 
-#ifdef GRAV_SSE		
-			glVertex3f(p->pos.m128_f32[0],p->pos.m128_f32[1],p->pos.m128_f32[2]);
-#else	
 			glVertex3fv(p->pos);
-#endif
 
 			glEnd();
 
@@ -336,3 +320,5 @@ void drawAll() {
 	SDL_GL_SwapBuffers();
 
 }
+
+#endif

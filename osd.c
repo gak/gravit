@@ -1,4 +1,7 @@
 #include "graviton.h"
+
+#ifndef NO_GUI
+
 #define DUH(a,b) drawFontWord(x, y, a); y = drawFontWord(tab, y, b);
 
 void drawOSD() {
@@ -132,3 +135,5 @@ void drawOSD() {
 	}
 #endif 
 }
+
+#endif

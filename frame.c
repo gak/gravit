@@ -1,49 +1,5 @@
 #include "graviton.h"
 
-#if 0
-
-	#ifdef GRAV_SSE
-
-	void frDoGravity(particle_t *p, node_t *n, float d) {
-
-		__m128 dv;
-		float force;
-
-	//	VectorZero(dv);
-
-		if (d) {
-			force = -0.00001f * p->mass * n->mass / d;
-			VectorSub(p->pos, n->cm, dv);
-			VectorMultiply(dv, force, dv);
-			VectorAdd(p->vel, dv, p->vel);
-		}
-
-	}
-
-	#else
-
-	float globalNewton = 3;
-
-	void frDoGravity(particle_t *p, node_t *n, float d) {
-
-		float dv[3];
-		float force;
-		dv[0] = p->pos[0] - n->cm[0];
-		dv[1] = p->pos[1] - n->cm[1];
-		dv[2] = p->pos[2] - n->cm[2];
-
-		if (d) {
-			force = -0.00001f * pd->mass * n->mass / d;
-			p->vel[0] += dv[0] * force;
-			p->vel[1] += dv[1] * force;
-			p->vel[2] += dv[2] * force;
-		}
-	}
-
-	#endif
-
-#endif
-
 int initFrame() {
 
 	state.frame = 0;
@@ -211,19 +167,7 @@ void processFrame() {
 
 		p = state.particleHistory + state.particleCount * (state.frame+1) + i;
 
-#ifdef GRAV_SSE
-
 		VectorAdd(p->pos, p->vel, p->pos);
-
-#else
-
-		p->pos[0] += p->vel[0];
-		p->pos[1] += p->vel[1];
-		p->pos[2] += p->vel[2];
-
-
-
-#endif
 
 	}
 

@@ -1,8 +1,8 @@
 #ifndef GRAVITON_H
 #define GRAVITON_H
 
-// #define NO_GUI
-// #define GRAV_SSE
+#define NO_GUI
+
 #define MAX_THREADS 1
 
 #ifdef WIN32
@@ -10,8 +10,6 @@
 	#include <windows.h>
 	#include <conio.h>
 	#include <stdio.h>
-
-	#include <scrnsave.h>
 
 #else
 
@@ -29,12 +27,6 @@
 	#include <sys/timeb.h>
 
 	#include <pthread.h>
-
-#endif
-
-#ifdef GRAV_SSE
-
-	#include <xmmintrin.h>
 
 #endif
 
@@ -69,34 +61,17 @@
 #define G -0.00001f
 #define PI 3.14159265358979f
 
-#ifdef GRAV_SSE
+#define VectorNew(a) float a[3];
 
-	#define VectorNew(a) __m128 a;
+#define VectorCopy(a,b) { b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; }
+#define VectorAdd(a,b,c) { c[0] = a[0] + b[0]; c[1] = a[1] + b[1]; c[2] = a[2] + b[2]; }
+#define VectorSub(a,b,c) { c[0] = a[0] - b[0]; c[1] = a[1] - b[1]; c[2] = a[2] - b[2]; }
+#define VectorMultiply(a, b, c) { c[0] = a[0] * b; c[1] = a[1] * b; c[2] = a[2] * b; }
+#define VectorDivide(a, b, c) { c[0] = a[0] / b; c[1] = a[1] / b; c[2] = a[2] / b; }
+#define VectorZero(x) { x[0] = 0; x[1] = 0; x[2] = 0; }
 
-	#define VectorCopy(a,b) { b = _mm_setzero_ps(); b = _mm_add_ps(a, b); }
-	#define VectorAdd(a,b,c) { c = _mm_add_ps(a,b); }
-	#define VectorSub(a,b,c) { c = _mm_sub_ps(a,b); }
-	#define VectorMultiply(a, b, c) { __m128 d; float poo; poo = b; d = _mm_load_ps1(&poo); c = _mm_mul_ps(a,d); }
-	#define VectorDivide(a, b, c) { __m128 d; float poo; poo = b; d = _mm_load_ps1(&poo); c = _mm_div_ps(a,d); }
-	#define VectorZero(x) { x = _mm_setzero_ps(); }
-	#define distance2(aa,bb,cc) { __m128 dd; dd = _mm_sub_ps(aa,bb); dd = _mm_mul_ps(dd,dd); cc = dd.m128_f32[0] + dd.m128_f32[1] + dd.m128_f32[2]; }
-	#define distance(a,b,c) { float duh; distance2(a,b,duh); c = (float)sqrt(duh); }
-
-#else
-
-	#define VectorNew(a) float a[3];
-
-	#define VectorCopy(a,b) { b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; }
-	#define VectorAdd(a,b,c) { c[0] = a[0] + b[0]; c[1] = a[1] + b[1]; c[2] = a[2] + b[2]; }
-	#define VectorSub(a,b,c) { c[0] = a[0] - b[0]; c[1] = a[1] - b[1]; c[2] = a[2] - b[2]; }
-	#define VectorMultiply(a, b, c) { c[0] = a[0] * b; c[1] = a[1] * b; c[2] = a[2] * b; }
-	#define VectorDivide(a, b, c) { c[0] = a[0] / b; c[1] = a[1] / b; c[2] = a[2] / b; }
-	#define VectorZero(x) { x[0] = 0; x[1] = 0; x[2] = 0; }
-
-	#define distance2(a,b,c) c = ((float)pow((double)a[0] - b[0], 2) + (float)pow((double)a[1] - b[1], 2) + (float)pow((double)a[2] - b[2], 2));
-	#define distance(a,b,c) { float d; distance2(a,b,d); c = (float)sqrt((double)d); }
-
-#endif
+#define distance2(a,b,c) c = ((float)pow((double)a[0] - b[0], 2) + (float)pow((double)a[1] - b[1], 2) + (float)pow((double)a[2] - b[2], 2));
+#define distance(a,b,c) { float d; distance2(a,b,d); c = (float)sqrt((double)d); }
 
 #ifndef Uint32
 	#define Uint32 unsigned int
@@ -107,12 +82,9 @@
 #define _aligned_free(a) free(a)
 #endif
 
-#ifndef GRAV_SSE
 #define _aligned_malloc(a,b) malloc(a)
 #define _aligned_free(a) free(a)
-#endif
 
-// #define MAX_HISTORY 10000
 #define CONSOLE_HISTORY 10
 #define CONSOLE_LENGTH 255
 #define CONSOLE_BLINK_TIME 100
@@ -123,8 +95,6 @@
 #define SM_PAUSED 1
 #define SM_RECORD 2
 #define SM_PLAY 4
-
-// #define EM
 
 #include "command.h"
 
@@ -147,49 +117,23 @@ typedef struct conf_s {
 
 #endif
 
-#ifdef WIN32
-
-#ifdef GRAV_SSE
-typedef struct __declspec(align(16)) particle_s {
-#else
-typedef struct particle_s {
-#endif
-#else
-typedef struct particle_s {
-#endif
-
 // things that change per frame
-#ifdef GRAV_SSE
-
-	__m128 pos;
-	__m128 vel;
-
-#else
+typedef struct particle_s {
 
 	float pos[3];
 	float vel[3];
 
-#endif
-
-// things that change less often
-	// float size;
-	// float mass;
-	// float col[3];
-	// int active;
-	// char padding[4];
-
 
 } particle_t;
 
+// things that change less often
 typedef struct particleDetail_s {
 
-	// things that change less often
 	int frame;
 	float size;
 	float mass;
 	float col[4];
 	int active;
-//	struct particleDetail_t *next;
 
 } particleDetail_t;
 
@@ -415,31 +359,12 @@ void processCollisions();
 void processFramePP(int s, int n);
 
 // frame-ot.c
-#ifdef WIN32
-#ifdef GRAV_SSE
-typedef struct __declspec(align(16)) node_s {
-#else
 typedef struct node_s {
-#endif
-#else
-typedef struct node_s {
-#endif
-
-#ifdef GRAV_SSE
-
-	__m128 min;
-	__m128 max;
-	__m128 c;
-	__m128 cm;
-
-#else
 
 	float min[3];
 	float max[3];
 	float c[3];
 	float cm[3];
-
-#endif
 
 	particle_t *p;
     struct node_t *b[8];

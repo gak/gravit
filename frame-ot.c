@@ -7,65 +7,20 @@ node_t *r = NULL;
 int nodes;
 int particles;
 
-int ncalcs;
-int scalcs;
-int pcalcs;
-
-#ifdef GRAV_SSE
-void otGetBoundingBox(__m128 *otMin, __m128 *otMax) {
-#else
 void otGetBoundingBox(float *otMin, float *otMax) {
-#endif
 
 	particle_t *p;
 	int i;
 	int j;
 
 	p = state.particleHistory + state.particleCount * state.frame;
-	/*
-	otMin[0] = p->pos[0];
-	otMax[0] = p->pos[0];
-	otMin[1] = p->pos[1];
-	otMax[1] = p->pos[1];
-	otMin[2] = p->pos[2];
-	otMax[2] = p->pos[2];
-	*/
-
-#ifdef GRAV_SSE
-
-	VectorCopy(p->pos, *otMin);
-	VectorCopy(p->pos, *otMax);
-
-#else
 
 	VectorCopy(p->pos, otMin);
 	VectorCopy(p->pos, otMax);
 
-#endif
-
 	for (i = 1; i < state.particleCount; i++) {
 
-#ifdef GRAV_SSE
-		__m128 m1,m2;
-#endif
-
 		p = state.particleHistory + state.particleCount * state.frame + i;
-
-#ifdef GRAV_SSE
-
-		m1 = _mm_cmplt_ps(p->pos, *otMin);
-		m2 = _mm_cmpgt_ps(p->pos, *otMax);
-
-		for (j = 0; j < 3; j++) {
-
-			if (m1.m128_f32[j])
-				otMin->m128_f32[j] = p->pos.m128_f32[j];
-			if (m2.m128_f32[j])
-				otMax->m128_f32[j] = p->pos.m128_f32[j];
-
-		}
-
-#else
 
 		for (j = 0; j < 3; j++) {
 
@@ -76,28 +31,18 @@ void otGetBoundingBox(float *otMin, float *otMax) {
 
 		}
 
-#endif
-
 	}
 
 }
-#ifdef GRAV_SSE
-int otGetParticleInBox(__m128 *min, __m128 *max, particle_t **gp, float *m, __m128 *cm) {
-#else
+
 int otGetParticleInBox(float *min, float *max, particle_t **gp, float *m, float *cm) {
-//int otGetParticleInBox(pib_t *info) {	// todo?
-#endif
 
 	int c = 0;
 	particle_t *p;
 	particleDetail_t *pd;
 	int i;
 
-#ifdef GRAV_SSE
-	__m128 vec;
-#else
 	float vec[3];
-#endif
 
 	memset(cm, 0, sizeof(float) * 3);
 
@@ -108,23 +53,6 @@ int otGetParticleInBox(float *min, float *max, particle_t **gp, float *m, float 
 
 		p = state.particleHistory + state.particleCount * state.frame + i;
 		pd = state.particleDetail + i;
-
-#ifdef GRAV_SSE
-
-		if (p->pos.m128_f32[0] < min->m128_f32[0])
-			continue;
-		if (p->pos.m128_f32[0] > max->m128_f32[0])
-			continue;
-		if (p->pos.m128_f32[1] < min->m128_f32[1])
-			continue;
-		if (p->pos.m128_f32[1] > max->m128_f32[1])
-			continue;
-		if (p->pos.m128_f32[2] < min->m128_f32[2])
-			continue;
-		if (p->pos.m128_f32[2] > max->m128_f32[2])
-			continue;
-
-#else
 
 		if (p->pos[0] < min[0])
 			continue;
@@ -139,35 +67,23 @@ int otGetParticleInBox(float *min, float *max, particle_t **gp, float *m, float 
 		if (p->pos[2] > max[2])
 			continue;
 
-#endif
-
 		*m += pd->mass;
         *gp = p;
 		VectorCopy(p->pos, vec);
-#ifdef GRAV_SSE
-		VectorMultiply(vec, pd->mass, vec);
-		VectorAdd(*cm, vec, *cm);
-#else
 		VectorMultiply(vec, pd->mass, vec);
 		VectorAdd(cm, vec, cm);
-#endif
+
 		c++;
 
 	}
-#ifdef GRAV_SSE
-	VectorDivide(*cm, *m, *cm);
-#else
+
 	VectorDivide(cm, *m, cm);
-#endif
+
 	return c;
 
 }
 
-#ifdef GRAV_SSE
-void otBranchNodeCorner(node_t *n, int br, __m128 *min, __m128 *max) {
-#else
 void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
-#endif
 
 	float mass;
 	particle_t *p;
@@ -175,17 +91,9 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 	node_t *b;
 	int c;
 
-#ifdef GRAV_SSE
-	__m128 cm;
-#else
 	float cm[3];
-#endif
 
-#ifdef GRAV_SSE
-	c = otGetParticleInBox(min, max, &p, &mass, &cm);
-#else
 	c = otGetParticleInBox(min, max, &p, &mass, (float*)&cm);
-#endif
 
 	if (c == 0)
 		return;
@@ -195,23 +103,10 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 	b = (node_t *)n->b[br];
 
 	memset(b, 0, sizeof(node_t));
-//	memcpy(b->min, min, sizeof(b->min));
-//	memcpy(b->max, max, sizeof(b->max));
-//	memcpy(b->cm, cm, sizeof(b->cm));
-
-#ifdef GRAV_SSE
-
-	VectorCopy(*min, b->min);
-	VectorCopy(*max, b->max);
-	VectorCopy(cm, b->cm);
-
-#else
 
 	VectorCopy(min, b->min);
 	VectorCopy(max, b->max);
 	VectorCopy(cm, b->cm);
-
-#endif
 
 	// Gets Center of min/max
 	VectorSub(b->max, b->min, b->c);
@@ -237,71 +132,10 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 
 }
 
-#ifdef GRAV_SSE
-
-void otBranchNode(node_t *n) {
-
-	__m128 min;
-	__m128 max;
-
-//	n->depth ++;
-
-	// b[0]: top left front
-	min.m128_f32[0] = n->min.m128_f32[0];
-	max.m128_f32[0] = n->c.m128_f32[0];
-	min.m128_f32[1] = n->min.m128_f32[1];
-	max.m128_f32[1] = n->c.m128_f32[1];
-	min.m128_f32[2] = n->min.m128_f32[2];
-	max.m128_f32[2] = n->c.m128_f32[2];
-	otBranchNodeCorner(n, 0, &min, &max);
-
-	// b[1]: top right front
-	min.m128_f32[0] = n->c.m128_f32[0];
-	max.m128_f32[0] = n->max.m128_f32[0];
-	otBranchNodeCorner(n, 1, &min, &max);
-
-	// b[2]: bottom right front
-	min.m128_f32[1] = n->c.m128_f32[1];
-	max.m128_f32[1] = n->max.m128_f32[1];
-	otBranchNodeCorner(n, 2, &min, &max);
-
-	// b[3]: bottom left front
-	min.m128_f32[0] = n->min.m128_f32[0];
-	max.m128_f32[0] = n->c.m128_f32[0];
-	otBranchNodeCorner(n, 3, &min, &max);
-
-	// b[4]: top left back
-	min.m128_f32[1] = n->min.m128_f32[1];
-	max.m128_f32[1] = n->c.m128_f32[1];
-	min.m128_f32[2] = n->c.m128_f32[2];
-	max.m128_f32[2] = n->max.m128_f32[2];
-	otBranchNodeCorner(n, 4, &min, &max);
-
-	// b[5]: top right back
-	min.m128_f32[0] = n->c.m128_f32[0];
-	max.m128_f32[0] = n->max.m128_f32[0];
-	otBranchNodeCorner(n, 5, &min, &max);
-
-	// b[6]: bottom right back
-	min.m128_f32[1] = n->c.m128_f32[1];
-	max.m128_f32[1] = n->max.m128_f32[1];
-	otBranchNodeCorner(n, 6, &min, &max);
-
-	// b[7]: bottom left back
-	min.m128_f32[0] = n->min.m128_f32[0];
-	max.m128_f32[0] = n->c.m128_f32[0];
-	otBranchNodeCorner(n, 7, &min, &max);
-
-}
-
-#else
-
 void otBranchNode(node_t *n) {
 
 	float min[3];
 	float max[3];
-
-//	n->depth ++;
 
 	// b[0]: top left front
 	min[0] = n->min[0];
@@ -351,8 +185,6 @@ void otBranchNode(node_t *n) {
 
 }
 
-#endif
-
 void otMakeTree() {
 
 	particle_t *p;
@@ -366,14 +198,8 @@ void otMakeTree() {
 
 	n = r;
 
-#ifdef GRAV_SSE
-	otGetBoundingBox(&n->min, &n->max);
-	otGetParticleInBox(&n->min, &n->max, &p, &n->mass, &n->cm);
-#else
 	otGetBoundingBox((float*)&n->min, (float*)&n->max);
 	otGetParticleInBox((float*)&n->min, (float*)&n->max, &p, &n->mass, (float*)&n->cm);
-#endif
-
 
 	// Gets Center of min/max
 	VectorSub(n->max, n->min, n->c);
@@ -431,33 +257,11 @@ void otDrawTreeRecursive(node_t *n) {
 	}
 
 	glPushMatrix();
-#ifdef GRAV_SSE
-	glTranslatef(n->c.m128_f32[0], n->c.m128_f32[1], n->c.m128_f32[2]);
-	glScalef(n->max.m128_f32[0] - n->min.m128_f32[0], n->max.m128_f32[1] - n->min.m128_f32[1], n->max.m128_f32[2] - n->min.m128_f32[2]);
-#else
 	glTranslatef(n->c[0], n->c[1], n->c[2]);
 	glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
-#endif
 	
-//	glutWireCube(1);
-	//glutWireSphere(1, 8, 8);
-	glPopMatrix();
-
-/*
-	if (n->p) {
-		glColor3f(0, 1.0f, 0);
-	} else {
-		glColor3f(0, 0.5f, 0);
-	}
-
-	glPushMatrix();
-	glTranslatef(n->cm[0], n->cm[1], n->cm[2]);
-	glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
-	// glScalef(0.5f, 0.5f, 0.5f);
 	glutWireCube(1);
-	//glutWireSphere(1, 8, 8);
 	glPopMatrix();
-*/
 
 	for (i = 0; i < 8; i++)
 		if (n->b[i])
@@ -477,7 +281,6 @@ void otDrawTree() {
 #endif
 
 void otComputeParticleToTreeRecursive(pttr_t *info) {
-// particle_t *p, node_t *n, particleDetail_t *pd) {
 
 	int i;
 	node_t *b;
@@ -512,9 +315,6 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 			}
 		}
 
-		ncalcs++;
-		pcalcs++;
-
 	} else {
 
 		for (i = 0; i < 8; i++) {
@@ -536,7 +336,6 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 				info2.n = b;
 				info2.p = info->p;
 				info2.pd = info->pd;
-//				otComputeParticleToTreeRecursive(info->p, b, info->pd);
 				otComputeParticleToTreeRecursive(&info2);
 
 			} else {
@@ -558,9 +357,6 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 					}
 				}
 
-				ncalcs++;
-				scalcs++;
-
 			}
 
 		}
@@ -578,8 +374,6 @@ void processFrameOT(int start, int amount) {
 	
 	otMakeTree();
 
-	ncalcs = pcalcs = scalcs = 0;
-
 	for (i = start; i < amount; i++) {
 
 		p = state.particleHistory + state.particleCount * state.frame + i;
@@ -591,120 +385,9 @@ void processFrameOT(int start, int amount) {
 		info.p = p;
 		info.n = r;
 		info.pd = pd;
-		//otComputeParticleToTreeRecursive(p, r, pd);
 
 		otComputeParticleToTreeRecursive(&info);
 
 	}
 
-}
-
-#ifndef NO_GUI
-
-void otDrawGravityLinesRecursive(particle_t *p, node_t *n) {
-
-	int i;
-	node_t *b;
-	particle_t *p2;
-
-	float d;
-	float poo;
-
-	if (n->p == p)
-		return;
-
-	if (n->p) {
-
-		p2 = n->p;
-
-		glColor3f(1,0,0);
-		glBegin(GL_LINES);
-//		glVertex3fv(p->pos);
-//		glVertex3fv(n->cm);
-		glEnd();
-
-		/*
-		glPushMatrix();
-		glTranslatef(n->c[0], n->c[1], n->c[2]);
-		glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
-		glutWireCube(1);
-		glPopMatrix();
-		*/
-
-	} else {
-
-		for (i = 0; i < 8; i++) {
-
-			if (!n->b[i])
-				continue;
-
-			b = (node_t *)n->b[i];
-
-			distance2(p->pos, b->cm, d);
-
-			if (!d)
-				continue;
-
-			poo = b->length / sqrt(d);
-
-			if ( poo > 0.5f ) {
-
-				otDrawGravityLinesRecursive(p, b);
-
-			} else {
-
-
-				glColor3f(0.5f,0,0);
-
-				/*glBegin(GL_LINES);
-				glVertex3fv(p->pos);
-				glVertex3fv(b->cm);
-				glEnd();
-				*/
-
-				glPushMatrix();
-#ifdef GRAV_SSE
-				glTranslatef(b->c.m128_f32[0], b->c.m128_f32[1], b->c.m128_f32[2]);
-				glScalef(b->max.m128_f32[0] - b->min.m128_f32[0], b->max.m128_f32[1] - b->min.m128_f32[1], b->max.m128_f32[2] - b->min.m128_f32[2]);
-#else
-				glTranslatef(b->c[0], b->c[1], b->c[2]);
-				glScalef(b->max[0] - b->min[0], b->max[1] - b->min[1], b->max[2] - b->min[2]);
-
-#endif
-				//glutWireCube(1);
-				glPopMatrix();
-
-			}
-
-		}
-
-	}
-}
-
-void otDrawGravityLines() {
-
-	particle_t *p;
-	p = state.particleHistory + state.particleCount * state.frame;
-
-	if (!p)
-		return;
-	if (!r)
-		return;
-
-    otDrawGravityLinesRecursive(p, r);
-
-}
-
-#endif
-
-int otGetNCalcs() {
-	return ncalcs;
-}
-
-int otGetSCalcs() {
-	return scalcs;
-}
-
-int otGetPCalcs() {
-	return pcalcs;
 }

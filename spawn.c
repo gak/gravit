@@ -5,7 +5,7 @@ spawnVars_t spawnVars;
 void spawnDefaults() {
 
 	spawnVars.minGalCount = 2;
-	spawnVars.maxGalCount = 2;
+	spawnVars.maxGalCount = 5;
 
 	spawnVars.minGalMass = 0;
 	spawnVars.maxGalMass = 500;
@@ -23,11 +23,7 @@ void spawnDefaults() {
 
 
 
-#ifdef GRAV_SSE
-void setRangePosition(__m128 *org, float range) {
-#else
 void setRangePosition(float *org, float range) {
-#endif
 
 	float ranged;
 
@@ -35,23 +31,12 @@ void setRangePosition(float *org, float range) {
 
 	while (1) {
 
-#ifdef GRAV_SSE
-
-		org->m128_f32[0] = frand(-ranged,ranged);
-		org->m128_f32[1] = frand(-ranged,ranged);
-		org->m128_f32[2] = frand(-ranged,ranged);
-
-		if (sqrt(pow(org->m128_f32[0], 2) + pow(org->m128_f32[1], 2) + pow(org->m128_f32[2], 2)) <= range)
-			break;
-
-#else
 		org[0] = frand(-ranged,ranged);
 		org[1] = frand(-ranged,ranged);
 		org[2] = frand(-ranged,ranged);
 
 		if (sqrt(pow(org[0], 2) + pow(org[1], 2) + pow(org[2], 2)) <= range)
 			break;
-#endif
 
 	}
 
@@ -108,19 +93,9 @@ void pickPositions() {
 
 	int gals;
 
-#ifdef GRAV_SSE
-
-	__m128 galPos[100];
-	__m128 galVel[100];
-	__m128 shit;
-
-#else
-
 	float galPos[100][3];
 	float galVel[100][3];
 	float shit[3];
-
-#endif
 
 	float galSize[100];
 	float galMassMin[100];
@@ -149,13 +124,8 @@ void pickPositions() {
 		galMassMax[g] = frand(spawnVars.minGalMass, spawnVars.maxGalMass);
 		galSize[g] = frand(spawnVars.minGalSize, spawnVars.maxGalSize);
 		
-#ifdef GRAV_SSE
-		setRangePosition(&galPos[g], spawnRange);
-		setRangePosition(&galVel[g], frand(0,1) * frand(0,1) * frand(spawnVars.minGalVel, spawnVars.maxGalVel));
-#else
 		setRangePosition(galPos[g], spawnRange);
 		setRangePosition(galVel[g], frand(0,1) * frand(0,1) * frand(spawnVars.minGalVel, spawnVars.maxGalVel));
-#endif
 
 	}
 
@@ -175,11 +145,7 @@ void pickPositions() {
 
 		// position
 		VectorCopy(galPos[g], p->pos);
-#ifdef GRAV_SSE
-		setRangePosition(&shit, galSize[g]);
-#else
 		setRangePosition((float *)&shit, galSize[g]);
-#endif
 		VectorAdd(p->pos, shit, p->pos);
 
 

@@ -1,5 +1,7 @@
 #include "graviton.h"
 
+#ifndef NO_GUI
+
 font_t fonts[256];
 float fontHeight;
 
@@ -201,3 +203,5 @@ void drawFontWordRA(float x, float y, char *word) {
 
 
 }
+
+#endif
