@@ -57,7 +57,7 @@ static cmd_t cmd[] = {
 
 	,{ "tailskip",		NULL,				NULL, &view.tailSkip }
 	,{ "tailfaded",		NULL,				NULL, &view.tailFaded }
-	,{ "tailfaded",		NULL,				&view.tailOpacity, NULL }
+	,{ "tailopacity",	NULL,				&view.tailOpacity, NULL }
 	,{ "taillength",	NULL,				NULL, &view.tailLength }
 	,{ "tailwidth",		NULL,				&view.tailWidth, NULL }
 
@@ -65,9 +65,9 @@ static cmd_t cmd[] = {
 	,{ "drawtree",		NULL,				NULL, &view.drawTree }
 
 	,{ "particlecolormode",		NULL,				NULL, &view.particleColorMode }
-	,{ "particlesize",			NULL,				NULL, &view.particleSize }
+//	,{ "particlesize",			NULL,				NULL, &view.particleSize }
 	,{ "particlecount",			NULL,				NULL, &state.particlesToSpawn }
-	
+
 	,{ "spawngalcountmin",		NULL,				NULL, &spawnVars.minGalCount }
 	,{ "spawngalcountmax",		NULL,				NULL, &spawnVars.maxGalCount }
 	,{ "spawngalmassmin",		NULL,				&spawnVars.minGalMass, NULL }
@@ -82,7 +82,7 @@ static cmd_t cmd[] = {
 	,{ "framecompression",		NULL,				NULL, &state.frameCompression }
 
 	,{ "verbose",				NULL,				NULL, &view.verboseMode }
-	
+
 	,{ "processors",			NULL,				NULL, &state.processFrameThreads }
 
 	,{ NULL,			NULL,				NULL }

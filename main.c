@@ -105,16 +105,20 @@ void stateInit() {
 
 	state.processFrameThreads = 1;
 	state.particlesToSpawn = 1000;
+	state.particleHistory = 0;
+	state.memoryAllocated = 0;
 
 }
 
 int init() {
 
 	srand(time(0));
-
-	state.memoryAllocated = 0;
+	
 	loadDefaults();
-
+	viewInit();
+	spawnDefaults();
+	stateInit();
+	
 	configRead("gravit.cfg");
 
 #ifndef NO_GUI
@@ -124,18 +128,11 @@ int init() {
 
 #endif
 
-	viewInit();
-
-	spawnDefaults();
-
 	conInit();
-
-	stateInit();
 
 	if (state.historyFrames % 2)
 		state.historyFrames--;
 
-	state.particleHistory = 0;
 
 	fpsInit();
 

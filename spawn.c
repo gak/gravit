@@ -133,6 +133,21 @@ void pickPositions() {
 	float radius;
 
 	gals = (rand() % (1 + spawnVars.maxGalCount-spawnVars.minGalCount)) + spawnVars.minGalCount;
+
+	if (gals <= 0) {
+
+		conAdd(2, "For some reason galaxies to spawn is 0 or less. Not possible!");
+		return;
+
+	}
+
+	if (gals >= 100) {
+
+		conAdd(2, "Maximum galaxies to spawn is 100");
+		return;
+
+	}
+
 	spawnRange = frand(spawnVars.minSpawnRange, spawnVars.maxSpawnRange);
 
 	conAdd(1, "Spawning new simulation...");
