@@ -55,7 +55,7 @@ static cmd_t cmd[] = {
 	,{ "frameskip",		NULL,				NULL, &view.frameSkip }
 	,{ "frame",			NULL,				NULL, &state.currentFrame }
 
-	,{ "tailskip",		NULL,				NULL, &view.tailSkip }
+	,{ "tailskip",		cmdTailSkipCheck,	NULL, &view.tailSkip }
 	,{ "tailfaded",		NULL,				NULL, &view.tailFaded }
 	,{ "tailopacity",	NULL,				&view.tailOpacity, NULL }
 	,{ "taillength",	NULL,				NULL, &view.tailLength }
@@ -533,5 +533,14 @@ void cmdRunScript(char *arg) {
 	if (!sz)
 		return;
 	configRead(sz);
+
+}
+
+void cmdTailSkipCheck(char *arg) {
+
+	if (view.tailSkip <= 0) {
+		conAdd(1, "tailskip %i is not valid. tailskip is now 1.", view.tailSkip);
+		view.tailSkip = 1;
+	}
 
 }

@@ -52,5 +52,6 @@ void cmdSpawn(char *arg);
 void cmdStatus(char *arg);
 void cmdFontFile(char *arg);
 void cmdRunScript(char *arg);
+void cmdTailSkipCheck(char *arg);
 
 #endif

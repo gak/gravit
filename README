@@ -1,11 +1,11 @@
-Gravit Version 0.1
+Gravit Version 0.2
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
 
 Overview
 
-    This is an early test release. I would really like your feedback especially if you had to change the code to get it to work.
+    Gravit is current in a development stage. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
 
 Configuration
 
@@ -38,5 +38,7 @@ Author
 Contributors
 
     * Alec Thomas (alec@swapoff.org)
-    * Martin White (renwald@slowchop.com) 
-
+    * Martin White (renwald@slowchop.com)
+    * James Stewart
+    * Sam Lander (sam.lander@gmail.com) 
+    
