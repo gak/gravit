@@ -1,33 +1,42 @@
 Gravit Version 0.1
-http://gravit.slowchop.com/
-gravit@slowchop.com
+
+    http://gravit.slowchop.com/
+    gravit@slowchop.com
 
 Overview
-This is an early test release. I would really like your feedback especially if
-you had to change the code to get it to work.
 
-Configuring
+    This is an early test release. I would really like your feedback especially if you had to change the code to get it to work.
 
+Configuration
+
+    Once you have installed Gravit (see below) you should configure it to make it work as well as possible on your system. To do this, open up gravit.cfg in your favorite text editor and follow the instructions. By default the configuration is set to use 256MB of RAM, and only run in windowed mode at 800x600x16.
 
 Installation for Windows
 
-1) Extract the ZIP file as you already have into a directory.
+   1. Extract the ZIP file as you already have into a directory.
+   2. You may need to download copy SDL.DLL and SDL_ttf.DLL into the same directory as gravit.exe
+          * SDL.DLL is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
+          * SDL_ttf.DLL is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip 
+   3. Open up gravit.cfg and change it to your liking.
+   4. Run gravit.exe from that directory! 
 
-2) You may need to download copy SDL.DLL and SDL_ttf.DLL into the same directory as gravit.exe
-  - SDL.DLL is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
-  - SDL_ttf.DLL is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
-
-3) Run gravit.exe from that directory!
- 
 Installation for Linux
 
-1) Extract the tarball somewhere as you already have:
-  - tar xzvf gravit-src-0.1.tgz
+   1. Extract the tarball somewhere as you already have:
+          * tar xzvf gravit-src-0.1.tgz 
+   2. You will need:
+          * SDL and SDL_ttf installed and sdl-config working. (Try sdl-config --version)
+          * OpenGL (accelerated preferably) 
+   3. Run make
+   4. Open up gravit.cfg and change it to your liking.
+   5. Hopefully that should have compiled a gravit binary! 
 
-2) You will need:
-  - SDL and SDL_ttf installed and sdl-config working. (Try sdl-config --version)
-  - OpenGL (accelerated preferably)
+Author
 
-3) Run make
+    * Gerald Kaszuba (graviton@gakman.com) 
 
-4) Hopefully that should have compiled a gravit binary!
+Contributors
+
+    * Alec Thomas (alec@swapoff.org)
+    * Martin White (renwald@slowchop.com) 
+
