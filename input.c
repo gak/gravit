@@ -66,20 +66,20 @@ int processKeys() {
 					view.textMode = TM_HELP;
 				break;
 
-			case SDLK_F2:
-				cmdStart(NULL);
-				break;
-
-			case SDLK_F3:
-				cmdPlay(NULL);
-				break;
-
 			case SDLK_F5:
-				cmdStop(NULL);
+				cmdPlay(NULL);
 				break;
 
 			case SDLK_F6:
 				cmdRecord(NULL);
+				break;
+
+			case SDLK_F7:
+				cmdStop(NULL);
+				break;
+
+			case SDLK_F8:
+				cmdStart(NULL);
 				break;
 
 			case SDLK_F10:

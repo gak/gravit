@@ -101,11 +101,10 @@ void drawOSD() {
 		y = drawFontWord(x, y, "Recording/Playback");
 
 		glColor4f(1,1,1,0.5f);
-		DUH("F2", "start");
-		DUH("F3", "play");
-		DUH("F4", "pause");
-		DUH("F5", "stop");
+		DUH("F5", "play");
 		DUH("F6", "record");
+		DUH("F7", "pause");
+		DUH("F8", "spawn particles");
 		DUH("F10", "go to frame 0");
 
 		glColor4f(1,1,1,1);
@@ -124,15 +123,15 @@ void drawOSD() {
 		DUH("x", "fade particle tail");
 		DUH("c v", "particle tail opacity");
 		DUH("b n m", "particle tail length less/more/all");
-		DUH(", .", "particle tail resolution");
-		DUH("; '", "particle tail width");
+		DUH(", (comma) . (period)", "particle tail resolution");
+		DUH("; (semicolon) ' (quote)", "particle tail width");
 
 		glColor4f(1,1,1,1);
 		y += fontHeight;
 		y = drawFontWord(x, y, "Console");
 
 		glColor4f(1,1,1,0.5f);
-		DUH("`", "toggle console");
+		DUH("` (above TAB)", "use the console");
 
 	}
 

@@ -141,9 +141,8 @@ int init() {
 #ifndef NO_GUI
 
 	conAdd(0, "Quick Start:");
-	conAdd(0, "Hit F2 a few times then F6 to start recording.");
-	conAdd(0, "After a recording 50 frames or so, press F5 to stop then F3 to play what you have recorded.");
-	conAdd(0, "Use the mouse to rotate your view. Try changing the tail length by pressing N a few times.");
+	conAdd(0, "Hit F8 a few times then F6 to start recording.");
+	conAdd(0, "Use the mouse to move around. Use A and Z keys to zoom in and out.");
 
 #endif
 

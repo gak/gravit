@@ -262,26 +262,61 @@ void cmdStart(char *arg) {
 	cmdSpawn(NULL);
 	state.mode = 0;
 
+	conAdd(0, "You have spawned some particles. Hit F6 to start recording the simulation!");
+
 }
 
 void cmdRecord(char *arg) {
 
 	if (state.particleCount == 0) {
 
-		conAdd(1, "You need to spawn some particles first!");
+		conAdd(1, "You need to spawn some particles first! Press F8 to spawn some!");
 		return;
 
 	}
 
-	conAdd(1, "Recording...");
-	state.mode |= SM_RECORD;
+	state.mode &= ~SM_PLAY;
+
+	if (state.mode & SM_RECORD) {
+
+		conAdd(1, "Stopped Recording.");
+		conAdd(0, "Press F5 to play your recording. Press F6 to continue recording.");
+		state.mode &= ~SM_RECORD;
+
+	} else {
+
+		conAdd(1, "Recording...");
+		conAdd(0, "Press F5 to play your recording. Press F6 to stop recording.");
+		state.mode |= SM_RECORD;
+
+	}
 
 }
 
 void cmdPlay(char *arg) {
 
-	conAdd(1, "Recording...");
-	state.mode |= SM_PLAY;
+	if (state.particleCount == 0) {
+
+		conAdd(1, "You need to spawn some particles first! Press F8 to spawn some!");
+		return;
+
+	}
+
+	state.mode &= ~SM_RECORD;
+
+	if (state.mode & SM_PLAY) {
+
+		conAdd(1, "Stopped Playback.");
+		conAdd(0, "Press F5 to continue playback. Press F6 to continue recording.");
+		state.mode &= ~SM_PLAY;
+
+	} else {
+
+		conAdd(1, "Playing...");
+		conAdd(0, "Press F5 to stop playback. Press F6 to continue recording.");
+		state.mode |= SM_PLAY;
+
+	}
 
 }
 
