@@ -277,6 +277,8 @@ typedef struct view_s {
 
 	int verboseMode;
 
+	int blendMode;
+
 	int screenshotIndex;	// the next available screenshot file (eg screenshot/gravit00001.bmp)
 	int screenshotLoop;	// will do a screenshot every frame
 
@@ -449,7 +451,7 @@ void fpsUpdate(float);
 
 int configRead(char *filename);
 
-void drawWireCube();
+void drawCube();
 
 extern const char *colourModes[];
 

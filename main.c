@@ -88,6 +88,8 @@ void viewInit() {
 	view.drawTree = 0;
 	view.frameSkip = 0;
 
+	view.blendMode = 1;
+
 	view.particleColourMode = CM_MASS;
 	view.particleRenderMode = 1;
 

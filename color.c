@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-const char *colourModes[] = { "mass", "velocity", "acceleration" };
+const char *colourModes[] = { "mass", "velocity", "acceleration (need >1 frames)" };
 
 void setColoursByVel() {
 

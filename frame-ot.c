@@ -270,18 +270,35 @@ void otDrawTreeRecursive(node_t *n) {
 	if (!n)
 		return;
 
-	if (n->p) {
-		glColor3f(0, 0, 1.0f);
-	} else {
-		glColor3f(0, 0, 0.5f);
+	switch (view.drawTree) {
+
+	// line mode
+	case 1:
+	default:
+		if (n->p)
+			glColor3f(0, 0, 1.0f);
+		else
+			glColor3f(0, 0, 0.25f);
+		break;
+
+	// fill mode
+	case 2:
+		if (n->p)
+			glColor4f(0, 0, 1.0f, 0.1f);
+		else
+			glColor4f(0, 0, 1.0f, 0.05f);
+		break;
+		
+
 	}
 
 	glPushMatrix();
 	glTranslatef(n->c[0], n->c[1], n->c[2]);
 	glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
+	glScalef(0.5f, 0.5f, 0.5f);
 	
-	drawWireCube();
-	
+	drawCube();
+
 	glPopMatrix();
 
 	for (i = 0; i < 8; i++)
@@ -292,10 +309,29 @@ void otDrawTreeRecursive(node_t *n) {
 
 void otDrawTree() {
 
-	glDepthMask(GL_FALSE);
-	glDisable(GL_BLEND);
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	otDrawTreeRecursive(r);
+	glDisable(GL_DEPTH_TEST);
+
+	switch (view.drawTree) {
+	
+	// line mode
+	case 1:
+	default:
+		glEnable(GL_BLEND);
+		glLineWidth(1.0f);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+
+	// fill mode
+	case 2:
+		glEnable(GL_BLEND);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+
+	}
+
+	otDrawTreeRecursive(r);	// doit
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// cleanup
 
 }
 

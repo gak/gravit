@@ -6,21 +6,24 @@ Gravit ChangeLog
 
     * Added SDL_image as a dependency
     * Added glew as a dependency
-    * Added (optional) particle billboarding.
-          o It is on by default and uses the GL_ARB_point_parameters and glPointParameterARB extensions.
+    * Added a second help menu (F2)
+    * Added particle effects!
+          o It is on by default and uses the GL_ARB_point_parameters and GL_ARB_point_sprite extensions.
           o It will fall back to the original GL_POINT renderer if your card does not support them. It will also tell you that it has done this.
           o Added particle.png
                 + To modify it, save it as a transparent 24bit png.
                 + If you modify it and it looks cool send it my way! 
     * Added particlerendermode command (0=norm 1=billboarding)
-    * Added particlesizemin and particlesizemax commands to change the size of your particles.
-          o When you're in particlerendermode 0 only particlesizemax applies
+    * Added particlesizemin ( Keys: - = ) and particlesizemax ( Keys: [ ] )commands to change the size of your particles.
+          o When you're in particlerendermode 0 only particlesizemin applies
           o You can automatically use the maximum size possible by your card in particlerendermode 1 by setting particlesizemax to -1 (this is default)
           o particlesizemin is cool! Make it big and zoom in! 
     * Fixed Displaying Oct Tree toggle (T key)
           o Will highlight leafs nodes in bright blue 
     * Added screenshot and screenshotloop commands, they are also bound to F9 and F10. They create (many) BMP files.
           o This will make a screenshots directory for you, but I haven't tried the Linux version. 
+    * Added a new colour mode: Acceleration!
+    * Colour modes can be changed with the / key.
     * Console can now be escaped by pressing escape, backtick (`) and hitting enter on an empty command
     * Console cursor blinking is now based on time instead of frames
     * Console input box is a little more obvious when active
@@ -29,4 +32,3 @@ Gravit ChangeLog
 0.1 2005/04/04
 
     * Initial Release 
-

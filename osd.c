@@ -128,7 +128,7 @@ void drawOSD() {
 		DUH("F7", "pause");
 		DUH("F8", "spawn particles");
 		DUH("F9", "take one screenshot");
-		DUH("F10", "screenshot every frame (toggle)");
+		DUH("F10", "take a screenshot every frame (CAREFUL!)");
 
 		WHITEHEADINGNL("View Controls");
 
@@ -152,11 +152,12 @@ void drawOSD() {
 		
 		DUHC();
 		DUH("/", "colour mode (mass/vel/acc)");
+		DUH("L", "blending mode");
 
 		WHITEHEADINGNL("Particles");
 		
 		DUHC();
-		DUH("\\", "particle render mode (point/texture)");
+		DUH("\\", "particle render mode (circle/texture)");
 		DUH("= -", "min particle size");
 		DUH("[ ]", "max particle size");
 

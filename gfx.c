@@ -191,15 +191,23 @@ void drawFrame() {
 
 	view.verticies = 0;
 
+	switch(view.blendMode) {
+
+	case 0: glDisable(GL_BLEND); break;
+	case 1: glEnable(GL_BLEND); glBlendFunc( GL_SRC_ALPHA, GL_ONE ); break;
+	case 2: glEnable(GL_BLEND); glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ); break;
+	case 3: glEnable(GL_BLEND); glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE ); break;
+	case 4: glEnable(GL_BLEND); glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA ); break;
+
+	}
+
 	if (view.particleRenderMode == 0) {
 
 		float pointRange[2];
 	
-		glEnable(GL_BLEND);
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		glEnable(GL_POINT_SMOOTH);
 
 		glGetFloatv(GL_POINT_SIZE_RANGE, pointRange);
 
@@ -215,14 +223,11 @@ void drawFrame() {
 
 		glPointSize(view.particleSizeMin);
 
-		glEnable(GL_POINT_SMOOTH);
-
 	}
 	
 	if (view.particleRenderMode == 1) {
 	
 		float quadratic[] =  { 0.0f, 0.0f, 0.01f };
-		float maxSize = 0.0f;
 		
 		if (!GL_ARB_point_parameters || !GL_ARB_point_sprite) {
 
@@ -236,27 +241,18 @@ void drawFrame() {
 
 		glBindTexture(GL_TEXTURE_2D, particleTextureID);
 
-		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-
 		glDisable(GL_POINT_SMOOTH);
 
-//		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-
-//		glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE );
-//		glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA );
-
 		glPointParameterfvARB( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
-		glGetFloatv( GL_POINT_SIZE_MAX_ARB, &maxSize );
+
+		glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
+		glPointParameterfARB( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
 
 		glPointSize( view.particleSizeMax );
-		glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
-
-		glPointParameterfARB( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
 		
-		glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+		glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );	// lets you put textures on the sprite
+
 		glEnable( GL_POINT_SPRITE_ARB );
 
 	}
@@ -457,9 +453,8 @@ void drawAll() {
 
 }
 
-void drawWireCube() {
+void drawCube() {
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBegin(GL_QUADS);
 
 	glVertex3i(1,1,1); 
@@ -493,7 +488,12 @@ void drawWireCube() {
 	glVertex3i(1,-1,-1);
 
 	glEnd();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+}
+
+void checkPointParameters() {
+
+	
 
 }
 

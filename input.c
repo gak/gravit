@@ -119,6 +119,13 @@ int processKeys() {
 				conAdd(1, "Colour mode set to: %s" , colourModes[view.particleColourMode]);
 				break;
 
+			case SDLK_l:
+				view.blendMode ++;
+				if (view.blendMode == 5)
+					view.blendMode = 1;
+				conAdd(1, "Blend mode set to: %i", view.blendMode);
+				break;
+
 			case SDLK_BACKSLASH:
 				view.particleRenderMode++;
 				if (view.particleRenderMode == 2)

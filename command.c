@@ -46,10 +46,10 @@ static cmd_t cmd[] = {
 	,{ "spawn",			cmdSpawn,			NULL,	NULL }
 	,{ "status",		cmdStatus,			NULL,	NULL }
 
+	,{ "blendmode",		NULL,				NULL,	&view.blendMode }
+
 	,{ "screenshot",		cmdScreenshot,		NULL,	NULL }
 	,{ "screenshotloop",	NULL,			NULL,	&view.screenshotLoop}
-
-	//,{ "saveframe",		cmdSaveFrame,		NULL,	NULL }
 
 	,{ "loadframedump",	cmdLoadFrameDump,	NULL,	NULL }
 	,{ "saveframedump",	cmdSaveFrameDump,	NULL,	NULL }
@@ -73,8 +73,6 @@ static cmd_t cmd[] = {
 	,{ "particlecolourmode",	NULL,				NULL, &view.particleColourMode }
 	,{ "particlesizemin",			NULL,			&view.particleSizeMin, NULL }
 	,{ "particlesizemax",			NULL,			&view.particleSizeMax, NULL }
-
-//	,{ "particleblendpreset",	cmdParticleBlendPreset,		NULL, NULL }
 
 	,{ "spawngalcountmin",		NULL,				NULL, &spawnVars.minGalCount }
 	,{ "spawngalcountmax",		NULL,				NULL, &spawnVars.maxGalCount }
