@@ -86,7 +86,7 @@ int processKeys() {
 				state.currentFrame = 0;
 				break;
 
-			case '`':
+			case SDLK_BACKQUOTE:
 				view.consoleMode = (!view.consoleMode)?1:0;
 				break;
 

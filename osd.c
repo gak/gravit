@@ -109,7 +109,7 @@ void drawOSD() {
 
 		glColor4f(1,1,1,1);
 		y += fontHeight;
-		y = drawFontWord(x, y, "View");
+		y = drawFontWord(x, y, "View Controls");
 
 		glColor4f(1,1,1,0.5f);
 		DUH("mouse x y", "rotate");
@@ -128,9 +128,10 @@ void drawOSD() {
 
 		glColor4f(1,1,1,1);
 		y += fontHeight;
-		y = drawFontWord(x, y, "Console");
+		y = drawFontWord(x, y, "Other");
 
 		glColor4f(1,1,1,0.5f);
+		DUH("t", "display last oct tree");
 		DUH("` (above TAB)", "use the console");
 
 	}

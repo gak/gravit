@@ -26,7 +26,8 @@ int cpos = 0;
 
 char conCommand[CONSOLE_LENGTH+1];
 int conCommandPos;
-float conBlink;
+unsigned int conBlinkTime;
+boolean conBlinkOn;
 
 static col_t cols[] = {
 
@@ -71,6 +72,8 @@ void conDraw() {
 
 	float x,y,w;
 
+	unsigned int currentTime;
+
 	p = cpos;
 
 	x = 10;
@@ -79,9 +82,17 @@ void conDraw() {
 
 		// draw cursor
 		y = conf.screenH - 10 - fontHeight;
-		conBlink++;
 
-		if (conBlink < CONSOLE_BLINK_TIME/2) {
+		currentTime = SDL_GetTicks();
+
+		if (conBlinkTime + CONSOLE_BLINK_TIME < currentTime) {
+
+			conBlinkOn = !conBlinkOn;
+			conBlinkTime = currentTime;
+
+		}
+
+		if (conBlinkOn) {
 
 			w = getWordWidth(conCommand);
 			glDisable(GL_BLEND);
@@ -95,8 +106,7 @@ void conDraw() {
 
 			glEnd();
 
-		} else if (conBlink > CONSOLE_BLINK_TIME)
-			conBlink = 0;
+		}
 
 		// draw current command
 		glColor4f(1,1,1,1);
@@ -129,7 +139,8 @@ void conInit() {
 	memset(con, 0, sizeof(con));
 	memset(conCommand, 0, sizeof(conCommand));
 	conCommandPos = 0;
-	conBlink = 0;
+	conBlinkTime = SDL_GetTicks();
+	conBlinkOn = 1;
 
 }
 
@@ -147,6 +158,7 @@ void conInput(char c) {
 			conCommand[conCommandPos] = 0;
 
 		}
+		return;
 
 	}
 
@@ -158,6 +170,7 @@ void conInput(char c) {
 			conCommand[conCommandPos] = 0;
 
 		}
+		return;
 
 	}
 
@@ -165,15 +178,26 @@ void conInput(char c) {
 
 		printf("\n\r");
 
-        if (conCommandPos == 0)
+        if (conCommandPos == 0) {
+			view.consoleMode = 0;
 			return;		
+        }
 
 		cmdExecute(conCommand);
 
 		conCommand[0] = 0;
 		conCommandPos = 0;
+		view.consoleMode = 0;
+		return;
+
+	}
+
+	if (c == SDLK_BACKQUOTE || c == SDLK_ESCAPE) {
 
 		view.consoleMode = 0;
+		conCommandPos = 0;
+		conCommand[0] = 0;
+		return;
 
 	}
 

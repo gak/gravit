@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.2.0ALPHA"
+#define GRAVIT_VERSION "Gravit 0.2.0-devel"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
@@ -126,7 +126,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define CONSOLE_HISTORY 10
 #define CONSOLE_LENGTH 255
-#define CONSOLE_BLINK_TIME 100
+#define CONSOLE_BLINK_TIME 500
 
 #define TM_STANDARD 0
 #define TM_HELP 1
