@@ -40,8 +40,8 @@ void drawOSD() {
 	glColor4f(1,1,1,0.5f);
 
 	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
-	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 3.0f, GRAVITON_VERSION);
-	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 2.0f, GRAVITON_COPYRIGHT);
+	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 3.0f, GRAVIT_VERSION);
+	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 2.0f, GRAVIT_COPYRIGHT);
 
 	y = 10;
 	x = 10;
