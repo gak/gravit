@@ -14,7 +14,7 @@ void spawnDefaults() {
 	spawnVars.maxGalSize = 500;
 
 	spawnVars.minGalVel = 0;
-	spawnVars.maxGalVel = 0;
+	spawnVars.maxGalVel = 500;
 
 	spawnVars.minSpawnRange = 0;
 	spawnVars.maxSpawnRange = 10000;

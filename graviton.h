@@ -325,6 +325,16 @@ typedef struct pttr_s {
 
 } pttr_t;
 
+typedef struct pib_s {
+
+	float *min;
+	float *max;
+	particle_t **gp;
+	float *m;
+	float *cm;
+
+} pib_t;
+
 // main.c
 #ifdef WIN32
 

@@ -84,7 +84,7 @@ void viewInit() {
 void stateInit() {
 
 	state.processFrameThreads = 1;
-	state.particlesToSpawn = 500;
+	state.particlesToSpawn = 2000;
 
 }
 

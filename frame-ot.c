@@ -85,6 +85,7 @@ void otGetBoundingBox(float *otMin, float *otMax) {
 int otGetParticleInBox(__m128 *min, __m128 *max, particle_t **gp, float *m, __m128 *cm) {
 #else
 int otGetParticleInBox(float *min, float *max, particle_t **gp, float *m, float *cm) {
+//int otGetParticleInBox(pib_t *info) {	// todo?
 #endif
 
 	int c = 0;
