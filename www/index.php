@@ -117,10 +117,20 @@ showFiles("0.1");
 
 <h2>Some Features To Do</h2>
 <li>Fix gimbal lock with 3d rotation</li>
+<li>Better camera controls</li>
 <li>Console tab-completition</li>
-<li>Scriptable spawn locations</li>
 <li>Complete Save/Load functionality</li>
 <li>Be more user friendly!</li>
+<li>Create a GUI</li>
+<li>Update display/input while rendering</li>
+<li>Screenshot to jpg</li>
+<li>Scriptable spawn locations</li>
+<li>Usage with <a href="http://bima.astro.umd.edu/nemo/">NEMO</a></li>
+<li>Create Videos</li>
+<li>Tutorial Demonstration</li>
+<li>Command line parameters</li>
+<li>Multi-threading</li>
+<li>Screensaver</li>
 </body>
 
 </html>
