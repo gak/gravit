@@ -26,22 +26,20 @@ int loadTexture() {
 		SDL_FreeSurface(tmp2);
 	}
 
-	#define CE if ( glGetError() ) return 0;
-
 	glGenTextures(1, &texID);
-	CE
+	glCheck();
 
 	glBindTexture(GL_TEXTURE_2D, texID);
-	CE
+	glCheck();
 
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, 16, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp2->pixels);
-	CE
+	glCheck();
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	CE
+	glCheck();
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	CE
+	glCheck();
 
 	SDL_FreeSurface(tmp);
 	SDL_FreeSurface(tmp2);

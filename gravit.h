@@ -67,9 +67,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	// this removes the header requirement for glext.h in gl.h
 	#define GL_GLEXT_LEGACY
 
+	#include <GL/glew.h>
+
 	#include <SDL.h>
 	#include <SDL_ttf.h>
 	#include <SDL_opengl.h>
+	#include <SDL_image.h>
+
+	#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(1, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
 
 #else
 
@@ -84,6 +89,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdio.h>
 #include <stdarg.h>
 #include <ctype.h>
+
+#define FILE_CHUNK_SIZE 1024
 
 #define dlog(x,y) conAdd(2,y)
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
@@ -262,17 +269,18 @@ typedef struct view_s {
 	float fps;
 	int verticies;
 
-	int particleSize;
-
 #define CM_MASS 1
 #define CM_VEL 2
-
-	int particleColorMode;
 
 	int verboseMode;
 
 	int screenshotIndex;	// the next available screenshot file (eg screenshot/gravit00001.bmp)
 	int screenshotLoop;	// will do a screenshot every frame
+
+	int particleColourMode;	// 0 for colour based on mass, 1 for colour based on velocity
+	int particleRenderMode;	// 0 for standard GL_POINT, 1 for GL_ARB_point_sprite
+	float particleSizeMin;	// can be anything 0 or higher
+	float particleSizeMax;	// -1 for the maximum supported. if its bigger then supported, it will simply use the supported value.
 
 } view_t;
 
@@ -392,8 +400,8 @@ void drawFrameSet3D();
 int gfxInit();
 
 // color.c
-void setColors();
-void setColorsByMass();
+void setColours();
+void setColoursByMass();
 
 #else
 

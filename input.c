@@ -199,8 +199,6 @@ int processKeys() {
 
 	if (!view.consoleMode) {
 
-
-
 		if (view.keys[SDLK_a])
 			view.zoom /= (1 + (view.dt * 0.01f));
 

@@ -67,9 +67,14 @@ static cmd_t cmd[] = {
 	,{ "drawaxis",		NULL,				NULL, &view.drawAxis }
 	,{ "drawtree",		NULL,				NULL, &view.drawTree }
 
-	,{ "particlecolormode",		NULL,				NULL, &view.particleColorMode }
-//	,{ "particlesize",			NULL,				NULL, &view.particleSize }
 	,{ "particlecount",			NULL,				NULL, &state.particlesToSpawn }
+
+	,{ "particlerendermode",	NULL,				NULL, &view.particleRenderMode }
+	,{ "particlecolourmode",	NULL,				NULL, &view.particleColourMode }
+	,{ "particlesizemin",			NULL,			&view.particleSizeMin, NULL }
+	,{ "particlesizemax",			NULL,			&view.particleSizeMax, NULL }
+
+//	,{ "particleblendpreset",	cmdParticleBlendPreset,		NULL, NULL }
 
 	,{ "spawngalcountmin",		NULL,				NULL, &spawnVars.minGalCount }
 	,{ "spawngalcountmax",		NULL,				NULL, &spawnVars.maxGalCount }
@@ -255,7 +260,7 @@ void cmdSpawn(char *arg) {
 	pickPositions();
 
 #ifndef NO_GUI
-	setColors();
+	setColours();
 #endif
 
 }
@@ -586,7 +591,6 @@ void cmdScreenshot(char *arg) {
 		}
 	}
 #else
-
 	{
 
 		DIR *d;

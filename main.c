@@ -88,8 +88,11 @@ void viewInit() {
 	view.drawTree = 0;
 	view.frameSkip = 0;
 
-	view.particleSize = 2;
-	view.particleColorMode = CM_MASS;
+	view.particleColourMode = CM_MASS;
+	view.particleRenderMode = 1;
+
+	view.particleSizeMin = 10;
+	view.particleSizeMax = -1;
 
 	view.verboseMode = 0;
 
@@ -117,6 +120,7 @@ int init() {
 
 	srand(time(0));
 	
+	conInit();
 	loadDefaults();
 	viewInit();
 	spawnDefaults();
@@ -130,8 +134,6 @@ int init() {
 		return 1;
 
 #endif
-
-	conInit();
 
 	if (state.historyFrames % 2)
 		state.historyFrames--;

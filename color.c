@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-void setColorsByVel() {
+void setColoursByVel() {
 
 	int i;
 	particle_t *p;
@@ -70,7 +70,7 @@ void setColorsByVel() {
 
 }
 
-void setColorsByMass() {
+void setColoursByMass() {
 
 	int i;
 	particle_t *p;
@@ -121,12 +121,12 @@ void setColorsByMass() {
 
 }
 
-void setColors() {
+void setColours() {
 
-	switch (view.particleColorMode) {
+	switch (view.particleColourMode) {
 
-		case 1: setColorsByMass(); break;
-		default: setColorsByVel(); break;
+		case 1: setColoursByMass(); break;
+		default: setColoursByVel(); break;
 
 	}
 

@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
+GLuint particleTextureID;
+
 void drawFrameSet2D() {
 
 	glMatrixMode(GL_PROJECTION);
@@ -48,21 +50,46 @@ void drawFrameSet3D() {
 
 }
 
+void loadParticleTexture() {
+
+	SDL_Surface *particleSurface;
+	particleSurface = IMG_Load("particle.png");
+
+	glGenTextures(1, &particleTextureID);
+	glCheck();
+
+	glBindTexture(GL_TEXTURE_2D, particleTextureID);
+	glCheck();
+
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 4, particleSurface->w, particleSurface->h, GL_RGBA, GL_UNSIGNED_BYTE, particleSurface->pixels);
+	glCheck();
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+	glCheck();
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glCheck();
+
+	SDL_FreeSurface(particleSurface);
+
+}
+
 int gfxInit() {
 
 	int flags;
+	GLenum err;
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
-            dlog(le, "SDL Init failed");
-            return 0;
+        dlog(le, "SDL Init failed");
+        return 0;
 
     }
 
     if (TTF_Init()) {
 
-            dlog(le, "SDL_ttf Init failed");
-            return 0;
+        dlog(le, "SDL_ttf Init failed");
+        return 0;
 
     }
 
@@ -97,6 +124,11 @@ int gfxInit() {
 
 	}
 
+	err = glewInit();
+	if (GLEW_OK != err) {
+		dlog(le, va("Error: %s\n", glewGetErrorString(err)));
+	}
+
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
@@ -106,8 +138,7 @@ int gfxInit() {
 	if (!loadFonts())
 		return 0;
 
-	//if (!loadTexture())
-	//	return 0;
+	loadParticleTexture();
 
 	SDL_WM_SetCaption("Gravit", "");
 
@@ -134,7 +165,7 @@ void drawFrame() {
 	if (!state.particleHistory)
 		return;
 
-	setColors();
+	setColours();
 
 	drawFrameSet3D();
 
@@ -158,14 +189,61 @@ void drawFrame() {
 	glMultMatrixf(view.mat1);
 	glMultMatrixf(view.mat2);
 
-	glEnable(GL_BLEND);
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-	glDepthMask(GL_TRUE);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
 
 	view.verticies = 0;
+
+	if (view.particleRenderMode == 0) {
+	
+		glEnable(GL_BLEND);
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glPointSize(view.particleSizeMax);
+	
+	}
+	
+	if (view.particleRenderMode == 1) {
+	
+		float quadratic[] =  { 0.0f, 0.0f, 0.01f };
+		float maxSize = 0.0f;
+		
+		if (!GL_ARB_point_parameters || !GL_ARB_point_sprite) {
+
+			conAdd(1, "Sorry, Your video card does not support GL_ARB_point_parameters and/or GL_ARB_point_sprite.");
+			conAdd(1, "This means you can't have really pretty looking particles.");
+			conAdd(1, "Setting particleRenderMode to 0");
+			view.particleRenderMode = 0;
+			return;
+
+		}
+
+		glBindTexture(GL_TEXTURE_2D, particleTextureID);
+
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+
+//		glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE );
+//		glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA );
+
+		glPointParameterfvARB( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
+		glGetFloatv( GL_POINT_SIZE_MAX_ARB, &maxSize );
+		glPointSize( maxSize );
+		if (view.particleSizeMax < view.particleSizeMin || view.particleSizeMax > maxSize)
+			glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, maxSize );
+		else {
+			glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
+		}
+		glPointParameterfARB( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
+		glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+		glEnable( GL_POINT_SPRITE_ARB );
+
+	}
 
 	glBegin(GL_POINTS);
 	sc[3] = 1;
@@ -183,6 +261,13 @@ void drawFrame() {
 
 	}
 	glEnd();
+
+	if (view.particleRenderMode == 1 && GL_ARB_point_parameters && GL_ARB_point_sprite) {
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable( GL_POINT_SPRITE_ARB );
+
+	}
 
 	if (view.tailLength > 0 || view.tailLength == -1) {
 

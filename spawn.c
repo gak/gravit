@@ -193,6 +193,7 @@ void pickPositions() {
 
 		p->pos[0] = cos(angle) * radius;
 		p->pos[1] = sin(angle) * radius;
+		p->pos[2] = sin(angle) * frand(0, 5) + cos(angle) * frand(0, 5);
 
 		VectorAdd(galPos[g], p->pos, p->pos);
 

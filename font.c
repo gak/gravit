@@ -99,22 +99,20 @@ int loadFonts() {
 
 		}
 
-	#define CE if ( glGetError() ) return 0;
-
 		glGenTextures(1, &fonts[i].id);
-		CE
+		glCheck();
 
 		glBindTexture(GL_TEXTURE_2D, fonts[i].id);
-		CE
+		glCheck();
 
 		glTexImage2D(GL_TEXTURE_2D, 0, 3, fonts[i].w, fonts[i].h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
-		CE
+		glCheck();
 
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		CE
+		glCheck();
 
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		CE
+		glCheck();
 
 		SDL_FreeSurface(tmp);
 		SDL_FreeSurface(fontSurface);
