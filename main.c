@@ -18,7 +18,7 @@ along with Gravit; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
-
+ 
 #include "gravit.h"
 
 #ifndef NO_GUI
@@ -27,8 +27,6 @@ conf_t conf;
 
 state_t state;
 view_t view;
-
-PAVIFILE aviFile;
 
 void loadDefaults() {
 

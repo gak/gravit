@@ -27,7 +27,7 @@ int cpos = 0;
 char conCommand[CONSOLE_LENGTH+1];
 int conCommandPos;
 unsigned int conBlinkTime;
-boolean conBlinkOn;
+int conBlinkOn;
 
 static col_t cols[] = {
 

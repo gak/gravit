@@ -586,8 +586,17 @@ void cmdScreenshot(char *arg) {
 		}
 	}
 #else
-	if (!opendir(SCREENSHOT_PATH)) {
-		mkdir(SCREENSHOT_PATH, 0755);
+
+	{
+
+		DIR *d;
+		d = opendir(SCREENSHOT_PATH);
+		if (!d) {
+			mkdir(SCREENSHOT_PATH, 0755);
+		} else {
+			closedir(d);
+		}
+
 	}
 #endif
 

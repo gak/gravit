@@ -1,7 +1,7 @@
 FINAL = gravit
 OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o
 
-CFLAGS = -g -O4 -Wall `sdl-config --cflags`
+CFLAGS = -O4 -Wall `sdl-config --cflags`
 LDFLAGS = -lGL -lGLU -lSDL_ttf `sdl-config --libs`
 
 DISTDIR = gravit-0.2-devel

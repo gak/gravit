@@ -92,7 +92,7 @@ int processKeys() {
 					conAdd(1, "Stopped taking many screenshots! Check your screenshots directory.");
 				} else {
 					view.screenshotLoop = 1;
-					conAdd(1, "Taking a screenshot every frame. Careful how long you run this!");
+ 					conAdd(1, "Taking a screenshot every frame. Careful how long you run this!");
 				}
 				
 				break;
