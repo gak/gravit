@@ -50,7 +50,7 @@ int processKeys() {
 					view.consoleMode = 0;
 					break;
 
-				} else 	if (view.textMode == TM_HELP) {
+				} else if (view.textMode == TM_HELP1 || view.textMode == TM_HELP2) {
 					view.textMode = TM_STANDARD;
 					break;
 				}
@@ -60,10 +60,17 @@ int processKeys() {
 				break;
 
 			case SDLK_F1:
-				if (view.textMode == TM_HELP)
+				if (view.textMode == TM_HELP1)
 					view.textMode = TM_STANDARD;
 				else
-					view.textMode = TM_HELP;
+					view.textMode = TM_HELP1;
+				break;
+
+			case SDLK_F2:
+				if (view.textMode == TM_HELP2)
+					view.textMode = TM_STANDARD;
+				else
+					view.textMode = TM_HELP2;
 				break;
 
 			case SDLK_F5:
@@ -101,95 +108,134 @@ int processKeys() {
 				view.consoleMode = (!view.consoleMode)?1:0;
 				break;
 
-			case 't':
+			case SDLK_t:
 				view.drawTree = (!view.drawTree)?1:0;
+				conAdd(1, "drawTree set to %i", view.drawTree);
+				break;
+
+			case SDLK_SLASH:
+				view.particleColourMode ++;
+				if (view.particleColourMode == CM_LAST)
+					view.particleColourMode = 0;
+				conAdd(1, "Colour mode set to: %s" , colourModes[view.particleColourMode]);
+				break;
+
+			case SDLK_BACKSLASH:
+				view.particleRenderMode++;
+				if (view.particleRenderMode == 2)
+					view.particleRenderMode = 0;
+				conAdd(1, "particleRenderMode set to %i" , view.particleRenderMode);
+				break;
+
+			case SDLK_MINUS:
+				view.particleSizeMin /= 2;
+				if (view.particleSizeMin < 1)
+					view.particleSizeMin = 1;
+				conAdd(0, "particlesizemin set to %.1f ", view.particleSizeMin);
+				break;
+
+			case SDLK_EQUALS:
+				if (view.particleSizeMin < 1)
+					view.particleSizeMin = 1;
+				else
+					view.particleSizeMin *= 2;
+				conAdd(0, "particlesizemin set to %.1f ", view.particleSizeMin);
+				if (view.particleSizeMin > view.particleSizeMax)
+					conAdd(1, "Careful! particlesizemin is bigger then particlesizemax!");
+				break;
+
+			case SDLK_LEFTBRACKET:
+				view.particleSizeMax /= 2;
+				if (view.particleSizeMax < 1)
+					view.particleSizeMax = 1;
+				conAdd(0, "particlesizemax set to %.1f ", view.particleSizeMax);
+				if (view.particleSizeMin > view.particleSizeMax)
+					conAdd(1, "Careful! particlesizemin is bigger then particlesizemax!");
+				break;
+
+			case SDLK_RIGHTBRACKET:
+				if (view.particleSizeMax < 1)
+					view.particleSizeMax = 1;
+				else
+					view.particleSizeMax *= 2;
+				conAdd(0, "particlesizemax set to %.1f ", view.particleSizeMax);
+				break;
+
+			case SDLK_m:
+				view.tailLength = -1;
+				conAdd(0, "tailLength set to infinite!");
+				break;
+
+			case SDLK_n:
+
+				if (view.tailLength <= 0)
+					view.tailLength = 1;
+				else
+					view.tailLength *= 2;
+				conAdd(0, "tailLength set to %i", view.tailLength);
+				break;
+
+			case SDLK_b:
+
+				if (view.tailLength < 0)
+					view.tailLength = 0;
+
+				if (view.tailLength == 1)
+					view.tailLength = 0;
+				else
+					view.tailLength /= 2;
+
+				conAdd(0, "tailLength set to %i", view.tailLength);
+				break;
+
+			case SDLK_v:
+				view.tailOpacity += 0.1f;
+				if (view.tailOpacity > 1)
+					view.tailOpacity = 1;
+				conAdd(0, "tailOpacity set to %.1f", view.tailOpacity);
+				break;
+
+			case SDLK_c:
+				view.tailOpacity -= 0.1f;
+				if (view.tailOpacity < 0)
+					view.tailOpacity = 0;
+				conAdd(0, "tailOpacity set to %.1f", view.tailOpacity);
+				break;
+
+			case SDLK_x:
+				view.tailFaded = (!view.tailFaded)?1:0;
+				conAdd(0, "tailFaded set to %i", view.tailFaded);
+				break;
+
+			case SDLK_COMMA:
+				view.tailSkip /= 2;
+				if (view.tailSkip < 1)
+					view.tailSkip = 1;
+				conAdd(0, "tailSkip set to %i", view.tailSkip);
+				break;
+
+			case SDLK_PERIOD:
+				view.tailSkip *= 2;
+				conAdd(0, "tailSkip set to %i", view.tailSkip);
+				break;
+
+			case '\'':
+				view.tailWidth += 1;
+				if (view.tailWidth > 10)
+					view.tailWidth = 10;
+				conAdd(0, "tailWidth set to %.0f", view.tailWidth);
+				break;
+
+			case ';':
+				view.tailWidth -= 1;
+				if (view.tailWidth < 1)
+					view.tailWidth = 1;
+				conAdd(0, "tailWidth set to %.0f", view.tailWidth);
 				break;
 
 			default:
+
 				break;
-
-			}
-
-			if (!view.consoleMode) {
-
-				switch(event.key.keysym.sym) {
-
-				case SDLK_m:
-					view.tailLength = -1;
-					conAdd(0, "tailLength set to infinite!");
-					break;
-
-				case SDLK_n:
-
-					if (view.tailLength <= 0)
-						view.tailLength = 1;
-					else
-						view.tailLength *= 2;
-					conAdd(0, "tailLength set to %i", view.tailLength);
-					break;
-
-				case SDLK_b:
-
-					if (view.tailLength < 0)
-						view.tailLength = 0;
-
-					if (view.tailLength == 1)
-						view.tailLength = 0;
-					else
-						view.tailLength /= 2;
-
-					conAdd(0, "tailLength set to %i", view.tailLength);
-					break;
-
-				case SDLK_v:
-					view.tailOpacity += 0.1f;
-					if (view.tailOpacity > 1)
-						view.tailOpacity = 1;
-					conAdd(0, "tailOpacity set to %.1f", view.tailOpacity);
-					break;
-
-				case SDLK_c:
-					view.tailOpacity -= 0.1f;
-					if (view.tailOpacity < 0)
-						view.tailOpacity = 0;
-					conAdd(0, "tailOpacity set to %.1f", view.tailOpacity);
-					break;
-
-				case SDLK_x:
-					view.tailFaded = (!view.tailFaded)?1:0;
-					break;
-
-				case ',':
-					view.tailSkip /= 2;
-					if (view.tailSkip < 1)
-						view.tailSkip = 1;
-					conAdd(0, "tailSkip set to %i", view.tailSkip);
-					break;
-
-				case '.':
-					view.tailSkip *= 2;
-					conAdd(0, "tailSkip set to %i", view.tailSkip);
-					break;
-
-				case '\'':
-					view.tailWidth += 1;
-					if (view.tailWidth > 10)
-						view.tailWidth = 10;
-					conAdd(0, "tailWidth set to %.0f", view.tailWidth);
-					break;
-
-				case ';':
-					view.tailWidth -= 1;
-					if (view.tailWidth < 1)
-						view.tailWidth = 1;
-					conAdd(0, "tailWidth set to %.0f", view.tailWidth);
-					break;
-
-				default:
-
-					break;
-
-				}
 
 			}
 

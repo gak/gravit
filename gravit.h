@@ -105,6 +105,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define SCREENSHOT_PATH "screenshots"
 
+#define CM_MASS 0
+#define CM_VEL 1
+#define CM_ACC 2
+#define CM_LAST 3
+
 #define METHOD_PP 0
 #define METHOD_OT 1
 
@@ -139,7 +144,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define CONSOLE_BLINK_TIME 500
 
 #define TM_STANDARD 0
-#define TM_HELP 1
+#define TM_HELP1 1
+#define TM_HELP2 2
 
 #define SM_PAUSED 1
 #define SM_RECORD 2
@@ -268,9 +274,6 @@ typedef struct view_s {
 
 	float fps;
 	int verticies;
-
-#define CM_MASS 1
-#define CM_VEL 2
 
 	int verboseMode;
 
@@ -447,6 +450,8 @@ void fpsUpdate(float);
 int configRead(char *filename);
 
 void drawWireCube();
+
+extern const char *colourModes[];
 
 #endif
 

@@ -91,8 +91,8 @@ void viewInit() {
 	view.particleColourMode = CM_MASS;
 	view.particleRenderMode = 1;
 
-	view.particleSizeMin = 10;
-	view.particleSizeMax = -1;
+	view.particleSizeMin = 4;
+	view.particleSizeMax = 1024;
 
 	view.verboseMode = 0;
 

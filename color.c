@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
+const char *colourModes[] = { "mass", "velocity", "acceleration" };
+
 void setColoursByVel() {
 
 	int i;
@@ -33,11 +35,11 @@ void setColoursByVel() {
 	VectorNew(zero);
 	VectorZero(zero);
 
+	// works out the highest velocity
 	for (i = 0; i < state.particleCount; i++) {
 
 		p = getParticleCurrentFrame(i);
 
-		pd = getParticleDetail(i);
 		distance(zero, p->vel, velSpeed);
 
 		if (velSpeed < 0)
@@ -56,6 +58,7 @@ void setColoursByVel() {
 
 	}
 
+	// applies velocity based on the highest
 	for (i = 0; i < state.particleCount; i++) {
 
 		p = getParticleFirstFrame(i);
@@ -69,6 +72,61 @@ void setColoursByVel() {
 	}
 
 }
+
+void setColoursByAcceleration() {
+
+	int i;
+	particle_t *p, *plast;
+	particleDetail_t *pd;
+	float d;
+	float accMax = 0;
+	float accCurrent;
+	float velSpeed1;
+	float velSpeed2;
+
+	VectorNew(zero);
+	VectorZero(zero);
+
+	if (state.currentFrame == 0)
+		return;
+
+	for (i = 0; i < state.particleCount; i++) {
+
+		p = getParticleCurrentFrame(i);
+		plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
+		distance(zero, p->vel, velSpeed1);
+		distance(p->vel, plast->vel, velSpeed2);
+		accCurrent = abs(velSpeed2 - velSpeed1);
+
+		if (i == 0) {
+
+			accMax = accCurrent;
+
+		} else {
+
+			if (accCurrent > accMax)
+				accMax = accCurrent;
+
+		}
+
+	}
+
+	for (i = 0; i < state.particleCount; i++) {
+
+		p = getParticleCurrentFrame(i);
+		plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
+		distance(zero, p->vel, velSpeed1);
+		distance(p->vel, plast->vel, velSpeed2);
+		accCurrent = velSpeed2 - velSpeed1;
+		pd = getParticleDetail(i);
+
+		d = accCurrent / accMax;
+		gfxNormalToRGB(pd->col, (float)fabs((double)d));
+
+	}
+
+}
+
 
 void setColoursByMass() {
 
@@ -125,8 +183,15 @@ void setColours() {
 
 	switch (view.particleColourMode) {
 
-		case 1: setColoursByMass(); break;
-		default: setColoursByVel(); break;
+		case CM_MASS:
+		default:
+			setColoursByMass();	break;
+
+		case CM_VEL:
+			setColoursByVel(); break;
+
+		case CM_ACC:
+			setColoursByAcceleration(); break;
 
 	}
 

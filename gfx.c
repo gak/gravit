@@ -189,10 +189,11 @@ void drawFrame() {
 	glMultMatrixf(view.mat1);
 	glMultMatrixf(view.mat2);
 
-
 	view.verticies = 0;
 
 	if (view.particleRenderMode == 0) {
+
+		float pointRange[2];
 	
 		glEnable(GL_BLEND);
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -200,7 +201,20 @@ void drawFrame() {
 		glEnable(GL_DEPTH_TEST);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		glPointSize(view.particleSizeMax);
+		glGetFloatv(GL_POINT_SIZE_RANGE, pointRange);
+
+		if (view.particleSizeMin < pointRange[0]) {
+			view.particleSizeMin = pointRange[0];
+			conAdd(1, "Point Size has reached its minimum of %f", view.particleSizeMin);
+		}
+
+		if (view.particleSizeMin > pointRange[1]) {
+			view.particleSizeMin = pointRange[1];
+			conAdd(1, "Point Size has reached its maximum of %f", view.particleSizeMin);
+		}
+
+		glPointSize(view.particleSizeMin);
+
 		glEnable(GL_POINT_SMOOTH);
 
 	}
@@ -236,13 +250,12 @@ void drawFrame() {
 
 		glPointParameterfvARB( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
 		glGetFloatv( GL_POINT_SIZE_MAX_ARB, &maxSize );
-		glPointSize( maxSize );
-		if (view.particleSizeMax < view.particleSizeMin || view.particleSizeMax > maxSize)
-			glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, maxSize );
-		else {
-			glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
-		}
+
+		glPointSize( view.particleSizeMax );
+		glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
+
 		glPointParameterfARB( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
+		
 		glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
 		glEnable( GL_POINT_SPRITE_ARB );
 

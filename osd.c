@@ -24,6 +24,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef NO_GUI
 
 #define DUH(a,b) drawFontWord(x, y, a); y = drawFontWord(tab, y, b);
+#define DUHC() glColor4f(1,1,1,0.5f);
+#define NEWLINE() y += fontHeight;
+#define HEADING(a) y = drawFontWord(x, y, a); 
+#define WHITEHEADING(a) glColor4f(1,1,1,1); HEADING(a);
+#define WHITEHEADINGNL(a) NEWLINE(); WHITEHEADING(a);
 
 void drawOSD() {
 
@@ -37,8 +42,7 @@ void drawOSD() {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glColor4f(1,1,1,0.5f);
-
+	DUHC();
 	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
 	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 3.0f, GRAVIT_VERSION);
 	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 2.0f, GRAVIT_COPYRIGHT);
@@ -67,7 +71,7 @@ void drawOSD() {
 			y += fontHeight; 
 			y = drawFontWord(x, y, "RECORDING");
 
-			glColor4f(1,1,1,0.5f);
+			DUHC();
 			DUH("time left", va("~%0.1f minutes", (float)fpsCurrentAverageFT * (state.historyFrames - state.frame) / 1000 / 60));
 		
 		}
@@ -99,16 +103,26 @@ void drawOSD() {
 
 	}
 
-	if (view.textMode == TM_HELP) {
+	if (view.textMode >= TM_HELP1) {
+		
+		WHITEHEADING(va("HELP!", view.textMode - TM_HELP1 + 1));
 
-		glColor4f(1,1,1,1);
-		y = drawFontWord(x, y, "SHORTCUT KEYS");
+		NEWLINE();
 
-		glColor4f(1,1,1,1);
-		y += fontHeight;
-		y = drawFontWord(x, y, "Recording/Playback");
+		DUHC();
+		DUH("ESC", "Exit Console/Help/Gravit");
+		DUH("F1", "General Shortcut Keys");
+		DUH("F2", "Visual Effects Keys");
 
-		glColor4f(1,1,1,0.5f);
+	}
+
+	if (view.textMode == TM_HELP1) {
+
+		WHITEHEADINGNL("GENERAL SHORTCUT KEYS");
+
+		WHITEHEADINGNL("Recording/Playback");
+
+		DUHC();
 		DUH("F5", "play");
 		DUH("F6", "record");
 		DUH("F7", "pause");
@@ -116,35 +130,47 @@ void drawOSD() {
 		DUH("F9", "take one screenshot");
 		DUH("F10", "screenshot every frame (toggle)");
 
-		glColor4f(1,1,1,1);
-		y += fontHeight;
-		y = drawFontWord(x, y, "View Controls");
+		WHITEHEADINGNL("View Controls");
 
-		glColor4f(1,1,1,0.5f);
-		DUH("mouse x y", "rotate");
-		DUH("a z", "zoom");
+		DUHC();
+		DUH("mouse X Y", "rotate");
+		DUH("A Z", "zoom");
 
-		glColor4f(1,1,1,1);
-		y += fontHeight;
-		y = drawFontWord(x, y, "Particle Tail");
+		WHITEHEADINGNL("Other");
 
-		glColor4f(1,1,1,0.5f);
-		DUH("x", "fade particle tail");
-		DUH("c v", "particle tail opacity");
-		DUH("b n m", "particle tail length less/more/all");
-		DUH(", (comma) . (period)", "particle tail resolution");
-		DUH("; (semicolon) ' (quote)", "particle tail width");
-
-		glColor4f(1,1,1,1);
-		y += fontHeight;
-		y = drawFontWord(x, y, "Other");
-
-		glColor4f(1,1,1,0.5f);
+		DUHC();
 		DUH("t", "display last oct tree");
 		DUH("` (above TAB)", "use the console");
 
 	}
 
+	if (view.textMode == TM_HELP2) {
+
+		WHITEHEADINGNL("VISUAL EFFECTS KEYS");
+
+		WHITEHEADINGNL("Colours");
+		
+		DUHC();
+		DUH("/", "colour mode (mass/vel/acc)");
+
+		WHITEHEADINGNL("Particles");
+		
+		DUHC();
+		DUH("\\", "particle render mode (point/texture)");
+		DUH("= -", "min particle size");
+		DUH("[ ]", "max particle size");
+
+		WHITEHEADINGNL("Particle Tail");
+
+		DUHC();
+		DUH("X", "tail fade");
+		DUH("C V", "tail opacity");
+		DUH("B N M", "tail length less/more/all");
+		DUH(", (comma) . (period)", "tail resolution");
+		DUH("; (semicolon) ' (quote)", "tail width");
+
+	}
+	
 	conDraw();
 	
 #if 0
