@@ -56,10 +56,8 @@ echo '</table>';
 
 <h2>Demonstration Video</h2>
 
-These videos have a high resolution to decently demonstrate Gravit. They are encoded with XVID.<br><br>
-
-<a href="video/gravit-001.avi">Zoomed in on a galaxy</a> - 26s, 16MB, 720x576<br>
-<a href="video/gravit-002.avi">When galaxies collide</a> - 42s, 13MB, 720x576<br>
+<a href="video/gravit-001.avi">Zoomed in on a galaxy showing off v0.2 effects</a> - 9s, 1.1MB, 800x600<br>
+<a href="video/gravit-002.avi">Many galaxies showing off v0.2 effects</a> - 30s, 3.6MB, 1280x1024<br>
 
 <h2>Features</h2>
 <li>It looks pretty :)</li>
@@ -68,7 +66,7 @@ These videos have a high resolution to decently demonstrate Gravit. They are enc
 <li>Compresses history when needed, for very long recordings</li>
 <li>Mouse controllable rotation</li>
 <li>Console with script execution</li>
-<li>Colours can be based on mass or velocity</li>
+<li>Colours can be based on mass, velocity or acceleration</li>
 
 <h2>Details</h2>
 <li>So far Gravit has been tested on Windows XP and Linux Slackware.</li>
@@ -91,7 +89,10 @@ function showFile($file, $desc) {
 
 function showFiles($ver) {
 
-	showFile("gravit-$ver-win32-sdl.zip", "Gravit $ver for Windows with SDL and SDL_ttf");
+	if ($vel == "0.1")
+		showFile("gravit-$ver-win32-sdl.zip", "Gravit $ver for Windows with SDL and SDL_ttf");
+	else
+		showFile("gravit-$ver-win32-dll.zip", "Gravit $ver for Windows with SDL, SDL_ttf, SDL_image");
 	showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows");
 	showFile("gravit-$ver-src.tgz", "Gravit $ver Source Code");
 	
@@ -103,10 +104,11 @@ function showFileHeading($s) {
 
 }
 
-showFileHeading("Latest Development Release");
-showFiles("0.2-devel");
 
 showFileHeading("Latest Stable Release");
+showFiles("0.2");
+
+showFileHeading("Older Releases");
 showFiles("0.1");
 
 ?>
@@ -116,7 +118,6 @@ showFiles("0.1");
 <li>Console tab-completition</li>
 <li>Scriptable spawn locations</li>
 <li>Complete Save/Load functionality</li>
-<li>Replace GL_POINT with billboarding</li>
 <li>Be more user friendly!</li>
 </body>
 

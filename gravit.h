@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.2.0-devel"
+#define GRAVIT_VERSION "Gravit 0.2.0"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
@@ -95,7 +95,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define FILE_CHUNK_SIZE 1024
 
-#define dlog(x,y) conAdd(2,y)
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
 

@@ -150,8 +150,7 @@ int init() {
 
 #ifndef NO_GUI
 
-	conAdd(0, "Quick Start:");
-	conAdd(0, "Hit F8 a few times then F6 to start recording.");
+	conAdd(0, "Quick Start: Hit F8 a few times then F6 to start recording.");
 	conAdd(0, "Use the mouse to move around. Use A and Z keys to zoom in and out.");
 
 #endif
@@ -242,7 +241,7 @@ int main(int argc, char *argv[]) {
 
 	if (init()) {
 
-		dlog(2, "There has been an error on start-up. Read gravit.cfg to possibly fix this.");
+		conAdd(2, "There has been an error on start-up. Read gravit.cfg to possibly fix this.");
 
 	} else {
 

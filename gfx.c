@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
-#include <dlfcn.h>
 #include "gravit.h"
 
 #ifndef NO_GUI
@@ -83,15 +82,17 @@ int gfxInit() {
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
-        dlog(le, "SDL Init failed");
+        conAdd(2, "SDL Init failed");
+		conAdd(2, SDL_GetError());
         return 0;
 
     }
 
     if (TTF_Init()) {
 
-        dlog(le, "SDL_ttf Init failed");
-        return 0;
+        conAdd(2, "SDL_ttf Init failed");
+		conAdd(2, SDL_GetError());
+		return 0;
 
     }
 
@@ -130,17 +131,16 @@ gfxInitRetry:
 
     if (!SDL_SetVideoMode(conf.screenW, conf.screenH, conf.screenBPP, flags )) {
 
-		dlog(le, "SDL_SetVideoMode failed");
-		dlog(le, SDL_GetError());
+		conAdd(2, "SDL_SetVideoMode failed: %s", SDL_GetError());
 
 		if (conf.screenAA) {
-			dlog(le, "You have videoantialiasing on. I'm turning it off and restarting...");
+			conAdd(2, "You have videoantialiasing on. I'm turning it off and restarting...");
 			conf.screenAA = 0;
 			goto gfxInitRetry;
 		}
 
 		if (detectedBPP != conf.screenBPP) {
-			dlog(le, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
+			conAdd(2, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
 			conf.screenBPP = detectedBPP;
 			goto gfxInitRetry;
 		}
@@ -150,6 +150,13 @@ gfxInitRetry:
 	}
 
 	conAdd(0, "Your video mode is %ix%ix%i", conf.screenW, conf.screenH, conf.gfxInfo->vfmt->BitsPerPixel );
+
+	if (!conf.screenAA && view.particleRenderMode == 1) {
+		conAdd(2, "Warning! You don't have videoantialiasing set to 1. From what I've seen so far");
+		conAdd(2, "this might cause particlerendermode 1 not to work. If you don't see any particles");
+		conAdd(2, "after spawning, hit the \\ (backslash) key).");
+	}
+
 
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_SMOOTH);

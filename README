@@ -11,6 +11,12 @@ Configuration
 
     Once you have installed Gravit (see below) you should configure it to make it work as well as possible on your system. To do this, open up gravit.cfg in your favorite text editor and follow the instructions. By default the configuration is set to use 256MB of RAM, and only run in windowed mode at 800x600x16.
 
+Troubleshooting
+
+    * Most of the problems seem to do with particles not being displayed. Press \ to see if it makes a difference.
+    * If you have any problems check the gravit.cfg file, it has lots of information about possible problems.
+    * Otherwise send me an e-mail describing the problem along with video card, cpu, o/s, etc.. 
+
 Prerequisites
 
     You need the following libraries before attempting to compile or run Gravit.
@@ -25,10 +31,10 @@ Prerequisites
 Installation for Windows
 
    1. Extract the ZIP file as you already have into a directory.
-   2. You may need to download copy SDL.dll, SDL_ttf.dll and SDL_image.dll into the same directory as gravit.exe
+   2. You may need to download copy SDL.dll, SDL_ttf.dll, SDL_image.dll and glew.dll into the same directory as gravit.exe
           * SDL.dll is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
           * SDL_ttf.dll is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
-          * SDL_image.dll is at http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4-win32.zip
+          * SDL_image.dll is at http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4-win32.zip 
    3. Open up gravit.cfg and change it to your liking.
    4. Run gravit.exe from that directory! 
 
@@ -53,4 +59,4 @@ Contributors
     * Martin White (renwald@slowchop.com)
     * James Stewart
     * Sam Lander (sam.lander@gmail.com) 
-    
+

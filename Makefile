@@ -30,9 +30,10 @@ packagesrc:
 	if [ -f $(TMPBASE)/$(DISTDIR)-src.tgz ]; then rm -fr $(TMPBASE)/$(DISTDIR)-src.tgz; fi
 	mkdir $(TMPDIR)
 	cp $(BASEFILES) *.c *.h Makefile gravit.dsp gravit.dsw $(TMPDIR)
-	cd $(TMPDIR); chmod 644 *;
+	cd $(TMPDIR); chmod 644 *
 	cd $(TMPBASE); tar czvf $(DISTDIR)-src.tgz $(DISTDIR)
 	cp $(TMPBASE)/$(DISTDIR)-src.tgz dist/
+	cp $(TMPBASE)/$(DISTDIR)-src.tgz www/dist/
 	rm -fr $(TMPDIR)
 
 packagewin:
@@ -43,6 +44,7 @@ packagewin:
 	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
 	cd $(TMPBASE); zip -r $(DISTDIR)-win32.zip $(DISTDIR)
 	cp $(TMPBASE)/$(DISTDIR)-win32.zip dist/
+	cp $(TMPBASE)/$(DISTDIR)-win32.zip www/dist/
 	rm -fr $(TMPDIR)
 
 packagewindll:
@@ -53,6 +55,7 @@ packagewindll:
 	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
 	cd $(TMPBASE); zip -r $(DISTDIR)-win32-dll.zip $(DISTDIR)
 	cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip dist/
+	cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip www/dist/
 	rm -fr $(TMPDIR)
 
 packageall: packagesrc packagewin packagewindll
