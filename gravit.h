@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.1"
+#define GRAVIT_VERSION "Gravit 0.2.0ALPHA"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
@@ -36,10 +36,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <stdio.h>
 
 	// stupid hack to fix linking errors with isspace
-	#if WIN32
 	#undef isspace
 	#define isspace(x) (x == 32)
-	#endif
 
 	// stop conversion from 'double ' to 'float ', possible loss of data
 	#pragma warning ( disable : 4244 ) 
@@ -433,6 +431,8 @@ void fpsInit();
 void fpsUpdate(float);
 
 int configRead(char *filename);
+
+void drawWireCube();
 
 #endif
 

@@ -338,6 +338,7 @@ void drawAll() {
 
 	drawFrame();
 
+	// draws the oct tree
 	if (view.drawTree)
 		otDrawTree();
 
@@ -349,6 +350,46 @@ void drawAll() {
 	drawOSD();
 
 	SDL_GL_SwapBuffers();
+
+}
+
+void drawWireCube() {
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBegin(GL_QUADS);
+
+	glVertex3i(1,1,1); 
+	glVertex3i(1,-1,1); 
+	glVertex3i(-1,-1,1); 
+	glVertex3i(-1,1,1); 
+
+	glVertex3i(1,1,-1);
+	glVertex3i(1,-1,-1);
+	glVertex3i(-1,-1,-1);
+	glVertex3i(-1,1,-1);
+
+	glVertex3i(1,1,1);
+	glVertex3i(1,-1,1);
+	glVertex3i(1,-1,-1);
+	glVertex3i(1,1,-1);
+
+	glVertex3i(-1,1,1);
+	glVertex3i(-1,-1,1);
+	glVertex3i(-1,-1,-1);
+	glVertex3i(-1,1,-1);
+
+	glVertex3i(-1,1,-1);
+	glVertex3i(-1,1,1);
+	glVertex3i(1,1,1);
+	glVertex3i(1,1,-1);
+
+	glVertex3i(-1,-1,-1); 
+	glVertex3i(-1,-1,1); 
+	glVertex3i(1,-1,1); 
+	glVertex3i(1,-1,-1);
+
+	glEnd();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 }
 
