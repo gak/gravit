@@ -294,6 +294,8 @@ typedef struct view_s {
 	int drawTree;
 	int frameSkip;
 
+	int drawOSD;
+
 	float fps;
 	int verticies;
 

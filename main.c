@@ -88,6 +88,8 @@ void viewInit() {
 	view.drawTree = 0;
 	view.frameSkip = 0;
 
+	view.drawOSD = 1;
+
 	view.blendMode = 1;
 
 	view.particleColourMode = CM_MASS;
@@ -240,7 +242,7 @@ int main(int argc, char *argv[]) {
 
 	if (init()) {
 
-		dlog(2, "There has been an error on start-up. This is probably due to not being able to test on many computers");
+		dlog(2, "There has been an error on start-up. Read gravit.cfg to possibly fix this.");
 
 	} else {
 

@@ -77,6 +77,8 @@ void loadParticleTexture() {
 int gfxInit() {
 
 	int flags;
+	int detectedBPP;
+	SDL_Surface *icon;
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
@@ -92,15 +94,22 @@ int gfxInit() {
 
     }
 
-    SDL_ShowCursor(0);
+	icon = IMG_Load("gravit.png");
+	SDL_WM_SetCaption(GRAVIT_VERSION, GRAVIT_VERSION);
+	SDL_WM_SetIcon(icon, NULL);
+	SDL_FreeSurface(icon);
 
-    dlog(2, "SDL Getting Video Info");
     conf.gfxInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
+	detectedBPP = conf.gfxInfo->vfmt->BitsPerPixel;
+
+gfxInitRetry:
+
+    SDL_ShowCursor(0);
 
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
     SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
     SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, conf.screenBPP );
+    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
 	if (conf.screenAA) {
@@ -115,13 +124,31 @@ int gfxInit() {
 	if (conf.screenFS)
 		flags |= SDL_FULLSCREEN;
 
-    if (!SDL_SetVideoMode(conf.screenW, conf.screenH, conf.gfxInfo->vfmt->BitsPerPixel, flags )) {
+	if (conf.screenBPP == 0)
+		conf.screenBPP = detectedBPP;
+
+    if (!SDL_SetVideoMode(conf.screenW, conf.screenH, conf.screenBPP, flags )) {
 
 		dlog(le, "SDL_SetVideoMode failed");
 		dlog(le, SDL_GetError());
+
+		if (conf.screenAA) {
+			dlog(le, "You have videoantialiasing on. I'm turning it off and restarting...");
+			conf.screenAA = 0;
+			goto gfxInitRetry;
+		}
+
+		if (detectedBPP != conf.screenBPP) {
+			dlog(le, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
+			conf.screenBPP = detectedBPP;
+			goto gfxInitRetry;
+		}
+
 		return 0;
 
 	}
+
+	conAdd(0, "Your video mode is %ix%ix%i", conf.screenW, conf.screenH, conf.gfxInfo->vfmt->BitsPerPixel );
 
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_SMOOTH);
@@ -137,7 +164,6 @@ int gfxInit() {
 	checkPointParameters();
 	checkPointSprite();
 
-	SDL_WM_SetCaption(GRAVIT_VERSION, "gravit.ico");
 
 	memset(view.mat1, 0, sizeof(view.mat1));
 	memset(view.mat2, 0, sizeof(view.mat2));
@@ -454,7 +480,8 @@ void drawAll() {
 
 	// drawRGB();
 
-	drawOSD();
+	if (view.drawOSD)
+		drawOSD();
 
 	if (view.screenshotLoop)
 		cmdScreenshot(NULL);

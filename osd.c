@@ -140,6 +140,7 @@ void drawOSD() {
 
 		DUHC();
 		DUH("T", "display last oct tree");
+		DUH("O", "toggles drawing text");
 		DUH("` (above TAB)", "use the console");
 
 	}

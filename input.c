@@ -243,6 +243,11 @@ int processKeys() {
 				conAdd(0, "tailWidth set to %.0f", view.tailWidth);
 				break;
 
+			case SDLK_o:
+				view.drawOSD = (!view.drawOSD)?1:0;
+				conAdd(0, "drawOSD set to %i", view.drawOSD);
+				break;
+
 			default:
 				break;
 
