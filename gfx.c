@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
+#include <dlfcn.h>
 #include "gravit.h"
 
 #ifndef NO_GUI
@@ -265,10 +266,10 @@ void drawFrame() {
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
-		glPointParameterfvARB( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
+		glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
 
-		glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
-		glPointParameterfARB( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
+		glPointParameterfARB_ptr( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
+		glPointParameterfARB_ptr( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
 
 		glPointSize( view.particleSizeMax );
 		
@@ -528,6 +529,9 @@ void drawCube() {
 
 }
 
+FPglPointParameterfARB glPointParameterfARB_ptr;
+FPglPointParameterfvARB glPointParameterfvARB_ptr;
+
 void checkPointParameters() {
 
 	const char *extList;
@@ -540,10 +544,10 @@ void checkPointParameters() {
 		return;
 	}
 
-	glPointParameterfARB = (FPglPointParameterfARB) SDL_GL_GetProcAddress("glPointParameterfARB");
-	glPointParameterfvARB = (FPglPointParameterfvARB) SDL_GL_GetProcAddress("glPointParameterfvARB");
+	glPointParameterfARB_ptr = (FPglPointParameterfARB) SDL_GL_GetProcAddress("glPointParameterfARB");
+	glPointParameterfvARB_ptr = (FPglPointParameterfvARB) SDL_GL_GetProcAddress("glPointParameterfvARB");
 	
-	if (!glPointParameterfARB || !glPointParameterfvARB)
+	if (!glPointParameterfARB_ptr || !glPointParameterfvARB_ptr)
 		return;
 
 	conf.supportPointParameters = 1;

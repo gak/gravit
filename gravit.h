@@ -168,8 +168,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 typedef void (APIENTRY *FPglPointParameterfARB)(GLenum, GLfloat);
 typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, GLfloat*);
 
-FPglPointParameterfARB glPointParameterfARB;
-FPglPointParameterfvARB glPointParameterfvARB;
+extern FPglPointParameterfARB glPointParameterfARB_ptr;
+extern FPglPointParameterfvARB glPointParameterfvARB_ptr;
 
 // gl defines
 #define GL_POINT_SIZE_MIN_ARB 0x8126
