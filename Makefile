@@ -40,7 +40,7 @@ packagewin:
 packagewinsdl:
 	if [ -d $(DISTDIR) ]; then rm -fr $(DISTDIR); fi
 	mkdir $(DISTDIR)
-	cp $(BASEFILES) Release/gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll glew32.dll $(DISTDIR)
+	cp $(BASEFILES) Release/gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll jpeg.dll libpng13.dll zlib1.dll glew32.dll $(DISTDIR)
 	zip -r dist/$(DISTDIR)-win32-dll.zip $(DISTDIR)
 	rm -fr $(DISTDIR)
 
