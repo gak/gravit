@@ -25,8 +25,8 @@ spawnVars_t spawnVars;
 
 void spawnDefaults() {
 
-	spawnVars.minGalCount = 1;
-	spawnVars.maxGalCount = 5;
+	spawnVars.minGalCount = 2;
+	spawnVars.maxGalCount = 10;
 
 	spawnVars.minGalMass = 0;
 	spawnVars.maxGalMass = 500;
@@ -73,7 +73,7 @@ void pickPositions_() {
 	float angle2;
 
 	angle = 0;
-	
+
 	for (i = 0; i < state.particleCount; i++) {
 
 		p = getParticleFirstFrame(i);
@@ -144,7 +144,7 @@ void pickPositions() {
 		galMassMin[g] = frand(spawnVars.minGalMass, spawnVars.maxGalMass);
 		galMassMax[g] = frand(spawnVars.minGalMass, spawnVars.maxGalMass);
 		galSize[g] = frand(spawnVars.minGalSize, spawnVars.maxGalSize);
-		
+
 		setRangePosition(galPos[g], spawnRange);
 		setRangePosition(galVel[g], frand(0,1) * frand(0,1) * frand(spawnVars.minGalVel, spawnVars.maxGalVel));
 
@@ -156,12 +156,12 @@ void pickPositions() {
 		pd = getParticleDetail(i);
 
 		g = rand() % gals;
-	
+
 		pd->mass = frand(galMassMin[g], galMassMax[g]);
 
 //		if (g % 2 == 0)
 //			pd->mass = -pd->mass;
-		
+
 		totalMass += pd->mass;
 
 		// position
@@ -178,7 +178,7 @@ void pickPositions() {
 
 		p->pos[0] = cos(angle) * radius;
 		p->pos[1] = sin(angle) * radius;
-		
+
 		VectorAdd(galPos[g], p->pos, p->pos);
 
 		angle2 = angle + PI / 2;
