@@ -1,5 +1,9 @@
 nothing:
-	@echo "Doing nothing!"
+	@echo "This makefile doesn't do much! Try using one of the other makefiles instead."
 
 zip:
-	@tar czf graviton.tgz *.c *.h Makefile graviton.dsp graviton.dsw graviton.sln graviton.vcproj
+	@tar czf graviton.tgz *.c *.h Makefile graviton.dsp graviton.dsw 
+
+clean:
+	@rm -fr *.o Debug Release
+	

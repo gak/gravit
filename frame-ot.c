@@ -439,7 +439,7 @@ void otDrawTreeRecursive(node_t *n) {
 	glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
 #endif
 	
-	glutWireCube(1);
+//	glutWireCube(1);
 	//glutWireSphere(1, 8, 8);
 	glPopMatrix();
 

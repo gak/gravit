@@ -84,13 +84,11 @@ void viewInit() {
 void stateInit() {
 
 	state.processFrameThreads = 1;
-	state.particlesToSpawn = 2000;
+	state.particlesToSpawn = 1000;
 
 }
 
-int main(int argc, char *argv[]) {
-
-	Uint32 fs;
+int init() {
 
 	srand(time(0));
 
@@ -118,6 +116,15 @@ int main(int argc, char *argv[]) {
 	state.particleHistory = 0;
 
 	fpsInit();
+
+	return 0;
+
+}
+
+void run() {
+
+	Uint32 fs;
+
 	fs = getMS();
 
 	while (!view.quit) {
@@ -188,6 +195,14 @@ int main(int argc, char *argv[]) {
 
 	}
 
+}
+
+int main(int argc, char *argv[]) {
+
+	init();
+
+	run();
+
 	cleanMemory();
 
 #ifndef NO_GUI
@@ -200,3 +215,42 @@ int main(int argc, char *argv[]) {
 	return 0;
 
 }
+/*
+
+LRESULT WINAPI ScreenSaverProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+	switch ( msg ) {
+
+	case WM_CREATE:
+
+		init();
+		run();
+		break;
+
+	case WM_DESTROY:
+
+		view.quit = 1;
+		break;
+
+
+	}
+
+	return DefScreenSaverProc(hWnd, msg, wParam, lParam );
+
+}
+
+
+BOOL WINAPI ScreenSaverConfigureDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+	return TRUE;
+
+}
+
+
+BOOL WINAPI RegisterDialogClasses(HANDLE hInst)
+{
+  return TRUE;
+}
+
+*/
+ 

@@ -1,5 +1,5 @@
 FINAL = graviton-console
-OBJS = 	main.o frame.o frame-pp.o frame-ot.o spawn.o tool.o command.o console.o input.o
+OBJS = 	main.o frame.o frame-pp.o frame-ot.o spawn.o tool.o command.o console.o input.o fps.o
 
 CFLAGS = -O4 -Wall -msse -DNO_GUI
 LFLAGS = -lm -lpthread

@@ -100,10 +100,38 @@ void processFrameOTthread(int thread) {
 
 }
 
+void processMomentum() {
+
+	double sP[3];
+	double tmp[3];
+	int i;
+	particle_t *p;
+	particleDetail_t *pd;
+
+	// work out simulation momentum
+	VectorZero(tmp);
+	VectorZero(sP);
+	for (i = 0; i < state.particleCount; i++) {
+
+
+		p = state.particleHistory + state.particleCount * state.frame + i;
+		pd = state.particleDetail + i;
+
+		VectorMultiply(p->vel, pd->mass, tmp);
+		VectorAdd(sP, tmp, sP);
+
+	}
+
+	conAdd(0, "Momentum: %.10f, %.10f, %.10f", sP[0], sP[1], sP[2]);
+
+}
+
 void processFrame() {
 
 	int i;
 	particle_t *p;
+
+//	processMomentum();
 
 #ifndef WIN32
 	pthread_t ptt[MAX_THREADS];
@@ -153,7 +181,7 @@ void processFrame() {
 		for (i = 0; i < state.processFrameThreads; i++) {
 			pthread_create(&ptt[i], NULL, (void*)processFrameOTthread, (void*)i);
 		}
-
+		
 		for (i = 0; i < state.processFrameThreads; i++) {
 			pthread_join(ptt[i], NULL);
 		}
@@ -178,6 +206,7 @@ void processFrame() {
 		
 	);
 
+
 	for (i = 0; i < state.particleCount; i++) {
 
 		p = state.particleHistory + state.particleCount * (state.frame+1) + i;
@@ -192,9 +221,13 @@ void processFrame() {
 		p->pos[1] += p->vel[1];
 		p->pos[2] += p->vel[2];
 
+
+
 #endif
 
 	}
+
+
 
 	state.totalFrames ++;
 

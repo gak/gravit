@@ -11,6 +11,8 @@
 	#include <conio.h>
 	#include <stdio.h>
 
+	#include <scrnsave.h>
+
 #else
 
 	#include <stdarg.h>
@@ -65,6 +67,7 @@
 #define getParticleDetail(i) state.particleDetail + i;
 
 #define G -0.00001f
+#define PI 3.14159265358979f
 
 #ifdef GRAV_SSE
 
@@ -329,8 +332,8 @@ typedef struct pib_s {
 
 	float *min;
 	float *max;
-	particle_t **gp;
-	float *m;
+	particle_t *gp;
+	float m;
 	float *cm;
 
 } pib_t;
