@@ -5,19 +5,19 @@ spawnVars_t spawnVars;
 void spawnDefaults() {
 
 	spawnVars.minGalCount = 1;
-	spawnVars.maxGalCount = 1;
+	spawnVars.maxGalCount = 10;
 
-	spawnVars.minGalMass = 500;
+	spawnVars.minGalMass = 50;
 	spawnVars.maxGalMass = 500;
 
-	spawnVars.minGalSize = 5000;
-	spawnVars.maxGalSize = 5000;
+	spawnVars.minGalSize = 500;
+	spawnVars.maxGalSize = 500;
 
-	spawnVars.minGalVel = 200;
-	spawnVars.maxGalVel = 200;
+	spawnVars.minGalVel = 0;
+	spawnVars.maxGalVel = 0;
 
 	spawnVars.minSpawnRange = 0;
-	spawnVars.maxSpawnRange = 0;
+	spawnVars.maxSpawnRange = 10000;
 
 }
 

@@ -475,7 +475,8 @@ void otDrawTree() {
 
 #endif
 
-void otComputeParticleToTreeRecursive(particle_t *p, node_t *n, particleDetail_t *pd) {
+void otComputeParticleToTreeRecursive(pttr_t *info) {
+// particle_t *p, node_t *n, particleDetail_t *pd) {
 
 	int i;
 	node_t *b;
@@ -484,29 +485,29 @@ void otComputeParticleToTreeRecursive(particle_t *p, node_t *n, particleDetail_t
 	float d;
 	float poo;
 
-	if (n->p == p)
+	if (info->n->p == info->p)
 		return;
 
-	if (n->p) {
+	if (info->n->p) {
 
-		p2 = n->p;
+		p2 = info->n->p;
 
-		distance2(p->pos, p2->pos, d);
+		distance2(info->p->pos, p2->pos, d);
 
 // 		frDoGravity(p,n,d); was
 
 		{ // now
 			float dv[3];
 			float force;
-			dv[0] = p->pos[0] - n->cm[0];
-			dv[1] = p->pos[1] - n->cm[1];
-			dv[2] = p->pos[2] - n->cm[2];
+			dv[0] = info->p->pos[0] - info->n->cm[0];
+			dv[1] = info->p->pos[1] - info->n->cm[1];
+			dv[2] = info->p->pos[2] - info->n->cm[2];
 
 			if (d) {
-				force = -0.00001f * pd->mass * n->mass / d;
-				p->vel[0] += dv[0] * force;
-				p->vel[1] += dv[1] * force;
-				p->vel[2] += dv[2] * force;
+				force = -0.00001f * info->pd->mass * info->n->mass / d;
+				info->p->vel[0] += dv[0] * force;
+				info->p->vel[1] += dv[1] * force;
+				info->p->vel[2] += dv[2] * force;
 			}
 		}
 
@@ -517,12 +518,12 @@ void otComputeParticleToTreeRecursive(particle_t *p, node_t *n, particleDetail_t
 
 		for (i = 0; i < 8; i++) {
 
-			if (!n->b[i])
+			if (!info->n->b[i])
 				continue;
 
-			b = (node_t *)n->b[i];
+			b = (node_t *)info->n->b[i];
 
-			distance2(p->pos, b->cm, d);
+			distance2(info->p->pos, b->cm, d);
 
 			if (!d)
 				continue;
@@ -530,7 +531,12 @@ void otComputeParticleToTreeRecursive(particle_t *p, node_t *n, particleDetail_t
 			poo = b->length / (float)sqrt(d);
 
 			if ( poo > 0.5f ) {
-				otComputeParticleToTreeRecursive(p, b, pd);
+				pttr_t info2;
+				info2.n = b;
+				info2.p = info->p;
+				info2.pd = info->pd;
+//				otComputeParticleToTreeRecursive(info->p, b, info->pd);
+				otComputeParticleToTreeRecursive(&info2);
 
 			} else {
 
@@ -539,15 +545,15 @@ void otComputeParticleToTreeRecursive(particle_t *p, node_t *n, particleDetail_t
 				{ // now
 					float dv[3];
 					float force;
-					dv[0] = p->pos[0] - b->cm[0];
-					dv[1] = p->pos[1] - b->cm[1];
-					dv[2] = p->pos[2] - b->cm[2];
+					dv[0] = info->p->pos[0] - b->cm[0];
+					dv[1] = info->p->pos[1] - b->cm[1];
+					dv[2] = info->p->pos[2] - b->cm[2];
 
 					if (d) {
-						force = -0.00001f * pd->mass * b->mass / d;
-						p->vel[0] += dv[0] * force;
-						p->vel[1] += dv[1] * force;
-						p->vel[2] += dv[2] * force;
+						force = -0.00001f * info->pd->mass * b->mass / d;
+						info->p->vel[0] += dv[0] * force;
+						info->p->vel[1] += dv[1] * force;
+						info->p->vel[2] += dv[2] * force;
 					}
 				}
 
@@ -567,6 +573,7 @@ void processFrameOT(int start, int amount) {
 	int i;
 	particle_t *p;
 	particleDetail_t *pd;
+	pttr_t info;
 	
 	otMakeTree();
 
@@ -580,7 +587,12 @@ void processFrameOT(int start, int amount) {
 		if (!p)
 			continue;
 
-		otComputeParticleToTreeRecursive(p, r, pd);
+		info.p = p;
+		info.n = r;
+		info.pd = pd;
+		//otComputeParticleToTreeRecursive(p, r, pd);
+
+		otComputeParticleToTreeRecursive(&info);
 
 	}
 
