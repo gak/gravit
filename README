@@ -21,8 +21,6 @@ Prerequisites
           o http://www.libsdl.org/projects/SDL_ttf/ 
     * SDL_image
           o http://www.libsdl.org/projects/SDL_image/ 
-    * GLEW
-          o http://glew.sourceforge.net/ 
 
 Installation for Windows
 
@@ -31,7 +29,6 @@ Installation for Windows
           * SDL.dll is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
           * SDL_ttf.dll is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
           * SDL_image.dll is at http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4-win32.zip
-          * glew.dll is at http://prdownloads.sourceforge.net/glew/glew-1.3.2-win32.zip?download 
    3. Open up gravit.cfg and change it to your liking.
    4. Run gravit.exe from that directory! 
 
@@ -41,7 +38,6 @@ Installation for Linux
           * tar xzvf gravit-src-0.2.tgz 
    2. You will need:
           * SDL, SDL_ttf and SDL_image installed and working. (Try sdl-config --version)
-          * GLEW
           * OpenGL (accelerated preferably) 
    3. Run make
    4. Open up gravit.cfg and change it to your liking.

@@ -5,7 +5,9 @@ BASEFILES = README COPYING Vera.ttf gravit.cfg demo.cfg ChangeLog particle.png
 CFLAGS = -O4 -Wall `sdl-config --cflags` -Wall
 LDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs`
 
-DISTDIR = gravit-0.2-devel
+DISTDIR = gravit-0.2
+TMPBASE = /tmp
+TMPDIR = $(TMPBASE)/$(DISTDIR)
 
 all: dep final
 
@@ -24,26 +26,33 @@ clean:
 	@gcc -c $(CFLAGS) $(subst ,, $*.c) -o$*.o
 
 packagesrc:
-	if [ -d $(DISTDIR) ]; then rm -fr $(DISTDIR); fi
-	mkdir $(DISTDIR)
-	cp $(BASEFILES) *.c *.h Makefile gravit.dsp gravit.dsw $(DISTDIR)
-	tar czvf dist/$(DISTDIR)-src.tgz $(DISTDIR)
-	rm -fr $(DISTDIR)
+	if [ -d $(TMPDIR) ]; then rm -fr $(TMPDIR); fi
+	if [ -f $(TMPBASE)/$(DISTDIR)-src.tgz ]; then rm -fr $(TMPBASE)/$(DISTDIR)-src.tgz; fi
+	mkdir $(TMPDIR)
+	cp $(BASEFILES) *.c *.h Makefile gravit.dsp gravit.dsw $(TMPDIR)
+	cd $(TMPDIR); chmod 644 *;
+	cd $(TMPBASE); tar czvf $(DISTDIR)-src.tgz $(DISTDIR)
+	cp $(TMPBASE)/$(DISTDIR)-src.tgz dist/
+	rm -fr $(TMPDIR)
 
 packagewin:
-	if [ -d $(DISTDIR) ]; then rm -fr $(DISTDIR); fi
-	mkdir $(DISTDIR)
-	cp $(BASEFILES) Release/gravit.exe $(DISTDIR)
-	cd $(DISTDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
-	zip -r dist/$(DISTDIR)-win32.zip $(DISTDIR)
-	#rm -fr $(DISTDIR)
+	if [ -d $(TMPDIR) ]; then rm -fr $(TMPDIR); fi
+	if [ -f $(TMPBASE)/$(DISTDIR)-win32.zip ]; then rm -fr $(TMPBASE)/$(DISTDIR)-win32.zip; fi
+	mkdir $(TMPDIR)
+	cp $(BASEFILES) Release/gravit.exe $(TMPDIR)
+	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
+	cd $(TMPBASE); zip -r $(DISTDIR)-win32.zip $(DISTDIR)
+	cp $(TMPBASE)/$(DISTDIR)-win32.zip dist/
+	rm -fr $(TMPDIR)
 
 packagewindll:
-	if [ -d $(DISTDIR) ]; then rm -fr $(DISTDIR); fi
-	mkdir $(DISTDIR)
-	cp $(BASEFILES) Release/gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll jpeg.dll libpng13.dll zlib1.dll $(DISTDIR)
-	cd $(DISTDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
-	zip -r dist/$(DISTDIR)-win32-dll.zip $(DISTDIR)
-	rm -fr $(DISTDIR)
+	if [ -d $(TMPDIR) ]; then rm -fr $(TMPDIR); fi
+	if [ -f $(TMPBASE)/$(DISTDIR)-win32-dll.zip ]; then rm -f $(TMPBASE)/$(DISTDIR)-win32-dll.zip; fi
+	mkdir $(TMPDIR)
+	cp $(BASEFILES) Release/gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll jpeg.dll libpng13.dll zlib1.dll $(TMPDIR)
+	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
+	cd $(TMPBASE); zip -r $(DISTDIR)-win32-dll.zip $(DISTDIR)
+	cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip dist/
+	rm -fr $(TMPDIR)
 
-packageall: packagesrc packagewin packagewinsdl
+packageall: packagesrc packagewin packagewindll
