@@ -2,33 +2,45 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
-0.2-devel 2005/04/05
+0.2 2005/04/07
 
     * Added SDL_image as a dependency
-    * Added glew as a dependency
     * Added a second help menu (F2)
-    * Added particle effects!
+    * Added blendmode command which has 5 blending modes (L key)
+    * Added demo.cfg to distribution (woops)
+    * Added sprite particle effects!
           o It is on by default and uses the GL_ARB_point_parameters and GL_ARB_point_sprite extensions.
+          o Unfortunately these extensions may not work under certain conditions. Turning particlerendermode to 0 will make particles visible again.
           o It will fall back to the original GL_POINT renderer if your card does not support them. It will also tell you that it has done this.
           o Added particle.png
                 + To modify it, save it as a transparent 24bit png.
                 + If you modify it and it looks cool send it my way! 
-    * Added particlerendermode command (0=norm 1=billboarding)
-    * Added particlesizemin ( Keys: - = ) and particlesizemax ( Keys: [ ] )commands to change the size of your particles.
-          o When you're in particlerendermode 0 only particlesizemin applies
-          o You can automatically use the maximum size possible by your card in particlerendermode 1 by setting particlesizemax to -1 (this is default)
-          o particlesizemin is cool! Make it big and zoom in! 
-    * Fixed Displaying Oct Tree toggle (T key)
-          o Will highlight leafs nodes in bright blue 
+    * Added particlerendermode command (0=original 1=sprites) ( \ Key )
+    * Added particlesizemin ( Keys: - = ) and particlesizemax ( Keys: [ ] ) commands to change the size of your particles.
+          o When you're in particlerendermode 0 only particlesizemin applies 
+    * Added drawtree command which displays the last generated Oct Tree (T key)
+          o There are three modes: 0 off, 1 lines, 2 boxes
+          o leaf nodes are highlighted 
     * Added screenshot and screenshotloop commands, they are also bound to F9 and F10. They create (many) BMP files.
-          o This will make a screenshots directory for you, but I haven't tried the Linux version. 
+          o This will make a screenshots directory for you.
+          o Careful! F10 takes a screenshot every frame! 
     * Added a new colour mode: Acceleration!
     * Colour modes can be changed with the / key.
     * Console can now be escaped by pressing escape, backtick (`) and hitting enter on an empty command
     * Console cursor blinking is now based on time instead of frames
     * Console input box is a little more obvious when active
-    * tailskip variable caused an infinitle loop when set to 0 (fixed) 
+    * Added drawosd command which can hide the text ( O key )
+    * If initializing video fails, it will try change some settings for you and try again.
+    * All text files are saved in UNIX file format
+    * README, ChangeLog and config files are now in Windows format in the Windows packages
+    * Fixed permissions in tarball to 644
+    * Fixed library include path (/usr/X11R6/lib) issue (Alec)
+    * tailskip variable caused an infinitle loop when set to 0 (fixed)
+    * Many Makefile changes
+    * Added an icon!
+    * Thanks to Alec Thomas for Linux testing and code fixes! 
 
 0.1 2005/04/04
 
     * Initial Release 
+    
