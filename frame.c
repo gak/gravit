@@ -145,7 +145,11 @@ void processFrame() {
 
 	}
 
-//	processFramePP(0, state.particleCount);
+#if NBODY_METHOD == METHOD_PP
+
+	processFramePP(0, state.particleCount);
+
+#elif NBODY_METHOD == METHOD_OT
 
 	otFreeTree();
 
@@ -168,6 +172,7 @@ void processFrame() {
 	}
 #endif
 
+#endif
 
 //	processCollisions();
 

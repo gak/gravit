@@ -21,12 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-#if 0
 void processFramePP(int start, int amount) {
 
 	int i,j;
 	particle_t *p1;
 	particle_t *p2;
+	particleDetail_t *pd1;
+	particleDetail_t *pd2;
 
 	float dv[3];
 	float dv2[3];
@@ -38,6 +39,7 @@ void processFramePP(int start, int amount) {
 	for (i = start; i < amount; i++) {
 
 		p1 = state.particleHistory + state.particleCount*state.frame + i;
+		pd1 = state.particleDetail + i; 
 
 		for (j = 0; j < state.particleCount; j++) {
 
@@ -48,6 +50,7 @@ void processFramePP(int start, int amount) {
 			}
 
 			p2 = state.particleHistory + state.particleCount*state.frame + j;
+			pd2 = state.particleDetail + j; 
 
 			dv[0] = p1->pos[0] - p2->pos[0];
 			dv[1] = p1->pos[1] - p2->pos[1];
@@ -60,7 +63,7 @@ void processFramePP(int start, int amount) {
 			// get distance^2 between the two
 			inverseSquareDistance = dv2[0] + dv2[1] + dv2[2];
 
-			force = -0.00001f * p1->mass * p2->mass / inverseSquareDistance;
+			force = G * pd1->mass * pd2->mass / inverseSquareDistance;
 
 			p1->vel[0] += dv[0] * force;
 			p1->vel[1] += dv[1] * force;
@@ -71,4 +74,4 @@ void processFramePP(int start, int amount) {
 	}
 
 }
-#endif
+

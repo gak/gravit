@@ -97,6 +97,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define G -0.00001f
 #define PI 3.14159265358979f
 
+#define METHOD_PP 0
+#define METHOD_OT 1
+
+#define NBODY_METHOD METHOD_OT
+
 #define VectorNew(a) float a[3];
 
 #define VectorCopy(a,b) { b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; }
