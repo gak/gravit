@@ -6,6 +6,9 @@ Overview
 This is an early test release. I would really like your feedback especially if
 you had to change the code to get it to work.
 
+Configuring
+
+
 Installation for Windows
 
 1) Extract the ZIP file as you already have into a directory.
@@ -28,4 +31,3 @@ Installation for Linux
 3) Run make
 
 4) Hopefully that should have compiled a graviton binary!
-
