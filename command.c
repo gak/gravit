@@ -578,7 +578,20 @@ void cmdScreenshot(char *arg) {
 	SDL_UnlockSurface(sdlSurfUpsideDown);
 	SDL_UnlockSurface(sdlSurfNormal);
 
-	// find a non-existant screenshot file
+#ifdef WIN32
+	{
+		WIN32_FIND_DATA damnwindows;
+		if (FindFirstFile("screenshots", &damnwindows) == INVALID_HANDLE_VALUE) {
+			CreateDirectory("screenshots", NULL);
+		}
+	}
+#else
+	if (!opendir("screenshots")) {
+		mkdir("screenshots", 0755);
+	}
+#endif
+
+	// find next free screenshot file name
 	while (1) {
 
 		FILE *fp;
