@@ -11,21 +11,37 @@ Configuration
 
     Once you have installed Gravit (see below) you should configure it to make it work as well as possible on your system. To do this, open up gravit.cfg in your favorite text editor and follow the instructions. By default the configuration is set to use 256MB of RAM, and only run in windowed mode at 800x600x16.
 
+Prerequisites
+
+    You need the following libraries before attempting to compile or run Gravit.
+
+    * SDL (at least version 1.2.6)
+          o http://www.libsdl.org/download-1.2.php 
+    * SDL_ttf
+          o http://www.libsdl.org/projects/SDL_ttf/ 
+    * SDL_image
+          o http://www.libsdl.org/projects/SDL_image/ 
+    * GLEW
+          o http://glew.sourceforge.net/ 
+
 Installation for Windows
 
    1. Extract the ZIP file as you already have into a directory.
-   2. You may need to download copy SDL.DLL and SDL_ttf.DLL into the same directory as gravit.exe
-          * SDL.DLL is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
-          * SDL_ttf.DLL is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip 
+   2. You may need to download copy SDL.dll, SDL_ttf.dll, SDL_image.dll and glew.dll into the same directory as gravit.exe
+          * SDL.dll is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
+          * SDL_ttf.dll is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
+          * SDL_image.dll is at http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4-win32.zip
+          * glew.dll is at http://prdownloads.sourceforge.net/glew/glew-1.3.2-win32.zip?download 
    3. Open up gravit.cfg and change it to your liking.
    4. Run gravit.exe from that directory! 
 
 Installation for Linux
 
    1. Extract the tarball somewhere as you already have:
-          * tar xzvf gravit-src-0.1.tgz 
+          * tar xzvf gravit-src-0.2.tgz 
    2. You will need:
-          * SDL and SDL_ttf installed and sdl-config working. (Try sdl-config --version)
+          * SDL, SDL_ttf and SDL_image installed and working. (Try sdl-config --version)
+          * GLEW
           * OpenGL (accelerated preferably) 
    3. Run make
    4. Open up gravit.cfg and change it to your liking.
@@ -33,7 +49,7 @@ Installation for Linux
 
 Author
 
-    * Gerald Kaszuba (graviton@gakman.com) 
+    * Gerald Kaszuba (gravit@slowchop.com) 
 
 Contributors
 

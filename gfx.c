@@ -201,7 +201,8 @@ void drawFrame() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glPointSize(view.particleSizeMax);
-	
+		glEnable(GL_POINT_SMOOTH);
+
 	}
 	
 	if (view.particleRenderMode == 1) {
@@ -224,6 +225,8 @@ void drawFrame() {
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
+
+		glDisable(GL_POINT_SMOOTH);
 
 //		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
