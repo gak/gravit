@@ -25,14 +25,15 @@ void drawOSD() {
 
 	if (view.textMode == TM_STANDARD) {
 
-		DUH("actual frames", va("%i", state.totalFrames));
-		DUH("compression skip", va("%i", state.historyNFrame));
-		DUH("display frame", va("%i", state.currentFrame));
-		DUH("record frame", va("%i", state.frame));
-		DUH("max frames", va("%i", state.historyFrames));
 		DUH("particles", va("%i", state.particleCount));
-		DUH("frametime", va("%ims", view.dt));
-		DUH("fps", va("%3.2f", (float)1000 / view.dt));
+		DUH("avg fps", va("%3.2f", fpsCurrentAverageFPS));
+		DUH("avg frametime", va("%.0fms", fpsCurrentAverageFT));
+
+		DUH("actual frames", va("%i", state.totalFrames));
+		DUH("recording skip", va("%i", state.historyNFrame));
+		DUH("display frame", va("%i", state.currentFrame));
+		DUH("recorded frames", va("%i", state.frame));
+		DUH("max frames", va("%i", state.historyFrames));
 		DUH("particle verticies", va("%i", view.verticies));
 		DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 
@@ -40,10 +41,10 @@ void drawOSD() {
 			
 			glColor4f(1,0,0,.8f);
 			y += fontHeight; 
-			y = drawFontWord(x, y, "RECORD");
+			y = drawFontWord(x, y, "RECORDING");
 
 			glColor4f(1,1,1,0.5f);
-			DUH("time left", va("~%0.1f minutes", (float)view.dt * (state.historyFrames - state.frame) / 1000 / 60));
+			DUH("time left", va("~%0.1f minutes", (float)fpsCurrentAverageFT * (state.historyFrames - state.frame) / 1000 / 60));
 		
 		}
 
@@ -52,7 +53,6 @@ void drawOSD() {
 			glColor4f(0,1,0,.8f);
 			y += fontHeight; 
 			y = drawFontWord(x, y, "PLAY");
-
 
 		}
 		

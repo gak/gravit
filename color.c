@@ -85,6 +85,21 @@ void setColorsByMass() {
 		
 		d = pd->mass / state.massRange[1];
 		gfxNormalToRGB(pd->col, (float)fabs(d));
+/*
+		if (i == 0) {
+
+			pd->col[0] = pd->col[1] = pd->col[2] = 1;
+			pd->col[3] = 0.5f;
+
+		} else {
+
+			pd->col[0] = 1;
+			pd->col[1] = 0.5f;
+			pd->col[2] = 0;
+			pd->col[3] = 0.5f;
+
+		}
+*/
 
 		if (d < 0) {
 

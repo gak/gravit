@@ -41,7 +41,7 @@
 	#include <SDL.h>
 	#include <SDL_ttf.h>
 	#include <SDL_opengl.h>
-//	#include <GL/glut.h>
+	#include <GL/glut.h>
 
 #else
 
@@ -440,5 +440,10 @@ void otFreeTree();
 void processFrameOT(int,int);
 
 void frDoGravity(particle_t *p, node_t *n, float d);
+
+extern float fpsCurrentAverageFPS;
+extern float fpsCurrentAverageFT;
+void fpsInit();
+void fpsUpdate(float);
 
 #endif

@@ -5,19 +5,19 @@ spawnVars_t spawnVars;
 void spawnDefaults() {
 
 	spawnVars.minGalCount = 1;
-	spawnVars.maxGalCount = 10;
+	spawnVars.maxGalCount = 1;
 
-	spawnVars.minGalMass = 1;
+	spawnVars.minGalMass = 500;
 	spawnVars.maxGalMass = 500;
 
-	spawnVars.minGalSize = 1;
-	spawnVars.maxGalSize = 500;
+	spawnVars.minGalSize = 5000;
+	spawnVars.maxGalSize = 5000;
 
-	spawnVars.minGalVel = 0;
-	spawnVars.maxGalVel = 500;
+	spawnVars.minGalVel = 200;
+	spawnVars.maxGalVel = 200;
 
 	spawnVars.minSpawnRange = 0;
-	spawnVars.maxSpawnRange = 20000;
+	spawnVars.maxSpawnRange = 0;
 
 }
 
@@ -104,7 +104,6 @@ void pickPositions() {
 #else
 		setRangePosition(galPos[g], spawnRange);
 		setRangePosition(galVel[g], frand(0,1) * frand(0,1) * frand(spawnVars.minGalVel, spawnVars.maxGalVel));
-
 #endif
 
 	}
@@ -129,8 +128,16 @@ void pickPositions() {
 
 		// velocity
 //		VectorCopy(galVel[g], p->vel);
-
 //		setRangePosition(p->vel, frand(0, 100) );
+/*
+		if (i == 0) {
+
+			pd->mass = 100000;
+			VectorZero(p->pos);
+			VectorZero(p->vel);
+
+		}
+*/
 		
 	}
 

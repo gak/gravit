@@ -105,6 +105,10 @@ SOURCE=.\font.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\fps.c
+# End Source File
+# Begin Source File
+
 SOURCE=".\frame-ot.c"
 # End Source File
 # Begin Source File

@@ -22,6 +22,14 @@ void otGetBoundingBox(float *otMin, float *otMax) {
 	int j;
 
 	p = state.particleHistory + state.particleCount * state.frame;
+	/*
+	otMin[0] = p->pos[0];
+	otMax[0] = p->pos[0];
+	otMin[1] = p->pos[1];
+	otMax[1] = p->pos[1];
+	otMin[2] = p->pos[2];
+	otMax[2] = p->pos[2];
+	*/
 
 #ifdef GRAV_SSE
 
@@ -430,7 +438,7 @@ void otDrawTreeRecursive(node_t *n) {
 	glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
 #endif
 	
-//	glutWireCube(1);
+	glutWireCube(1);
 	//glutWireSphere(1, 8, 8);
 	glPopMatrix();
 
@@ -445,7 +453,7 @@ void otDrawTreeRecursive(node_t *n) {
 	glTranslatef(n->cm[0], n->cm[1], n->cm[2]);
 	glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
 	// glScalef(0.5f, 0.5f, 0.5f);
-	// glutWireCube(1);
+	glutWireCube(1);
 	//glutWireSphere(1, 8, 8);
 	glPopMatrix();
 */
@@ -467,9 +475,7 @@ void otDrawTree() {
 
 #endif
 
-void otComputeParticleToTreeRecursive(pttr_t *info) {
-
-//  particle_t *p, node_t *n ---> pttr_t *info
+void otComputeParticleToTreeRecursive(particle_t *p, node_t *n, particleDetail_t *pd) {
 
 	int i;
 	node_t *b;
@@ -478,34 +484,31 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 	float d;
 	float poo;
 
-	// dont calculate force between the same particle
-	if (info->n->p == info->p)
+	if (n->p == p)
 		return;
 
-	if (info->n->p) {
+	if (n->p) {
 
-		p2 = info->n->p;
+		p2 = n->p;
 
-		distance2(info->p->pos, p2->pos, d);
+		distance2(p->pos, p2->pos, d);
 
-//		was a call to dogravity (slow)
-//		frDoGravity(p,n,d);
+// 		frDoGravity(p,n,d); was
 
-		{
+		{ // now
 			float dv[3];
 			float force;
-			dv[0] = info->p->pos[0] - info->n->cm[0];
-			dv[1] = info->p->pos[1] - info->n->cm[1];
-			dv[2] = info->p->pos[2] - info->n->cm[2];
+			dv[0] = p->pos[0] - n->cm[0];
+			dv[1] = p->pos[1] - n->cm[1];
+			dv[2] = p->pos[2] - n->cm[2];
 
 			if (d) {
-				force = G * info->pd->mass * info->n->mass / d;
-				info->p->vel[0] += dv[0] * force;
-				info->p->vel[1] += dv[1] * force;
-				info->p->vel[2] += dv[2] * force;
+				force = -0.00001f * pd->mass * n->mass / d;
+				p->vel[0] += dv[0] * force;
+				p->vel[1] += dv[1] * force;
+				p->vel[2] += dv[2] * force;
 			}
 		}
-
 
 		ncalcs++;
 		pcalcs++;
@@ -514,12 +517,12 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 
 		for (i = 0; i < 8; i++) {
 
-			if (!info->n->b[i])
+			if (!n->b[i])
 				continue;
 
-			b = (node_t *)info->n->b[i];
+			b = (node_t *)n->b[i];
 
-			distance2(info->p->pos, b->cm, d);
+			distance2(p->pos, b->cm, d);
 
 			if (!d)
 				continue;
@@ -527,32 +530,26 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 			poo = b->length / (float)sqrt(d);
 
 			if ( poo > 0.5f ) {
-
-				info->n = b;
-				
-				otComputeParticleToTreeRecursive(info);
+				otComputeParticleToTreeRecursive(p, b, pd);
 
 			} else {
 
-//				was a call to dogravity (slow)
-//				frDoGravity(p,n,d);
+				// frDoGravity(p,b,d);
 
-				{
+				{ // now
 					float dv[3];
 					float force;
-					dv[0] = info->p->pos[0] - b->cm[0];
-					dv[1] = info->p->pos[1] - b->cm[1];
-					dv[2] = info->p->pos[2] - b->cm[2];
+					dv[0] = p->pos[0] - b->cm[0];
+					dv[1] = p->pos[1] - b->cm[1];
+					dv[2] = p->pos[2] - b->cm[2];
 
 					if (d) {
-						force = G * info->pd->mass * b->mass / d;
-						info->p->vel[0] += dv[0] * force;
-						info->p->vel[1] += dv[1] * force;
-						info->p->vel[2] += dv[2] * force;
+						force = -0.00001f * pd->mass * b->mass / d;
+						p->vel[0] += dv[0] * force;
+						p->vel[1] += dv[1] * force;
+						p->vel[2] += dv[2] * force;
 					}
-
 				}
-
 
 				ncalcs++;
 				scalcs++;
@@ -568,25 +565,22 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 void processFrameOT(int start, int amount) {
 
 	int i;
-//	particle_t *p;
-
-	pttr_t info;
-
+	particle_t *p;
+	particleDetail_t *pd;
+	
 	otMakeTree();
 
 	ncalcs = pcalcs = scalcs = 0;
 
 	for (i = start; i < amount; i++) {
 
-		info.p = state.particleHistory + state.particleCount * state.frame + i;
-		info.pd = state.particleDetail + i;
+		p = state.particleHistory + state.particleCount * state.frame + i;
+		pd = state.particleDetail + i;
 
-		if (!info.p)
+		if (!p)
 			continue;
 
-		info.n = r;
-
-		otComputeParticleToTreeRecursive(&info);
+		otComputeParticleToTreeRecursive(p, r, pd);
 
 	}
 
@@ -638,7 +632,7 @@ void otDrawGravityLinesRecursive(particle_t *p, node_t *n) {
 			if (!d)
 				continue;
 
-			poo = b->length / (float)sqrt(d);
+			poo = b->length / sqrt(d);
 
 			if ( poo > 0.5f ) {
 

@@ -84,7 +84,7 @@ void viewInit() {
 void stateInit() {
 
 	state.processFrameThreads = 1;
-	state.particlesToSpawn = 1000;
+	state.particlesToSpawn = 500;
 
 }
 
@@ -117,6 +117,7 @@ int main(int argc, char *argv[]) {
 
 	state.particleHistory = 0;
 
+	fpsInit();
 	fs = getMS();
 
 	while (!view.quit) {
@@ -136,6 +137,7 @@ int main(int argc, char *argv[]) {
 
 		}
 		fs = getMS();
+		fpsUpdate((float)view.dt);
 
 		if (processKeys())
 			break;
