@@ -25,6 +25,19 @@ static cmd_t cmd[] = {
 
 	//	   cmd				func			varf,	vari
 	{ "quit",			cmdQuit,			NULL,	NULL }
+
+
+	,{ "memoryavailable",		NULL,		NULL,	&conf.memoryAvailable }
+
+	,{ "videowidth",		NULL,			NULL,	&conf.screenW }
+	,{ "videoheight",		NULL,			NULL,	&conf.screenH }
+	,{ "videobpp",			NULL,			NULL,	&conf.screenBPP }
+	,{ "videofullscreen",	NULL,			NULL,	&conf.screenFS }
+	,{ "videoantialiasing",	NULL,			NULL,	&conf.screenAA }
+
+	,{ "fontfile",			cmdFontFile,	NULL,	NULL }
+	,{ "fontsize",			NULL,			NULL,	&conf.fontSize }
+
 	,{ "start",			cmdStart,			NULL,	NULL }
 	,{ "record",		cmdRecord,			NULL,	NULL }
 	,{ "play",			cmdPlay,			NULL,	NULL }
@@ -161,7 +174,14 @@ void cmdExecute(char *string) {
 	int ivar;
 	float fvar;
 
+	if (!string)
+		return;
+
 	stringLength = strlen(string);
+
+	if (!stringLength)
+		return;
+
 	strcpy(cmdbuf, string);
 
 	strtok(cmdbuf, " ");
@@ -428,7 +448,6 @@ void cmdFrameSkip(char *arg) {
     char *sz;
 
 	sz = strtok(arg, " ");
-	// s2 = strtok(NULL, " ");
 
 	if (sz[0])
 		view.frameSkip = atoi(sz);
@@ -458,5 +477,15 @@ else
 	DUH("memory allocated  ", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 
 #undef DUH
+
+}
+
+void cmdFontFile(char *arg) {
+
+    char *sz;
+
+	sz = strtok(arg, " ");
+
+	strncpy(conf.fontFile, arg, MAX_FONT_LENGTH);
 
 }

@@ -35,6 +35,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <conio.h>
 	#include <stdio.h>
 
+	// stupid hack to fix linking errors with isspace
+	#if WIN32
+	#undef isspace
+	#define isspace(x) (x == 32)
+	#endif
+
+	// stop conversion from 'double ' to 'float ', possible loss of data
+	#pragma warning ( disable : 4244 ) 
+
 #else
 
 	#include <stdarg.h>
@@ -75,6 +84,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <time.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <ctype.h>
 
 #define dlog(x,y) conAdd(2,y)
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
@@ -122,6 +132,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define SM_RECORD 2
 #define SM_PLAY 4
 
+#define MAX_FONT_LENGTH 255
+
 #include "command.h"
 
 #ifndef NO_GUI
@@ -136,6 +148,12 @@ typedef struct conf_s {
 	int screenW;
 	int screenH;
 	int screenFS;
+	int screenAA;
+
+	char fontFile[MAX_FONT_LENGTH];
+	int fontSize;
+
+	int memoryAvailable;	// MB
 
 	SDL_VideoInfo* gfxInfo;
 
@@ -409,4 +427,7 @@ extern float fpsCurrentAverageFT;
 void fpsInit();
 void fpsUpdate(float);
 
+int configRead(char *filename);
+
 #endif
+

@@ -33,7 +33,7 @@ int initFrame() {
 	cleanMemory();
 
 	state.particleCount = state.particlesToSpawn;
-	state.historyFrames = (int)((float)(128 * 1024 * 1024) / FRAMESIZE);
+	state.historyFrames = (int)((float)(conf.memoryAvailable * 1024 * 1024) / FRAMESIZE);
 
 	conAdd(2, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
 	state.particleHistory = _aligned_malloc(FRAMESIZE * state.historyFrames, 16);

@@ -45,7 +45,7 @@ void drawOSD() {
 
 	y = 10;
 	x = 10;
-	tab = 120;
+	tab = getWordWidth("M") * 17;
 
 	if (view.textMode == TM_STANDARD) {
 

@@ -30,18 +30,17 @@ view_t view;
 
 void loadDefaults() {
 
+	strcpy(conf.fontFile, "Vera.ttf");
+	conf.fontSize = 11;
+	conf.screenAA = 1;
+	conf.memoryAvailable = 128;
+
 #ifndef NO_GUI
 
 	conf.screenBPP = 32;
-	conf.screenW = 640;
-	conf.screenH = 480;
+	conf.screenW = 800;
+	conf.screenH = 600;
 	conf.screenFS = 0;
-
-#if 0
-	conf.screenW = 1280;
-	conf.screenH = 1024;
-	conf.screenFS = 1;
-#endif
 
 #endif
 
@@ -115,6 +114,8 @@ int init() {
 
 	state.memoryAllocated = 0;
 	loadDefaults();
+
+	configRead("graviton.cfg");
 
 #ifndef NO_GUI
 

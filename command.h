@@ -50,5 +50,6 @@ void cmdStart(char *arg);
 void cmdFps(char *arg);
 void cmdSpawn(char *arg);
 void cmdStatus(char *arg);
+void cmdFontFile(char *arg);
 
 #endif

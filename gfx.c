@@ -77,8 +77,12 @@ int gfxInit() {
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, conf.screenBPP );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-//	SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
-//	SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
+	if (conf.screenAA) {
+
+		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
+
+	}
 
     flags = SDL_OPENGL;
 

@@ -35,24 +35,13 @@ int loadFonts() {
 	char letter[2];
 	int i;
 
-#ifdef WIN32
-	char buf[255];
-#endif
-
 	letter[1] = 0;
 
-#ifdef WIN32
+	font = TTF_OpenFont(conf.fontFile, conf.fontSize);
 
-	GetWindowsDirectory(buf, sizeof(buf));
-	font = TTF_OpenFont(va("%s\\fonts\\tahoma.ttf", buf), 11);
-
-#else
-
-	font = TTF_OpenFont("tahoma.ttf", 11);
-
-#endif
 	if (!font) {
 
+		conAdd(2, "Could not open Vera.ttf");
 		return 0;
 
 	}
