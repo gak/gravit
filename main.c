@@ -28,6 +28,8 @@ conf_t conf;
 state_t state;
 view_t view;
 
+PAVIFILE aviFile;
+
 void loadDefaults() {
 
 	strcpy(conf.fontFile, "Vera.ttf");
@@ -92,6 +94,9 @@ void viewInit() {
 	view.particleColorMode = CM_MASS;
 
 	view.verboseMode = 0;
+
+	view.screenshotLoop = 0;
+	view.screenshotIndex = 0;
 
 	cmdFps(NULL);
 
@@ -161,7 +166,7 @@ void run() {
 		view.dt = 0;
 
 #ifndef NO_GUI
-
+/*
 		while (view.dt <= view.ft) {
 
 			view.dt = getMS() - fs;
@@ -172,6 +177,8 @@ void run() {
 				SDL_Delay(view.dt);
 
 		}
+*/
+		view.dt = getMS() - fs;
 		fs = getMS();
 		fpsUpdate((float)view.dt);
 

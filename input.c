@@ -82,8 +82,8 @@ int processKeys() {
 				cmdStart(NULL);
 				break;
 
-			case SDLK_F10:
-				state.currentFrame = 0;
+			case SDLK_F9:
+				cmdScreenshot(NULL);
 				break;
 
 			case SDLK_BACKQUOTE:
@@ -187,6 +187,8 @@ int processKeys() {
 	}
 
 	if (!view.consoleMode) {
+
+
 
 		if (view.keys[SDLK_a])
 			view.zoom /= (1 + (view.dt * 0.01f));

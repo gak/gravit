@@ -46,6 +46,9 @@ static cmd_t cmd[] = {
 	,{ "spawn",			cmdSpawn,			NULL,	NULL }
 	,{ "status",		cmdStatus,			NULL,	NULL }
 
+	,{ "screenshot",		cmdScreenshot,		NULL,	NULL }
+	,{ "screenshotloop",	NULL,			NULL,	&view.screenshotLoop}
+
 	//,{ "saveframe",		cmdSaveFrame,		NULL,	NULL }
 
 	,{ "loadframedump",	cmdLoadFrameDump,	NULL,	NULL }
@@ -542,5 +545,57 @@ void cmdTailSkipCheck(char *arg) {
 		conAdd(1, "tailskip %i is not valid. tailskip is now 1.", view.tailSkip);
 		view.tailSkip = 1;
 	}
+
+}
+
+void cmdScreenshot(char *arg) {
+
+	SDL_Surface *sdlSurfUpsideDown;
+	SDL_Surface *sdlSurfNormal;
+	int i;
+	char *fileName;
+
+	sdlSurfUpsideDown = SDL_CreateRGBSurface(SDL_SWSURFACE, conf.screenW, conf.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+	sdlSurfNormal = SDL_CreateRGBSurface(SDL_SWSURFACE, conf.screenW, conf.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+
+	SDL_LockSurface(sdlSurfUpsideDown);
+	glReadPixels(0,0,conf.screenW, conf.screenH, GL_RGB,GL_UNSIGNED_BYTE, sdlSurfUpsideDown->pixels);
+	SDL_UnlockSurface(sdlSurfUpsideDown);
+
+	SDL_LockSurface(sdlSurfUpsideDown);
+	SDL_LockSurface(sdlSurfNormal);
+	
+	for (i = 0; i < conf.screenH; i++) {
+
+		memcpy(
+			(unsigned char *)sdlSurfNormal->pixels + (conf.screenH - i - 1) * sdlSurfNormal->pitch,
+			(unsigned char *)sdlSurfUpsideDown->pixels + i * sdlSurfUpsideDown->pitch,
+			3 * conf.screenW		
+		);
+
+	}
+
+	SDL_UnlockSurface(sdlSurfUpsideDown);
+	SDL_UnlockSurface(sdlSurfNormal);
+
+	// find a non-existant screenshot file
+	while (1) {
+
+		FILE *fp;
+
+		fileName = va("screenshots/gravit%05u.bmp", view.screenshotIndex++);
+		fp = fopen(fileName, "rb");
+
+		if (!fp)
+			break;
+
+		fclose(fp);
+		
+	}
+
+	SDL_SaveBMP(sdlSurfNormal, fileName);
+
+	SDL_FreeSurface(sdlSurfUpsideDown);
+	SDL_FreeSurface(sdlSurfNormal);
 
 }

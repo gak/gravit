@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <conio.h>
 	#include <stdio.h>
 
+	#include <vfw.h>
+
 	// stupid hack to fix linking errors with isspace
 	#undef isspace
 	#define isspace(x) (x == 32)
@@ -267,6 +269,9 @@ typedef struct view_s {
 	int particleColorMode;
 
 	int verboseMode;
+
+	int screenshotIndex;	// the next available screenshot file (eg screenshot/gravit00001.bmp)
+	int screenshotLoop;	// will do a screenshot every frame
 
 } view_t;
 

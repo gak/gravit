@@ -53,5 +53,7 @@ void cmdStatus(char *arg);
 void cmdFontFile(char *arg);
 void cmdRunScript(char *arg);
 void cmdTailSkipCheck(char *arg);
+void cmdScreenshot(char *arg);
+void cmdScreenshotLoop(char *arg);
 
 #endif

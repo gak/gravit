@@ -349,6 +349,9 @@ void drawAll() {
 
 	drawOSD();
 
+	if (view.screenshotLoop)
+		cmdScreenshot(NULL);
+
 	SDL_GL_SwapBuffers();
 
 }
