@@ -1,6 +1,6 @@
 FINAL = gravit
 OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o
-BASEFILES = README COPYING Vera.ttf gravit.cfg ChangeLog
+BASEFILES = README COPYING Vera.ttf gravit.cfg ChangeLog particle.png
 
 CFLAGS = -O4 -Wall `sdl-config --cflags`
 LDFLAGS = -lGL -lGLU -lGLEW -lSDL_ttf -lSDL_image `sdl-config --libs`

@@ -45,7 +45,6 @@ int processKeys() {
 			switch(event.key.keysym.sym) {
 
 			case SDLK_ESCAPE:
-
 				if (view.consoleMode) {
 					view.consoleMode = 0;
 					break;
@@ -167,7 +166,6 @@ int processKeys() {
 				break;
 
 			case SDLK_n:
-
 				if (view.tailLength <= 0)
 					view.tailLength = 1;
 				else
@@ -176,7 +174,6 @@ int processKeys() {
 				break;
 
 			case SDLK_b:
-
 				if (view.tailLength < 0)
 					view.tailLength = 0;
 
@@ -234,7 +231,6 @@ int processKeys() {
 				break;
 
 			default:
-
 				break;
 
 			}
