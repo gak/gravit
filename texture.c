@@ -1,4 +1,4 @@
-#include "graviton.h"
+#include "gravit.h"
 
 GLuint texID;
 

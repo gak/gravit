@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="graviton" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="gravit" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=graviton - Win32 Debug
+CFG=gravit - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "graviton.mak".
+!MESSAGE NMAKE /f "gravit.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "graviton.mak" CFG="graviton - Win32 Debug"
+!MESSAGE NMAKE /f "gravit.mak" CFG="gravit - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "graviton - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "graviton - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "gravit - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "gravit - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=graviton - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "graviton - Win32 Release"
+!IF  "$(CFG)" == "gravit - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,7 +53,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib kernel32.lib /nologo /subsystem:console /machine:I386 /nodefaultlib
 
-!ELSEIF  "$(CFG)" == "graviton - Win32 Debug"
+!ELSEIF  "$(CFG)" == "gravit - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -82,8 +82,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "graviton - Win32 Release"
-# Name "graviton - Win32 Debug"
+# Name "gravit - Win32 Release"
+# Name "gravit - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -161,7 +161,7 @@ SOURCE=.\font.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\graviton.h
+SOURCE=.\gravit.h
 # End Source File
 # End Group
 # End Target
