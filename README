@@ -1,0 +1,31 @@
+Graviton Version 0.1
+http://graviton.slowchop.com
+
+Overview
+This is an early test release. Here are a few settings that can only be changed
+through modifying the code:
+- Video resolution is set to fullscreen 1280x1024 with 32bpp
+- Memory use is set to 128MB
+
+
+Installation for Windows
+- Extract the ZIP file as you already have into a directory.
+
+- You will need to download copy SDL.DLL and SDL_ttf.DLL into the same directory as graviton.exe
+  - SDL.DLL is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
+  - SDL_ttf.DLL is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
+
+- Run graviton.exe from that directory
+ 
+Installation for Linux
+
+- Extract the tarball somewhere as you already have:
+  - tar xzvf graviton-src-0.1.tgz
+
+- You will need:
+  - SDL and SDL_ttf installed and sdl-config working. (Try sdl-config --version)
+  - OpenGL
+
+- Run make
+
+- 
