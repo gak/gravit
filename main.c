@@ -32,7 +32,7 @@ void loadDefaults() {
 
 	strcpy(conf.fontFile, "Vera.ttf");
 	conf.fontSize = 11;
-	conf.screenAA = 1;
+	conf.screenAA = 0;
 	conf.memoryAvailable = 128;
 
 #ifndef NO_GUI
