@@ -86,6 +86,17 @@ int processKeys() {
 				cmdScreenshot(NULL);
 				break;
 
+			case SDLK_F10:
+				if (view.screenshotLoop) {
+					view.screenshotLoop = 0;
+					conAdd(1, "Stopped taking many screenshots! Check your screenshots directory.");
+				} else {
+					view.screenshotLoop = 1;
+					conAdd(1, "Taking a screenshot every frame. Careful how long you run this!");
+				}
+				
+				break;
+
 			case SDLK_BACKQUOTE:
 				view.consoleMode = (!view.consoleMode)?1:0;
 				break;

@@ -79,6 +79,14 @@ void drawOSD() {
 			y = drawFontWord(x, y, "PLAY");
 
 		}
+
+		if (view.screenshotLoop) {
+
+			glColor4f(1,0,0,.8f);
+			y += fontHeight * 2; 
+			y = drawFontWord(x, y, "AUTO SCREENSHOT");
+
+		}
 		
 /*
 		big = state.particleCount*state.particleCount-state.particleCount;
@@ -105,7 +113,8 @@ void drawOSD() {
 		DUH("F6", "record");
 		DUH("F7", "pause");
 		DUH("F8", "spawn particles");
-		DUH("F10", "go to frame 0");
+		DUH("F9", "take one screenshot");
+		DUH("F10", "screenshot every frame (toggle)");
 
 		glColor4f(1,1,1,1);
 		y += fontHeight;

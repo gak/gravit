@@ -581,13 +581,13 @@ void cmdScreenshot(char *arg) {
 #ifdef WIN32
 	{
 		WIN32_FIND_DATA damnwindows;
-		if (FindFirstFile("screenshots", &damnwindows) == INVALID_HANDLE_VALUE) {
-			CreateDirectory("screenshots", NULL);
+		if (FindFirstFile(SCREENSHOT_PATH, &damnwindows) == INVALID_HANDLE_VALUE) {
+			CreateDirectory(SCREENSHOT_PATH, NULL);
 		}
 	}
 #else
-	if (!opendir("screenshots")) {
-		mkdir("screenshots", 0755);
+	if (!opendir(SCREENSHOT_PATH)) {
+		mkdir(SCREENSHOT_PATH, 0755);
 	}
 #endif
 
@@ -596,7 +596,7 @@ void cmdScreenshot(char *arg) {
 
 		FILE *fp;
 
-		fileName = va("screenshots/gravit%05u.bmp", view.screenshotIndex++);
+		fileName = va(SCREENSHOT_PATH "/gravit%05u.bmp", view.screenshotIndex++);
 		fp = fopen(fileName, "rb");
 
 		if (!fp)
