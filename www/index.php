@@ -82,8 +82,8 @@ function showFile($file, $desc) {
 
 function showFiles($ver) {
 
-	showFile("gravit-$ver-win32-sdl.zip", "Gravit $ver for Windows with SDL (Recommended)");
-	showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows (If you have SDL already)");
+	showFile("gravit-$ver-win32-sdl.zip", "Gravit $ver for Windows with SDL and SDL_ttf (Recommended)");
+	showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows (If you have SDL/SDL_ttf already)");
 	showFile("gravit-$ver-src.tgz", "Gravit $ver Source Code");
 	
 }
