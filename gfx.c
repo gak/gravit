@@ -137,7 +137,7 @@ int gfxInit() {
 	checkPointParameters();
 	checkPointSprite();
 
-	SDL_WM_SetCaption("Gravit", "");
+	SDL_WM_SetCaption(GRAVIT_VERSION, "gravit.ico");
 
 	memset(view.mat1, 0, sizeof(view.mat1));
 	memset(view.mat2, 0, sizeof(view.mat2));
