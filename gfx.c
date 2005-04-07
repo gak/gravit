@@ -487,7 +487,7 @@ void drawAll() {
 //	if (view.drawAxis)
 //		drawAxis();
 
-	// drawRGB();
+	drawRGB();
 
 	if (view.drawOSD)
 		drawOSD();

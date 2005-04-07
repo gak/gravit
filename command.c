@@ -260,11 +260,6 @@ void cmdStop(char *arg) {
 
 void cmdSpawn(char *arg) {
 
-	if (state.mode & SM_RECORD) {
-		conAdd(1, "Please stop recording and wait for the frame to end before spawning.");
-		return;
-	}
-	
 	if (state.currentlySpawning) {
 		state.restartSpawning = 1;
 		return;
@@ -274,6 +269,7 @@ cmdSpawnRestartSpawning:
 
 	state.currentlySpawning = 1;
 	state.restartSpawning = 0;
+	state.mode = 0;
 
 	if (!initFrame()) {
 		conAdd(1, "Could not init frame");

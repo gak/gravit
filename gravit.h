@@ -151,7 +151,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define TM_HELP1 1
 #define TM_HELP2 2
 
-#define SM_PAUSED 1
 #define SM_RECORD 2
 #define SM_PLAY 4
 
@@ -160,7 +159,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a recording
 #define doVideoUpdate() \
 	if (view.lastVideoFrame) { \
-		if (view.quit || !(state.mode & SM_RECORD) ) return; \
+		if (!(state.mode & SM_RECORD) ) return; \
 		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
 			runInput(); \
 			runVideo(); \

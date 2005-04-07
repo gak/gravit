@@ -202,34 +202,30 @@ void run() {
 
 		Uint32 ts;
 
-		if (!(state.mode & SM_PAUSED)) {
+		if (state.mode & SM_RECORD) {
 
-			if (state.mode & SM_RECORD) {
+			if (view.verboseMode)
+				conAdd(0, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
 
-				if (view.verboseMode)
-					conAdd(0, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
+			setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
 
-				setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
+			processFrame();
+			ts = getMS();
+			view.deltaRecordFrame = ts - view.lastRecordFrame;
+			view.lastRecordFrame = ts;
 
-				processFrame();
-				ts = getMS();
-				view.deltaRecordFrame = ts - view.lastRecordFrame;
-				view.lastRecordFrame = ts;
+		}
 
-			}
+		else if (state.mode & SM_PLAY) {
 
-			else if (state.mode & SM_PLAY) {
+			state.currentFrame++;
+			state.currentFrame+=view.frameSkip;
 
-				state.currentFrame++;
-				state.currentFrame+=view.frameSkip;
+			if (state.currentFrame >= state.frame)
+				state.currentFrame = 0;
 
-				if (state.currentFrame >= state.frame)
-					state.currentFrame = 0;
-
-				if (view.verboseMode)
-					conAdd(0, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
-
-			}
+			if (view.verboseMode)
+				conAdd(0, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
 
 		}
 
