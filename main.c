@@ -121,6 +121,8 @@ void stateInit() {
 	state.particlesToSpawn = 1000;
 	state.particleHistory = 0;
 	state.memoryAllocated = 0;
+	state.currentlySpawning = 0;
+	state.restartSpawning = 0;
 
 }
 

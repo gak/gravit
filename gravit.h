@@ -260,6 +260,9 @@ typedef struct state_s {
 	int autoSave;	// auto save every n frames. 0 for off.
 	char *fileName; // if null dont autosave or incsave.
 
+	int currentlySpawning;
+	int restartSpawning;
+
 } state_t;
 
 typedef struct saveInfo_s {
@@ -432,6 +435,7 @@ void setTitle(char *state);
 extern spawnVars_t spawnVars;
 void pickPositions();
 void spawnDefaults();
+int isSpawning();
 
 // console.c
 extern con_t con[CONSOLE_HISTORY];

@@ -168,6 +168,10 @@ void pickPositions() {
 	for (i = 0; i < state.particleCount; i++) {
 
 		doVideoUpdate();
+
+		if (state.restartSpawning) {
+			return;
+		}
 		
 		p = getParticleFirstFrame(i);
 		pd = getParticleDetail(i);
@@ -234,5 +238,16 @@ void pickPositions() {
 	conAdd(0, "- %f total mass...", totalMass);
 	conAdd(0, "- %f galaxy mass...", totalMass / gals);
 	conAdd(0, "- %f particle mass...", totalMass / state.particleCount);
+
+}
+
+int isSpawning() {
+
+	if (state.currentlySpawning) {
+		conAdd(1, "Please wait until all particles are spawned...");
+		return 1;
+	}
+
+	return 0;
 
 }

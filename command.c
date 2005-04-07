@@ -246,6 +246,9 @@ void cmdQuit(char *arg) {
 
 void cmdStop(char *arg) {
 
+	if (isSpawning())
+		return;
+
 	conAdd(1, "Stopped...");
 	state.mode &= ~SM_PLAY;
 	state.mode &= ~SM_RECORD;
@@ -255,6 +258,18 @@ void cmdStop(char *arg) {
 }
 
 void cmdSpawn(char *arg) {
+	
+	if (state.currentlySpawning) {
+
+		state.restartSpawning = 1;
+		return;
+
+	}
+
+cmdSpawnRestartSpawning:
+
+	state.currentlySpawning = 1;
+	state.restartSpawning = 0;
 
 	if (!initFrame()) {
 		conAdd(1, "Could not init frame");
@@ -263,9 +278,15 @@ void cmdSpawn(char *arg) {
 
 	pickPositions();
 
+	if (state.restartSpawning)
+		goto cmdSpawnRestartSpawning;
+
 #ifndef NO_GUI
 	setColours();
 #endif
+
+	state.currentlySpawning = 0;
+	conAdd(0, "You have spawned some particles. Hit F6 to start recording the simulation!");
 
 }
 
@@ -274,11 +295,12 @@ void cmdStart(char *arg) {
 	cmdSpawn(NULL);
 	state.mode = 0;
 
-	conAdd(0, "You have spawned some particles. Hit F6 to start recording the simulation!");
-
 }
 
 void cmdRecord(char *arg) {
+
+	if (isSpawning())
+		return;
 
 	if (state.particleCount == 0) {
 
@@ -308,6 +330,9 @@ void cmdRecord(char *arg) {
 }
 
 void cmdPlay(char *arg) {
+
+	if (isSpawning())
+		return;
 
 	if (state.particleCount == 0) {
 
@@ -348,6 +373,9 @@ void cmdSaveFrame(char *arg) {
 
     char *fileName, *s2, *s3, *s4;
 	int staf, endf, skif;
+
+	if (isSpawning())
+		return;
 
 	fileName = strtok(arg, " ");
 	s2 = strtok(NULL, " ");
@@ -401,6 +429,9 @@ void cmdSaveFrameDump(char *arg) {
 	FILE *fp;
 	saveInfo_t si;
 
+	if (isSpawning())
+		return;
+
 	if (!arg) {
 
 		conAdd(1, "Need name");
@@ -442,6 +473,9 @@ void cmdLoadFrameDump(char *arg) {
 
 	FILE *fp;
 	saveInfo_t si;
+
+	if (isSpawning())
+		return;
 
 	if (!arg) {
 
