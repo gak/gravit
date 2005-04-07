@@ -241,6 +241,7 @@ void cmdExecute(char *string) {
 void cmdQuit(char *arg) {
 
 	view.quit = 1;
+	state.mode = 0;
 
 }
 
@@ -258,12 +259,15 @@ void cmdStop(char *arg) {
 }
 
 void cmdSpawn(char *arg) {
+
+	if (state.mode & SM_RECORD) {
+		conAdd(1, "Please stop recording and wait for the frame to end before spawning.");
+		return;
+	}
 	
 	if (state.currentlySpawning) {
-
 		state.restartSpawning = 1;
 		return;
-
 	}
 
 cmdSpawnRestartSpawning:
@@ -288,12 +292,13 @@ cmdSpawnRestartSpawning:
 	state.currentlySpawning = 0;
 	conAdd(0, "You have spawned some particles. Hit F6 to start recording the simulation!");
 
+	state.mode = 0;
+	
 }
 
 void cmdStart(char *arg) {
 
 	cmdSpawn(NULL);
-	state.mode = 0;
 
 }
 

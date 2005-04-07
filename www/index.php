@@ -97,12 +97,7 @@ echo '</table>';
 </ul>
 
 <h2>Download</h2>
-
-<p>
-<!-- If you're unsure of things, get the stable version otherwise the development release shouldn't be too bad!<br> -->
-Read the <a href="dist/ChangeLog">ChangeLog</a> for the latest release details.<br>
-</p>
-
+<p>Read the <a href="dist/ChangeLog">ChangeLog</a> for the latest release details.</p>
 <?
 
 function showFile($file, $desc) {

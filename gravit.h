@@ -160,6 +160,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a recording
 #define doVideoUpdate() \
 	if (view.lastVideoFrame) { \
+		if (view.quit || !(state.mode & SM_RECORD) ) return; \
+		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
+			runInput(); \
+			runVideo(); \
+			if (!(state.mode & SM_RECORD)) return; \
+		} \
+	}
+
+// this define is to render video in the middle of a spawn
+#define doVideoUpdateInSpawn() \
+	if (view.lastVideoFrame) { \
 		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
 			runInput(); \
 			runVideo(); \

@@ -174,12 +174,15 @@ void processFrame() {
 
 #endif
 
-//	processCollisions();
+	// Check if the recording frame was cancelled, if so just return;
+	if (!(state.mode & SM_RECORD))
+		return;
 
-	//forceToCenter();
+	//	processCollisions();
+
+	//	forceToCenter();
 
 	// move particles to next page
-
 	memcpy(
 		
 		state.particleHistory + state.particleCount * (state.frame+1),
