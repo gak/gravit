@@ -98,9 +98,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
 
-#define getParticleCurrentFrame(i) state.particleHistory + state.particleCount * state.currentFrame + i
-#define getParticleFirstFrame(i) state.particleHistory + i
-#define getParticleDetail(i) state.particleDetail + i;
+#define getParticleCurrentFrame(i) state.particleHistory + state.particleCount * state.currentFrame + (i)
+#define getParticleFirstFrame(i) state.particleHistory + (i)
+#define getParticleDetail(i) state.particleDetail + (i)
 
 #define G -0.00001f
 #define PI 3.14159265358979f
@@ -128,7 +128,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define VectorDivide(a, b, c) { c[0] = a[0] / b; c[1] = a[1] / b; c[2] = a[2] / b; }
 #define VectorZero(x) { x[0] = 0; x[1] = 0; x[2] = 0; }
 
-#define distance2(a,b,c) c = ((float)pow((double)a[0] - b[0], 2) + (float)pow((double)a[1] - b[1], 2) + (float)pow((double)a[2] - b[2], 2));
+// #define distance2(a,b,c) c = ((float)pow((double)a[0] - b[0], 2) + (float)pow((double)a[1] - b[1], 2) + (float)pow((double)a[2] - b[2], 2));
+
+#define distance2(a,b,c) {\
+  float tmp;\
+  c = a[0] - b[0];\
+  c = c * c;\
+  tmp = a[1] - b[1];\
+  c += tmp * tmp;\
+  tmp = a[2] - b[2];\
+  c += tmp * tmp;\
+}
+
+
 #define distance(a,b,c) { float d; distance2(a,b,d); c = (float)sqrt((double)d); }
 
 #ifndef Uint32
