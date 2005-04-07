@@ -106,6 +106,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define PI 3.14159265358979f
 
 #define SCREENSHOT_PATH "screenshots"
+#define STRING_RECORD "Recording"
+#define STRING_PLAY "Playing"
 
 #define CM_MASS 0
 #define CM_VEL 1
@@ -403,6 +405,7 @@ void gfxNormalToRGB(float *c, float n);
 int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size);
 int SaveMemoryDump(char *FileName, unsigned char *d, unsigned int total);
 Uint32 getMS();
+void setTitle(char *state);
 
 // spawn.c
 extern spawnVars_t spawnVars;

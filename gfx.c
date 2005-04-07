@@ -97,10 +97,11 @@ int gfxInit() {
     }
 
 	icon = IMG_Load("gravit.png");
-	SDL_WM_SetCaption(GRAVIT_VERSION, GRAVIT_VERSION);
 	SDL_WM_SetIcon(icon, NULL);
 	SDL_FreeSurface(icon);
 
+	setTitle(0);
+	
     conf.gfxInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
 	detectedBPP = conf.gfxInfo->vfmt->BitsPerPixel;
 

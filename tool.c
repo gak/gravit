@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-#define shitzta 2
+#define shitzta 4
 
 char * va( char *format, ... ) {
 
@@ -218,5 +218,18 @@ Uint32 getMS() {
 	#endif
 
 #endif
+
+}
+
+void setTitle(char *state) {
+
+	char *a;
+
+	if (state)
+		a = va("%s - %s", GRAVIT_VERSION, state);
+	else
+		a = GRAVIT_VERSION;
+
+	SDL_WM_SetCaption(a, a);	
 
 }

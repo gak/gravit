@@ -248,6 +248,8 @@ void cmdStop(char *arg) {
 	state.mode &= ~SM_PLAY;
 	state.mode &= ~SM_RECORD;
 
+	setTitle(0);
+
 }
 
 void cmdSpawn(char *arg) {
@@ -290,12 +292,14 @@ void cmdRecord(char *arg) {
 		conAdd(1, "Stopped Recording.");
 		conAdd(0, "Press F5 to play your recording. Press F6 to continue recording.");
 		state.mode &= ~SM_RECORD;
+		setTitle(0);
 
 	} else {
 
 		conAdd(1, "Recording...");
 		conAdd(0, "Press F5 to play your recording. Press F6 to stop recording.");
 		state.mode |= SM_RECORD;
+		setTitle(STRING_RECORD);
 
 	}
 
@@ -317,12 +321,14 @@ void cmdPlay(char *arg) {
 		conAdd(1, "Stopped Playback.");
 		conAdd(0, "Press F5 to continue playback. Press F6 to continue recording.");
 		state.mode &= ~SM_PLAY;
+		setTitle(0);
 
 	} else {
 
 		conAdd(1, "Playing...");
 		conAdd(0, "Press F5 to stop playback. Press F6 to continue recording.");
 		state.mode |= SM_PLAY;
+		setTitle(STRING_PLAY);
 
 	}
 

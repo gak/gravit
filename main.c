@@ -208,6 +208,8 @@ void run() {
 				if (view.verboseMode)
 					conAdd(0, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.dt, state.historyNFrame);
 
+				setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
+
 				processFrame();
 
 			}
