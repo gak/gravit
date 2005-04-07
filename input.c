@@ -260,10 +260,10 @@ int processKeys() {
 	if (!view.consoleMode) {
 
 		if (view.keys[SDLK_a])
-			view.zoom /= (1 + (view.dt * 0.01f));
+			view.zoom /= (1 + (view.deltaVideoFrame * 0.01f));
 
 		if (view.keys[SDLK_z])
-			view.zoom *= (1 + (view.dt * 0.01f));
+			view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
 /*
 		if (view.keys[SDLK_UP])
 			view.face[0] -= state.dt * 0.1f;

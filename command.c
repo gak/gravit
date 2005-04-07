@@ -35,6 +35,8 @@ static cmd_t cmd[] = {
 	,{ "videobpp",			NULL,			NULL,	&conf.screenBPP }
 	,{ "videofullscreen",	NULL,			NULL,	&conf.screenFS }
 	,{ "videoantialiasing",	NULL,			NULL,	&conf.screenAA }
+	
+	,{ "recordingvideorefreshtime",	NULL,	NULL,	&view.recordingVideoRefreshTime }
 
 	,{ "fontfile",			cmdFontFile,	NULL,	NULL }
 	,{ "fontsize",			NULL,			NULL,	&conf.fontSize }
@@ -54,7 +56,7 @@ static cmd_t cmd[] = {
 	,{ "loadframedump",	cmdLoadFrameDump,	NULL,	NULL }
 	,{ "saveframedump",	cmdSaveFrameDump,	NULL,	NULL }
 
-	,{ "fps",			cmdFps,				&view.fps,	NULL }
+//	,{ "fps",			cmdFps,				&view.fps,	NULL }
 	,{ "frameskip",		NULL,				NULL, &view.frameSkip }
 	,{ "frame",			NULL,				NULL, &state.currentFrame }
 
@@ -489,7 +491,8 @@ void cmdLoadFrameDump(char *arg) {
 
 void cmdFps(char *arg) {
 
-	view.ft = (int)((float)1000 / view.fps);
+//	temporary removed fps
+//	view.ft = (int)((float)1000 / view.fps);
 
 }
 
@@ -521,8 +524,8 @@ else
 	DUH("record frame      ", va("%i", state.frame));
 	DUH("max frames        ", va("%i", state.historyFrames));
 	DUH("particles         ", va("%i", state.particleCount));
-	DUH("frametime         ", va("%ims", view.dt));
-	DUH("fps               ", va("%3.2f", (float)1000 / view.dt));
+	DUH("frametime         ", va("%ims", view.deltaVideoFrame));
+	DUH("fps               ", va("%3.2f", (float)1000 / view.deltaVideoFrame));
 	DUH("particle verticies", va("%i", view.verticies));
 	DUH("memory allocated  ", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 

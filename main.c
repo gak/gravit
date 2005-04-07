@@ -81,6 +81,9 @@ void viewInit() {
 	view.tailFaded = 1;
 	view.tailSkip = 4;
 
+	// 50ms by default (20fps)
+	view.recordingVideoRefreshTime = 50;
+
 	view.drawAxis = 1;
 	view.consoleMode = 0;
 
@@ -159,58 +162,57 @@ int init() {
 
 }
 
+void runInput() {
+
+	processKeys();
+
+#ifndef NO_GUI
+
+	processMouse();
+
+#endif
+
+}
+
+void runVideo() {
+
+#ifndef NO_GUI
+
+	Uint32 ts;
+
+	ts = getMS();
+
+	drawAll();
+
+	view.deltaVideoFrame = ts - view.lastVideoFrame;
+	view.lastVideoFrame = ts;
+	fpsUpdate((float)view.deltaVideoFrame);
+
+#endif
+
+}
+
 void run() {
 
-	Uint32 fs;
-
-	fs = getMS();
+	view.lastRecordFrame = view.lastVideoFrame = getMS();
 
 	while (!view.quit) {
 
-		view.dt = 0;
-
-#ifndef NO_GUI
-/*
-		while (view.dt <= view.ft) {
-
-			view.dt = getMS() - fs;
-
-			if (view.dt > 1000)
-				SDL_Delay(0);
-			else
-				SDL_Delay(view.dt);
-
-		}
-*/
-		view.dt = getMS() - fs;
-		fs = getMS();
-		fpsUpdate((float)view.dt);
-
-		if (processKeys())
-			break;
-
-		processMouse();
-
-#else
-
-	view.dt = getMS() - fs;
-	fs = getMS();
-
-	if (processKeys())
-		break;
-
-#endif
+		Uint32 ts;
 
 		if (!(state.mode & SM_PAUSED)) {
 
 			if (state.mode & SM_RECORD) {
 
 				if (view.verboseMode)
-					conAdd(0, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.dt, state.historyNFrame);
+					conAdd(0, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
 
 				setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
 
 				processFrame();
+				ts = getMS();
+				view.deltaRecordFrame = ts - view.lastRecordFrame;
+				view.lastRecordFrame = ts;
 
 			}
 
@@ -223,17 +225,16 @@ void run() {
 					state.currentFrame = 0;
 
 				if (view.verboseMode)
-					conAdd(0, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.dt, state.historyNFrame);
+					conAdd(0, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
 
 			}
 
 		}
 
-#ifndef NO_GUI
+		runInput();
+		if (view.quit) return;
 
-		drawAll();
-
-#endif
+		runVideo();
 
 	}
 

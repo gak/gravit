@@ -167,6 +167,8 @@ void pickPositions() {
 
 	for (i = 0; i < state.particleCount; i++) {
 
+		doVideoUpdate();
+		
 		p = getParticleFirstFrame(i);
 		pd = getParticleDetail(i);
 

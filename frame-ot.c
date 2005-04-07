@@ -157,6 +157,8 @@ void otBranchNode(node_t *n) {
 	float min[3];
 	float max[3];
 
+	doVideoUpdate();
+
 	// b[0]: top left front
 	min[0] = n->min[0];
 	max[0] = n->c[0];
@@ -431,6 +433,8 @@ void processFrameOT(int start, int amount) {
 	otMakeTree();
 
 	for (i = start; i < amount; i++) {
+
+		doVideoUpdate();
 
 		p = state.particleHistory + state.particleCount * state.frame + i;
 		pd = state.particleDetail + i;

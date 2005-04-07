@@ -157,6 +157,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define MAX_FONT_LENGTH 255
 
+// this define is to render video in the middle of a recording
+#define doVideoUpdate() \
+	if (view.lastVideoFrame) { \
+		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
+			runInput(); \
+			runVideo(); \
+		} \
+		if (view.quit) return; \
+	}
+
 #include "command.h"
 
 #ifndef NO_GUI
@@ -264,8 +274,17 @@ typedef struct saveInfo_s {
 
 typedef struct view_s {
 
-	Uint32 dt;
-	Uint32 ft;
+	Uint32 lastVideoFrame;
+	Uint32 deltaVideoFrame;
+
+	Uint32 lastRecordFrame;
+	Uint32 deltaRecordFrame;
+
+	// recordingVideoRefreshTime
+	// Set this to 0 to never refresh video while rendering
+	// Set this to > 0 to refresh video every Nms while rendering
+	Uint32 recordingVideoRefreshTime;
+
 	int quit;
 
 	float rot[3];
@@ -397,6 +416,8 @@ view_t view;
 #endif
 
 void cleanMemory();
+void runVideo();
+void runInput();
 
 // tool.c
 char * va( char *format, ... );

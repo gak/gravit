@@ -54,8 +54,9 @@ void drawOSD() {
 	if (view.textMode == TM_STANDARD) {
 
 		DUH("particles", va("%i", state.particleCount));
-		DUH("avg fps", va("%3.2f", fpsCurrentAverageFPS));
-		DUH("avg frametime", va("%.0fms", fpsCurrentAverageFT));
+		DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
+		DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
+		DUH("last record frame time", va("%ims", view.deltaRecordFrame));
 
 		DUH("actual frames", va("%i", state.totalFrames));
 		DUH("recording skip", va("%i", state.historyNFrame));
@@ -72,7 +73,7 @@ void drawOSD() {
 			y = drawFontWord(x, y, "RECORDING");
 
 			DUHC();
-			DUH("time left", va("~%0.1f minutes", (float)fpsCurrentAverageFT * (state.historyFrames - state.frame) / 1000 / 60));
+			DUH("time left", va("~%0.1f minutes", (float)view.deltaRecordFrame * (state.historyFrames - state.frame) / 1000 / 60));
 		
 		}
 
