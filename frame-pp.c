@@ -63,7 +63,7 @@ void processFramePP(int start, int amount) {
 			// get distance^2 between the two
 			inverseSquareDistance = dv2[0] + dv2[1] + dv2[2];
 
-			force = G * pd1->mass * pd2->mass / inverseSquareDistance;
+			force = state.g * pd1->mass * pd2->mass / inverseSquareDistance;
 
 			p1->vel[0] += dv[0] * force;
 			p1->vel[1] += dv[1] * force;
