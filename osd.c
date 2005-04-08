@@ -37,7 +37,6 @@ void drawOSD() {
 	float tab;
 
 	drawFrameSet2D();
-	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -186,7 +185,7 @@ void drawOSD() {
 
 		for (i = 0; i < 1; i += 0.01f) {
 	
-			gfxNormalToRGB(cols, i);
+			colourFromNormal(cols, i);
 			glColor3fv(cols);
 			z[0] = 65 + (int)(i * 26);
 			drawFontWord(i * conf.screenW, 0, z);

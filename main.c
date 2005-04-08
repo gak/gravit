@@ -64,6 +64,7 @@ void cleanMemory() {
 
 	state.memoryAllocated = 0;
 
+
 }
 
 void viewInit() {
@@ -106,6 +107,9 @@ void viewInit() {
 
 	view.screenshotLoop = 0;
 	view.screenshotIndex = 0;
+
+	view.colourSpectrumSteps = 0;
+	view.colourSpectrum = 0;
 
 	cmdFps(NULL);
 
@@ -251,6 +255,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	cleanMemory();
+	colourSpectrumClear();
 
 #ifndef NO_GUI
 

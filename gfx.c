@@ -449,14 +449,14 @@ void drawRGB() {
 
 	drawFrameSet2D();
 
-	glDepthMask(GL_FALSE);
+//	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	for (i = 0; i <= 1+step; i+=step) {
 
-		gfxNormalToRGB(c, i);
+		colourFromNormal(c, i);
 
 		glBegin(GL_QUADS);
 		glColor4fv(c);
@@ -473,7 +473,7 @@ void drawRGB() {
 
 void drawAll() {
 
-	glDepthMask(GL_TRUE);
+//	glDepthMask(GL_TRUE);
 
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -487,10 +487,10 @@ void drawAll() {
 //	if (view.drawAxis)
 //		drawAxis();
 
-	drawRGB();
-
-	if (view.drawOSD)
+	if (view.drawOSD) {
 		drawOSD();
+		drawRGB();
+	}
 
 	if (view.screenshotLoop)
 		cmdScreenshot(NULL);

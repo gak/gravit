@@ -55,5 +55,7 @@ void cmdRunScript(char *arg);
 void cmdTailSkipCheck(char *arg);
 void cmdScreenshot(char *arg);
 void cmdScreenshotLoop(char *arg);
+void cmdColourSchemeNew(char *arg);
+void cmdColourSchemeAdd(char *arg);
 
 #endif

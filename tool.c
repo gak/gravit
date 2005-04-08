@@ -54,61 +54,6 @@ int gfxPowerOfTwo(int input) {
 
 }
 
-void gfxNormalToRGB(float *c, float n) {
-
-	int bits;
-	int i;
-
-	float cm[][4] = {
-
-		{0.5f,	0.5f,	0.5f,	0.5f}
-		,{0.0f,	0.0f,	0.5f,	0.6f}
-		,{0.5f,	0.0f,	0.5f,	0.7f}
-		,{0.9f,	0.0f,	0.0f,	0.8f}
-		,{0.9f,	1.0f,	0.5f,	0.9f}
-		,{1.0f,	1.0f,	1.0f,	1.0f}
-
-	};
-
-	bits = 5;
-
-	if (n < 0)
-		n = 0;
-	if (n > 1)
-		n = 1;
-
-	for (i = 0; i < bits; i++) {
-
-		if (n <= (float)(i+1) / bits) {
-
-			float j;
-			float l,h;
-			int col;
-
-			j = (n - (float)i / bits) * (float)bits;
-
-			for (col = 0; col < 4; col++) {
-
-				if (cm[i][col] < cm[i+1][col]) {
-					l = cm[i][col];
-					h = cm[i+1][col];
-					c[col] = (h - l) * j + l;
-				} else {
-					l = cm[i+1][col];
-					h = cm[i][col];
-					c[col] = (h - l) * (1-j) + l;
-				}
-
-			}
-
-			break;
-
-		}
-
-	}
-
-}
-
 int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 
 	FILE *fp;

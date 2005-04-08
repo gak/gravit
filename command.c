@@ -89,6 +89,9 @@ static cmd_t cmd[] = {
 	,{ "spawnrangemin",			NULL,				&spawnVars.minSpawnRange, NULL }
 	,{ "spawnrangemax",			NULL,				&spawnVars.maxSpawnRange, NULL }
 
+	,{ "colourschemenew",		cmdColourSchemeNew,			NULL, NULL }
+	,{ "colourschemeadd",		cmdColourSchemeAdd,			NULL, NULL }
+
 	,{ "framecompression",		NULL,				NULL, &state.frameCompression }
 
 	,{ "verbose",				NULL,				NULL, &view.verboseMode }
@@ -667,5 +670,45 @@ void cmdScreenshot(char *arg) {
 
 	SDL_FreeSurface(sdlSurfUpsideDown);
 	SDL_FreeSurface(sdlSurfNormal);
+
+}
+
+void cmdColourSchemeNew(char *arg) {
+
+	colourSpectrumClear();
+	conAdd(0, "Colour scheme reset");
+	
+}
+
+void cmdColourSchemeAdd(char *arg) {
+
+	float c[4];
+    char *r,*g,*b,*a;
+
+	r = strtok(arg, " \t");
+	if (!r) return;
+	c[0] = atof(r);
+
+	g = strtok(NULL, " \t");
+	if (!g) return;
+	c[1] = atof(g);
+	
+	b = strtok(NULL, " \t");
+	if (!b) return;
+	c[2] = atof(b);
+	
+	a = strtok(NULL, " \t");
+	if (!a) c[3] = 1; else c[3] = atof(a);
+
+	if (!view.colourSpectrum) {
+		colourSpectrumClear();
+	}
+
+	view.colourSpectrumSteps++;
+	view.colourSpectrum = (float *)realloc(view.colourSpectrum, view.colourSpectrumSteps*sizeof(float)*4);
+
+	memcpy(&view.colourSpectrum[(view.colourSpectrumSteps-1)*4], &c, sizeof(float)*4);
+
+	conAdd(0, "Added colour (%f %f %f %f) to colour scheme", c[0], c[1], c[2], c[3]);
 
 }

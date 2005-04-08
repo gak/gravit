@@ -233,6 +233,23 @@ typedef struct conf_s {
 
 } conf_t;
 
+typedef struct col_s {
+
+	float r;
+	float g;
+	float b;
+
+} col_t;
+
+typedef struct cola_s {
+
+	float r;
+	float g;
+	float b;
+	float a;
+
+} cola_t;
+
 #endif
 
 // things that change per frame
@@ -361,6 +378,9 @@ typedef struct view_s {
 	float particleSizeMin;	// can be anything 0 or higher
 	float particleSizeMax;	// -1 for the maximum supported. if its bigger then supported, it will simply use the supported value.
 
+	float *colourSpectrum;		// determines what colour to draw a particle with
+	int colourSpectrumSteps;
+
 } view_t;
 
 typedef struct spawnVars_s {
@@ -377,14 +397,6 @@ typedef struct spawnVars_s {
 	float maxSpawnRange;
 
 } spawnVars_t;
-
-typedef struct col_s {
-
-	float r;
-	float g;
-	float b;
-
-} col_t;
 
 typedef struct con_s {
 
@@ -447,7 +459,6 @@ void runInput();
 // tool.c
 char * va( char *format, ... );
 int gfxPowerOfTwo(int input);
-void gfxNormalToRGB(float *c, float n);
 int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size);
 int SaveMemoryDump(char *FileName, unsigned char *d, unsigned int total);
 Uint32 getMS();
@@ -487,6 +498,8 @@ void checkPointSprite();
 // color.c
 void setColours();
 void setColoursByMass();
+void colourSpectrumClear();
+void colourFromNormal(float *c, float n);
 
 #else
 

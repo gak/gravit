@@ -25,7 +25,7 @@ spawnVars_t spawnVars;
 
 void spawnDefaults() {
 
-	spawnVars.minGalCount = 2;
+	spawnVars.minGalCount = 3;
 	spawnVars.maxGalCount = 10;
 
 	spawnVars.minGalMass = 0;

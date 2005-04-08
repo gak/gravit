@@ -69,13 +69,7 @@ echo '</table>';
 ?>
 
 <h2>Demonstration Videos</h2>
-
-<ul>
-<li><a href="video/gravit-001.avi">Zoomed in on a galaxy showing off v0.2 effects</a> - 9s, 1.1MB, 800x600</li>
-<li><a href="video/gravit-002.avi">Many galaxies showing off v0.2 effects and the frameskip command</a> - 30s, 3.6MB, 1280x1024</li>
-<li><a href="video/gravit-003.avi">Another v0.2 demo, draws an OctTree</a> - 36s, 4.0MB, 800x600</li>
-<li><a href="video/gravit-004.avi">You must get this one!</a> - 22s, 2.5MB, 800x600</li>
-</ul>
+<p>Sorry, I can't afford the bandwidth!</p>
 
 <h2>Features</h2>
 <ul>
@@ -129,10 +123,10 @@ function showFileHeading($s) {
 
 
 showFileHeading("Latest Release");
-showFiles("0.2.1");
+//showFiles("0.2.1");
+showFiles("0.2");
 
 showFileHeading("Older Releases");
-showFiles("0.2");
 showFiles("0.1");
 
 ?>

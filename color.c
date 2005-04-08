@@ -67,7 +67,7 @@ void setColoursByVel() {
 		distance(zero, p->vel, velSpeed);
 
 		d = velSpeed / velMax;
-		gfxNormalToRGB(pd->col, (float)fabs((double)d));
+		colourFromNormal(pd->col, (float)fabs((double)d));
 
 	}
 
@@ -121,7 +121,7 @@ void setColoursByAcceleration() {
 		pd = getParticleDetail(i);
 
 		d = accCurrent / accMax;
-		gfxNormalToRGB(pd->col, (float)fabs((double)d));
+		colourFromNormal(pd->col, (float)fabs((double)d));
 
 	}
 
@@ -163,7 +163,7 @@ void setColoursByMass() {
 		pd = getParticleDetail(i);
 
 		d = pd->mass / state.massRange[1];
-		gfxNormalToRGB(pd->col, (float)fabs(d));
+		colourFromNormal(pd->col, (float)fabs(d));
 
 		if (d < 0) {
 
@@ -192,6 +192,66 @@ void setColours() {
 
 		case CM_ACC:
 			setColoursByAcceleration(); break;
+
+	}
+
+}
+
+void colourSpectrumClear() {
+
+	if (view.colourSpectrum) {
+		free(view.colourSpectrum);
+		view.colourSpectrum = 0;
+	}
+
+	view.colourSpectrumSteps = 0;
+
+}
+
+void colourFromNormal(float *c, float n) {
+
+	int i;
+	int bits;
+
+	if (n < 0)
+		n = 0;
+	if (n > 1)
+		n = 1;
+
+	if (view.colourSpectrumSteps == 0 || view.colourSpectrum == 0) {
+		c[0] = c[1] = c[2] = c[3] = 1;
+		return;
+	}
+	
+	bits = view.colourSpectrumSteps - 1;
+
+	for (i = 0; i < bits; i++) {
+
+		if (n <= (float)(i+1) / bits) {
+
+			float j;
+			float l,h;
+			int col;
+
+			j = (n - (float)i / bits) * (float)bits;
+
+			for (col = 0; col < 4; col++) {
+
+				if (view.colourSpectrum[i*4+col] < view.colourSpectrum[(i+1)*4+col]) {
+					l = view.colourSpectrum[i*4+col];
+					h = view.colourSpectrum[(i+1)*4+col];
+					c[col] = (h - l) * j + l;
+				} else {
+					l = view.colourSpectrum[(i+1)*4+col];
+					h = view.colourSpectrum[i*4+col];
+					c[col] = (h - l) * (1-j) + l;
+				}
+
+			}
+
+			break;
+
+		}
 
 	}
 
