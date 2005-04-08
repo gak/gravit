@@ -82,7 +82,7 @@ echo '</table>';
 <li>Colours can be based on mass, velocity or acceleration</li>
 <li>See an octtree being created in real-time</li>
 <li>Save/Load functionality</li>
-<li>Update display/input while rendering</li>
+<li>Update display/input while recording a frame</li>
 </ul>
 
 <h2>Details</h2>
