@@ -99,6 +99,7 @@ void viewInit() {
 	view.frameSkip = 0;
 
 	view.drawOSD = 1;
+	view.drawColourScheme = 1;
 
 	view.blendMode = 1;
 

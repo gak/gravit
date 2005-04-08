@@ -72,6 +72,7 @@ static cmd_t cmd[] = {
 	,{ "drawaxis",		NULL,				NULL, &view.drawAxis }
 	,{ "drawtree",		NULL,				NULL, &view.drawTree }
 	,{ "drawosd",		NULL,				NULL, &view.drawOSD }
+	,{ "drawcolourscheme",		NULL,				NULL, &view.drawColourScheme }
 
 	,{ "particlecount",			NULL,				NULL, &state.particlesToSpawn }
 

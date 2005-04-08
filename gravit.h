@@ -352,6 +352,7 @@ typedef struct view_s {
 	int frameSkip;
 
 	int drawOSD;
+	int drawColourScheme;
 
 	float fps;
 	int verticies;
