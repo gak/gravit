@@ -80,6 +80,7 @@ echo '</table>';
 <li>Mouse controllable rotation</li>
 <li>Console with script execution</li>
 <li>Colours can be based on mass, velocity or acceleration</li>
+<li>See an octtree being created in real-time</li>
 </ul>
 
 <h2>Details</h2>

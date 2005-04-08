@@ -213,3 +213,19 @@ int mymkdir(char *path) {
 	return 1;
 	
 }
+
+void setFileName(char *name) {
+
+	char buf[255];
+
+	strncpy(buf, name, 255);
+
+	if (state.fileName) {
+		free(state.fileName);
+		state.fileName = 0;
+	}
+
+	state.fileName = malloc(strlen(buf)+1);	// +1 for \0
+	strcpy(state.fileName, buf);
+
+}

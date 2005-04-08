@@ -127,6 +127,7 @@ void stateInit() {
 	state.memoryAllocated = 0;
 	state.currentlySpawning = 0;
 	state.restartSpawning = 0;
+	state.fileName = 0;
 
 }
 
@@ -256,6 +257,7 @@ int main(int argc, char *argv[]) {
 
 	cleanMemory();
 	colourSpectrumClear();
+	if (state.fileName) free(state.fileName);
 
 #ifndef NO_GUI
 

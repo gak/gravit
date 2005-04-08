@@ -5,7 +5,7 @@ BASEFILES = README COPYING Vera.ttf gravit.cfg demo.cfg ChangeLog particle.png g
 CFLAGS = -O4 -Wall `sdl-config --cflags` -Wall
 LDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs`
 
-DISTDIR = gravit-0.2.1
+DISTDIR = gravit-0.2.2
 TMPBASE = /tmp
 TMPDIR = $(TMPBASE)/$(DISTDIR)
 
@@ -40,7 +40,7 @@ packagewin:
 	if [ -d $(TMPDIR) ]; then rm -fr $(TMPDIR); fi
 	if [ -f $(TMPBASE)/$(DISTDIR)-win32.zip ]; then rm -fr $(TMPBASE)/$(DISTDIR)-win32.zip; fi
 	mkdir $(TMPDIR)
-	cp $(BASEFILES) Release/gravit.exe $(TMPDIR)
+	cp $(BASEFILES) gravit.exe $(TMPDIR)
 	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
 	cd $(TMPDIR); mv README README.txt
 	cd $(TMPDIR); mv ChangeLog ChangeLog.txt
@@ -53,7 +53,7 @@ packagewindll:
 	if [ -d $(TMPDIR) ]; then rm -fr $(TMPDIR); fi
 	if [ -f $(TMPBASE)/$(DISTDIR)-win32-dll.zip ]; then rm -f $(TMPBASE)/$(DISTDIR)-win32-dll.zip; fi
 	mkdir $(TMPDIR)
-	cp $(BASEFILES) Release/gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll jpeg.dll libpng13.dll zlib1.dll $(TMPDIR)
+	cp $(BASEFILES) gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll jpeg.dll libpng13.dll zlib1.dll $(TMPDIR)
 	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
 	cd $(TMPDIR); mv README README.txt
 	cd $(TMPDIR); mv ChangeLog ChangeLog.txt

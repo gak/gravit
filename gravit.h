@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.2.1"
+#define GRAVIT_VERSION "Gravit 0.2.2"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
@@ -301,7 +301,7 @@ typedef struct state_s {
 
 	int currentlySpawning;
 	int restartSpawning;
-
+	
 } state_t;
 
 typedef struct saveInfo_s {
@@ -464,6 +464,7 @@ int SaveMemoryDump(char *FileName, unsigned char *d, unsigned int total);
 Uint32 getMS();
 void setTitle(char *state);
 int mymkdir(char *path);
+void setFileName(char *name);
 
 // spawn.c
 extern spawnVars_t spawnVars;

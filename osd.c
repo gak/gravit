@@ -52,6 +52,13 @@ void drawOSD() {
 
 	if (view.textMode == TM_STANDARD) {
 
+		if (state.fileName) {
+			DUH("simulation name", state.fileName);
+		} else {
+			DUH("simulation name", "-");
+		}
+
+
 		DUH("particles", va("%i", state.particleCount));
 		DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
 		DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));

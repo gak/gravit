@@ -434,8 +434,14 @@ void cmdSaveFrameDump(char *arg) {
 
 	if (!arg) {
 
-		conAdd(2, "Please specify a name (not extensions necessary).");
-		return;
+		if (!state.fileName) {
+
+			conAdd(2, "Please specify a name (not extensions necessary).");
+			return;
+
+		}
+
+		arg = state.fileName;
 
 	}
 	
@@ -472,6 +478,8 @@ void cmdSaveFrameDump(char *arg) {
 	}
 	conAdd(1, "Simulation saved sucesfully!");
 
+	setFileName(arg);
+
 }
 
 void cmdLoadFrameDump(char *arg) {
@@ -484,8 +492,14 @@ void cmdLoadFrameDump(char *arg) {
 
 	if (!arg) {
 
-		conAdd(2, "Need name");
-		return;
+		if (!state.fileName) {
+
+			conAdd(2, "Please specify a name (not extensions necessary).");
+			return;
+
+		}
+
+		arg = state.fileName;
 
 	}
 
@@ -529,6 +543,8 @@ void cmdLoadFrameDump(char *arg) {
 	state.mode = 0;
 	conAdd(1, "Simulation loaded sucesfully!");
 
+	setFileName(arg);
+	
 }
 
 void cmdFps(char *arg) {
