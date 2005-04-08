@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 const char *colourModes[] = { "mass", "velocity", "acceleration (need >1 frames)" };
 
+#ifndef NO_GUI
+
 void setColoursByVel() {
 
 	int i;
@@ -256,3 +258,5 @@ void colourFromNormal(float *c, float n) {
 	}
 
 }
+
+#endif

@@ -28,18 +28,21 @@ static cmd_t cmd[] = {
 
 	,{ "exec",			cmdRunScript,		NULL,	NULL }
 
-	,{ "memoryavailable",		NULL,		NULL,	&conf.memoryAvailable }
+	,{ "memoryavailable",		NULL,		NULL,	&state.memoryAvailable }
 
+#ifndef NO_GUI
 	,{ "videowidth",		NULL,			NULL,	&conf.screenW }
 	,{ "videoheight",		NULL,			NULL,	&conf.screenH }
 	,{ "videobpp",			NULL,			NULL,	&conf.screenBPP }
 	,{ "videofullscreen",	NULL,			NULL,	&conf.screenFS }
 	,{ "videoantialiasing",	NULL,			NULL,	&conf.screenAA }
-	
-	,{ "recordingvideorefreshtime",	NULL,	NULL,	&view.recordingVideoRefreshTime }
 
 	,{ "fontfile",			cmdFontFile,	NULL,	NULL }
 	,{ "fontsize",			NULL,			NULL,	&conf.fontSize }
+
+#endif
+
+	,{ "recordingvideorefreshtime",	NULL,	NULL,	&view.recordingVideoRefreshTime }
 
 	,{ "start",			cmdStart,			NULL,	NULL }
 	,{ "record",		cmdRecord,			NULL,	NULL }
@@ -275,7 +278,7 @@ cmdSpawnRestartSpawning:
 	state.mode = 0;
 
 	state.particleCount = state.particlesToSpawn;
-	state.historyFrames = (int)((float)(conf.memoryAvailable * 1024 * 1024) / FRAMESIZE);
+	state.historyFrames = (int)((float)(state.memoryAvailable * 1024 * 1024) / FRAMESIZE);
 	
 	if (!initFrame()) {
 		conAdd(1, "Could not init frame");
@@ -591,6 +594,8 @@ else
 
 }
 
+#ifndef NO_GUI
+
 void cmdFontFile(char *arg) {
 
     char *sz;
@@ -600,6 +605,8 @@ void cmdFontFile(char *arg) {
 	strncpy(conf.fontFile, arg, MAX_FONT_LENGTH);
 
 }
+
+#endif
 
 void cmdRunScript(char *arg) {
 
@@ -621,6 +628,8 @@ void cmdTailSkipCheck(char *arg) {
 }
 
 void cmdScreenshot(char *arg) {
+
+#ifndef NO_GUI
 
 	SDL_Surface *sdlSurfUpsideDown;
 	SDL_Surface *sdlSurfNormal;
@@ -675,16 +684,22 @@ void cmdScreenshot(char *arg) {
 	SDL_FreeSurface(sdlSurfUpsideDown);
 	SDL_FreeSurface(sdlSurfNormal);
 
+#endif
+
 }
 
 void cmdColourSchemeNew(char *arg) {
 
+#ifndef NO_GUI
 	colourSpectrumClear();
 	conAdd(0, "Colour scheme reset");
-	
+#endif
+
 }
 
 void cmdColourSchemeAdd(char *arg) {
+
+#ifndef NO_GUI
 
 	float c[4];
     char *r,*g,*b,*a;
@@ -714,5 +729,7 @@ void cmdColourSchemeAdd(char *arg) {
 	memcpy(&view.colourSpectrum[(view.colourSpectrumSteps-1)*4], &c, sizeof(float)*4);
 
 	conAdd(0, "Added colour (%f %f %f %f) to colour scheme", c[0], c[1], c[2], c[3]);
+
+#endif
 
 }

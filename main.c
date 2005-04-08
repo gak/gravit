@@ -30,18 +30,19 @@ view_t view;
 
 void loadDefaults() {
 
-	strcpy(conf.fontFile, "Vera.ttf");
-	conf.fontSize = 11;
-	conf.screenAA = 0;
-	conf.memoryAvailable = 128;
+	state.memoryAvailable = 128;
 
 #ifndef NO_GUI
 
-	conf.screenBPP = 32;
 	conf.screenW = 800;
 	conf.screenH = 600;
+	conf.screenBPP = 32;
 	conf.screenFS = 0;
+	conf.screenAA = 0;
 
+	strcpy(conf.fontFile, "Vera.ttf");
+	conf.fontSize = 11;
+	
 #endif
 
 }
@@ -141,6 +142,8 @@ int init() {
 	spawnDefaults();
 	stateInit();
 	
+//	commandLineRead();
+
 	configRead("gravit.cfg");
 
 #ifndef NO_GUI
@@ -152,7 +155,6 @@ int init() {
 
 	if (state.historyFrames % 2)
 		state.historyFrames--;
-
 
 	fpsInit();
 
@@ -256,11 +258,12 @@ int main(int argc, char *argv[]) {
 	}
 
 	cleanMemory();
-	colourSpectrumClear();
 	if (state.fileName) free(state.fileName);
 
 #ifndef NO_GUI
 
+	colourSpectrumClear();
+	
 	TTF_Quit();
 	SDL_Quit();
 
@@ -269,6 +272,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 
 }
+
 /*
 
 LRESULT WINAPI ScreenSaverProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {

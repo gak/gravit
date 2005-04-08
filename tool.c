@@ -176,6 +176,8 @@ Uint32 getMS() {
 
 void setTitle(char *state) {
 
+#ifndef NO_GUI
+
 	char *a;
 
 	if (state)
@@ -184,6 +186,8 @@ void setTitle(char *state) {
 		a = GRAVIT_VERSION;
 
 	SDL_WM_SetCaption(a, a);	
+
+#endif
 
 }
 

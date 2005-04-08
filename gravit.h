@@ -230,11 +230,11 @@ typedef struct conf_s {
 	char fontFile[MAX_FONT_LENGTH];
 	int fontSize;
 
-	int memoryAvailable;	// MB
-
 	SDL_VideoInfo* gfxInfo;
 
 } conf_t;
+
+#endif
 
 typedef struct col_s {
 
@@ -243,17 +243,6 @@ typedef struct col_s {
 	float b;
 
 } col_t;
-
-typedef struct cola_s {
-
-	float r;
-	float g;
-	float b;
-	float a;
-
-} cola_t;
-
-#endif
 
 // things that change per frame
 typedef struct particle_s {
@@ -276,6 +265,8 @@ typedef struct state_s {
 	particle_t *particleHistory;
 	particleDetail_t *particleDetail;
 
+	int memoryAvailable;	// MB
+	
 	int particleCount;
 	int frame;
 	int totalFrames;

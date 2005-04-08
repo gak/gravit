@@ -158,7 +158,7 @@ void conInit() {
 	memset(con, 0, sizeof(con));
 	memset(conCommand, 0, sizeof(conCommand));
 	conCommandPos = 0;
-	conBlinkTime = SDL_GetTicks();
+	conBlinkTime = getMS();
 	conBlinkOn = 1;
 
 }
