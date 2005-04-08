@@ -193,7 +193,7 @@ void pickPositions() {
 
 		// galaxy structured position
 		angle = frand(0, PI*2);
-		radius = frand(spawnVars.minGalSize, spawnVars.maxGalSize);
+		radius = frand(0, galSize[g]);
 
 		VectorZero(p->pos);
 
