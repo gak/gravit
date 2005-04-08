@@ -29,7 +29,7 @@ int configRead(char *filename) {
 	fp = fopen(filename, "rb");
 	if (!fp) {
 
-		conAdd(2, "Could not open script");
+		conAdd(2, "Could not open script: %s", filename);
 		return 0;
 
 	}

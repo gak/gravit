@@ -96,6 +96,8 @@ int gfxInit() {
 
     }
 
+	conf.sdlStarted = 1;
+
 	icon = IMG_Load("gravit.png");
 	SDL_WM_SetIcon(icon, NULL);
 	SDL_FreeSurface(icon);

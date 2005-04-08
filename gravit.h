@@ -232,6 +232,8 @@ typedef struct conf_s {
 
 	SDL_VideoInfo* gfxInfo;
 
+	int sdlStarted;
+
 } conf_t;
 
 #endif
@@ -292,6 +294,8 @@ typedef struct state_s {
 
 	int currentlySpawning;
 	int restartSpawning;
+
+	int dontExecuteDefaultScript;
 	
 } state_t;
 
@@ -446,6 +450,10 @@ view_t view;
 void cleanMemory();
 void runVideo();
 void runInput();
+void viewInit();
+void spawnDefaults();
+void stateInit();
+int commandLineRead(int argc, char *argv[]);
 
 // tool.c
 char * va( char *format, ... );

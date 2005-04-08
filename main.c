@@ -34,6 +34,7 @@ void loadDefaults() {
 
 #ifndef NO_GUI
 
+	conf.sdlStarted = 0;
 	conf.screenW = 800;
 	conf.screenH = 600;
 	conf.screenBPP = 32;
@@ -44,6 +45,10 @@ void loadDefaults() {
 	conf.fontSize = 11;
 	
 #endif
+
+	viewInit();
+	spawnDefaults();
+	stateInit();
 
 }
 
@@ -129,22 +134,22 @@ void stateInit() {
 	state.currentlySpawning = 0;
 	state.restartSpawning = 0;
 	state.fileName = 0;
+	state.dontExecuteDefaultScript = 0;
 
 }
 
-int init() {
+int init(int argc, char *argv[]) {
 
 	srand(time(0));
 	
 	conInit();
 	loadDefaults();
-	viewInit();
-	spawnDefaults();
-	stateInit();
-	
-//	commandLineRead();
 
-	configRead("gravit.cfg");
+	if (!commandLineRead(argc, argv))
+		return 0;
+
+	if (!state.dontExecuteDefaultScript)
+		configRead("gravit.cfg");
 
 #ifndef NO_GUI
 
@@ -173,6 +178,9 @@ int init() {
 
 void runInput() {
 
+	if (!conf.sdlStarted)
+		return;
+	
 	processKeys();
 
 #ifndef NO_GUI
@@ -188,6 +196,10 @@ void runVideo() {
 #ifndef NO_GUI
 
 	Uint32 ts;
+
+	// this might be called before SDL starts, say from a startup script
+	if (!conf.sdlStarted)
+		return;
 
 	ts = getMS();
 
@@ -247,7 +259,7 @@ void run() {
 
 int main(int argc, char *argv[]) {
 
-	if (init()) {
+	if (init(argc, argv)) {
 
 		conAdd(2, "There has been an error on start-up. Read gravit.cfg to possibly fix this.");
 
@@ -263,13 +275,125 @@ int main(int argc, char *argv[]) {
 #ifndef NO_GUI
 
 	colourSpectrumClear();
-	
-	TTF_Quit();
-	SDL_Quit();
+
+	if (conf.sdlStarted) {
+		TTF_Quit();
+		SDL_Quit();
+	}
 
 #endif
 
 	return 0;
+
+}
+
+#define ShowHelp(p,v) conAdd(0, "  %-20s%s", p, v);
+void usage() {
+
+	conAdd(0, GRAVIT_VERSION);
+	conAdd(0, GRAVIT_COPYRIGHT);
+	conAdd(0, "");
+	conAdd(0, "usage: gravit [-nvh] [-e command]");
+	conAdd(0, "");
+	ShowHelp("-e, --exec",		"execute a command. eg. --exec=\"load foo\"")
+	ShowHelp("-n, --noscript",	"don't load gravit.cfg")
+	ShowHelp("",				"  commands will execute in order from left to right.")
+	ShowHelp("-h, --help",		"you're looking at it")
+	ShowHelp("-v, --version",	"display version and quit")
+	conAdd(0, "");
+	view.quit = 1;
+
+}
+
+int commandLineRead(int argc, char *argv[]) {
+
+	int i;
+	char *parm;
+	char *argvptr;
+
+#define CheckCommand(x) !strncmp(argv[i], x, strlen(x))
+
+/*
+
+	GetValue() is good for:
+
+	--exec value
+	--exec=value
+
+*/
+
+#define GetValue() \
+	if (strlen(parm) == strlen(argv[i])) \
+		argvptr = argv[++i]; \
+	else \
+		argvptr = argv[i] + strlen(parm); \
+	while (argvptr[0] == ' ' || argvptr[0] == '=' || argvptr[0] == 0) argvptr++;
+
+/*
+
+	example of checkCommandAndGetValue(x)
+
+	CheckCommandAndGetValue("--execute")
+		cmdExecute(argvptr);
+	}
+
+	because it's like this when it expands:
+
+	parm = "--execute";
+	if (CheckCommand(parm)) {
+		GetValue();
+		cmdExecute(argvptr);
+	}
+
+*/
+
+#define CheckCommandAndGetValue(x) parm = x; if (CheckCommand(parm)) { GetValue();
+
+	for (i = 1; i < argc; i++) {
+
+		// version, quit
+		if (CheckCommand("--version") || CheckCommand("-v")) {
+			conAdd(0, GRAVIT_VERSION);
+			conAdd(0, GRAVIT_COPYRIGHT);
+			view.quit = 1;
+			return 0;
+		}
+
+		// --help or -h
+		if (CheckCommand("--help") || CheckCommand("-h")) {
+
+			usage();
+			return 0;
+
+		}
+
+		// -e or --exec
+		// runs a command
+		CheckCommandAndGetValue("--exec")
+			cmdExecute(argvptr);
+			continue;
+		}
+
+		CheckCommandAndGetValue("-e")
+			cmdExecute(argvptr);
+			continue;
+		}
+
+		// -n or --noscript
+		if (CheckCommand("--noscript") || CheckCommand("-n")) {
+			state.dontExecuteDefaultScript = 1;			
+			continue;
+		}
+
+		conAdd(0, "");
+		conAdd(0, "Bad parameter: %s", argv[i]);
+		conAdd(0, "");
+		usage();
+		return 0;
+
+	}
+
+	return 1;
 
 }
 
