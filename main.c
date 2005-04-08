@@ -94,7 +94,9 @@ void viewInit() {
 	view.drawAxis = 1;
 	view.consoleMode = 0;
 
-	view.mouseButtons = 0;
+	view.mouseButtons[0] = view.mouseButtons[1] = 0;
+	view.lastMousePosition[0] = view.currentMousePosition[0] = conf.screenW / 2;
+	view.lastMousePosition[1] = view.currentMousePosition[1] = conf.screenH / 2;
 
 	view.fps = 100;
 	view.drawTree = 0;

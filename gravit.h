@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.2.2"
+#define GRAVIT_VERSION "Gravit 0.2.3"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
@@ -324,7 +324,9 @@ typedef struct view_s {
 
 	int quit;
 
-	Uint8 mouseButtons;
+	Uint8 mouseButtons[2];	// 0 now, 1 last
+	int currentMousePosition[2];
+	int lastMousePosition[2];
 
 	float rot[3];
 	float zoom;

@@ -44,12 +44,6 @@ int processKeys() {
 
 		}
 
-		if (view.mouseButtons & SDL_BUTTON(SDL_BUTTON_WHEELUP)) {
-			view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
-		}
-
-
-
 		if (event.type == SDL_KEYUP) {
 			view.keys[event.key.keysym.sym] = 0;
 		}
@@ -313,7 +307,7 @@ void processMouse_old() {
 
 	int x,y;
 
-	view.mouseButtons = SDL_GetRelativeMouseState(&x, &y);
+	view.mouseButtons[0] = SDL_GetRelativeMouseState(&x, &y);
 
 	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(0);
@@ -340,18 +334,23 @@ void processMouse() {
 	int x,y;
 	Uint16 wx,wy;
 
-	view.mouseButtons = SDL_GetRelativeMouseState(&x, &y);
+	view.mouseButtons[1] = view.mouseButtons[0];
+	memcpy(view.lastMousePosition, view.currentMousePosition, sizeof(view.currentMousePosition));
+	view.mouseButtons[0] = SDL_GetMouseState(&view.currentMousePosition[0], &view.currentMousePosition[1]);
+	x = view.currentMousePosition[0] - view.lastMousePosition[0];
+	y = view.currentMousePosition[1] - view.lastMousePosition[1];
 
-	if (view.mouseButtons & SDL_BUTTON(SDL_BUTTON_LEFT) || view.mouseButtons & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+	if (view.mouseButtons[0]) {
 	
-		if (SDL_WM_GrabInput(SDL_GRAB_QUERY) != SDL_GRAB_ON) {
+		wx = conf.screenW / 2;
+		wy = conf.screenH / 2;
+		SDL_WarpMouse(wx,wy);
+		view.currentMousePosition[0] = wx;
+		view.currentMousePosition[1] = wy;
 
+		// turn off cursor only after the 2nd warp mouse, otherwise showcursor does strange things.
+		if (view.mouseButtons[1]) {
 			SDL_ShowCursor(0);
-			wx = conf.screenW / 2;
-			wy = conf.screenH / 2;
-			SDL_WarpMouse(wx,wy);
-			SDL_WM_GrabInput(SDL_GRAB_ON);
-
 		}
 
 		view.rot[1] += x;
@@ -371,13 +370,8 @@ void processMouse() {
 
 	} else {
 
-		if (SDL_WM_GrabInput(SDL_GRAB_QUERY) != SDL_GRAB_OFF) {
+		if (view.mouseButtons[1]) {
 
-		
-			SDL_WM_GrabInput(SDL_GRAB_OFF);
-			wx = conf.screenW / 2;
-			wy = conf.screenH / 2;
-			SDL_WarpMouse(wx,wy);
 			SDL_ShowCursor(1);
 
 		}
