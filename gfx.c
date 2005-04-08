@@ -158,8 +158,6 @@ gfxInitRetry:
 		conAdd(2, "after spawning, hit the \\ (backslash) key).");
 	}
 
-	SDL_WM_GrabInput(SDL_GRAB_ON);
-
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);

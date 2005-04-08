@@ -303,32 +303,6 @@ int processKeys() {
 
 }
 
-void processMouse_old() {
-
-	int x,y;
-
-	view.mouseButtons[0] = SDL_GetRelativeMouseState(&x, &y);
-
-	SDL_WM_GrabInput(SDL_GRAB_ON);
-	SDL_ShowCursor(0);
-
-	view.rot[1] += x;
-	view.rot[0] += y;
-
-	glPushMatrix();
-
-	glLoadMatrixf(view.mat1);
-	glRotatef((float)y, 1.f, 0, 0);
-	glGetFloatv(GL_MODELVIEW_MATRIX, view.mat1);
-
-	glLoadMatrixf(view.mat2);
-	glRotatef((float)x, 0, 1.f, 0);
-	glGetFloatv(GL_MODELVIEW_MATRIX, view.mat2);
-
-	glPopMatrix();
-
-}
-
 void processMouse() {
 
 	int x,y;
