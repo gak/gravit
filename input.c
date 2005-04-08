@@ -29,6 +29,11 @@ int processKeys() {
 
 	while( SDL_PollEvent( &event ) ) {
 
+		if (event.type == SDL_QUIT) {
+			cmdQuit(NULL);
+			return 1;
+		}
+
 		if (event.type == SDL_KEYUP) {
 			view.keys[event.key.keysym.sym] = 0;
 		}
