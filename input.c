@@ -34,6 +34,22 @@ int processKeys() {
 			return 1;
 		}
 
+		if (event.type == SDL_MOUSEBUTTONDOWN) {
+		
+			if (event.button.button == SDL_BUTTON_WHEELDOWN)
+				view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
+		
+			if (event.button.button == SDL_BUTTON_WHEELUP)
+				view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
+
+		}
+
+		if (view.mouseButtons & SDL_BUTTON(SDL_BUTTON_WHEELUP)) {
+			view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
+		}
+
+
+
 		if (event.type == SDL_KEYUP) {
 			view.keys[event.key.keysym.sym] = 0;
 		}
@@ -289,11 +305,14 @@ int processKeys() {
 
 }
 
-void processMouse() {
+void processMouse_old() {
 
 	int x,y;
 
-	SDL_GetRelativeMouseState(&x, &y);
+	view.mouseButtons = SDL_GetRelativeMouseState(&x, &y);
+
+	SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_ShowCursor(0);
 
 	view.rot[1] += x;
 	view.rot[0] += y;
@@ -309,6 +328,57 @@ void processMouse() {
 	glGetFloatv(GL_MODELVIEW_MATRIX, view.mat2);
 
 	glPopMatrix();
+
+}
+
+void processMouse() {
+
+	int x,y;
+	Uint16 wx,wy;
+
+	view.mouseButtons = SDL_GetRelativeMouseState(&x, &y);
+
+	if (view.mouseButtons & SDL_BUTTON(SDL_BUTTON_LEFT) || view.mouseButtons & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+	
+		if (SDL_WM_GrabInput(SDL_GRAB_QUERY) != SDL_GRAB_ON) {
+
+			SDL_ShowCursor(0);
+			wx = conf.screenW / 2;
+			wy = conf.screenH / 2;
+			SDL_WarpMouse(wx,wy);
+			SDL_WM_GrabInput(SDL_GRAB_ON);
+
+		}
+
+		view.rot[1] += x;
+		view.rot[0] += y;
+
+		glPushMatrix();
+
+		glLoadMatrixf(view.mat1);
+		glRotatef((float)y, 1.f, 0, 0);
+		glGetFloatv(GL_MODELVIEW_MATRIX, view.mat1);
+
+		glLoadMatrixf(view.mat2);
+		glRotatef((float)x, 0, 1.f, 0);
+		glGetFloatv(GL_MODELVIEW_MATRIX, view.mat2);
+
+		glPopMatrix();
+
+	} else {
+
+		if (SDL_WM_GrabInput(SDL_GRAB_QUERY) != SDL_GRAB_OFF) {
+
+		
+			SDL_WM_GrabInput(SDL_GRAB_OFF);
+			wx = conf.screenW / 2;
+			wy = conf.screenH / 2;
+			SDL_WarpMouse(wx,wy);
+			SDL_ShowCursor(1);
+
+		}
+
+	}
 
 }
 

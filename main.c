@@ -94,6 +94,8 @@ void viewInit() {
 	view.drawAxis = 1;
 	view.consoleMode = 0;
 
+	view.mouseButtons = 0;
+
 	view.fps = 100;
 	view.drawTree = 0;
 	view.frameSkip = 0;
@@ -169,7 +171,7 @@ int init(int argc, char *argv[]) {
 #ifndef NO_GUI
 
 	conAdd(0, "Quick Start: Hit F8 a few times then F6 to start recording.");
-	conAdd(0, "Use the mouse to move around. Use A and Z keys to zoom in and out.");
+	conAdd(0, "Hold down a mouse button and move it around. Use A and Z keys to zoom in and out.");
 
 #endif
 

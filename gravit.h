@@ -324,6 +324,8 @@ typedef struct view_s {
 
 	int quit;
 
+	Uint8 mouseButtons;
+
 	float rot[3];
 	float zoom;
 
