@@ -32,7 +32,7 @@ int initFrame() {
 
 	cleanMemory();
 
-	conAdd(2, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
+//	conAdd(2, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
 	state.particleHistory = _aligned_malloc(FRAMESIZE * state.historyFrames, 16);
 
 	if (!state.particleHistory) {
@@ -44,7 +44,7 @@ int initFrame() {
 
 	state.memoryAllocated += FRAMESIZE * state.historyFrames;
 
-	conAdd(2, "Allocating %i bytes", FRAMEDETAILSIZE);
+//	conAdd(2, "Allocating %i bytes", FRAMEDETAILSIZE);
 	state.particleDetail = calloc(sizeof(particleDetail_t),state.particleCount);
 	if (!state.particleDetail) {
 

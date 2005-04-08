@@ -81,11 +81,12 @@ echo '</table>';
 <li>Console with script execution</li>
 <li>Colours can be based on mass, velocity or acceleration</li>
 <li>See an octtree being created in real-time</li>
+<li>Save/Load functionality</li>
+<li>Update display/input while rendering</li>
 </ul>
 
 <h2>Details</h2>
 <ul>
-<li>So far Gravit has been tested on Windows XP and Linux Slackware.</li>
 <li>It is written in C and uses SDL, SDL_ttf, SDL_image and OpenGL.</li>
 <li>It uses the <a href="http://www.amara.com/papers/nbody.html#tcu">Barnes-Hut Algorithm</a> (with room for optimisation).</li>
 <li>Gravit was called Graviton, but i changed the name because someone already used Graviton for their project!</li>
@@ -124,9 +125,10 @@ function showFileHeading($s) {
 
 
 showFileHeading("Latest Release");
-showFiles("0.2.1");
+showFiles("0.2.2");
 
 showFileHeading("Older Releases");
+showFiles("0.2.1");
 showFiles("0.2");
 showFiles("0.1");
 
@@ -137,16 +139,13 @@ showFiles("0.1");
 <li>Fix gimbal lock with 3d rotation</li>
 <li>Better camera controls</li>
 <li>Console tab-completition</li>
-<li>Complete Save/Load functionality</li>
 <li>Be more user friendly!</li>
 <li>Create a GUI</li>
-<li>Update display/input while rendering</li>
 <li>Screenshot to jpg</li>
 <li>Scriptable spawn locations</li>
 <li>Usage with <a href="http://bima.astro.umd.edu/nemo/">NEMO</a></li>
 <li>Create Videos</li>
 <li>Tutorial Demonstration</li>
-<li>Command line parameters</li>
 <li>Multi-threading</li>
 <li>Screensaver</li>
 </ul>

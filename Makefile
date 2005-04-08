@@ -9,7 +9,7 @@ DISTDIR = gravit-0.2.2
 TMPBASE = /tmp
 TMPDIR = $(TMPBASE)/$(DISTDIR)
 
-all: dep final
+all: final
 
 dep:
 	@makedepend $(CFLAGS) *.c 2> /dev/null

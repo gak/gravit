@@ -441,6 +441,7 @@ void cmdSaveFrameDump(char *arg) {
 		if (!state.fileName) {
 
 			conAdd(2, "Please specify a name (not extensions necessary).");
+			conAdd(1, "usage: save [name]");
 			return;
 
 		}

@@ -121,7 +121,11 @@ int processKeys() {
 					view.screenshotLoop = 1;
  					conAdd(1, "Taking a screenshot every frame. Careful how long you run this!");
 				}
+				break;
 				
+			case SDLK_s:
+				if (SDL_GetModState() & KMOD_LCTRL || SDL_GetModState() & KMOD_RCTRL)
+					cmdSaveFrameDump(NULL);
 				break;
 
 			case SDLK_BACKQUOTE:

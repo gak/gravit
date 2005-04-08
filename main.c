@@ -56,14 +56,14 @@ void cleanMemory() {
 
 	if (state.particleHistory) {
 
-		conAdd(0, "Freeing state.particleHistory");
+//		conAdd(0, "Freeing state.particleHistory");
 		_aligned_free(state.particleHistory);
 
 	}
 
 	if (state.particleDetail) {
 
-		conAdd(0, "Freeing state.particleDetail");
+//		conAdd(0, "Freeing state.particleDetail");
 		_aligned_free(state.particleDetail);
 
 	}

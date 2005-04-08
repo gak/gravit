@@ -2,6 +2,26 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.2.2 2005/04/09
+
+    * load and save commands added
+          o usage is save [simulationname] or load [simulationname]
+          o name doesn't require an extension - they're made for you in the save directory.
+          o if you don't specify simulation name, it will use the last name you used in a load or save command (if you have used one)
+          o control-s is a shortcut to save to the simulation
+          o the current simulation name is displayed on the top of the screen 
+    * Better (?) mouse controls. You need to hold down a mouse button to rotate the view. This seems to be useful in non-fullscreen mode.
+    * Mousewheel up/down zooms in/out
+    * Added command-line parsing
+          o --help/--version self expanatory
+          o --execute to execute a command
+          o --noscript to not run gravit.cfg on startup 
+    * Colour scheme bar is thinner
+    * Colour scheme bar can be turned off with "drawcolourscheme 0"
+    * Gravit now quits when the user hits the X in their WM
+    * Less alloc debug messages
+    * Compiling a console only binary works again (using -DNO_GUI) 
+
 0.2.1 2005/04/08
 
     * Added recordingvideorefreshtime command to allow Gravit to render to the screen while recording a frame or spawning particles.

@@ -137,16 +137,18 @@ void drawOSD() {
 		DUH("F9", "take one screenshot");
 		DUH("F10", "take a screenshot every frame (CAREFUL!)");
 
+		DUH("ctrl + s", "quick save");
+
 		WHITEHEADINGNL("View Controls");
 
 		DUHC();
-		DUH("mouse X Y", "rotate");
+		DUH("mouse X Y + button", "rotate (with mouse button)");
 		DUH("A Z", "zoom");
 
 		WHITEHEADINGNL("Other");
 
 		DUHC();
-		DUH("T", "display last oct tree");
+		DUH("T", "display current oct tree");
 		DUH("O", "toggles drawing text");
 		DUH("` (above TAB)", "use the console");
 
