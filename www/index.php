@@ -123,10 +123,10 @@ function showFileHeading($s) {
 
 
 showFileHeading("Latest Release");
-//showFiles("0.2.1");
-showFiles("0.2");
+showFiles("0.2.1");
 
 showFileHeading("Older Releases");
+showFiles("0.2");
 showFiles("0.1");
 
 ?>

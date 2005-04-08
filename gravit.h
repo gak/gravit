@@ -97,6 +97,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
+#define FRAMEDETAILSIZE (sizeof(particleDetail_t) * state.particleCount)
 
 #define getParticleCurrentFrame(i) state.particleHistory + state.particleCount * state.currentFrame + (i)
 #define getParticleFirstFrame(i) state.particleHistory + (i)
@@ -106,6 +107,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define PI 3.14159265358979f
 
 #define SCREENSHOT_PATH "screenshots"
+#define SAVE_PATH "save"
+
 #define STRING_RECORD "Recording"
 #define STRING_PLAY "Playing"
 
@@ -263,11 +266,8 @@ typedef struct particle_s {
 // things that change less often
 typedef struct particleDetail_s {
 
-	int frame;
-	float size;
 	float mass;
 	float col[4];
-	int active;
 
 } particleDetail_t;
 
@@ -463,6 +463,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size);
 int SaveMemoryDump(char *FileName, unsigned char *d, unsigned int total);
 Uint32 getMS();
 void setTitle(char *state);
+int mymkdir(char *path);
 
 // spawn.c
 extern spawnVars_t spawnVars;

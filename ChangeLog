@@ -2,6 +2,20 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.2.1 2005/04/08
+
+    * Added recordingvideorefreshtime command to allow Gravit to render to the screen while recording a frame or spawning particles.
+          o This makes your FPS smoother during a recording.
+          o Also allows you to restart the spawn process while spawning lots of particles.
+          o With a lot of particles, you can see the octtree being generated!!
+          o See gravit.cfg for more details... 
+    * Added colourschemenew and colourschemeadd commands to allow you to customise the colour scheme
+    * Recording is now about twice as fast due to an inefficient distance calculation. (Thanks to Michael Vanslembrouck for pointing that out)
+    * Window Title now tells the status of your recording. For example "17/2532 (skip:16)" means 17 frames recorded our of a 2532 maximum with a record skip of 16.
+    * spawning galaxy sizes fixed
+    * grativ.cfg sets videobpp to 32 now, instead of 16.
+    * Windows zip's have renamed files to ChangeLog.txt and README.txt 
+
 0.2 2005/04/07
 
     * Added SDL_image as a dependency
@@ -43,4 +57,3 @@ Gravit ChangeLog
 0.1 2005/04/04
 
     * Initial Release 
-    

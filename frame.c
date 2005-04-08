@@ -32,9 +32,6 @@ int initFrame() {
 
 	cleanMemory();
 
-	state.particleCount = state.particlesToSpawn;
-	state.historyFrames = (int)((float)(conf.memoryAvailable * 1024 * 1024) / FRAMESIZE);
-
 	conAdd(2, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
 	state.particleHistory = _aligned_malloc(FRAMESIZE * state.historyFrames, 16);
 
@@ -47,18 +44,18 @@ int initFrame() {
 
 	state.memoryAllocated += FRAMESIZE * state.historyFrames;
 
-	conAdd(2, "Allocating %i bytes", sizeof(particleDetail_t) * state.particleCount);
+	conAdd(2, "Allocating %i bytes", FRAMEDETAILSIZE);
 	state.particleDetail = calloc(sizeof(particleDetail_t),state.particleCount);
 	if (!state.particleDetail) {
 
-		conAdd(1, "Could not allocate %i bytes of memory for particleDetail", sizeof(particleDetail_t) * state.particleCount);
+		conAdd(1, "Could not allocate %i bytes of memory for particleDetail", FRAMEDETAILSIZE);
 		_aligned_free(state.particleHistory);
 		state.memoryAllocated = 0;
 		return 0;
 
 	}
 
-	state.memoryAllocated += sizeof(particleDetail_t) * state.particleCount;
+	state.memoryAllocated += FRAMEDETAILSIZE;
 
 	return 1;
 
@@ -263,7 +260,6 @@ void processCollisions() {
 				p1->vel[0] = (p1->vel[0] + p2->vel[0])/2;
 				p1->vel[1] = (p1->vel[1] + p2->vel[1])/2;
 				p1->vel[2] = (p1->vel[2] + p2->vel[2])/2;
-				p2->active = 1;
 
 				conAdd(0, "Particle %i and %i collided: newmass=%f", i, j, p1->mass);
 

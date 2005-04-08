@@ -42,6 +42,8 @@ packagewin:
 	mkdir $(TMPDIR)
 	cp $(BASEFILES) Release/gravit.exe $(TMPDIR)
 	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
+	cd $(TMPDIR); mv README README.txt
+	cd $(TMPDIR); mv ChangeLog ChangeLog.txt
 	cd $(TMPBASE); zip -r $(DISTDIR)-win32.zip $(DISTDIR)
 	cp $(TMPBASE)/$(DISTDIR)-win32.zip dist/
 	cp $(TMPBASE)/$(DISTDIR)-win32.zip www/dist/
@@ -53,6 +55,8 @@ packagewindll:
 	mkdir $(TMPDIR)
 	cp $(BASEFILES) Release/gravit.exe SDL.dll SDL_ttf.dll SDL_image.dll jpeg.dll libpng13.dll zlib1.dll $(TMPDIR)
 	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
+	cd $(TMPDIR); mv README README.txt
+	cd $(TMPDIR); mv ChangeLog ChangeLog.txt
 	cd $(TMPBASE); zip -r $(DISTDIR)-win32-dll.zip $(DISTDIR)
 	cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip dist/
 	cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip www/dist/

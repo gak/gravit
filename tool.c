@@ -71,10 +71,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 	i = 0;
 	pos = 0;
 
-	while (!feof(fp)) {
-
-		if (pos >= size)
-			break;
+	while (pos < size) {
 
 		if (size - pos < chunkMax)
 			amountToRead = size - pos;
@@ -82,6 +79,14 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 			amountToRead = chunkMax;
 
 		p = fread(d, 1, amountToRead, fp);
+
+		if (p == 0) {
+			conAdd(2, "Short read on %s", fileName);
+			fclose(fp);
+			return 0;
+		}
+		
+
 		d += p;
 		pos += p;
 
@@ -92,7 +97,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 			return 0;
 
 		}
-
+#if 0
 		if (i) {
 			conAdd(0, "%3.1f%% (%.0f / %.0f)", 100*(float)pos/(float)size,(float)pos / 1024 / 1024,(float)size / 1024 / 1024);
 #ifndef NO_GUI
@@ -102,10 +107,13 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 		}
 
 		i--;
-
+#endif
+		
 	}
 
 	fclose(fp);
+
+	conAdd(0, "Loaded %i bytes from %s", size, fileName);
 
 	return 1;
 }
@@ -140,7 +148,7 @@ int SaveMemoryDump(char *fileName, unsigned char *d, unsigned int total) {
 
 	fclose(fp);
 
-	conAdd(0, "written %u/%u bytes", written, total);
+	conAdd(0, "written %u bytes to %s", written, fileName);
 
 	return 1;
 
@@ -177,4 +185,31 @@ void setTitle(char *state) {
 
 	SDL_WM_SetCaption(a, a);	
 
+}
+
+int mymkdir(char *path) {
+
+#ifdef WIN32
+	{
+		WIN32_FIND_DATA damnwindows;
+		if (FindFirstFile(path, &damnwindows) == INVALID_HANDLE_VALUE) {
+			CreateDirectory(path, NULL);
+		}
+	}
+#else
+	{
+
+		DIR *d;
+		d = opendir(path);
+		if (!d) {
+			mkdir(path, 0755);
+		} else {
+			closedir(d);
+		}
+
+	}
+#endif
+
+	return 1;
+	
 }

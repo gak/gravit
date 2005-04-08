@@ -53,8 +53,8 @@ static cmd_t cmd[] = {
 	,{ "screenshot",		cmdScreenshot,		NULL,	NULL }
 	,{ "screenshotloop",	NULL,			NULL,	&view.screenshotLoop}
 
-	,{ "loadframedump",	cmdLoadFrameDump,	NULL,	NULL }
-	,{ "saveframedump",	cmdSaveFrameDump,	NULL,	NULL }
+	,{ "load",			cmdLoadFrameDump,		NULL,	NULL }
+	,{ "save",			cmdSaveFrameDump,		NULL,	NULL }
 
 //	,{ "fps",			cmdFps,				&view.fps,	NULL }
 	,{ "frameskip",		NULL,				NULL, &view.frameSkip }
@@ -274,6 +274,9 @@ cmdSpawnRestartSpawning:
 	state.restartSpawning = 0;
 	state.mode = 0;
 
+	state.particleCount = state.particlesToSpawn;
+	state.historyFrames = (int)((float)(conf.memoryAvailable * 1024 * 1024) / FRAMESIZE);
+	
 	if (!initFrame()) {
 		conAdd(1, "Could not init frame");
 		return;
@@ -364,15 +367,7 @@ void cmdPlay(char *arg) {
 	}
 
 }
-
-void cmdSaveFrameUsage() {
-
-	conAdd(1, "Usage:");
-	conAdd(1, "saveframe [name] [start] [end] [skip]");
-	conAdd(1, "saveframe [name] all [skip]");
-
-}
-
+#if 0
 void cmdSaveFrame(char *arg) {
 
     char *fileName, *s2, *s3, *s4;
@@ -427,20 +422,26 @@ void cmdSaveFrame(char *arg) {
 	conAdd(2, "saving frames %i to %i skipping %i to %s", staf, endf, skif, fileName);
 
 }
+#endif
 
 void cmdSaveFrameDump(char *arg) {
 
-	FILE *fp;
 	saveInfo_t si;
+	char *fileName;
 
 	if (isSpawning())
 		return;
 
 	if (!arg) {
 
-		conAdd(1, "Need name");
+		conAdd(2, "Please specify a name (not extensions necessary).");
 		return;
 
+	}
+	
+	if (!mymkdir(SAVE_PATH)) {
+		conAdd(2, "Could not create %s directory", SAVE_PATH);
+		return;
 	}
 
 	si.particleCount = state.particleCount;
@@ -449,65 +450,61 @@ void cmdSaveFrameDump(char *arg) {
 	si.frame = state.frame;
 	si.historyNFrame = state.historyNFrame;
 
-	conAdd(0, "Saving %s...", arg);
-	conAdd(0, "Particles: %i", state.particleCount);
-	conAdd(0, "Frames: %i", state.historyFrames);
+	conAdd(1, "Saving %s...", arg);
+	conAdd(1, "Please Wait...");
+	runVideo();
 
-	fp = fopen(va("save/%s.info", arg), "wb");
-
-	if (!fp)
-		exit(-1);
-
-	if (!fwrite(&si, sizeof(si), 1, fp))
-		exit(-1);
-
-	fclose(fp);
-
-	if (!SaveMemoryDump(va("save/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * state.historyFrames)) {
-
-		conAdd(1, "something fucked up...");
+	fileName = va(SAVE_PATH "/%s.info", arg);
+	if (!SaveMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
+		conAdd(2, "Failed to create %s", fileName);
 		return;
-
 	}
+
+	fileName = va(SAVE_PATH "/%s.particledetail", arg);
+	if (!SaveMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
+		conAdd(2, "Failed to create %s", fileName);
+		return;
+	}
+
+	if (!SaveMemoryDump(va(SAVE_PATH "/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
+		conAdd(2, "Failed to create %s", fileName);
+		return;
+	}
+	conAdd(1, "Simulation saved sucesfully!");
 
 }
 
-
 void cmdLoadFrameDump(char *arg) {
 
-	FILE *fp;
 	saveInfo_t si;
+	char *fileName;
 
 	if (isSpawning())
 		return;
 
 	if (!arg) {
 
-		conAdd(1, "Need name");
+		conAdd(2, "Need name");
 		return;
 
 	}
 
-	fp = fopen(va("save/%s.info", arg), "rb");
-
-	if (!fp)
-		exit(-1);
-
-	if (!fread(&si, sizeof(si), 1, fp))
-		exit(-1);
-
-	fclose(fp);
+	fileName = va(SAVE_PATH "/%s.info", arg);
+	if (!LoadMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
+		conAdd(2, "Failed to load %s", fileName);
+		return;
+	}
 
 	// for mallocing in initFrame
 	state.historyFrames = si.historyFrames;
 	state.particleCount = si.particleCount;
 
-	conAdd(0, "Loading %s...", arg);
+	conAdd(1, "Loading %s...", arg);
 	conAdd(0, "Particles: %i", state.particleCount);
 	conAdd(0, "Frames: %i", state.historyFrames);
 
 	if (!initFrame()) {
-		conAdd(1, "Could not init frame");
+		conAdd(2, "Could not init frame");
 		return;
 	}
 
@@ -515,15 +512,22 @@ void cmdLoadFrameDump(char *arg) {
 	state.frame = si.frame;
 	state.historyNFrame = si.historyNFrame;
 
-	if (!LoadMemoryDump(va("save/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * state.historyFrames)) {
+	conAdd(1, "Please Wait...");
+	runVideo();
 
-		conAdd(1, "It fucked up");
-//		return;
+	if (!LoadMemoryDump(va(SAVE_PATH "/%s.particledetail", arg), (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
+		conAdd(2, "Failed to load %s", fileName);
+		return;
+	}
 
+	if (!LoadMemoryDump(va(SAVE_PATH "/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
+		conAdd(2, "Failed to load %s", fileName);
+		return;
 	}
 
 	state.currentFrame = 0;
-	cmdPlay(NULL);
+	state.mode = 0;
+	conAdd(1, "Simulation loaded sucesfully!");
 
 }
 
@@ -630,26 +634,10 @@ void cmdScreenshot(char *arg) {
 	SDL_UnlockSurface(sdlSurfUpsideDown);
 	SDL_UnlockSurface(sdlSurfNormal);
 
-#ifdef WIN32
-	{
-		WIN32_FIND_DATA damnwindows;
-		if (FindFirstFile(SCREENSHOT_PATH, &damnwindows) == INVALID_HANDLE_VALUE) {
-			CreateDirectory(SCREENSHOT_PATH, NULL);
-		}
+	if (!mymkdir(SCREENSHOT_PATH)) {
+		conAdd(2, "Could not create screenshot directory");		
+		return;
 	}
-#else
-	{
-
-		DIR *d;
-		d = opendir(SCREENSHOT_PATH);
-		if (!d) {
-			mkdir(SCREENSHOT_PATH, 0755);
-		} else {
-			closedir(d);
-		}
-
-	}
-#endif
 
 	// find next free screenshot file name
 	while (1) {

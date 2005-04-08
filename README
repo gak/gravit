@@ -1,11 +1,11 @@
-Gravit Version 0.2
+Gravit Version 0.2.1
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
 
 Overview
 
-    Gravit is current in a development stage. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
+    Gravit is currently in a development stage. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
 
 Configuration
 
@@ -31,7 +31,7 @@ Prerequisites
 Installation for Windows
 
    1. Extract the ZIP file as you already have into a directory.
-   2. You may need to download copy SDL.dll, SDL_ttf.dll, SDL_image.dll and glew.dll into the same directory as gravit.exe
+   2. You may need to download copy SDL.dll, SDL_ttf.dll and SDL_image.dll into the same directory as gravit.exe
           * SDL.dll is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
           * SDL_ttf.dll is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
           * SDL_image.dll is at http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4-win32.zip 
@@ -59,4 +59,3 @@ Contributors
     * Martin White (renwald@slowchop.com)
     * James Stewart
     * Sam Lander (sam.lander@gmail.com) 
-
