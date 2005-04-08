@@ -287,7 +287,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-#define ShowHelp(p,v) conAdd(0, "  %-20s%s", p, v);
+#define ShowHelp(p,v) conAdd(0, "  %-25s%s", p, v);
 void usage() {
 
 	conAdd(0, GRAVIT_VERSION);
@@ -295,11 +295,11 @@ void usage() {
 	conAdd(0, "");
 	conAdd(0, "usage: gravit [-nvh] [-e command]");
 	conAdd(0, "");
-	ShowHelp("-e, --exec",		"execute a command. eg. --exec=\"load foo\"")
-	ShowHelp("-n, --noscript",	"don't load gravit.cfg")
-	ShowHelp("",				"  commands will execute in order from left to right.")
-	ShowHelp("-h, --help",		"you're looking at it")
-	ShowHelp("-v, --version",	"display version and quit")
+	ShowHelp("-e, --exec=COMMAND",	"execute a command. eg. --exec=\"load foo\"")
+	ShowHelp("",					"  commands will execute in order from left to right.")
+	ShowHelp("-n, --noscript",		"don't load gravit.cfg")
+	ShowHelp("-h, --help",			"you're looking at it")
+	ShowHelp("-v, --version",		"display version and quit")
 	conAdd(0, "");
 	view.quit = 1;
 
