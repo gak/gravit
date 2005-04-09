@@ -803,7 +803,7 @@ void cmdInstallScreenSaver(char *arg) {
 
 	// copy gravit.exe to c:\windows\system32 (orwhatever)
 	CopyFile("gravit.exe", va("%s\\gravit.scr", systemDir), FALSE);
-	ShellExecute(NULL, "open", "rundll32.exe", "desk.cpl,InstallScreenSaver gravit.scr", NULL, SW_SHOWNORMAL);
+	ShellExecute(NULL, "open", "rundll32.exe", "desk.cpl,InstallScreenSaver gravit.scr", NULL, SW_SHOW);
 
 	
 
