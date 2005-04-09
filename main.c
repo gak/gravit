@@ -77,8 +77,6 @@ void viewInit() {
 
 #ifndef NO_GUI
 
-	view.firstTimeStamp = getMS();
-
 	view.rot[0] = view.rot[1] = view.rot[2] = 0;
 	view.zoom = 10000;
 	view.textMode = view.textMode;
@@ -245,7 +243,7 @@ void runVideo() {
 
 void run() {
 
-	view.lastRecordFrame = view.lastVideoFrame = getMS();
+	view.firstTimeStamp = view.lastRecordFrame = view.lastVideoFrame = getMS();
 
 	while (!view.quit) {
 
@@ -277,12 +275,12 @@ void run() {
 				conAdd(0, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
 
 		}
-
+		
 		runInput();
 		if (view.quit) return;
 
 		runVideo();
-
+		
 	}
 
 }
