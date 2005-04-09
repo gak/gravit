@@ -193,6 +193,8 @@ void drawFrame() {
 	float c;
 	float sc[4];
 
+	VectorNew(rotateIncrement);
+
 	if (!state.particleHistory)
 		return;
 
@@ -215,10 +217,12 @@ void drawFrame() {
 		0, 1, 0);
 	*/
 
-	glTranslatef(0, 0, -view.zoom);
+	VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
+	VectorAdd(rotateIncrement, view.rot, view.rot);
 
-	glMultMatrixf(view.mat1);
-	glMultMatrixf(view.mat2);
+	glTranslatef(0, 0, -view.zoom);
+	glRotatef((float)view.rot[0], 1.f, 0, 0);
+	glRotatef((float)view.rot[1], 0, 1.f, 0);
 
 	view.verticies = 0;
 

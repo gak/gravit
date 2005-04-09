@@ -330,18 +330,6 @@ void processMouse() {
 		view.rot[1] += x;
 		view.rot[0] += y;
 
-		glPushMatrix();
-
-		glLoadMatrixf(view.mat1);
-		glRotatef((float)y, 1.f, 0, 0);
-		glGetFloatv(GL_MODELVIEW_MATRIX, view.mat1);
-
-		glLoadMatrixf(view.mat2);
-		glRotatef((float)x, 0, 1.f, 0);
-		glGetFloatv(GL_MODELVIEW_MATRIX, view.mat2);
-
-		glPopMatrix();
-
 	} else {
 
 		if (view.mouseButtons[1]) {

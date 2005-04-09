@@ -82,6 +82,8 @@ void viewInit() {
 	memset(view.face, 0, sizeof(view.face));
 	view.pos[2] -= 30;
 
+	VectorZero(view.autoRotate);
+
 	view.tailWidth = 1.0f;
 	view.tailLength = 32;
 	view.tailOpacity = 0.5f;

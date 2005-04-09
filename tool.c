@@ -58,7 +58,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 
 	FILE *fp;
 	unsigned int i, pos, p, amountToRead;
-	unsigned int chunkMax = 1024*1024;
+	unsigned int chunkMax = FILE_CHUNK_SIZE;
 
 	fp = fopen(fileName, "rb");
 	if (!fp) {
@@ -135,7 +135,7 @@ int SaveMemoryDump(char *fileName, unsigned char *d, unsigned int total) {
 
 	while (written < total) {
 
-		write = 1024*1024;
+		write = FILE_CHUNK_SIZE;
 
 		if (written + write > total)
 			write = total - written;

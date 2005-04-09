@@ -104,6 +104,8 @@ static cmd_t cmd[] = {
 
 	,{ "processors",			NULL,				NULL, &state.processFrameThreads }
 
+	,{ "autorotate",			cmdAutoRotate,			NULL,	NULL }
+
 	,{ NULL,			NULL,				NULL }
 
 
@@ -746,4 +748,30 @@ void cmdSetG(char *arg) {
 
 	state.g = -pow(10, -state.gbase);
 	
+}
+
+void cmdAutoRotate(char *arg) {
+
+	char *t;
+	VectorNew(v);
+
+	t = strtok(arg, " ");
+	if (!t) goto cmdAutoRotateUsage;
+	v[0] = atof(t);
+
+	t = strtok(NULL, " ");
+	if (!t) goto cmdAutoRotateUsage;
+	v[1] = atof(t);
+
+	t = strtok(NULL, " ");
+	if (!t) goto cmdAutoRotateUsage;
+	v[2] = atof(t);
+
+	VectorCopy(v, view.autoRotate);
+
+cmdAutoRotateUsage:
+
+	conAdd(1, "autorotate %f %f %f", view.autoRotate);
+	return;
+
 }

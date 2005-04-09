@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.2.3"
+#define GRAVIT_VERSION "Gravit 0.3.0"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
@@ -101,7 +101,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdarg.h>
 #include <ctype.h>
 
-#define FILE_CHUNK_SIZE 1024
+#define FILE_CHUNK_SIZE (1024*1024)
+#define FILE_CHUNK_SIZE_SMALL 1024
 
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
@@ -351,6 +352,8 @@ typedef struct view_s {
 
 	float pos[3];	// todo, position of camera
 	float face[3];
+
+	float autoRotate[3];
 
 	float tailWidth;
 	int tailLength;

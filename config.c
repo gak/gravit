@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 int configRead(char *filename) {
 
 	FILE *fp;
-	char buffer[1024];
+	char buffer[FILE_CHUNK_SIZE_SMALL];
 
 	fp = fopen(filename, "rb");
 	if (!fp) {
@@ -34,7 +34,7 @@ int configRead(char *filename) {
 
 	}
 
-	while (fgets(buffer, 1024, fp)) {
+	while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
 	int len = strlen(buffer) - 1;
 
 		while (len >= 0 && (isspace(buffer[len]) || buffer[len] == 13 || buffer[len] == 10)) buffer[len--] = 0;
