@@ -36,6 +36,11 @@ int processKeys() {
 
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 		
+			if (view.screenSaver) {
+				cmdQuit(0);
+				return 1;
+			}
+			
 			if (event.button.button == SDL_BUTTON_WHEELDOWN)
 				view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
 		
@@ -46,6 +51,10 @@ int processKeys() {
 
 		if (event.type == SDL_KEYUP) {
 			view.keys[event.key.keysym.sym] = 0;
+			if (view.screenSaver) {
+				cmdQuit(0);
+				return 1;
+			}
 		}
 
 		if (event.type == SDL_KEYDOWN) {
@@ -71,6 +80,12 @@ int processKeys() {
 
 				cmdQuit(NULL);
 				return 1;
+				break;
+
+			case SDLK_SPACE:
+				view.screenSaver = 0;
+				view.drawOSD = 1;
+				view.showCursor = 1;
 				break;
 
 			case SDLK_F1:
@@ -314,6 +329,12 @@ void processMouse() {
 	x = view.currentMousePosition[0] - view.lastMousePosition[0];
 	y = view.currentMousePosition[1] - view.lastMousePosition[1];
 
+	// if it's a screensaver, and the mouse has moved, and the simulation has been running for a bit...
+	if (view.screenSaver && (x || y) && (getMS() - view.firstTimeStamp > 1000)) {
+		cmdQuit(0);
+		return;
+	}
+
 	if (view.mouseButtons[0]) {
 	
 		wx = conf.screenW / 2;
@@ -332,11 +353,7 @@ void processMouse() {
 
 	} else {
 
-		if (view.mouseButtons[1]) {
-
-			SDL_ShowCursor(1);
-
-		}
+		SDL_ShowCursor(view.showCursor);
 
 	}
 

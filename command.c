@@ -51,6 +51,9 @@ static cmd_t cmd[] = {
 	,{ "spawn",			cmdSpawn,			NULL,	NULL }
 	,{ "status",		cmdStatus,			NULL,	NULL }
 
+	,{ "screensaver",		NULL,			NULL,	&view.screenSaver }
+	,{ "showcursor",		NULL,			NULL,	&view.showCursor }
+	
 	,{ "g",				cmdSetG,			NULL,	&state.gbase }
 
 	,{ "blendmode",		NULL,				NULL,	&view.blendMode }

@@ -334,17 +334,17 @@ typedef struct view_s {
 	// Set this to > 0 to refresh video every Nms while rendering
 	Uint32 recordingVideoRefreshTime;
 
+	Uint32 firstTimeStamp;
+
 	int quit;
 
 	Uint8 mouseButtons[2];	// 0 now, 1 last
 	int currentMousePosition[2];
 	int lastMousePosition[2];
+	int showCursor;
 
 	float rot[3];
 	float zoom;
-
-	float mat1[16];
-	float mat2[16];
 
 #ifndef NO_GUI
 	int keys[SDLK_LAST];
@@ -354,6 +354,9 @@ typedef struct view_s {
 	float face[3];
 
 	float autoRotate[3];
+
+	// mouse movement/keys will quit
+	int screenSaver;
 
 	float tailWidth;
 	int tailLength;

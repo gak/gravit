@@ -75,8 +75,10 @@ void cleanMemory() {
 
 void viewInit() {
 
+	view.firstTimeStamp = getMS();
+
 	view.rot[0] = view.rot[1] = view.rot[2] = 0;
-	view.zoom = 15000;
+	view.zoom = 10000;
 	view.textMode = view.textMode;
 	memset(view.pos, 0, sizeof(view.pos));
 	memset(view.face, 0, sizeof(view.face));
@@ -90,6 +92,8 @@ void viewInit() {
 	view.tailFaded = 1;
 	view.tailSkip = 4;
 
+	view.screenSaver = 0;
+
 	// 50ms by default (20fps)
 	view.recordingVideoRefreshTime = 50;
 
@@ -99,6 +103,7 @@ void viewInit() {
 	view.mouseButtons[0] = view.mouseButtons[1] = 0;
 	view.lastMousePosition[0] = view.currentMousePosition[0] = conf.screenW / 2;
 	view.lastMousePosition[1] = view.currentMousePosition[1] = conf.screenH / 2;
+	view.showCursor = 1;
 
 	view.fps = 100;
 	view.drawTree = 0;
@@ -312,7 +317,7 @@ void usage() {
 	ShowHelp("-h, --help",			"you're looking at it")
 	ShowHelp("-v, --version",		"display version and quit")
 	conAdd(0, "");
-	view.quit = 1;
+	cmdQuit(0);
 
 }
 
@@ -366,7 +371,7 @@ int commandLineRead(int argc, char *argv[]) {
 		if (CheckCommand("--version") || CheckCommand("-v")) {
 			conAdd(0, GRAVIT_VERSION);
 			conAdd(0, GRAVIT_COPYRIGHT);
-			view.quit = 1;
+			cmdQuit(0);
 			return 0;
 		}
 
@@ -401,7 +406,7 @@ int commandLineRead(int argc, char *argv[]) {
 		if (CheckCommand("/S") || CheckCommand("/s") || CheckCommand("/P") || CheckCommand("/p")) {
 			configRead("screensaver.cfg");
 			state.dontExecuteDefaultScript = 1;
-//			view.screenSaver = 1;
+			view.screenSaver = 1;
 			continue;
 		}
 

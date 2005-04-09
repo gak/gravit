@@ -172,14 +172,7 @@ gfxInitRetry:
 	checkPointParameters();
 	checkPointSprite();
 
-
-	memset(view.mat1, 0, sizeof(view.mat1));
-	memset(view.mat2, 0, sizeof(view.mat2));
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glGetFloatv(GL_MODELVIEW_MATRIX, view.mat1);
-	glGetFloatv(GL_MODELVIEW_MATRIX, view.mat2);
+	SDL_ShowCursor(view.showCursor);
 
 	return 1;
 
