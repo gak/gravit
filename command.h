@@ -57,5 +57,6 @@ void cmdScreenshot(char *arg);
 void cmdScreenshotLoop(char *arg);
 void cmdColourSchemeNew(char *arg);
 void cmdColourSchemeAdd(char *arg);
+void cmdSetG(char *arg);
 
 #endif

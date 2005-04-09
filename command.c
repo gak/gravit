@@ -51,6 +51,8 @@ static cmd_t cmd[] = {
 	,{ "spawn",			cmdSpawn,			NULL,	NULL }
 	,{ "status",		cmdStatus,			NULL,	NULL }
 
+	,{ "g",				cmdSetG,			NULL,	&state.gbase }
+
 	,{ "blendmode",		NULL,				NULL,	&view.blendMode }
 
 	,{ "screenshot",		cmdScreenshot,		NULL,	NULL }
@@ -734,4 +736,14 @@ void cmdColourSchemeAdd(char *arg) {
 
 #endif
 
+}
+
+void cmdSetG(char *arg) {
+
+//	if (isSpawning()) {
+		conAdd(2, "Warning! Changing the gravitantional constant while recording may cause fundimental problems! :)");
+//	}
+
+	state.g = -pow(10, -state.gbase);
+	
 }

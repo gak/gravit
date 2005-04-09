@@ -140,7 +140,10 @@ void stateInit() {
 	state.restartSpawning = 0;
 	state.fileName = 0;
 	state.dontExecuteDefaultScript = 0;
-//	state.g = -0.00001f;
+
+	state.gbase = 5;
+	// cmdSetG should do: state.g = -0.00001f; because of state.gbase = 5;
+	cmdSetG(0);
 
 }
 

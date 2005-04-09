@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
-#define WIN32SCREENSAVER
+// #define WIN32SCREENSAVER
 
 #define MAX_THREADS 1
 
@@ -283,6 +283,7 @@ typedef struct state_s {
 	int historyFrames;
 	int historyNFrame;
 
+	int gbase;
 	float g;
 
 	int frameCompression;
