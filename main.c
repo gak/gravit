@@ -76,7 +76,7 @@ void cleanMemory() {
 void viewInit() {
 
 	view.rot[0] = view.rot[1] = view.rot[2] = 0;
-	view.zoom = 10000;
+	view.zoom = 15000;
 	view.textMode = view.textMode;
 	memset(view.pos, 0, sizeof(view.pos));
 	memset(view.face, 0, sizeof(view.face));
@@ -421,50 +421,9 @@ int commandLineRead(int argc, char *argv[]) {
 
 #ifdef WIN32SCREENSAVER
 
-char szAppName[APPNAMEBUFFERLEN];
-HWND hMainWindow;
 LRESULT WINAPI ScreenSaverProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
-	SDL_SysWMinfo WMInfo;
-
-//	__asm { int 3 };
-
-	strcpy(szAppName, "Hurro");
-	SDL_VERSION(&WMInfo.version);
-	SDL_GetWMInfo(&WMInfo);
-//	hWnd =
-
-	conAdd(0, "hWnd: %u hMainWindow %u sdl %u msg %x/%u", hWnd, hMainWindow, WMInfo.window, msg, msg );
-
-//	hMainWindow =  WMInfo.window;
-
-	switch ( msg ) {
-
-	case WM_CREATE:
-//		__asm { int 3 };
-		init(0, 0);
-		SetTimer( hWnd, 100, 1000, NULL );
-		return TRUE;
-		break;
-
-	case WM_TIMER:
-//		__asm { int 3 };
-		run();
-		return TRUE;
-		break;
-
-	case WM_DESTROY:
-//		__asm { int 3 };
-		view.quit = 1;
-		return TRUE;
-		break;
-
-
-	}
-
 	return TRUE;
-
-	return DefScreenSaverProc(hWnd, msg, wParam, lParam );
 
 }
 
@@ -482,3 +441,4 @@ BOOL WINAPI RegisterDialogClasses(HANDLE hInst)
 }
 
 #endif
+
