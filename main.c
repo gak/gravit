@@ -156,6 +156,8 @@ void stateInit() {
 
 int init(int argc, char *argv[]) {
 
+	char currentDirectory[MAX_PATH];
+
 	srand(time(0));
 	
 	conInit();
@@ -178,6 +180,10 @@ int init(int argc, char *argv[]) {
 		state.historyFrames--;
 
 	fpsInit();
+
+	// if we've gone this far, lets set the registry key even if it exists...
+	GetCurrentDirectory(MAX_PATH, currentDirectory);
+	setRegistryString(REGISTRY_NAME_PATH, currentDirectory);
 
 	conAdd(1, "Welcome to Gravit!");
 
@@ -404,6 +410,16 @@ int commandLineRead(int argc, char *argv[]) {
 #ifdef WIN32SCREENSAVER
 
 		if (CheckCommand("/S") || CheckCommand("/s") || CheckCommand("/P") || CheckCommand("/p")) {
+
+			char *path;
+			path = getRegistryString(REGISTRY_NAME_PATH);
+			if (!path || strlen(path) == 0) {
+				MessageBox(NULL, "Can't work out where Gravit lives!\nTry running Gravit by itself first", "Gravit Screensaver Error", MB_OK);
+				cmdQuit(0);
+				return 0;
+			}
+			SetCurrentDirectory(path);
+
 			configRead("screensaver.cfg");
 			state.dontExecuteDefaultScript = 1;
 			view.screenSaver = 1;

@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
-// #define WIN32SCREENSAVER
+#define WIN32SCREENSAVER
 
 #define MAX_THREADS 1
 
@@ -44,6 +44,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 
 	#include <vfw.h>
+
+	#define REGISTRY_KEY "Software\\Gravit"
+	#define REGISTRY_NAME_PATH "path"
 
 	// stupid hack to fix linking errors with isspace
 	#undef isspace
@@ -486,6 +489,8 @@ Uint32 getMS();
 void setTitle(char *state);
 int mymkdir(char *path);
 void setFileName(char *name);
+char *getRegistryString(char *variable);
+void setRegistryString(char *variable, char *value);
 
 // spawn.c
 extern spawnVars_t spawnVars;

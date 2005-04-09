@@ -233,3 +233,30 @@ void setFileName(char *name) {
 	strcpy(state.fileName, buf);
 
 }
+
+char *getRegistryString(char *variable) {
+#ifdef WIN32
+
+	static char buf[MAX_PATH];
+	int len = MAX_PATH;
+
+	HKEY hkResult;
+	RegCreateKeyEx(HKEY_CURRENT_USER, REGISTRY_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkResult, NULL);
+	RegQueryValueEx(hkResult, variable, 0, NULL, buf, &len);
+	RegCloseKey(hkResult);
+	return buf;
+
+#endif
+	return NULL;
+}
+
+void setRegistryString(char *variable, char *value) {
+#ifdef WIN32
+
+	HKEY hkResult;
+	RegCreateKeyEx(HKEY_CURRENT_USER, REGISTRY_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkResult, NULL);
+	RegSetValueEx(hkResult, variable, 0, REG_SZ, value, strlen(value)+1);
+	RegCloseKey(hkResult);
+
+#endif
+}
