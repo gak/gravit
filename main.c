@@ -391,6 +391,17 @@ int commandLineRead(int argc, char *argv[]) {
 			continue;
 		}
 
+#ifdef WIN32SCREENSAVER
+
+		if (CheckCommand("/S") || CheckCommand("/s") || CheckCommand("/P") || CheckCommand("/p")) {
+			configRead("screensaver.cfg");
+			state.dontExecuteDefaultScript = 1;
+//			view.screenSaver = 1;
+			continue;
+		}
+
+#endif
+
 		conAdd(0, "");
 		conAdd(0, "Bad parameter: %s", argv[i]);
 		conAdd(0, "");
@@ -403,25 +414,50 @@ int commandLineRead(int argc, char *argv[]) {
 
 }
 
-/*
+#ifdef WIN32SCREENSAVER
 
+char szAppName[APPNAMEBUFFERLEN];
+HWND hMainWindow;
 LRESULT WINAPI ScreenSaverProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+	SDL_SysWMinfo WMInfo;
+
+//	__asm { int 3 };
+
+	strcpy(szAppName, "Hurro");
+	SDL_VERSION(&WMInfo.version);
+	SDL_GetWMInfo(&WMInfo);
+//	hWnd =
+
+	conAdd(0, "hWnd: %u hMainWindow %u sdl %u msg %x/%u", hWnd, hMainWindow, WMInfo.window, msg, msg );
+
+//	hMainWindow =  WMInfo.window;
 
 	switch ( msg ) {
 
 	case WM_CREATE:
+//		__asm { int 3 };
+		init(0, 0);
+		SetTimer( hWnd, 100, 1000, NULL );
+		return TRUE;
+		break;
 
-		init();
+	case WM_TIMER:
+//		__asm { int 3 };
 		run();
+		return TRUE;
 		break;
 
 	case WM_DESTROY:
-
+//		__asm { int 3 };
 		view.quit = 1;
+		return TRUE;
 		break;
 
 
 	}
+
+	return TRUE;
 
 	return DefScreenSaverProc(hWnd, msg, wParam, lParam );
 
@@ -440,5 +476,4 @@ BOOL WINAPI RegisterDialogClasses(HANDLE hInst)
   return TRUE;
 }
 
-*/
-
+#endif

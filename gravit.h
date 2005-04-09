@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
+#define WIN32SCREENSAVER
 
 #define MAX_THREADS 1
 
@@ -34,6 +35,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <windows.h>
 	#include <conio.h>
 	#include <stdio.h>
+
+#ifdef WIN32SCREENSAVER
+
+	#include <scrnsave.h>
+	#include <SDL_syswm.h>
+
+#endif
 
 	#include <vfw.h>
 

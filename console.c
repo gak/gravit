@@ -62,6 +62,14 @@ void conAdd(int mode, char *f, ... ) {
 
 	printf("%s\n", s);
 
+	{
+
+		FILE *fp;
+		fp = fopen("meh.txt", "a");
+		fprintf(fp, "%s\n", s);
+		fclose(fp);
+	}
+	
 }
 
 #ifndef NO_GUI
