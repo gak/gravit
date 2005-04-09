@@ -62,6 +62,7 @@ void conAdd(int mode, char *f, ... ) {
 
 	printf("%s\n", s);
 
+#if 0
 	{
 
 		FILE *fp;
@@ -69,7 +70,8 @@ void conAdd(int mode, char *f, ... ) {
 		fprintf(fp, "%s\n", s);
 		fclose(fp);
 	}
-	
+#endif	
+
 }
 
 #ifndef NO_GUI
