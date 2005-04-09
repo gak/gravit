@@ -26,11 +26,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
-#define WIN32SCREENSAVER
 
 #define MAX_THREADS 1
 
 #ifdef WIN32
+
+	#define WIN32SCREENSAVER
 
 	#include <windows.h>
 	#include <conio.h>
@@ -104,6 +105,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdarg.h>
 #include <ctype.h>
 
+#ifndef MAX_PATH
+#define MAX_PATH 260
+#endif
+
 #define FILE_CHUNK_SIZE (1024*1024)
 #define FILE_CHUNK_SIZE_SMALL 1024
 
@@ -159,6 +164,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef Uint32
 	#define Uint32 unsigned int
+#endif
+
+#ifndef Uint8
+	#define Uint8 unsigned char
 #endif
 
 #ifndef WIN32

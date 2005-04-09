@@ -75,6 +75,8 @@ void cleanMemory() {
 
 void viewInit() {
 
+#ifndef NO_GUI
+
 	view.firstTimeStamp = getMS();
 
 	view.rot[0] = view.rot[1] = view.rot[2] = 0;
@@ -101,6 +103,7 @@ void viewInit() {
 	view.consoleMode = 0;
 
 	view.mouseButtons[0] = view.mouseButtons[1] = 0;
+
 	view.lastMousePosition[0] = view.currentMousePosition[0] = conf.screenW / 2;
 	view.lastMousePosition[1] = view.currentMousePosition[1] = conf.screenH / 2;
 	view.showCursor = 1;
@@ -131,9 +134,10 @@ void viewInit() {
 
 	cmdFps(NULL);
 
-	#ifndef NO_GUI
 	memset(view.keys, 0, sizeof(view.keys));
+
 	#endif
+
 
 }
 
@@ -156,7 +160,9 @@ void stateInit() {
 
 int init(int argc, char *argv[]) {
 
+#if WIN32
 	char currentDirectory[MAX_PATH];
+#endif
 
 	srand(time(0));
 	
@@ -181,9 +187,11 @@ int init(int argc, char *argv[]) {
 
 	fpsInit();
 
+#ifdef WIN32
 	// if we've gone this far, lets set the registry key even if it exists...
 	GetCurrentDirectory(MAX_PATH, currentDirectory);
 	setRegistryString(REGISTRY_NAME_PATH, currentDirectory);
+#endif
 
 	conAdd(1, "Welcome to Gravit!");
 
@@ -200,15 +208,15 @@ int init(int argc, char *argv[]) {
 
 void runInput() {
 
+#ifndef NO_GUI
 	if (!conf.sdlStarted)
 		return;
-	
+#endif
+
 	processKeys();
 
 #ifndef NO_GUI
-
 	processMouse();
-
 #endif
 
 }
