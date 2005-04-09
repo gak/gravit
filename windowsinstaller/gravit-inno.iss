@@ -4,6 +4,7 @@
 [Setup]
 AppName=Gravit
 AppVerName=Gravit 0.3.0
+OutputBaseFilename=gravit-0.3.0-win32-installer
 AppPublisherURL=http://gravit.slowchop.com
 AppSupportURL=http://gravit.slowchop.com
 AppUpdatesURL=http://gravit.slowchop.com
@@ -13,7 +14,6 @@ AllowNoIcons=yes
 LicenseFile=D:\src\gravit\windowsinstaller\files\COPYING
 InfoAfterFile=D:\src\gravit\windowsinstaller\files\README.txt
 OutputDir=D:\src\gravit\dist
-OutputBaseFilename=setup
 ; SetupIconFile=D:\src\gravit\windowsinstaller\files\gravit.ico
 Compression=lzma
 SolidCompression=yes

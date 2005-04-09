@@ -59,9 +59,9 @@ packagewindll:
 	cd $(TMPDIR); mv ChangeLog ChangeLog.txt
 	if [ -f windowsinstaller/* ]; then rm windowsinstaller/*; fi
 	cp -r $(TMPBASE)/$(DISTDIR)/* windowsinstaller/files/
-	cd $(TMPBASE); zip -r $(DISTDIR)-win32-dll.zip $(DISTDIR)
-	cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip dist/
-	cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip www/dist/
+	#cd $(TMPBASE); zip -r $(DISTDIR)-win32-dll.zip $(DISTDIR)
+	#cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip dist/
+	#cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip www/dist/
 	rm -fr $(TMPDIR)
 
 packageall: packagesrc packagewin packagewindll
