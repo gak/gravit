@@ -112,6 +112,7 @@ static cmd_t cmd[] = {
 
 	,{ "processors",			NULL,				NULL, &state.processFrameThreads }
 
+	,{ "zoom",					NULL,				&view.zoom, NULL }
 	,{ "autorotate",			cmdAutoRotate,			NULL,	NULL }
 
 	,{ "stereoseparation",		NULL,				&view.stereoSeparation, NULL }
