@@ -115,7 +115,7 @@ static cmd_t cmd[] = {
 	,{ "autorotate",			cmdAutoRotate,			NULL,	NULL }
 
 	,{ "stereoseparation",		NULL,				&view.stereoSeparation, NULL }
-	,{ "stereo",				NULL,				NULL, &view.stereoMode }
+	,{ "stereo",				cmdStereoWarning,				NULL, &view.stereoMode }
 
 	,{ NULL,			NULL,				NULL }
 
@@ -812,8 +812,6 @@ void cmdInstallScreenSaver(char *arg) {
 	CopyFile("gravit.exe", va("%s\\gravit.scr", systemDir), FALSE);
 	ShellExecute(NULL, "open", "rundll32.exe", "desk.cpl,InstallScreenSaver gravit.scr", NULL, SW_SHOW);
 
-	
-
 #endif
 
 }
@@ -823,5 +821,12 @@ void cmdChangeDir(char *arg) {
 #ifdef WIN32
 	SetCurrentDirectory(arg);
 #endif
+
+}
+
+void cmdStereoWarning(char *arg) {
+
+	if (view.stereoMode)
+		conAdd(2, "WARNING: Stereo mode may damage your eyes or other things. Use with caution.");
 
 }

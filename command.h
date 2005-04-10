@@ -61,5 +61,6 @@ void cmdSetG(char *arg);
 void cmdAutoRotate(char *arg);
 void cmdInstallScreenSaver(char *arg);
 void cmdChangeDir(char *arg);
+void cmdStereoWarning(char *arg);
 
 #endif
