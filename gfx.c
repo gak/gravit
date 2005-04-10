@@ -39,13 +39,10 @@ void drawFrameSet2D() {
 void drawFrameSet3D() {
 
 	glViewport(0, 0, conf.screenW, conf.screenH);
-
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
-
 	gluPerspective(45.0f,1,0,10000.0f);
 
 }
@@ -186,38 +183,8 @@ void drawFrame() {
 	float c;
 	float sc[4];
 
-	VectorNew(rotateIncrement);
-
 	if (!state.particleHistory)
 		return;
-
-	setColours();
-
-	drawFrameSet3D();
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
- 	gluPerspective(45,(GLfloat)conf.screenW/(GLfloat)conf.screenH,0.1f,10000000.0f);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	/*
-	gluLookAt(
-
-		0, 0, view.zoom,
-		0, 0, 0,
-		0, 1, 0);
-	*/
-
-	VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
-	VectorAdd(rotateIncrement, view.rot, view.rot);
-
-	glTranslatef(0, 0, -view.zoom);
-	glRotatef((float)view.rot[0], 1.f, 0, 0);
-	glRotatef((float)view.rot[1], 0, 1.f, 0);
-
-	view.verticies = 0;
 
 	switch(view.blendMode) {
 
@@ -478,10 +445,50 @@ void drawRGB() {
 
 void drawAll() {
 
+	int i;
+	int bits;
+	VectorNew(rotateIncrement)
+
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawFrame();
+	view.verticies = 0;
+
+	setColours();
+
+	if (view.stereoMode)
+		bits = 2;
+	else
+		bits = 1;
+
+	for (i = 0; i < bits; i++) {
+
+		glViewport(conf.screenW/bits*i, 0, conf.screenW/bits, conf.screenH);
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+ 		gluPerspective(45,(GLfloat)conf.screenW/bits/(GLfloat)conf.screenH,0.1f,10000000.0f);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
+		VectorAdd(rotateIncrement, view.rot, view.rot);
+
+		if (view.stereoMode) {
+			glTranslatef(((float)i-.5)*view.stereoSeperation, 0, 0);
+		}
+
+			glTranslatef(0, 0, -view.zoom);
+		
+		glRotatef((float)view.rot[0], 1.f, 0, 0);
+		glRotatef((float)view.rot[1], 0, 1.f, 0);
+
+		drawFrame();
+
+	}
+
+	glViewport(0, 0, conf.screenW, conf.screenH);
 
 	// draws the oct tree
 	if (view.drawTree)

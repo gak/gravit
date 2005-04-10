@@ -1,4 +1,4 @@
-Gravit Version 0.2.2
+Gravit Version 0.3.0
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
@@ -28,10 +28,19 @@ Prerequisites
     * SDL_image
           o http://www.libsdl.org/projects/SDL_image/ 
 
-Installation for Windows
+Installation for Windows (Windows Installer)
+
+   1. Execute the installer (as you already have)
+   2. At the end of the installer:
+          * Ask you to modify gravit.cfg. Do it, and read through it... especially if you have problems or want the coolest effects!
+          * The installer will prompt you to install the screensaver. This will popup the screensaver dialog when it installs it.
+          * Ask you to run Gravit. This will run Gravit with default settings. 
+   3. Once Gravit is installed, you will have some handy short cuts in your Program Group in your Start Menu. 
+
+Installation for Windows (Windows Zip)
 
    1. Extract the ZIP file as you already have into a directory.
-   2. You may need to download copy SDL.dll, SDL_ttf.dll and SDL_image.dll into the same directory as gravit.exe
+   2. You may need to download copy SDL.dll, SDL_ttf.dll and SDL_image.dll (and corresponding dll's) into your c:\windows\system32 (or wherever it is on your computer)
           * SDL.dll is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
           * SDL_ttf.dll is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
           * SDL_image.dll is at http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4-win32.zip 
@@ -59,4 +68,3 @@ Contributors
     * Martin White (renwald@slowchop.com)
     * James Stewart
     * Sam Lander (sam.lander@gmail.com) 
-

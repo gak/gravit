@@ -113,8 +113,10 @@ static cmd_t cmd[] = {
 
 	,{ "autorotate",			cmdAutoRotate,			NULL,	NULL }
 
-	,{ NULL,			NULL,				NULL }
+	,{ "stereoseperation",		NULL,				&view.stereoSeperation, NULL }
+	,{ "stereo",				NULL,				NULL, &view.stereoMode }
 
+	,{ NULL,			NULL,				NULL }
 
 };
 

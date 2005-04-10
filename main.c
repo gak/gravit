@@ -130,6 +130,9 @@ void viewInit() {
 	view.colourSpectrumSteps = 0;
 	view.colourSpectrum = 0;
 
+	view.stereoMode = 0;
+	view.stereoSeperation = 10;
+
 	cmdFps(NULL);
 
 	memset(view.keys, 0, sizeof(view.keys));
@@ -225,12 +228,11 @@ void runVideo() {
 
 	Uint32 ts;
 
-	// this might be called before SDL starts, say from a startup script
+	// runVideo might be called before SDL starts, say from a startup script
 	if (!conf.sdlStarted)
 		return;
 
 	ts = getMS();
-
 	drawAll();
 
 	view.deltaVideoFrame = ts - view.lastVideoFrame;

@@ -319,7 +319,7 @@ typedef struct state_s {
 	int restartSpawning;
 
 	int dontExecuteDefaultScript;
-	
+
 } state_t;
 
 typedef struct saveInfo_s {
@@ -409,6 +409,9 @@ typedef struct view_s {
 
 	float *colourSpectrum;		// determines what colour to draw a particle with
 	int colourSpectrumSteps;
+
+	int stereoMode;
+	float stereoSeperation;
 
 } view_t;
 

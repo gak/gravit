@@ -2,6 +2,25 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.3.0 2005/04/10
+
+    * Windows Installer package added
+    * Windows DLL Zip package removed
+    * Windows Screensaver added
+          o Install it by running the "installscreensaver" command
+          o You need the SDL libraries in your Windows System directory for the screensaver to work (the Windows Installer does this for you)
+          o The screensaver makes use of the Windows registry to know where it is installed. It is saved on a per-user basis.
+          o Modify screensaver.cfg to customise your screen saver.
+          o You can hit the space bar during the screen saver to use Graviton. 
+    * g command added, for changing G in the G*m1*m2/d2 calculation.
+          o The value you get out of setting g is "10 ^ -g". Default is 5 (0.00001). The screensaver uses 3 (0.001).
+          o The lower the number the less accurate the simulation is, but each particle moves quicker per frame. 
+    * autorotate command added, for automatically rotating the camera. It was implemented primarily for the screensaver.
+    * showcursor command added, hides or shows the mouse cursor
+    * Got rid of some redundant matrix code
+    * Fixed mouse input oddness
+    * Mouse isn't stuck inside your window anymore 
+
 0.2.2 2005/04/09
 
     * load and save commands added
