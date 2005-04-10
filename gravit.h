@@ -411,7 +411,7 @@ typedef struct view_s {
 	int colourSpectrumSteps;
 
 	int stereoMode;
-	float stereoSeperation;
+	float stereoSeparation;
 
 } view_t;
 

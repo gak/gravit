@@ -476,7 +476,7 @@ void drawAll() {
 		VectorAdd(rotateIncrement, view.rot, view.rot);
 
 		if (view.stereoMode) {
-			glTranslatef(((float)i-.5)*view.stereoSeperation, 0, 0);
+			glTranslatef(((float)i-.5)*view.stereoSeparation, 0, 0);
 		}
 
 		glTranslatef(0, 0, -view.zoom);
