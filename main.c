@@ -177,6 +177,9 @@ int init(int argc, char *argv[]) {
 	if (!commandLineRead(argc, argv))
 		return 0;
 
+	if (view.quit)
+		return 0;
+
 	if (!state.dontExecuteDefaultScript)
 		configRead("gravit.cfg");
 
