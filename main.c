@@ -427,7 +427,7 @@ int commandLineRead(int argc, char *argv[]) {
 
 #ifdef WIN32SCREENSAVER
 
-		if (CheckCommand("/S") || CheckCommand("/s") || CheckCommand("/P") || CheckCommand("/p")) {
+		if (CheckCommand("/S") || CheckCommand("/s")/* || CheckCommand("/P") || CheckCommand("/p")*/) {
 
 			char *path;
 			path = getRegistryString(REGISTRY_NAME_PATH);
@@ -441,7 +441,14 @@ int commandLineRead(int argc, char *argv[]) {
 			configRead("screensaver.cfg");
 			state.dontExecuteDefaultScript = 1;
 			view.screenSaver = 1;
+
 			continue;
+		}
+
+		// just ignore preview mode, configure dialog and change password
+		if (CheckCommand("/P") || CheckCommand("/p") || CheckCommand("/CP") || CheckCommand("/c") || CheckCommand("/A") || CheckCommand("/a")) {
+			cmdQuit(0);
+			return 0;
 		}
 
 #endif
