@@ -155,6 +155,8 @@ void stateInit() {
 	state.restartSpawning = 0;
 	state.fileName = 0;
 	state.dontExecuteDefaultScript = 0;
+	state.autoSave = 0;
+	state.lastSave = 0;
 
 	state.gbase = 5;
 	// cmdSetG should do: state.g = -0.00001f; because of state.gbase = 5;
@@ -265,6 +267,11 @@ void run() {
 			ts = getMS();
 			view.deltaRecordFrame = ts - view.lastRecordFrame;
 			view.lastRecordFrame = ts;
+
+			if (state.autoSave && (state.frame - state.lastSave) >= state.autoSave) {
+				cmdSaveFrameDump(0);
+				state.lastSave = state.frame;
+			}
 
 		}
 

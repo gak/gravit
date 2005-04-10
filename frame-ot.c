@@ -451,3 +451,82 @@ void processFrameOT(int start, int amount) {
 	}
 
 }
+
+void otDrawField() {
+
+	VectorNew(pos)
+	VectorNew(force)
+
+	VectorZero(pos)
+	VectorZero(force)
+
+	if (!r)
+		return;
+
+	otDrawFieldRecursive(pos, r, force);
+
+	glColor3f(1,1,1);
+	glBegin(GL_LINES);
+	VectorMultiply(force, 1000, force);
+	glVertex3fv(pos);
+	glVertex3fv(force);
+
+	glEnd();
+	
+
+}
+
+void otDrawFieldRecursive(float *pos, node_t *node, float *force) {
+
+	int i;
+	node_t *b;
+
+	float d;
+	float poo;
+
+	float f;
+
+	VectorNew(newForce)
+	VectorZero(newForce)
+
+	for (i = 0; i < 8; i++) {
+
+		if (!node->b[i])
+			continue;
+
+		b = (node_t *)node->b[i];
+
+		distance2(pos, b->cm, d);
+
+		if (!d)
+			continue;
+
+		poo = b->length / (float)sqrt(d);
+
+		if ( poo > 0.5f ) {
+
+			otDrawFieldRecursive(pos, b, newForce);
+
+			VectorAdd(force, newForce, force);
+
+		} else {
+
+			{
+				float dv[3];
+				dv[0] = pos[0] - b->cm[0];
+				dv[1] = pos[1] - b->cm[1];
+				dv[2] = pos[2] - b->cm[2];
+
+				if (d) {
+					f = state.g * b->mass / d;
+					force[0] += dv[0] * f;
+					force[1] += dv[1] * f;
+					force[2] += dv[2] * f;
+				}
+			}
+
+		}
+
+	}
+
+}

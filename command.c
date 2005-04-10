@@ -67,6 +67,7 @@ static cmd_t cmd[] = {
 
 	,{ "load",			cmdLoadFrameDump,		NULL,	NULL }
 	,{ "save",			cmdSaveFrameDump,		NULL,	NULL }
+	,{ "saveauto",		NULL,					NULL,	&state.autoSave }
 
 //	,{ "fps",			cmdFps,				&view.fps,	NULL }
 	,{ "frameskip",		NULL,				NULL, &view.frameSkip }

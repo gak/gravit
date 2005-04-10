@@ -495,14 +495,16 @@ void drawAll() {
 	if (view.drawTree)
 		otDrawTree();
 
+	// just a test...
+	// otDrawField();
+
 //	if (view.drawAxis)
 //		drawAxis();
 
 	if (view.drawOSD) {
-		drawOSD();
 
-		if (view.drawColourScheme)
-			drawRGB();
+		drawOSD();
+		if (view.drawColourScheme) drawRGB();
 		
 	}
 

@@ -193,7 +193,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // this define is to render video in the middle of a recording
 #define doVideoUpdate() \
-	if (view.lastVideoFrame) { \
+	if (view.recordingVideoRefreshTime) { \
 		if (!(state.mode & SM_RECORD) ) return; \
 		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
 			runInput(); \
@@ -204,7 +204,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
-	if (view.lastVideoFrame) { \
+	if (view.recordingVideoRefreshTime) { \
 		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
 			runInput(); \
 			runVideo(); \
@@ -311,7 +311,7 @@ typedef struct state_s {
 
 	unsigned int memoryAllocated;
 
-	int incSave;	// save last frame + info after every frame
+	int lastSave;	// last frame saved
 	int autoSave;	// auto save every n frames. 0 for off.
 	char *fileName; // if null dont autosave or incsave.
 
@@ -574,8 +574,9 @@ typedef struct node_s {
 void otDrawTree();
 void otFreeTree();
 void processFrameOT(int,int);
+void otDrawFieldRecursive(float *pos, node_t *node, float *force);
 
-void frDoGravity(particle_t *p, node_t *n, float d);
+// void frDoGravity(particle_t *p, node_t *n, float d);
 
 extern float fpsCurrentAverageFPS;
 extern float fpsCurrentAverageFT;
