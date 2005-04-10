@@ -17,6 +17,8 @@ OutputDir=D:\src\gravit\dist
 ; SetupIconFile=D:\src\gravit\windowsinstaller\files\gravit.ico
 Compression=lzma
 SolidCompression=yes
+WizardSmallImageFile=d:\src\gravit\windowsinstaller\SmallImage.bmp
+WizardImageFile=d:\src\gravit\windowsinstaller\Image.bmp
 
 [Tasks]
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
