@@ -479,10 +479,11 @@ void drawAll() {
 			glTranslatef(((float)i-.5)*view.stereoSeperation, 0, 0);
 		}
 
-			glTranslatef(0, 0, -view.zoom);
+		glTranslatef(0, 0, -view.zoom);
 		
-		glRotatef((float)view.rot[0], 1.f, 0, 0);
-		glRotatef((float)view.rot[1], 0, 1.f, 0);
+		glRotatef((float)view.rot[0], 1, 0, 0);
+		glRotatef((float)view.rot[1], 0, 1, 0);
+		glRotatef((float)view.rot[2], 0, 0, 1);
 
 		drawFrame();
 
