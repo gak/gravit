@@ -333,13 +333,16 @@ void usage() {
 	conAdd(0, GRAVIT_VERSION);
 	conAdd(0, GRAVIT_COPYRIGHT);
 	conAdd(0, "");
-	conAdd(0, "usage: gravit [-nvh] [-e command]");
+	conAdd(0, "usage: gravit [-nvh] [COMMAND] ...");
 	conAdd(0, "");
-	ShowHelp("-e, --exec=COMMAND",	"execute a command. eg. --exec=\"load foo\"")
-	ShowHelp("",					"  commands will execute in order from left to right.")
+//	ShowHelp("-e, --exec=COMMAND",	"execute a command. eg. --exec=\"load foo\"")
+//	ShowHelp("",					"  commands will execute in order from left to right.")
 	ShowHelp("-n, --noscript",		"don't load gravit.cfg")
 	ShowHelp("-h, --help",			"you're looking at it")
 	ShowHelp("-v, --version",		"display version and quit")
+	conAdd(0, "");
+	conAdd(0, "  'COMMAND' should be encapsulated in quotes when there are spaces involved.");
+	conAdd(0, "  For example: gravit \"drawosd 0\" spawn record \"saveauto 20\"");
 	conAdd(0, "");
 	cmdQuit(0);
 
@@ -348,8 +351,8 @@ void usage() {
 int commandLineRead(int argc, char *argv[]) {
 
 	int i;
-	char *parm;
-	char *argvptr;
+//	char *parm;
+//	char *argvptr;
 
 #define CheckCommand(x) !strncmp(argv[i], x, strlen(x))
 
@@ -409,13 +412,11 @@ int commandLineRead(int argc, char *argv[]) {
 
 		// -e or --exec
 		// runs a command
-		CheckCommandAndGetValue("--exec")
-			cmdExecute(argvptr);
-			continue;
-		}
-
-		CheckCommandAndGetValue("-e")
-			cmdExecute(argvptr);
+		if (CheckCommand("--exec") || CheckCommand("-e")) {
+			conAdd(0, "Sorry, --exec has been removed -- just add your commands to the command line as they are");
+			conAdd(0, "  eg. gravit exec \"\" ");
+			cmdQuit(0);
+			return 0;
 			continue;
 		}
 
@@ -446,11 +447,7 @@ int commandLineRead(int argc, char *argv[]) {
 
 #endif
 
-		conAdd(0, "");
-		conAdd(0, "Bad parameter: %s", argv[i]);
-		conAdd(0, "");
-		usage();
-		return 0;
+		cmdExecute(argv[i]);
 
 	}
 

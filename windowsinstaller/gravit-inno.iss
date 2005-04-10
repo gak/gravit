@@ -38,8 +38,8 @@ Filename: "{app}\gravit.url"; Section: "InternetShortcut"; Key: "URL"; String: "
 
 [Icons]
 Name: "{group}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}";
-Name: "{group}\Gravit (Compatible Mode)"; Filename: "{app}\gravit.exe"; Parameters: "-e ""particlerendermode 0"""; WorkingDir: "{app}";
-Name: "{group}\Install Gravit Screen Saver"; Filename: "{app}\gravit.exe"; Parameters: "-e installscreensaver -e quit"; WorkingDir: "{app}";
+Name: "{group}\Gravit (Compatible Mode)"; Filename: "{app}\gravit.exe"; Parameters: """particlerendermode 0"""; WorkingDir: "{app}";
+Name: "{group}\Install Gravit Screen Saver"; Filename: "{app}\gravit.exe"; Parameters: "installscreensaver quit"; WorkingDir: "{app}";
 Name: "{group}\Configure\Customise Gravit (gravit.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\gravit.cfg";
 Name: "{group}\Configure\Customise Screen Saver (screensaver.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\screensaver.cfg";
 Name: "{group}\Visit Gravit on the Internet"; Filename: "{app}\gravit.url"
@@ -49,7 +49,7 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gravit"; Filename:
 
 [Run]
 Filename: "{win}\notepad.exe"; Parameters: "{app}\gravit.cfg"; Description: "Modify gravit.cfg (Recommended)"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\gravit.exe"; Description: "Install Gravit Screensaver"; Parameters: "-einstallscreensaver -equit"; Flags: postinstall skipifsilent
+Filename: "{app}\gravit.exe"; Description: "Install Gravit Screensaver"; Parameters: "installscreensaver quit"; Flags: postinstall skipifsilent
 Filename: "{app}\gravit.exe"; Description: "{cm:LaunchProgram,Gravit}"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
