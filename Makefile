@@ -57,7 +57,8 @@ packagewindll:
 	cd $(TMPDIR); sed -i 's/$$/\r/' README COPYING *.cfg ChangeLog
 	cd $(TMPDIR); mv README README.txt
 	cd $(TMPDIR); mv ChangeLog ChangeLog.txt
-	if [ -f windowsinstaller/* ]; then rm windowsinstaller/*; fi
+	if [ -d windowsinstaller/files ]; then rm -r windowsinstaller/files; fi
+	mkdir windowsinstaller/files
 	cp -r $(TMPBASE)/$(DISTDIR)/* windowsinstaller/files/
 	#cd $(TMPBASE); zip -r $(DISTDIR)-win32-dll.zip $(DISTDIR)
 	#cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip dist/

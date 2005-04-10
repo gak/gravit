@@ -116,7 +116,7 @@ void viewInit() {
 	view.blendMode = 1;
 
 	view.particleColourMode = CM_MASS;
-	view.particleRenderMode = 0;
+	view.particleRenderMode = 1;
 	view.particleRenderTexture = 1;
 
 	view.particleSizeMin = 4;
@@ -133,8 +133,7 @@ void viewInit() {
 	view.stereoMode = 0;
 	
 	// http://www.angelfire.com/ca/erker/freeview.html
-	view.stereoSeparation = -100; // negative for "Parallel", positive for "Cross-eyed"
-	
+	view.stereoSeparation = 500; // negative for "Parallel", positive for "Cross-eyed"
 
 	cmdFps(NULL);
 

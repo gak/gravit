@@ -752,11 +752,15 @@ void cmdColourSchemeAdd(char *arg) {
 
 void cmdSetG(char *arg) {
 
-//	if (isSpawning()) {
-		conAdd(2, "Warning! Changing the gravitantional constant while recording may cause fundimental problems! :)");
-//	}
+	float newg;
 
-	state.g = -pow(10, -state.gbase);
+	newg = -pow(10, -state.gbase);
+
+	if (newg != state.g) {
+
+		conAdd(2, "Warning! Changing the gravitantional constant while recording may cause fundimental problems! :)");
+
+	}
 	
 }
 
@@ -781,7 +785,7 @@ void cmdAutoRotate(char *arg) {
 
 cmdAutoRotateUsage:
 
-	conAdd(1, "autorotate %f %f %f", view.autoRotate);
+	conAdd(1, "autorotate %f %f %f", view.autoRotate[0], view.autoRotate[1], view.autoRotate[2]);
 	return;
 
 }
