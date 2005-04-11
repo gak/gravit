@@ -23,17 +23,18 @@ Gravit ChangeLog
                 + be as zoomed in as possible
                 + try all the effects! 
     * g command added, for changing G in the F=G*m1*m2/d^2 calculation.
-          o The value you get out of setting g is "10 ^ -g". Default is 5 (0.00001). The screensaver uses 3 (0.001).
+          o The value you get out of setting g is "10 ^ -g". Default is 5 (0.00001). The screensaver uses 4 (0.0001).
           o The lower the number the less accurate the simulation is, but each particle moves quicker per frame. 
     * Added saveauto command to automatically save every n frames. Set it to 0 to turn it off.
     * autorotate command added, for automatically rotating the camera. It was implemented primarily for the screensaver.
     * Added zoom command. This is the variable you change when you zoom in and out.
     * showcursor command added, hides or shows the mouse cursor
-    * got rid of --exec. See --help!
+    * Got rid of --exec. See --help!
     * Got rid of some redundant matrix code
     * Fixed mouse input oddness
+    * Mouse isn't stuck inside your window anymore
     * Fixed bug in recordingvideorefreshtime. When set to 0 it would the screen as fast as possible (instead of once every finished recorded frame).
-    * Mouse isn't stuck inside your window anymore 
+    * Few spellings of the old name 'Graviton' fixed 
 
 0.2.2 2005/04/09
 

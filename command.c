@@ -757,13 +757,6 @@ void cmdSetG(char *arg) {
 
 	newg = -pow(10, -state.gbase);
 	conAdd(0, "\"G\" set to %f", newg);
-
-	if (newg != state.g) {
-
-		conAdd(2, "Warning! Changing the gravitantional constant while recording may cause fundimental problems! :)");
-
-	}
-
 	state.g = newg;  
 	
 }
