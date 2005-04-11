@@ -243,6 +243,7 @@ typedef struct conf_s {
 	int screenH;
 	int screenFS;
 	int screenAA;
+	int flags;
 
 	int supportPointSprite;
 	int supportPointParameters;
@@ -536,6 +537,7 @@ void drawFrame();
 void drawFrameSet2D();
 void drawFrameSet3D();
 int gfxInit();
+int gfxSetResolution();
 void checkPointParameters();
 void checkPointSprite();
 

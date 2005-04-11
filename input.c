@@ -88,6 +88,13 @@ int processKeys() {
 				view.showCursor = 1;
 				break;
 
+			case SDLK_RETURN:
+				if (SDL_GetModState() & KMOD_LALT || SDL_GetModState() & KMOD_RALT) {
+					video.screenFS = !video.screenFS;
+					cmdVideoRestart(0);
+				}
+				break;
+
 			case SDLK_F1:
 				if (view.textMode == TM_HELP1)
 					view.textMode = TM_STANDARD;

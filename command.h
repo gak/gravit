@@ -62,5 +62,6 @@ void cmdAutoRotate(char *arg);
 void cmdInstallScreenSaver(char *arg);
 void cmdChangeDir(char *arg);
 void cmdStereoWarning(char *arg);
+void cmdVideoRestart(char *arg);
 
 #endif

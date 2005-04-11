@@ -71,9 +71,43 @@ void loadParticleTexture() {
 
 }
 
+int gfxSetResolution() {
+
+    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+	if (video.screenAA) {
+
+		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
+
+	}
+
+    video.flags = SDL_OPENGL;
+
+	if (video.screenFS)
+		video.flags |= SDL_FULLSCREEN;
+
+    if (!SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags ))
+		return 0;
+
+	glEnable(GL_TEXTURE_2D);
+
+	// need to reload textures
+	if (!loadFonts())
+		return 0;
+
+	loadParticleTexture();
+
+	return 1;
+
+}
+
 int gfxInit() {
 
-	int flags;
 	int detectedBPP;
 	SDL_Surface *icon;
 
@@ -106,28 +140,11 @@ int gfxInit() {
 
 gfxInitRetry:
 
-    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-	if (video.screenAA) {
-
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
-
-	}
-
-    flags = SDL_OPENGL;
-
-	if (video.screenFS)
-		flags |= SDL_FULLSCREEN;
-
 	if (video.screenBPP == 0)
 		video.screenBPP = detectedBPP;
 
-    if (!SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, flags )) {
+
+	if (!gfxSetResolution()) {
 
 		conAdd(2, "SDL_SetVideoMode failed: %s", SDL_GetError());
 
@@ -158,13 +175,7 @@ gfxInitRetry:
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
-
-	if (!loadFonts())
-		return 0;
-
-	loadParticleTexture();
 
 	checkPointParameters();
 	checkPointSprite();

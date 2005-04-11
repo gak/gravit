@@ -31,6 +31,8 @@ static cmd_t cmd[] = {
 	,{ "memoryavailable",		NULL,		NULL,	&state.memoryAvailable }
 
 #ifndef NO_GUI
+	,{ "videorestart",		cmdVideoRestart,			NULL,	NULL }
+
 	,{ "videowidth",		NULL,			NULL,	&video.screenW }
 	,{ "videoheight",		NULL,			NULL,	&video.screenH }
 	,{ "videobpp",			NULL,			NULL,	&video.screenBPP }
@@ -827,3 +829,10 @@ void cmdStereoWarning(char *arg) {
 		conAdd(2, "WARNING: Stereo mode may damage your eyes or other things. Use with caution.");
 
 }
+
+void cmdVideoRestart(char *arg) {
+
+	gfxSetResolution();	
+
+}
+

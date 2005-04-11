@@ -129,12 +129,7 @@ int loadFonts() {
 void drawFontLetter(float x, float y, int letter) {
 
 	glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
-	if (glGetError())
-	{
-
-			return;
-
-	}
+	glCheck();
 
 	glPushMatrix();
 
