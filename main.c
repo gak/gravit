@@ -161,6 +161,7 @@ void stateInit() {
 	state.autoSave = 0;
 	state.lastSave = 0;
 	state.autoRecord = 0;
+	state.autoRecordNext = 0;
 
 	state.gbase = 5;
 	// cmdSetG should do: state.g = -0.00001f; because of state.gbase = 5;
