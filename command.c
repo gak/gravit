@@ -123,6 +123,7 @@ static cmd_t cmd[] = {
 
 	,{ "timeradd",				cmdTimerAdd,			NULL, NULL }
 	,{ "timerdel",				cmdTimerDel,			NULL, NULL }
+	,{ "timerlist",				cmdTimerList,			NULL, NULL }
 	
 	,{ NULL,			NULL,				NULL }
 
@@ -221,7 +222,7 @@ void cmdExecute(char *string) {
 	if (!stringLength)
 		return;
 
-	strcpy(cmdbuf, string);
+	strncpy(cmdbuf, string, CONSOLE_LENGTH);
 
 	strtok(cmdbuf, " ");
 	args = strtok(NULL, "");
@@ -877,5 +878,11 @@ void cmdTimerAdd(char *arg) {
 void cmdTimerDel(char *arg) {
 
 	timerDel(arg);
+
+}
+
+void cmdTimerList(char *arg) {
+
+	timerList();
 
 }

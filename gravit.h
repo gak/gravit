@@ -605,8 +605,9 @@ extern const char *colourModes[];
 void timerInit();
 void timerFree();
 void timerUpdate();
-void timerAdd(char *name, Uint32 interval, int reps, char *command);
+void timerAdd(char *name, float seconds, int reps, char *command);
 void timerDel(char *name);
+void timerList();
 
 #endif
 

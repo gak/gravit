@@ -65,5 +65,6 @@ void cmdStereoWarning(char *arg);
 void cmdVideoRestart(char *arg);
 void cmdTimerAdd(char *arg);
 void cmdTimerDel(char *arg);
+void cmdTimerList(char *arg);
 
 #endif

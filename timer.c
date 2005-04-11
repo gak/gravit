@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 typedef struct {
 
 	char name[TIMER_NAME_LENGTH];
-	float interval;		// how often to execute
+	float interval;		// how often to execute (seconds)
 	int repetitions;	// how many times to execute
 	int executed;		// number of executions
 	Uint32 lastExec;	// timestamp of last execution
@@ -81,7 +81,7 @@ timer_t *timerNew() {
 
 }
 
-void timerAdd(char *name, Uint32 interval, int reps, char *command) {
+void timerAdd(char *name, float interval, int reps, char *command) {
 
 	timer_t *t = timerNew();
 	if (!t) {
@@ -90,7 +90,7 @@ void timerAdd(char *name, Uint32 interval, int reps, char *command) {
 	}
 	strncpy(t->name, name, TIMER_NAME_LENGTH);
 	strncpy(t->command, command, TIMER_COMMAND_LENGTH);
-	t->interval = interval;
+	t->interval = interval * 1000;	// seconds to milliseconds
 	t->repetitions = reps;
 	t->executed = 0;
 	t->lastExec = getMS();
@@ -147,6 +147,25 @@ void timerUpdate() {
 		
 		return;
 
+	}
+
+}
+
+void timerList() {
+
+	int i;
+	timer_t *t;
+
+	for (i = 0; i < TIMER_MAX; i++) {
+
+		t = timers[i];
+		if (!t) continue;
+
+		if (t->repetitions == 0)
+			conAdd(1, "%s: Executes \"%s\" every %.3fs lots of times", t->name, t->command, t->interval/1000);
+		else
+			conAdd(1, "%s: Executes \"%s\" every %.3fs %i times (%i left)", t->name, t->command, t->interval/1000, t->repetitions, t->repetitions-t->executed);
+		
 	}
 
 }
