@@ -337,8 +337,8 @@ void processMouse() {
 
 	if (view.mouseButtons[0]) {
 	
-		wx = conf.screenW / 2;
-		wy = conf.screenH / 2;
+		wx = video.screenW / 2;
+		wy = video.screenH / 2;
 		SDL_WarpMouse(wx,wy);
 		view.currentMousePosition[0] = wx;
 		view.currentMousePosition[1] = wy;

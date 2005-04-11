@@ -42,9 +42,9 @@ void drawOSD() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	DUHC();
-	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
-	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 3.0f, GRAVIT_VERSION);
-	drawFontWordRA((float)conf.screenW - 10, (float)conf.screenH - 10 - fontHeight * 2.0f, GRAVIT_COPYRIGHT);
+	drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
+	drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 3.0f, GRAVIT_VERSION);
+	drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 2.0f, GRAVIT_COPYRIGHT);
 
 	y = 10;
 	x = 10;
@@ -197,7 +197,7 @@ void drawOSD() {
 			colourFromNormal(cols, i);
 			glColor3fv(cols);
 			z[0] = 65 + (int)(i * 26);
-			drawFontWord(i * conf.screenW, 0, z);
+			drawFontWord(i * video.screenW, 0, z);
 
 		}
 

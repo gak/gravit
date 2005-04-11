@@ -31,14 +31,14 @@ static cmd_t cmd[] = {
 	,{ "memoryavailable",		NULL,		NULL,	&state.memoryAvailable }
 
 #ifndef NO_GUI
-	,{ "videowidth",		NULL,			NULL,	&conf.screenW }
-	,{ "videoheight",		NULL,			NULL,	&conf.screenH }
-	,{ "videobpp",			NULL,			NULL,	&conf.screenBPP }
-	,{ "videofullscreen",	NULL,			NULL,	&conf.screenFS }
-	,{ "videoantialiasing",	NULL,			NULL,	&conf.screenAA }
+	,{ "videowidth",		NULL,			NULL,	&video.screenW }
+	,{ "videoheight",		NULL,			NULL,	&video.screenH }
+	,{ "videobpp",			NULL,			NULL,	&video.screenBPP }
+	,{ "videofullscreen",	NULL,			NULL,	&video.screenFS }
+	,{ "videoantialiasing",	NULL,			NULL,	&video.screenAA }
 
 	,{ "fontfile",			cmdFontFile,	NULL,	NULL }
-	,{ "fontsize",			NULL,			NULL,	&conf.fontSize }
+	,{ "fontsize",			NULL,			NULL,	&video.fontSize }
 
 #endif
 
@@ -619,7 +619,7 @@ void cmdFontFile(char *arg) {
 	sz = strtok(arg, " ");
 	if (!sz)
 		return;
-	strncpy(conf.fontFile, arg, MAX_FONT_LENGTH);
+	strncpy(video.fontFile, arg, MAX_FONT_LENGTH);
 
 }
 
@@ -653,22 +653,22 @@ void cmdScreenshot(char *arg) {
 	int i;
 	char *fileName;
 
-	sdlSurfUpsideDown = SDL_CreateRGBSurface(SDL_SWSURFACE, conf.screenW, conf.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
-	sdlSurfNormal = SDL_CreateRGBSurface(SDL_SWSURFACE, conf.screenW, conf.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+	sdlSurfUpsideDown = SDL_CreateRGBSurface(SDL_SWSURFACE, video.screenW, video.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+	sdlSurfNormal = SDL_CreateRGBSurface(SDL_SWSURFACE, video.screenW, video.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
 
 	SDL_LockSurface(sdlSurfUpsideDown);
-	glReadPixels(0,0,conf.screenW, conf.screenH, GL_RGB,GL_UNSIGNED_BYTE, sdlSurfUpsideDown->pixels);
+	glReadPixels(0,0,video.screenW, video.screenH, GL_RGB,GL_UNSIGNED_BYTE, sdlSurfUpsideDown->pixels);
 	SDL_UnlockSurface(sdlSurfUpsideDown);
 
 	SDL_LockSurface(sdlSurfUpsideDown);
 	SDL_LockSurface(sdlSurfNormal);
 	
-	for (i = 0; i < conf.screenH; i++) {
+	for (i = 0; i < video.screenH; i++) {
 
 		memcpy(
-			(unsigned char *)sdlSurfNormal->pixels + (conf.screenH - i - 1) * sdlSurfNormal->pitch,
+			(unsigned char *)sdlSurfNormal->pixels + (video.screenH - i - 1) * sdlSurfNormal->pitch,
 			(unsigned char *)sdlSurfUpsideDown->pixels + i * sdlSurfUpsideDown->pitch,
-			3 * conf.screenW		
+			3 * video.screenW		
 		);
 
 	}

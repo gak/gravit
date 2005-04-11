@@ -93,7 +93,7 @@ void conDraw() {
 		int inputBoxMargin = 3;
 
 		// cursor position
-		y = conf.screenH - 10 - fontHeight;
+		y = video.screenH - 10 - fontHeight;
 
 		// draw box
 		glDisable(GL_BLEND);
@@ -106,8 +106,8 @@ void conDraw() {
 		glVertex2f(x - inputBoxMargin, y - inputBoxMargin);					// top left
 		
 		glColor4f(0,0,0,0);
-		glVertex2f(x + conf.screenW / 2, y - inputBoxMargin);				// top right
-		glVertex2f(x + conf.screenW / 2, y + fontHeight + inputBoxMargin);	// bot right
+		glVertex2f(x + video.screenW / 2, y - inputBoxMargin);				// top right
+		glVertex2f(x + video.screenW / 2, y + fontHeight + inputBoxMargin);	// bot right
 
 		glEnd();
 
@@ -144,7 +144,7 @@ void conDraw() {
 	}
 
 	// draw console history
-	y = conf.screenH - 15 - fontHeight * 2;
+	y = video.screenH - 15 - fontHeight * 2;
 
 	for (i = 0; i < CONSOLE_HISTORY; i++) {
 

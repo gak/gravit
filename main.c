@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "gravit.h"
 
 #ifndef NO_GUI
-conf_t conf;
+video_t video;
 #endif
 
 state_t state;
@@ -34,15 +34,15 @@ void loadDefaults() {
 
 #ifndef NO_GUI
 
-	conf.sdlStarted = 0;
-	conf.screenW = 800;
-	conf.screenH = 600;
-	conf.screenBPP = 32;
-	conf.screenFS = 0;
-	conf.screenAA = 0;
+	video.sdlStarted = 0;
+	video.screenW = 800;
+	video.screenH = 600;
+	video.screenBPP = 32;
+	video.screenFS = 0;
+	video.screenAA = 0;
 
-	strcpy(conf.fontFile, "Vera.ttf");
-	conf.fontSize = 11;
+	strcpy(video.fontFile, "Vera.ttf");
+	video.fontSize = 11;
 	
 #endif
 
@@ -102,8 +102,8 @@ void viewInit() {
 
 	view.mouseButtons[0] = view.mouseButtons[1] = 0;
 
-	view.lastMousePosition[0] = view.currentMousePosition[0] = conf.screenW / 2;
-	view.lastMousePosition[1] = view.currentMousePosition[1] = conf.screenH / 2;
+	view.lastMousePosition[0] = view.currentMousePosition[0] = video.screenW / 2;
+	view.lastMousePosition[1] = view.currentMousePosition[1] = video.screenH / 2;
 	view.showCursor = 1;
 
 	view.fps = 100;
@@ -217,7 +217,7 @@ int init(int argc, char *argv[]) {
 void runInput() {
 
 #ifndef NO_GUI
-	if (!conf.sdlStarted)
+	if (!video.sdlStarted)
 		return;
 #endif
 
@@ -236,7 +236,7 @@ void runVideo() {
 	Uint32 ts;
 
 	// runVideo might be called before SDL starts, say from a startup script
-	if (!conf.sdlStarted)
+	if (!video.sdlStarted)
 		return;
 
 	ts = getMS();
@@ -318,7 +318,7 @@ int main(int argc, char *argv[]) {
 
 	colourSpectrumClear();
 
-	if (conf.sdlStarted) {
+	if (video.sdlStarted) {
 		TTF_Quit();
 		SDL_Quit();
 	}

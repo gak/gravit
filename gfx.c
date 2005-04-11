@@ -29,7 +29,7 @@ void drawFrameSet2D() {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0f,conf.screenW,conf.screenH,0,-1.0f,1.0f);
+	glOrtho(0.0f,video.screenW,video.screenH,0,-1.0f,1.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -38,7 +38,7 @@ void drawFrameSet2D() {
 
 void drawFrameSet3D() {
 
-	glViewport(0, 0, conf.screenW, conf.screenH);
+	glViewport(0, 0, video.screenW, video.screenH);
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
 	glMatrixMode( GL_MODELVIEW );
@@ -93,7 +93,7 @@ int gfxInit() {
 
     }
 
-	conf.sdlStarted = 1;
+	video.sdlStarted = 1;
 
 	icon = IMG_Load("gravit.png");
 	SDL_WM_SetIcon(icon, NULL);
@@ -101,8 +101,8 @@ int gfxInit() {
 
 	setTitle(0);
 	
-    conf.gfxInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
-	detectedBPP = conf.gfxInfo->vfmt->BitsPerPixel;
+    video.gfxInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
+	detectedBPP = video.gfxInfo->vfmt->BitsPerPixel;
 
 gfxInitRetry:
 
@@ -112,7 +112,7 @@ gfxInitRetry:
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-	if (conf.screenAA) {
+	if (video.screenAA) {
 
 		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
@@ -121,25 +121,25 @@ gfxInitRetry:
 
     flags = SDL_OPENGL;
 
-	if (conf.screenFS)
+	if (video.screenFS)
 		flags |= SDL_FULLSCREEN;
 
-	if (conf.screenBPP == 0)
-		conf.screenBPP = detectedBPP;
+	if (video.screenBPP == 0)
+		video.screenBPP = detectedBPP;
 
-    if (!SDL_SetVideoMode(conf.screenW, conf.screenH, conf.screenBPP, flags )) {
+    if (!SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, flags )) {
 
 		conAdd(2, "SDL_SetVideoMode failed: %s", SDL_GetError());
 
-		if (conf.screenAA) {
+		if (video.screenAA) {
 			conAdd(2, "You have videoantialiasing on. I'm turning it off and restarting...");
-			conf.screenAA = 0;
+			video.screenAA = 0;
 			goto gfxInitRetry;
 		}
 
-		if (detectedBPP != conf.screenBPP) {
+		if (detectedBPP != video.screenBPP) {
 			conAdd(2, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
-			conf.screenBPP = detectedBPP;
+			video.screenBPP = detectedBPP;
 			goto gfxInitRetry;
 		}
 
@@ -147,9 +147,9 @@ gfxInitRetry:
 
 	}
 
-	conAdd(0, "Your video mode is %ix%ix%i", conf.screenW, conf.screenH, conf.gfxInfo->vfmt->BitsPerPixel );
+	conAdd(0, "Your video mode is %ix%ix%i", video.screenW, video.screenH, video.gfxInfo->vfmt->BitsPerPixel );
 
-	if (!conf.screenAA && view.particleRenderMode == 1) {
+	if (!video.screenAA && view.particleRenderMode == 1) {
 		conAdd(2, "Warning! You don't have videoantialiasing set to 1. From what I've seen so far");
 		conAdd(2, "this might cause particlerendermode 1 not to work. If you don't see any particles");
 		conAdd(2, "after spawning, hit the \\ (backslash) key).");
@@ -224,7 +224,7 @@ void drawFrame() {
 	
 		float quadratic[] =  { 0.0f, 0.0f, 0.01f };
 		
-		if (!conf.supportPointParameters || !conf.supportPointSprite) {
+		if (!video.supportPointParameters || !video.supportPointSprite) {
 
 			conAdd(1, "Sorry, Your video card does not support GL_ARB_point_parameters and/or GL_ARB_point_sprite.");
 			conAdd(1, "This means you can't have really pretty looking particles.");
@@ -275,7 +275,7 @@ void drawFrame() {
 	}
 	glEnd();
 
-	if (view.particleRenderMode == 1 && conf.supportPointParameters && conf.supportPointSprite) {
+	if (view.particleRenderMode == 1 && video.supportPointParameters && video.supportPointSprite) {
 
 		glDisable( GL_POINT_SPRITE_ARB );
 
@@ -402,7 +402,7 @@ void drawRGB() {
 	float width = 10;
 	float margin = 10;
 	float i;
-	float sx = (float)conf.screenW - width - margin;
+	float sx = (float)video.screenW - width - margin;
 	float sy = margin;
 	float wx = width;
 	float wy = 200;
@@ -463,11 +463,11 @@ void drawAll() {
 
 	for (i = 0; i < bits; i++) {
 
-		glViewport(conf.screenW/bits*i, 0, conf.screenW/bits, conf.screenH);
+		glViewport(video.screenW/bits*i, 0, video.screenW/bits, video.screenH);
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
- 		gluPerspective(45,(GLfloat)conf.screenW/bits/(GLfloat)conf.screenH,0.1f,10000000.0f);
+ 		gluPerspective(45,(GLfloat)video.screenW/bits/(GLfloat)video.screenH,0.1f,10000000.0f);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -489,7 +489,7 @@ void drawAll() {
 
 	}
 
-	glViewport(0, 0, conf.screenW, conf.screenH);
+	glViewport(0, 0, video.screenW, video.screenH);
 
 	// draws the oct tree
 	if (view.drawTree)
@@ -560,7 +560,7 @@ void checkPointParameters() {
 
 	const char *extList;
 
-	conf.supportPointParameters = 0;
+	video.supportPointParameters = 0;
 
 	extList = glGetString(GL_EXTENSIONS);
 
@@ -574,7 +574,7 @@ void checkPointParameters() {
 	if (!glPointParameterfARB_ptr || !glPointParameterfvARB_ptr)
 		return;
 
-	conf.supportPointParameters = 1;
+	video.supportPointParameters = 1;
 
 }
 
@@ -582,14 +582,14 @@ void checkPointSprite() {
 
 	const char *extList;
 
-	conf.supportPointSprite = 0;
+	video.supportPointSprite = 0;
 
 	extList = glGetString(GL_EXTENSIONS);
 
 	if (strstr(extList, "GL_ARB_point_sprite") == 0)
 		return;
 
-	conf.supportPointSprite = 1;
+	video.supportPointSprite = 1;
 
 }
 

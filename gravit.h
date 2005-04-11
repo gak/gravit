@@ -254,7 +254,7 @@ typedef struct conf_s {
 
 	int sdlStarted;
 
-} conf_t;
+} video_t;
 
 #endif
 
@@ -469,7 +469,7 @@ typedef struct pib_s {
 #ifdef WIN32
 
 #ifndef NO_GUI
-extern conf_t conf;
+extern video_t video;
 #endif
 extern state_t state;
 extern view_t view;
@@ -477,7 +477,7 @@ extern view_t view;
 #else
 
 #ifndef NO_GUI
-conf_t conf;
+video_t video;
 #endif
 state_t state;
 view_t view;

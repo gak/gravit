@@ -37,7 +37,7 @@ int loadFonts() {
 
 	letter[1] = 0;
 
-	font = TTF_OpenFont(conf.fontFile, conf.fontSize);
+	font = TTF_OpenFont(video.fontFile, video.fontSize);
 
 	if (!font) {
 
