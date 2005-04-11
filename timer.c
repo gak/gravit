@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define TIMER_NAME_LENGTH 255
 #define TIMER_COMMAND_LENGTH CONSOLE_LENGTH
-#define TIMER_MAX 50
+#define MAX_TIMERS 50
 
 typedef struct {
 
@@ -50,7 +50,7 @@ void timerFree() {
 	int i;
 	timer_t *t;
 
-	for (i = 0; i < TIMER_MAX; i++) {
+	for (i = 0; i < MAX_TIMERS; i++) {
 
 		t = timers[i];
 		if (!t) continue;
@@ -67,7 +67,7 @@ timer_t *timerNew() {
 
 	int i;
 	
-	for (i = 0; i < TIMER_MAX; i++) {
+	for (i = 0; i < MAX_TIMERS; i++) {
 
 		if (timers[i])
 			continue;
@@ -113,7 +113,7 @@ void timerDel(char *name) {
 	int i;
 	timer_t *t;
 
-	for (i = 0; i < TIMER_MAX; i++) {
+	for (i = 0; i < MAX_TIMERS; i++) {
 
 		t = timers[i];
 		if (!t) continue;
@@ -133,7 +133,7 @@ void timerUpdate() {
 
 	ms = getMS();
 
-	for (i = 0; i < TIMER_MAX; i++) {
+	for (i = 0; i < MAX_TIMERS; i++) {
 
 		t = timers[i];
 		if (!t) continue;
@@ -156,7 +156,7 @@ void timerList() {
 	int i;
 	timer_t *t;
 
-	for (i = 0; i < TIMER_MAX; i++) {
+	for (i = 0; i < MAX_TIMERS; i++) {
 
 		t = timers[i];
 		if (!t) continue;
