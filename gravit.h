@@ -321,6 +321,9 @@ typedef struct state_s {
 
 	int dontExecuteDefaultScript;
 
+	int autoRecord;	// will start recording after spawning
+	int autoRecordNext; // is a value to do a cmdRecord in the main loop, it goes to 0 after doing this
+
 } state_t;
 
 typedef struct saveInfo_s {

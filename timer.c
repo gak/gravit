@@ -83,7 +83,11 @@ timer_t *timerNew() {
 
 void timerAdd(char *name, Uint32 interval, int reps, char *command) {
 
-	timer_t *t = timerNew();	
+	timer_t *t = timerNew();
+	if (!t) {
+		conAdd(2, "Sorry, Maximum timers reached");
+		return;
+	}
 	strncpy(t->name, name, TIMER_NAME_LENGTH);
 	strncpy(t->command, command, TIMER_COMMAND_LENGTH);
 	t->interval = interval;

@@ -116,6 +116,7 @@ static cmd_t cmd[] = {
 
 	,{ "zoom",					NULL,				&view.zoom, NULL }
 	,{ "autorotate",			cmdAutoRotate,			NULL,	NULL }
+	,{ "autorecord",			NULL,				NULL, &state.autoRecord }
 
 	,{ "stereoseparation",		NULL,				&view.stereoSeparation, NULL }
 	,{ "stereo",				cmdStereoWarning,				NULL, &view.stereoMode }
@@ -319,6 +320,10 @@ cmdSpawnRestartSpawning:
 	conAdd(0, "You have spawned some particles. Hit F6 to start recording the simulation!");
 
 	state.mode = 0;
+
+	if (state.autoRecord) {
+		state.autoRecordNext = 1;
+	}
 	
 }
 
@@ -851,9 +856,7 @@ int cmdGetArgs(int count, char *arg, char *ptrs[]) {
 	}
 
 	ptrs[count-1] = ptrs[count-2] + strlen(ptrs[count-2]) + 1;
-
-	if (!ptrs[count-1])
-		return 0;
+	if (!ptrs[count-1]) return 0;
 
 	return 1;
 
