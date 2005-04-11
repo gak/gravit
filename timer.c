@@ -33,11 +33,11 @@ typedef struct {
 	int executed;		// number of executions
 	Uint32 lastExec;	// timestamp of last execution
 	char command[TIMER_COMMAND_LENGTH];
-	struct timer_t *next;
+	struct mytimer_t *next;
 
-} timer_t;
+} mytimer_t;
 
-timer_t *timers[50];	// array of pointers...
+mytimer_t *timers[50];	// array of pointers...
 
 void timerInit() {
 
@@ -48,7 +48,7 @@ void timerInit() {
 void timerFree() {
 
 	int i;
-	timer_t *t;
+	mytimer_t *t;
 
 	for (i = 0; i < MAX_TIMERS; i++) {
 
@@ -63,7 +63,7 @@ void timerFree() {
 
 }
 
-timer_t *timerNew() {
+mytimer_t *timerNew() {
 
 	int i;
 	
@@ -72,7 +72,7 @@ timer_t *timerNew() {
 		if (timers[i])
 			continue;
 
-		timers[i] = (timer_t*)malloc(sizeof(timer_t));
+		timers[i] = (mytimer_t*)malloc(sizeof(mytimer_t));
 		return timers[i];
 
 	}
@@ -83,7 +83,7 @@ timer_t *timerNew() {
 
 void timerAdd(char *name, float interval, int reps, char *command) {
 
-	timer_t *t = timerNew();
+	mytimer_t *t = timerNew();
 	if (!t) {
 		conAdd(2, "Sorry, Maximum timers reached");
 		return;
@@ -111,7 +111,7 @@ void timerDelbyID(int i) {
 void timerDel(char *name) {
 
 	int i;
-	timer_t *t;
+	mytimer_t *t;
 
 	for (i = 0; i < MAX_TIMERS; i++) {
 
@@ -128,7 +128,7 @@ void timerDel(char *name) {
 void timerUpdate() {
 
 	int i;
-	timer_t *t;
+	mytimer_t *t;
 	Uint32 ms;
 
 	ms = getMS();
@@ -154,7 +154,7 @@ void timerUpdate() {
 void timerList() {
 
 	int i;
-	timer_t *t;
+	mytimer_t *t;
 
 	for (i = 0; i < MAX_TIMERS; i++) {
 
