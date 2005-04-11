@@ -245,6 +245,9 @@ typedef struct conf_s {
 	int screenAA;
 	int flags;
 
+	int screenWtoApply;
+	int screenHtoApply;
+
 	int supportPointSprite;
 	int supportPointParameters;
 

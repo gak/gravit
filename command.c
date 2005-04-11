@@ -33,8 +33,8 @@ static cmd_t cmd[] = {
 #ifndef NO_GUI
 	,{ "videorestart",		cmdVideoRestart,			NULL,	NULL }
 
-	,{ "videowidth",		NULL,			NULL,	&video.screenW }
-	,{ "videoheight",		NULL,			NULL,	&video.screenH }
+	,{ "videowidth",		NULL,			NULL,	&video.screenWtoApply }
+	,{ "videoheight",		NULL,			NULL,	&video.screenHtoApply }
 	,{ "videobpp",			NULL,			NULL,	&video.screenBPP }
 	,{ "videofullscreen",	NULL,			NULL,	&video.screenFS }
 	,{ "videoantialiasing",	NULL,			NULL,	&video.screenAA }

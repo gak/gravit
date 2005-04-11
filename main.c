@@ -35,8 +35,8 @@ void loadDefaults() {
 #ifndef NO_GUI
 
 	video.sdlStarted = 0;
-	video.screenW = 800;
-	video.screenH = 600;
+	video.screenWtoApply = 800;
+	video.screenHtoApply = 600;
 	video.screenBPP = 32;
 	video.screenFS = 0;
 	video.screenAA = 0;
