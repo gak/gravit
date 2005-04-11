@@ -177,6 +177,7 @@ int init(int argc, char *argv[]) {
 	
 	conInit();
 	loadDefaults();
+	timerInit();
 
 	if (!commandLineRead(argc, argv))
 		return 0;
@@ -239,6 +240,8 @@ void runVideo() {
 
 	Uint32 ts;
 
+	timerUpdate();
+
 	// runVideo might be called before SDL starts, say from a startup script
 	if (!video.sdlStarted)
 		return;
@@ -293,7 +296,9 @@ void run() {
 				conAdd(0, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
 
 		}
-		
+
+		timerUpdate();
+
 		runInput();
 		if (view.quit) return;
 
@@ -321,6 +326,7 @@ int main(int argc, char *argv[]) {
 #ifndef NO_GUI
 
 	colourSpectrumClear();
+	timerFree();
 
 	if (video.sdlStarted) {
 		TTF_Quit();

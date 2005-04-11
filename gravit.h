@@ -595,5 +595,12 @@ void drawCube();
 
 extern const char *colourModes[];
 
+// timer.c
+void timerInit();
+void timerFree();
+void timerUpdate();
+void timerAdd(char *name, Uint32 interval, int reps, char *command);
+void timerDel(char *name);
+
 #endif
 

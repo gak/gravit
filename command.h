@@ -63,5 +63,7 @@ void cmdInstallScreenSaver(char *arg);
 void cmdChangeDir(char *arg);
 void cmdStereoWarning(char *arg);
 void cmdVideoRestart(char *arg);
+void cmdTimerAdd(char *arg);
+void cmdTimerDel(char *arg);
 
 #endif

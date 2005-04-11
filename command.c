@@ -120,6 +120,9 @@ static cmd_t cmd[] = {
 	,{ "stereoseparation",		NULL,				&view.stereoSeparation, NULL }
 	,{ "stereo",				cmdStereoWarning,				NULL, &view.stereoMode }
 
+	,{ "timeradd",				cmdTimerAdd,			NULL, NULL }
+	,{ "timerdel",				cmdTimerDel,			NULL, NULL }
+	
 	,{ NULL,			NULL,				NULL }
 
 };
@@ -836,3 +839,35 @@ void cmdVideoRestart(char *arg) {
 
 }
 
+int cmdGetArgs(int count, char *arg, char *ptrs[]) {
+
+	int i;
+	ptrs[0] = strtok(arg, " ");
+	if (!ptrs[0]) return 0;
+	for (i = 1; i < count; i++) {
+		ptrs[i] = strtok(NULL, " ");
+		if (!ptrs[i])
+			return 0;
+	}
+
+	return 1;
+
+}
+
+void cmdTimerAdd(char *arg) {
+
+	char *argptr[4];
+	if (!cmdGetArgs(4, arg, argptr)) {
+		conAdd(2, "usage: timeradd [name] [interval] [repetitions] [command]");
+		return;
+	}
+
+	timerAdd(argptr[0], atoi(argptr[1]), atoi(argptr[2]), argptr[3]);
+
+}
+
+void cmdTimerDel(char *arg) {
+
+	timerDel(arg);
+
+}

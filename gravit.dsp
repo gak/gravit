@@ -147,6 +147,10 @@ SOURCE=.\spawn.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\timer.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\tool.c
 # End Source File
 # End Group
