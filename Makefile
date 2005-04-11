@@ -5,7 +5,7 @@ BASEFILES = README COPYING Vera.ttf gravit.cfg demo.cfg screensaver.cfg ChangeLo
 CFLAGS = -O4 -Wall `sdl-config --cflags` -Wall
 LDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs`
 
-DISTDIR = gravit-0.3.0
+DISTDIR = gravit-0.3.1
 TMPBASE = /tmp
 TMPDIR = $(TMPBASE)/$(DISTDIR)
 
@@ -32,7 +32,6 @@ packagesrc:
 	cp $(BASEFILES) *.c *.h Makefile gravit.dsp gravit.dsw $(TMPDIR)
 	cd $(TMPDIR); chmod 644 *
 	cd $(TMPBASE); tar czvf $(DISTDIR)-src.tgz $(DISTDIR)
-	cp $(TMPBASE)/$(DISTDIR)-src.tgz dist/
 	cp $(TMPBASE)/$(DISTDIR)-src.tgz www/dist/
 	rm -fr $(TMPDIR)
 
@@ -45,7 +44,6 @@ packagewin:
 	cd $(TMPDIR); mv README README.txt
 	cd $(TMPDIR); mv ChangeLog ChangeLog.txt
 	cd $(TMPBASE); zip -r $(DISTDIR)-win32.zip $(DISTDIR)
-	cp $(TMPBASE)/$(DISTDIR)-win32.zip dist/
 	cp $(TMPBASE)/$(DISTDIR)-win32.zip www/dist/
 	rm -fr $(TMPDIR)
 
@@ -60,9 +58,6 @@ packagewindll:
 	if [ -d windowsinstaller/files ]; then rm -r windowsinstaller/files; fi
 	mkdir windowsinstaller/files
 	cp -r $(TMPBASE)/$(DISTDIR)/* windowsinstaller/files/
-	#cd $(TMPBASE); zip -r $(DISTDIR)-win32-dll.zip $(DISTDIR)
-	#cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip dist/
-	#cp $(TMPBASE)/$(DISTDIR)-win32-dll.zip www/dist/
 	rm -fr $(TMPDIR)
 
 packageall: packagesrc packagewin packagewindll

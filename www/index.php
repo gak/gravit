@@ -74,6 +74,8 @@ echo '</table>';
 <h2>Features</h2>
 <ul>
 <li>It looks pretty :)</li>
+<li>View the simulation in 3D using <a href="http://en.wikipedia.org/wiki/Stereoscopy">stereoscopic imaging</a>!</li>
+<li>Can be installed as a screen saver in Windows</li>
 <li>You can record, then play back at any speed</li>
 <li>Stores every particle's position for every frame in memory</li>
 <li>Compresses history when needed, for very long recordings</li>
@@ -93,6 +95,7 @@ echo '</table>';
 </ul>
 
 <h2>Download</h2>
+<p>Gravit 0.3.0 now can be seen in 3D (without glasses) using <a href="http://en.wikipedia.org/wiki/Stereoscopy">stereoscopic imaging</a>! Windows users now have a Windows installer and you can install Gravit as a screen saver. Also several new commands including stereo, stereoseparation, installscreensaver (win32), g, saveauto, autorotate, zoom, showcursor. Fixed a few bugs with mouse input.</p>
 <p>Read the <a href="dist/ChangeLog">ChangeLog</a> for the latest release details.</p>
 <?
 
@@ -106,12 +109,17 @@ function showFiles($ver) {
 
 	echo '<ul>';
 
-	if ($ver == "0.1")
+	if ($ver == "0.1") {
 		showFile("gravit-$ver-win32-sdl.zip", "Gravit $ver for Windows with SDL and SDL_ttf");
-	else
+	} else if ($ver == "0.2" || $ver == "0.2.1" || $ver == "0.2.2") {
 		showFile("gravit-$ver-win32-dll.zip", "Gravit $ver for Windows with SDL, SDL_ttf, SDL_image");
-	showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows");
-	showFile("gravit-$ver-src.tgz", "Gravit $ver Source Code");
+		showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows");
+		showFile("gravit-$ver-src.tgz", "Gravit $ver Source Code");
+	} else {
+		showFile("gravit-$ver-win32-installer.exe", "Gravit $ver Windows installer");
+		showFile("gravit-$ver-win32.zip", "Gravit $ver for Windows");
+		showFile("gravit-$ver-src.tgz", "Gravit $ver Source Code");
+	}
 	
 	echo '</ul>';
 	
@@ -125,9 +133,10 @@ function showFileHeading($s) {
 
 
 showFileHeading("Latest Release");
-showFiles("0.2.2");
+showFiles("0.3.0");
 
 showFileHeading("Older Releases");
+showFiles("0.2.2");
 showFiles("0.2.1");
 showFiles("0.2");
 showFiles("0.1");
