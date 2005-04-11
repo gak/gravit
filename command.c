@@ -844,11 +844,16 @@ int cmdGetArgs(int count, char *arg, char *ptrs[]) {
 	int i;
 	ptrs[0] = strtok(arg, " ");
 	if (!ptrs[0]) return 0;
-	for (i = 1; i < count; i++) {
+	for (i = 1; i < count-1; i++) {
 		ptrs[i] = strtok(NULL, " ");
 		if (!ptrs[i])
 			return 0;
 	}
+
+	ptrs[count-1] = ptrs[count-2] + strlen(ptrs[count-2]) + 1;
+
+	if (!ptrs[count-1])
+		return 0;
 
 	return 1;
 

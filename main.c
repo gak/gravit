@@ -240,8 +240,6 @@ void runVideo() {
 
 	Uint32 ts;
 
-	timerUpdate();
-
 	// runVideo might be called before SDL starts, say from a startup script
 	if (!video.sdlStarted)
 		return;
