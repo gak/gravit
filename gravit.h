@@ -413,6 +413,10 @@ typedef struct view_s {
 	int stereoMode;
 	float stereoSeparation;
 
+	int recordStatus;
+	int recordParticlesDone;
+	int recordNodes;
+
 } view_t;
 
 typedef struct spawnVars_s {

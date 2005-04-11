@@ -167,7 +167,10 @@ void pickPositions() {
 
 	for (i = 0; i < state.particleCount; i++) {
 
-		doVideoUpdateInSpawn();
+		if (i % 100) {
+			view.recordParticlesDone = i;
+			doVideoUpdateInSpawn();
+		}
 
 		if (state.restartSpawning) {
 			return;

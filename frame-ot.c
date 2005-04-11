@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 void otBranchNode(node_t *n);
 
 node_t *r = NULL;
-int nodes;
-int particles;
 
 void otGetBoundingBox(float *otMin, float *otMax) {
 
@@ -118,9 +116,10 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 	if (c == 0)
 		return;
 
-	nodes ++;
+	view.recordNodes++;
 	n->b[br] = _aligned_malloc(sizeof(node_t), 16);
 	b = (node_t *)n->b[br];
+
 
 	memset(b, 0, sizeof(node_t));
 
@@ -140,9 +139,10 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 
 	if (c == 1) {
 
-		particles ++;
 		b->p = p;
 		VectorCopy(p->pos, b->cm);
+		view.recordParticlesDone++;
+
 
 	} else {
 
@@ -215,8 +215,7 @@ void otMakeTree() {
 	// make root node
     r = _aligned_malloc(sizeof(node_t), 16);
 	memset(r, 0, sizeof(node_t));
-	nodes = 1;
-	particles = 0;
+	view.recordNodes = 1;
 
 	n = r;
 
@@ -252,14 +251,16 @@ void otFreeTreeRecursive(node_t *n) {
 	}
 
 	_aligned_free(n);
-	nodes--;
+	view.recordNodes--;
 
 }
 
 void otFreeTree() {
 
+	view.recordStatus = 2;
 	otFreeTreeRecursive(r);
 	r = NULL;
+	view.recordStatus = 0;
 
 }
 
@@ -429,11 +430,18 @@ void processFrameOT(int start, int amount) {
 	particle_t *p;
 	particleDetail_t *pd;
 	pttr_t info;
-	
+
+	view.recordStatus = 1;
+	view.recordParticlesDone = 0;
+
 	otMakeTree();
+
+	view.recordStatus = 2;
+	view.recordParticlesDone = 0;
 
 	for (i = start; i < amount; i++) {
 
+		view.recordParticlesDone = i;
 		doVideoUpdate();
 
 		p = state.particleHistory + state.particleCount * state.frame + i;
@@ -449,6 +457,8 @@ void processFrameOT(int start, int amount) {
 		otComputeParticleToTreeRecursive(&info);
 
 	}
+
+	view.recordStatus = 0;
 
 }
 

@@ -70,6 +70,7 @@ void drawOSD() {
 		DUH("recorded frames", va("%i", state.frame));
 		DUH("max frames", va("%i", state.historyFrames));
 		DUH("particle verticies", va("%i", view.verticies));
+		DUH("tree nodes allocated", va("%i", view.recordNodes));
 		DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 
 		if (state.mode & SM_RECORD) {
@@ -80,7 +81,14 @@ void drawOSD() {
 
 			DUHC();
 			DUH("time left", va("~%0.1f minutes", (float)view.deltaRecordFrame * (state.historyFrames - state.frame) / 1000 / 60));
-		
+
+			switch (view.recordStatus) {
+			case 0: default: DUH("status", "dormant"); break;
+			case 1: DUH("status", va("generating tree %.1f%%", (float)view.recordParticlesDone/state.particleCount*100)); break;
+			case 2: DUH("status", va("applying forces %.1f%%", (float)view.recordParticlesDone/state.particleCount*100)); break;
+			case 3: DUH("status", "freeing tree"); break;
+			}
+
 		}
 
 		else if (state.mode & SM_PLAY) {
@@ -88,6 +96,14 @@ void drawOSD() {
 			glColor4f(0,1,0,.8f);
 			y += fontHeight; 
 			y = drawFontWord(x, y, "PLAY");
+
+		} else if (state.currentlySpawning) {
+
+			glColor4f(1,1,0,.8f);
+			y += fontHeight; 
+			y = drawFontWord(x, y, "SPAWNING");
+			DUHC();
+			DUH("status", va("%.1f%%", (float)view.recordParticlesDone/state.particleCount*100));
 
 		}
 

@@ -134,10 +134,14 @@ void viewInit() {
 	
 	// http://www.angelfire.com/ca/erker/freeview.html
 	view.stereoSeparation = 500; // negative for "Parallel", positive for "Cross-eyed"
-
+	
 	cmdFps(NULL);
 
 	memset(view.keys, 0, sizeof(view.keys));
+
+	view.recordStatus = 0;
+	view.recordParticlesDone = 0;
+	view.recordNodes = 0;
 
 	#endif
 
