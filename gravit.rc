@@ -2,5 +2,5 @@ IDI_ICON1               ICON    DISCARDABLE     "gravit.ico"
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    1             "Graviton"
+    1             "Gravit"
 END
