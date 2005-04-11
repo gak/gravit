@@ -424,6 +424,11 @@ typedef struct view_s {
 	int recordParticlesDone;
 	int recordNodes;
 
+	char popupTextMessage[255];
+	Uint32 popupTextStart;
+	Uint32 popupTextLength;
+	float popupTextFadeTime;	// ms
+
 } view_t;
 
 typedef struct spawnVars_s {
@@ -546,6 +551,7 @@ int gfxInit();
 int gfxSetResolution();
 void checkPointParameters();
 void checkPointSprite();
+void drawPopupText();
 
 // color.c
 void setColours();

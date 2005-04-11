@@ -124,6 +124,8 @@ static cmd_t cmd[] = {
 	,{ "timeradd",				cmdTimerAdd,			NULL, NULL }
 	,{ "timerdel",				cmdTimerDel,			NULL, NULL }
 	,{ "timerlist",				cmdTimerList,			NULL, NULL }
+
+	,{ "popuptext",				cmdPopupText,			NULL, NULL }
 	
 	,{ NULL,			NULL,				NULL }
 
@@ -887,3 +889,16 @@ void cmdTimerList(char *arg) {
 
 }
 
+void cmdPopupText(char *arg) {
+
+	char *argptr[2];
+	if (!cmdGetArgs(2, arg, argptr)) {
+		conAdd(2, "usage: popuptext [ms] [message]");
+		return;
+	}
+
+	view.popupTextLength = atof(argptr[0]);
+	strncpy(view.popupTextMessage, argptr[1], 255);
+	view.popupTextStart = getMS();
+
+}

@@ -66,5 +66,6 @@ void cmdVideoRestart(char *arg);
 void cmdTimerAdd(char *arg);
 void cmdTimerDel(char *arg);
 void cmdTimerList(char *arg);
+void cmdPopupText(char *arg);
 
 #endif

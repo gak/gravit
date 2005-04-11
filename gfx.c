@@ -522,6 +522,8 @@ void drawAll() {
 		
 	}
 
+	drawPopupText();
+	
 	if (view.screenshotLoop)
 		cmdScreenshot(NULL);
 
@@ -604,6 +606,43 @@ void checkPointSprite() {
 		return;
 
 	video.supportPointSprite = 1;
+
+}
+
+void drawPopupText() {
+
+	float w;
+	float scale = 1.5f;
+	float a;
+	Uint32 ms;
+
+	ms = getMS();
+
+	if (!view.popupTextMessage[0])
+		return;
+
+	if (ms - view.popupTextStart > view.popupTextLength) {
+		view.popupTextMessage[0] = 0;
+		return;
+	}
+
+	drawFrameSet2D();
+
+	if (ms - view.popupTextStart < view.popupTextFadeTime)
+		a = (ms - view.popupTextStart) / view.popupTextFadeTime;
+	else if (ms - (view.popupTextStart + view.popupTextLength - view.popupTextFadeTime) < view.popupTextFadeTime)
+		a = 1.f - (ms - (view.popupTextStart + view.popupTextLength - view.popupTextFadeTime)) / view.popupTextFadeTime;
+	else
+		a = 1;
+
+	glColor4f(1,1,1,a);
+
+	w = getWordWidth(view.popupTextMessage) * scale;
+
+	glPushMatrix();
+	glScalef(scale,scale,scale);
+	drawFontWord((float)video.screenW / 2 / scale - w / 2 / scale, (float)video.screenH / 2 / scale - (fontHeight*scale) / 2 / scale, view.popupTextMessage);
+	glPopMatrix();
 
 }
 

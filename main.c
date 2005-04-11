@@ -143,6 +143,11 @@ void viewInit() {
 	view.recordParticlesDone = 0;
 	view.recordNodes = 0;
 
+	strncpy(view.popupTextMessage, "Welcome to " GRAVIT_VERSION, 255);
+	view.popupTextStart = 0;
+	view.popupTextLength = 6000;
+	view.popupTextFadeTime = 2000;	// ms
+
 	#endif
 
 
