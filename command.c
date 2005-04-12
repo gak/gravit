@@ -904,3 +904,4 @@ void cmdPopupText(char *arg) {
 	view.popupTextStart = getMS();
 
 }
+
