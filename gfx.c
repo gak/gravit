@@ -270,24 +270,103 @@ void drawFrame() {
 
 		glEnable( GL_POINT_SPRITE_ARB );
 
-	}
+	} else if (view.particleRenderMode == 2) {
 
-	glBegin(GL_POINTS);
-	sc[3] = 1;
-
-	for (i = 0; i < state.particleCount; i++) {
-
-		p = state.particleHistory + state.particleCount * state.currentFrame + i;
-		pd = state.particleDetail + i;
-
-		glColor4fv(pd->col);
-
-		glVertex3fv(p->pos);
-
-		view.verticies++;
+		glDisable(GL_DEPTH_TEST);
+		if (view.particleRenderTexture) {
+			glBindTexture(GL_TEXTURE_2D, particleTextureID);
+		} else {
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 
 	}
-	glEnd();
+
+	if (view.particleRenderMode == 0 || view.particleRenderMode == 1) {
+
+		glBegin(GL_POINTS);
+		for (i = 0; i < state.particleCount; i++) {
+
+			p = state.particleHistory + state.particleCount * state.currentFrame + i;
+			pd = state.particleDetail + i;
+			glColor4fv(pd->col);
+			glVertex3fv(p->pos);
+			view.verticies++;
+
+		}
+		glEnd();
+
+	} else if (view.particleRenderMode == 2) {
+
+		// my math mojo is not so great, so this may not be the most efficient way of doing this
+
+		GLdouble matProject[16];
+		GLdouble matModelView[16];
+		GLint viewport[4];
+		GLdouble screen[3];
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glCheck();
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glCheck();
+
+		glGetDoublev(GL_PROJECTION_MATRIX, matProject);
+		glCheck();
+		glGetDoublev(GL_MODELVIEW_MATRIX, matModelView);
+		glCheck();
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		glCheck();
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0.0f,video.screenW,0,video.screenH,-1.0f,1.0f);
+		glCheck();
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glCheck();
+
+		for (i = 0; i < state.particleCount; i++) {
+
+			double size;
+
+			p = state.particleHistory + state.particleCount * state.currentFrame + i;
+			pd = state.particleDetail + i;
+
+			gluProject(
+				p->pos[0],p->pos[1],p->pos[2],
+				matModelView, matProject, viewport,
+				&screen[0], &screen[1], &screen[2]
+			);
+
+			if (screen[2] > 1)
+				continue;
+
+			size = view.particleSizeMin + (1.f - screen[2]) * view.particleSizeMax;
+
+			glBegin(GL_QUADS);
+			glColor4fv(pd->col);
+			glTexCoord2i(0,0);
+			glVertex2d(screen[0]-size, screen[1]-size);
+			glTexCoord2i(1,0);
+			glVertex2d(screen[0]+size, screen[1]-size);
+			glTexCoord2i(1,1);
+			glVertex2d(screen[0]+size, screen[1]+size);
+			glTexCoord2i(0,1);
+			glVertex2d(screen[0]-size, screen[1]+size);
+			glEnd();
+
+			view.verticies+=4;
+
+		}
+
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+
+	}
 
 	if (view.particleRenderMode == 1 && video.supportPointParameters && video.supportPointSprite) {
 
@@ -296,6 +375,7 @@ void drawFrame() {
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+//	sc[3] = 1;
 
 	if (view.tailLength > 0 || view.tailLength == -1) {
 
