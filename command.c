@@ -293,6 +293,10 @@ void cmdStop(char *arg) {
 
 void cmdSpawn(char *arg) {
 
+	if (state.fileName)
+		free(state.fileName);
+	state.fileName = 0;
+
 	if (state.currentlySpawning) {
 		state.restartSpawning = 1;
 		return;
@@ -329,7 +333,7 @@ cmdSpawnRestartSpawning:
 	if (state.autoRecord) {
 		state.autoRecordNext = 1;
 	}
-	
+
 }
 
 void cmdStart(char *arg) {
