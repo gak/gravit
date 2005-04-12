@@ -612,15 +612,17 @@ void drawAll() {
 		if (view.autoCenter)
 			translateToCenter();
 
+		// draws the oct tree
+		if (view.drawTree)
+			otDrawTree();		
+
 		drawFrame();
 
 	}
 
 	glViewport(0, 0, video.screenW, video.screenH);
 
-	// draws the oct tree
-	if (view.drawTree)
-		otDrawTree();
+
 
 	// just a test...
 	// otDrawField();

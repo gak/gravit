@@ -170,7 +170,7 @@ int processKeys() {
 
 			case SDLK_BACKSLASH:
 				view.particleRenderMode++;
-				if (view.particleRenderMode == 2)
+				if (view.particleRenderMode == 3)
 					view.particleRenderMode = 0;
 				conAdd(1, "particleRenderMode set to %i" , view.particleRenderMode);
 				break;
