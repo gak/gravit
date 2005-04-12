@@ -298,6 +298,7 @@ void drawFrame() {
 	} else if (view.particleRenderMode == 2) {
 
 		// my math mojo is not so great, so this may not be the most efficient way of doing this
+		// this whole bit is dodgy too, as long as it works :)
 
 		GLdouble matProject[16];
 		GLdouble matModelView[16];
@@ -317,7 +318,6 @@ void drawFrame() {
 		glCheck();
 		glGetIntegerv(GL_VIEWPORT, viewport);
 		glCheck();
-
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
