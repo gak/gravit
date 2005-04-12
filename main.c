@@ -148,6 +148,8 @@ void viewInit() {
 	view.popupTextLength = 6000;
 	view.popupTextFadeTime = 2000;	// ms
 
+	view.autoCenter = 1;
+
 	#endif
 
 

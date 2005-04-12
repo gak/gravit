@@ -126,7 +126,9 @@ static cmd_t cmd[] = {
 	,{ "timerlist",				cmdTimerList,			NULL, NULL }
 
 	,{ "popuptext",				cmdPopupText,			NULL, NULL }
-	
+
+	,{ "autocenter",				NULL,			NULL, &view.autoCenter }
+
 	,{ NULL,			NULL,				NULL }
 
 };

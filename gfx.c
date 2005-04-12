@@ -457,6 +457,26 @@ void drawRGB() {
 
 }
 
+void translateToCenter() {
+
+	int i;
+	particle_t *p;
+	VectorNew(pos)
+
+	VectorZero(pos)
+
+	for (i = 0; i < state.particleCount; i++) {
+
+		p = getParticleCurrentFrame(i);
+		VectorAdd(pos, p->pos, pos);
+
+	}
+
+	VectorDivide(pos, state.particleCount, pos);
+	glTranslatef(-pos[0], -pos[1], -pos[2]);
+
+}
+
 void drawAll() {
 
 	int i;
@@ -498,6 +518,9 @@ void drawAll() {
 		glRotatef((float)view.rot[0], 1, 0, 0);
 		glRotatef((float)view.rot[1], 0, 1, 0);
 		glRotatef((float)view.rot[2], 0, 0, 1);
+
+		if (view.autoCenter)
+			translateToCenter();
 
 		drawFrame();
 

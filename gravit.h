@@ -429,6 +429,8 @@ typedef struct view_s {
 	Uint32 popupTextLength;
 	float popupTextFadeTime;	// ms
 
+	int autoCenter;
+
 } view_t;
 
 typedef struct spawnVars_s {
