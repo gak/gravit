@@ -472,7 +472,7 @@ int commandLineRead(int argc, char *argv[]) {
 		}
 
 		// just ignore preview mode, configure dialog and change password
-		if (CheckCommand("/P") || CheckCommand("/p") || CheckCommand("/CP") || CheckCommand("/c") || CheckCommand("/A") || CheckCommand("/a")) {
+		if (CheckCommand("/P") || CheckCommand("/p") || CheckCommand("/C") || CheckCommand("/c") || CheckCommand("/A") || CheckCommand("/a")) {
 			cmdQuit(0);
 			return 0;
 		}
