@@ -419,6 +419,7 @@ typedef struct view_s {
 
 	int stereoMode;
 	float stereoSeparation;
+	int stereoModeCurrentBit;
 
 	int recordStatus;
 	int recordParticlesDone;

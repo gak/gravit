@@ -318,9 +318,19 @@ void drawFrame() {
 		glGetIntegerv(GL_VIEWPORT, viewport);
 		glCheck();
 
+
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0.0f,video.screenW,0,video.screenH,-1.0f,1.0f);
+		if (view.stereoMode) {
+			if (view.stereoModeCurrentBit == 0) {
+				glOrtho(0.0,video.screenW/2,0,video.screenH,-1.0,1.0);
+			} else {
+				glOrtho(video.screenW/2,video.screenW,0,video.screenH,-1.0,1.0);
+			}
+		} else {
+			glOrtho(0.0f,video.screenW,0,video.screenH,-1.0f,1.0f);
+		}
+		
 		glCheck();
 
 		glMatrixMode(GL_MODELVIEW);
@@ -559,7 +569,7 @@ void translateToCenter() {
 
 void drawAll() {
 
-	int i;
+//	int i;
 	int bits;
 	VectorNew(rotateIncrement)
 
@@ -575,9 +585,9 @@ void drawAll() {
 	else
 		bits = 1;
 
-	for (i = 0; i < bits; i++) {
+	for (view.stereoModeCurrentBit = 0; view.stereoModeCurrentBit < bits; view.stereoModeCurrentBit++) {
 
-		glViewport(video.screenW/bits*i, 0, video.screenW/bits, video.screenH);
+		glViewport(video.screenW/bits*view.stereoModeCurrentBit, 0, video.screenW/bits, video.screenH);
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -590,7 +600,7 @@ void drawAll() {
 		VectorAdd(rotateIncrement, view.rot, view.rot);
 
 		if (view.stereoMode) {
-			glTranslatef(((float)i-.5)*view.stereoSeparation, 0, 0);
+			glTranslatef(((float)view.stereoModeCurrentBit-.5)*view.stereoSeparation, 0, 0);
 		}
 
 		glTranslatef(0, 0, -view.zoom);
