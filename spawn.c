@@ -167,7 +167,7 @@ void pickPositions() {
 
 	for (i = 0; i < state.particleCount; i++) {
 
-		if (i % 100) {
+		if (!(i % 100)) {
 			view.recordParticlesDone = i;
 			doVideoUpdateInSpawn();
 		}
@@ -202,14 +202,14 @@ void pickPositions() {
 
 		p->pos[0] = cos(angle) * radius;
 		p->pos[1] = sin(angle) * radius;
-		p->pos[2] = sin(angle) * frand(0, 5) + cos(angle) * frand(0, 5);
+		p->pos[2] = frand(-radius/10, radius/10);
 
 		VectorAdd(galPos[g], p->pos, p->pos);
 
 		angle2 = angle + PI / 2;
 
-		p->vel[0] = cos(angle2) * radius * 0.02f;
-		p->vel[1] = sin(angle2) * radius * 0.02f;
+		p->vel[0] = cos(angle2) * radius * 0.05f;
+		p->vel[1] = sin(angle2) * radius * 0.05f;
 		p->vel[2] = 0;
 
 		VectorAdd(galVel[g], p->vel, p->vel);

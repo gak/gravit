@@ -353,7 +353,7 @@ void drawFrame() {
 			if (screen[2] > 1)
 				continue;
 
-			size = view.particleSizeMin + (1.f - screen[2]) * view.particleSizeMax;
+			size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
 
 			glBegin(GL_QUADS);
 			glColor4fv(pd->col);
