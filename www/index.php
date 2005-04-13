@@ -95,7 +95,7 @@ echo '</table>';
 </ul>
 
 <h2>Download</h2>
-<p>Gravit 0.3.0 now can be seen in 3D (without glasses) using <a href="http://www.angelfire.com/ca/erker/freeview.html">stereoscopic imaging</a>! Windows users now have a Windows installer and you can install Gravit as a screen saver. Also several new commands including stereo, stereoseparation, installscreensaver (win32), g, saveauto, autorotate, zoom, showcursor. Fixed a few bugs with mouse input.</p>
+<p>In Gravit 0.3.1 your view moves around to where particles are. I've added timer code, a fullscreen toggle by hitting alt-enter and several other features. Also, the screensaver has changed quite a bit.</p>
 <p>Read the <a href="dist/ChangeLog">ChangeLog</a> for the latest release details.</p>
 <?
 
@@ -133,9 +133,10 @@ function showFileHeading($s) {
 
 
 showFileHeading("Latest Release");
-showFiles("0.3.0");
+showFiles("0.3.1");
 
 showFileHeading("Older Releases");
+showFiles("0.3.0");
 showFiles("0.2.2");
 showFiles("0.2.1");
 showFiles("0.2");

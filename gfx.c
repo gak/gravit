@@ -622,7 +622,7 @@ void drawAll() {
 
 	if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
 		view.tailSkip*=2;
-		conAdd(1, "Adjusting tailSkip to %i due to too many vertices", view.tailSkip);
+		conAdd(1, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
 	}
 
 	glViewport(0, 0, video.screenW, video.screenH);

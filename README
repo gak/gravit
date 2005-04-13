@@ -1,4 +1,4 @@
-Gravit Version 0.3.0
+Gravit Version 0.3.1
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
@@ -13,7 +13,6 @@ Configuration
 
 Troubleshooting
 
-    * Most of the problems seem to do with particles not being displayed. Press \ to see if it makes a difference.
     * If you have any problems check the gravit.cfg file, it has lots of information about possible problems.
     * Otherwise send me an e-mail describing the problem along with video card, cpu, o/s, etc.. 
 
@@ -68,3 +67,4 @@ Contributors
     * Martin White (renwald@slowchop.com)
     * James Stewart (yattah@bigpond.com)
     * Sam Lander (sam.lander@gmail.com) 
+

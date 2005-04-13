@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=Gravit
-AppVerName=Gravit 0.3.0
-OutputBaseFilename=gravit-0.3.0-win32-installer
+AppVerName=Gravit 0.3.1
+OutputBaseFilename=gravit-0.3.1-win32-installer
 AppPublisherURL=http://gravit.slowchop.com
 AppSupportURL=http://gravit.slowchop.com
 AppUpdatesURL=http://gravit.slowchop.com

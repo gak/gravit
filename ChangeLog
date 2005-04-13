@@ -2,6 +2,27 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.3.1 2005/04/13
+
+    * Added recording statistics that display percentage completed for generating the tree and adding velocities.
+    * Added particlerendermode 2 which is more compatible and looks like particlerendermode 1, but about half as slow (on my pc at least).
+    * particlerendermode is set to 2 by default.
+    * Added videorestart command -- restarts your video after changing video settings such as resolution or fullscreen.
+    * videowidth and videoheight won't change the gui until you do a videorestart
+    * Alt-Enter switches between fullscreen and not (buggy?)
+    * Added timers: timeradd, timerdel, timerlist
+    * Particles spawn faster with many particles
+    * Galaxies are spawned a little differently. Their height is 100th of the radius and their individual velocities are faster within the galaxy.
+    * Added maxvertices setting that automatically increases tailskip when too many things are being rendered
+    * tailskip is now set to 1 by default
+    * Tree renders correctly with stereo mode on
+    * Added autorecord to start recording after spawning particles.
+    * Major revamp of screensaver.cfg using timers
+    * Added popuptext command, not useful (yet!) :)
+    * Added autocenter command to automatically go to the 'middle' of the simulation (it's on by default)
+    * Simulation name is cleared when spawning a new simulation
+    * /CP was meant to be /C for screensaver code 
+
 0.3.0 2005/04/11
 
     * Windows Installer package added

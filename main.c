@@ -116,7 +116,7 @@ void viewInit() {
 	view.blendMode = 1;
 
 	view.particleColourMode = CM_MASS;
-	view.particleRenderMode = 1;
+	view.particleRenderMode = 2;
 	view.particleRenderTexture = 1;
 
 	view.particleSizeMin = 4;
