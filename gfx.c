@@ -290,7 +290,7 @@ void drawFrame() {
 			pd = state.particleDetail + i;
 			glColor4fv(pd->col);
 			glVertex3fv(p->pos);
-			view.verticies++;
+			view.vertices++;
 
 		}
 		glEnd();
@@ -367,7 +367,7 @@ void drawFrame() {
 			glVertex2d(screen[0]-size, screen[1]+size);
 			glEnd();
 
-			view.verticies+=4;
+			view.vertices+=4;
 
 		}
 
@@ -430,7 +430,7 @@ void drawFrame() {
 
 				glVertex3fv(p->pos);
 
-				view.verticies++;
+				view.vertices++;
 
 			}
 
@@ -576,7 +576,7 @@ void drawAll() {
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	view.verticies = 0;
+	view.vertices = 0;
 
 	setColours();
 
@@ -620,9 +620,12 @@ void drawAll() {
 
 	}
 
+	if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
+		view.tailSkip*=2;
+		conAdd(1, "Adjusting tailSkip to %i due to too many vertices", view.tailSkip);
+	}
+
 	glViewport(0, 0, video.screenW, video.screenH);
-
-
 
 	// just a test...
 	// otDrawField();

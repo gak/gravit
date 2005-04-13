@@ -69,7 +69,7 @@ void drawOSD() {
 		DUH("display frame", va("%i", state.currentFrame));
 		DUH("recorded frames", va("%i", state.frame));
 		DUH("max frames", va("%i", state.historyFrames));
-		DUH("particle verticies", va("%i", view.verticies));
+		DUH("particle vertices", va("%i", view.vertices));
 		DUH("tree nodes allocated", va("%i", view.recordNodes));
 		DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 

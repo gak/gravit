@@ -90,7 +90,7 @@ void viewInit() {
 	view.tailLength = 32;
 	view.tailOpacity = 0.5f;
 	view.tailFaded = 1;
-	view.tailSkip = 4;
+	view.tailSkip = 1;
 
 	view.screenSaver = 0;
 
@@ -149,6 +149,8 @@ void viewInit() {
 	view.popupTextFadeTime = 2000;	// ms
 
 	view.autoCenter = 1;
+
+	view.maxVertices = 100000;
 
 	#endif
 

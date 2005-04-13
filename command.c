@@ -129,6 +129,9 @@ static cmd_t cmd[] = {
 
 	,{ "autocenter",				NULL,			NULL, &view.autoCenter }
 
+	,{ "maxvertices",				NULL,			NULL, &view.maxVertices }
+	
+
 	,{ NULL,			NULL,				NULL }
 
 };
@@ -623,7 +626,7 @@ else
 	DUH("particles         ", va("%i", state.particleCount));
 	DUH("frametime         ", va("%ims", view.deltaVideoFrame));
 	DUH("fps               ", va("%3.2f", (float)1000 / view.deltaVideoFrame));
-	DUH("particle verticies", va("%i", view.verticies));
+	DUH("particle vertices", va("%i", view.vertices));
 	DUH("memory allocated  ", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 
 #undef DUH

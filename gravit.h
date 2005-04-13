@@ -365,6 +365,8 @@ typedef struct view_s {
 	float rot[3];
 	float zoom;
 
+	int maxVertices;	// 0 for infinite, otherwise tailskip will double when hit
+
 #ifndef NO_GUI
 	int keys[SDLK_LAST];
 #endif
@@ -395,7 +397,7 @@ typedef struct view_s {
 	int drawColourScheme;
 
 	float fps;
-	int verticies;
+	int vertices;
 
 	int verboseMode;
 
