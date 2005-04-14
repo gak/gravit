@@ -57,14 +57,14 @@ void cleanMemory() {
 
 	if (state.particleHistory) {
 
-//		conAdd(0, "Freeing state.particleHistory");
+//		conAdd(LLOW, "Freeing state.particleHistory");
 		_aligned_free(state.particleHistory);
 
 	}
 
 	if (state.particleDetail) {
 
-//		conAdd(0, "Freeing state.particleDetail");
+//		conAdd(LLOW, "Freeing state.particleDetail");
 		_aligned_free(state.particleDetail);
 
 	}
@@ -218,12 +218,12 @@ int init(int argc, char *argv[]) {
 	setRegistryString(REGISTRY_NAME_PATH, currentDirectory);
 #endif
 
-	conAdd(1, "Welcome to Gravit!");
+	conAdd(LNORM, "Welcome to Gravit!");
 
 #ifndef NO_GUI
 
-	conAdd(0, "Quick Start: Hit F8 a few times then F6 to start recording.");
-	conAdd(0, "Hold down a mouse button and move it around. Use A and Z keys to zoom in and out.");
+	conAdd(LHELP, "Quick Start: Hit F8 a few times then F6 to start recording.");
+	conAdd(LHELP, "Hold down a mouse button and move it around. Use A and Z keys to zoom in and out.");
 
 #endif
 
@@ -278,7 +278,7 @@ void run() {
 		if (state.mode & SM_RECORD) {
 
 			if (view.verboseMode)
-				conAdd(0, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
+				conAdd(LLOW, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
 
 			setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
 
@@ -303,7 +303,7 @@ void run() {
 				state.currentFrame = 0;
 
 			if (view.verboseMode)
-				conAdd(0, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
+				conAdd(LLOW, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
 
 		}
 
@@ -328,7 +328,7 @@ int main(int argc, char *argv[]) {
 
 	if (init(argc, argv)) {
 
-		conAdd(2, "There has been an error on start-up. Read gravit.cfg to possibly fix this.");
+		conAdd(LERR, "There has been an error on start-up. Read gravit.cfg to possibly fix this.");
 
 	} else {
 
@@ -356,23 +356,23 @@ int main(int argc, char *argv[]) {
 
 }
 
-#define ShowHelp(p,v) conAdd(0, "  %-25s%s", p, v);
+#define ShowHelp(p,v) conAdd(LLOW, "  %-25s%s", p, v);
 void usage() {
 
-	conAdd(0, GRAVIT_VERSION);
-	conAdd(0, GRAVIT_COPYRIGHT);
-	conAdd(0, "");
-	conAdd(0, "usage: gravit [-nvh] [COMMAND] ...");
-	conAdd(0, "");
+	conAdd(LLOW, GRAVIT_VERSION);
+	conAdd(LLOW, GRAVIT_COPYRIGHT);
+	conAdd(LLOW, "");
+	conAdd(LLOW, "usage: gravit [-nvh] [COMMAND] ...");
+	conAdd(LLOW, "");
 //	ShowHelp("-e, --exec=COMMAND",	"execute a command. eg. --exec=\"load foo\"")
 //	ShowHelp("",					"  commands will execute in order from left to right.")
 	ShowHelp("-n, --noscript",		"don't load gravit.cfg")
 	ShowHelp("-h, --help",			"you're looking at it")
 	ShowHelp("-v, --version",		"display version and quit")
-	conAdd(0, "");
-	conAdd(0, "  'COMMAND' should be encapsulated in quotes when there are spaces involved.");
-	conAdd(0, "  For example: gravit \"drawosd 0\" spawn record \"saveauto 20\"");
-	conAdd(0, "");
+	conAdd(LLOW, "");
+	conAdd(LLOW, "  'COMMAND' should be encapsulated in quotes when there are spaces involved.");
+	conAdd(LLOW, "  For example: gravit \"drawosd 0\" spawn record \"saveauto 20\"");
+	conAdd(LLOW, "");
 	cmdQuit(0);
 
 }
@@ -425,8 +425,8 @@ int commandLineRead(int argc, char *argv[]) {
 
 		// version, quit
 		if (CheckCommand("--version") || CheckCommand("-v")) {
-			conAdd(0, GRAVIT_VERSION);
-			conAdd(0, GRAVIT_COPYRIGHT);
+			conAdd(LLOW, GRAVIT_VERSION);
+			conAdd(LLOW, GRAVIT_COPYRIGHT);
 			cmdQuit(0);
 			return 0;
 		}
@@ -442,8 +442,8 @@ int commandLineRead(int argc, char *argv[]) {
 		// -e or --exec
 		// runs a command
 		if (CheckCommand("--exec") || CheckCommand("-e")) {
-			conAdd(0, "Sorry, --exec has been removed -- just add your commands to the command line as they are");
-			conAdd(0, "  eg. gravit exec \"\" ");
+			conAdd(LLOW, "Sorry, --exec has been removed -- just add your commands to the command line as they are");
+			conAdd(LLOW, "  eg. gravit exec \"\" ");
 			cmdQuit(0);
 			return 0;
 			continue;

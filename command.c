@@ -144,7 +144,7 @@ void commandInit() {
 
 	fp = fopen("data/commandhelp.txt", "rb");
 	if (!fp) {
-		conAdd(2, "Could not open data/commandhelp.txt");
+		conAdd(LERR, "Could not open data/commandhelp.txt");
 		return;
 	}
 
@@ -202,11 +202,11 @@ void cmdFree() {
 void cmdPrint(cmd_t *c) {
 
 	if (c->fVar)
-		conAdd(1, "%s = %f", c->cmd, *c->fVar);
+		conAdd(LNORM, "%s = %f", c->cmd, *c->fVar);
 	else if (c->iVar)
-		conAdd(1, "%s = %i", c->cmd, *c->iVar);
+		conAdd(LNORM, "%s = %i", c->cmd, *c->iVar);
 	else
-		conAdd(1, "%s", c->cmd);
+		conAdd(LNORM, "%s", c->cmd);
 
 }
 
@@ -300,7 +300,7 @@ void cmdExecute(char *string) {
 	j = cmdFind(cmdbuf);
 
 	if (j == -1) {
-		conAdd(1, "%s: Command not found", string);
+		conAdd(LERR, "%s: Command not found", string);
 		cmdPrintStartingWith(cmdbuf);
 		return;
 	}
@@ -349,7 +349,7 @@ void cmdStop(char *arg) {
 	if (isSpawning())
 		return;
 
-	conAdd(1, "Stopped...");
+	conAdd(LNORM, "Stopped...");
 	state.mode &= ~SM_PLAY;
 	state.mode &= ~SM_RECORD;
 
@@ -378,7 +378,7 @@ cmdSpawnRestartSpawning:
 	state.historyFrames = (int)((float)(state.memoryAvailable * 1024 * 1024) / FRAMESIZE);
 
 	if (!initFrame()) {
-		conAdd(1, "Could not init frame");
+		conAdd(LERR, "Could not init frame");
 		return;
 	}
 
@@ -392,7 +392,7 @@ cmdSpawnRestartSpawning:
 #endif
 
 	state.currentlySpawning = 0;
-	conAdd(0, "You have spawned some particles. Hit F6 to start recording the simulation!");
+	conAdd(LHELP, "You have spawned some particles. Hit F6 to start recording the simulation!");
 
 	state.mode = 0;
 
@@ -415,7 +415,7 @@ void cmdRecord(char *arg) {
 
 	if (state.particleCount == 0) {
 
-		conAdd(1, "You need to spawn some particles first! Press F8 to spawn some!");
+		conAdd(LHELP, "You need to spawn some particles first! Press F8 to spawn some!");
 		return;
 
 	}
@@ -424,15 +424,15 @@ void cmdRecord(char *arg) {
 
 	if (state.mode & SM_RECORD) {
 
-		conAdd(1, "Stopped Recording.");
-		conAdd(0, "Press F5 to play your recording. Press F6 to continue recording.");
+		conAdd(LNORM, "Stopped Recording.");
+		conAdd(LHELP, "Press F5 to play your recording. Press F6 to continue recording.");
 		state.mode &= ~SM_RECORD;
 		setTitle(0);
 
 	} else {
 
-		conAdd(1, "Recording...");
-		conAdd(0, "Press F5 to play your recording. Press F6 to stop recording.");
+		conAdd(LNORM, "Recording...");
+		conAdd(LHELP, "Press F5 to play your recording. Press F6 to stop recording.");
 		state.mode |= SM_RECORD;
 		setTitle(STRING_RECORD);
 
@@ -447,7 +447,7 @@ void cmdPlay(char *arg) {
 
 	if (state.particleCount == 0) {
 
-		conAdd(1, "You need to spawn some particles first! Press F8 to spawn some!");
+		conAdd(LHELP, "You need to spawn some particles first! Press F8 to spawn some!");
 		return;
 
 	}
@@ -456,15 +456,15 @@ void cmdPlay(char *arg) {
 
 	if (state.mode & SM_PLAY) {
 
-		conAdd(1, "Stopped Playback.");
-		conAdd(0, "Press F5 to continue playback. Press F6 to continue recording.");
+		conAdd(LNORM, "Stopped Playback.");
+		conAdd(LHELP, "Press F5 to continue playback. Press F6 to continue recording.");
 		state.mode &= ~SM_PLAY;
 		setTitle(0);
 
 	} else {
 
-		conAdd(1, "Playing...");
-		conAdd(0, "Press F5 to stop playback. Press F6 to continue recording.");
+		conAdd(LNORM, "Playing...");
+		conAdd(LHELP, "Press F5 to stop playback. Press F6 to continue recording.");
 		state.mode |= SM_PLAY;
 		setTitle(STRING_PLAY);
 
@@ -523,7 +523,7 @@ void cmdSaveFrame(char *arg) {
 
 	}
 
-	conAdd(2, "saving frames %i to %i skipping %i to %s", staf, endf, skif, fileName);
+	conAdd(LERR, "saving frames %i to %i skipping %i to %s", staf, endf, skif, fileName);
 
 }
 #endif
@@ -540,8 +540,8 @@ void cmdSaveFrameDump(char *arg) {
 
 		if (!state.fileName) {
 
-			conAdd(2, "Please specify a name (not extensions necessary).");
-			conAdd(1, "usage: save [name]");
+			conAdd(LERR, "Please specify a name (not extensions necessary).");
+			conAdd(LNORM, "usage: save [name]");
 			return;
 
 		}
@@ -551,7 +551,7 @@ void cmdSaveFrameDump(char *arg) {
 	}
 
 	if (!mymkdir(SAVE_PATH)) {
-		conAdd(2, "Could not create %s directory", SAVE_PATH);
+		conAdd(LERR, "Could not create %s directory", SAVE_PATH);
 		return;
 	}
 
@@ -561,27 +561,27 @@ void cmdSaveFrameDump(char *arg) {
 	si.frame = state.frame;
 	si.historyNFrame = state.historyNFrame;
 
-	conAdd(1, "Saving %s...", arg);
-	conAdd(1, "Please Wait...");
+	conAdd(LNORM, "Saving %s...", arg);
+	conAdd(LNORM, "Please Wait...");
 	runVideo();
 
 	fileName = va(SAVE_PATH "/%s.info", arg);
 	if (!SaveMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
-		conAdd(2, "Failed to create %s", fileName);
+		conAdd(LERR, "Failed to create %s", fileName);
 		return;
 	}
 
 	fileName = va(SAVE_PATH "/%s.particledetail", arg);
 	if (!SaveMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
-		conAdd(2, "Failed to create %s", fileName);
+		conAdd(LERR, "Failed to create %s", fileName);
 		return;
 	}
 
 	if (!SaveMemoryDump(va(SAVE_PATH "/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
-		conAdd(2, "Failed to create %s", fileName);
+		conAdd(LERR, "Failed to create %s", fileName);
 		return;
 	}
-	conAdd(1, "Simulation saved sucesfully!");
+	conAdd(LNORM, "Simulation saved sucesfully!");
 
 	setFileName(arg);
 
@@ -599,7 +599,7 @@ void cmdLoadFrameDump(char *arg) {
 
 		if (!state.fileName) {
 
-			conAdd(2, "Please specify a name (not extensions necessary).");
+			conAdd(LERR, "Please specify a name (not extensions necessary).");
 			return;
 
 		}
@@ -610,7 +610,7 @@ void cmdLoadFrameDump(char *arg) {
 
 	fileName = va(SAVE_PATH "/%s.info", arg);
 	if (!LoadMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
-		conAdd(2, "Failed to load %s", fileName);
+		conAdd(LERR, "Failed to load %s", fileName);
 		return;
 	}
 
@@ -618,12 +618,12 @@ void cmdLoadFrameDump(char *arg) {
 	state.historyFrames = si.historyFrames;
 	state.particleCount = si.particleCount;
 
-	conAdd(1, "Loading %s...", arg);
-	conAdd(0, "Particles: %i", state.particleCount);
-	conAdd(0, "Frames: %i", state.historyFrames);
+	conAdd(LNORM, "Loading %s...", arg);
+	conAdd(LLOW, "Particles: %i", state.particleCount);
+	conAdd(LLOW, "Frames: %i", state.historyFrames);
 
 	if (!initFrame()) {
-		conAdd(2, "Could not init frame");
+		conAdd(LERR, "Could not init frame");
 		return;
 	}
 
@@ -631,22 +631,22 @@ void cmdLoadFrameDump(char *arg) {
 	state.frame = si.frame;
 	state.historyNFrame = si.historyNFrame;
 
-	conAdd(1, "Please Wait...");
+	conAdd(LNORM, "Please Wait...");
 	runVideo();
 
 	if (!LoadMemoryDump(va(SAVE_PATH "/%s.particledetail", arg), (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
-		conAdd(2, "Failed to load %s", fileName);
+		conAdd(LERR, "Failed to load %s", fileName);
 		return;
 	}
 
 	if (!LoadMemoryDump(va(SAVE_PATH "/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
-		conAdd(2, "Failed to load %s", fileName);
+		conAdd(LERR, "Failed to load %s", fileName);
 		return;
 	}
 
 	state.currentFrame = 0;
 	state.mode = 0;
-	conAdd(1, "Simulation loaded sucesfully!");
+	conAdd(LNORM, "Simulation loaded sucesfully!");
 
 	setFileName(arg);
 
@@ -668,18 +668,18 @@ void cmdFrameSkip(char *arg) {
 	if (sz[0])
 		view.frameSkip = atoi(sz);
 	else
-		conAdd(2, "nope");
+		conAdd(LERR, "nope");
 
 }
 
 void cmdStatus(char *arg) {
 
 if (state.mode & SM_RECORD)
-	conAdd(0, "RECORDING");
+	conAdd(LLOW, "RECORDING");
 else
-	conAdd(0, "NOT RECORDING");
+	conAdd(LLOW, "NOT RECORDING");
 
-#define DUH(s, v) conAdd(0, "%s\t%s", s, v);
+#define DUH(s, v) conAdd(LLOW, "%s\t%s", s, v);
 
 	DUH("actual frames     ", va("%i", state.totalFrames));
 	DUH("compression skip  ", va("%i", state.historyNFrame));
@@ -723,7 +723,7 @@ void cmdRunScript(char *arg) {
 void cmdTailSkipCheck(char *arg) {
 
 	if (view.tailSkip <= 0) {
-		conAdd(1, "tailskip %i is not valid. tailskip is now 1.", view.tailSkip);
+		conAdd(LNORM, "tailskip %i is not valid. tailskip is now 1.", view.tailSkip);
 		view.tailSkip = 1;
 	}
 
@@ -762,7 +762,7 @@ void cmdScreenshot(char *arg) {
 	SDL_UnlockSurface(sdlSurfNormal);
 
 	if (!mymkdir(SCREENSHOT_PATH)) {
-		conAdd(2, "Could not create screenshot directory");
+		conAdd(LERR, "Could not create screenshot directory");
 		return;
 	}
 
@@ -794,7 +794,7 @@ void cmdColourSchemeNew(char *arg) {
 
 #ifndef NO_GUI
 	colourSpectrumClear();
-	conAdd(0, "Colour scheme reset");
+	conAdd(LLOW, "Colour scheme reset");
 #endif
 
 }
@@ -830,7 +830,7 @@ void cmdColourSchemeAdd(char *arg) {
 
 	memcpy(&view.colourSpectrum[(view.colourSpectrumSteps-1)*4], &c, sizeof(float)*4);
 
-	conAdd(0, "Added colour (%f %f %f %f) to colour scheme", c[0], c[1], c[2], c[3]);
+	conAdd(LLOW, "Added colour (%f %f %f %f) to colour scheme", c[0], c[1], c[2], c[3]);
 
 #endif
 
@@ -841,7 +841,7 @@ void cmdSetG(char *arg) {
 	float newg;
 
 	newg = -pow(10, -state.gbase);
-	conAdd(0, "\"G\" set to %f", newg);
+	conAdd(LLOW, "\"G\" set to %f", newg);
 	state.g = newg;
 
 }
@@ -867,7 +867,7 @@ void cmdAutoRotate(char *arg) {
 
 cmdAutoRotateUsage:
 
-	conAdd(1, "autorotate %f %f %f", view.autoRotate[0], view.autoRotate[1], view.autoRotate[2]);
+	conAdd(LNORM, "autorotate %f %f %f", view.autoRotate[0], view.autoRotate[1], view.autoRotate[2]);
 	return;
 
 }
@@ -909,7 +909,7 @@ void cmdChangeDir(char *arg) {
 void cmdStereoWarning(char *arg) {
 
 	if (view.stereoMode)
-		conAdd(2, "WARNING: Stereo mode may damage your eyes or other things. Use with caution.");
+		conAdd(LERR, "WARNING: Stereo mode may damage your eyes or other things. Use with caution.");
 
 }
 
@@ -941,7 +941,7 @@ void cmdTimerAdd(char *arg) {
 
 	char *argptr[4];
 	if (!cmdGetArgs(4, arg, argptr)) {
-		conAdd(2, "usage: timeradd [name] [interval] [repetitions] [command]");
+		conAdd(LERR, "usage: timeradd [name] [interval] [repetitions] [command]");
 		return;
 	}
 

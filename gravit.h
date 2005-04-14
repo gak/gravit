@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.3.1"
+#define GRAVIT_VERSION "Gravit 0.3.2"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 // #define NO_GUI
@@ -89,7 +89,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <SDL_opengl.h>
 	#include <SDL_image.h>
 
-	#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(1, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
+	#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LNORM, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
 
 #else
 

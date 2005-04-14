@@ -10,7 +10,7 @@ int loadTexture() {
 	tmp = SDL_LoadBMP("texture.bmp");
 
 	if (!tmp) {
-		conAdd(1, "Failed loading texture");
+		conAdd(LNORM, "Failed loading texture");
 		return 0;
 	}
 

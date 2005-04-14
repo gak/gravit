@@ -63,7 +63,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 	fp = fopen(fileName, "rb");
 	if (!fp) {
 
-		conAdd(1, "Count not open %s for reading.", fileName);
+		conAdd(LNORM, "Count not open %s for reading.", fileName);
 		return 0;
 
 	}
@@ -81,7 +81,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 		p = fread(d, 1, amountToRead, fp);
 
 		if (p == 0) {
-			conAdd(2, "Short read on %s", fileName);
+			conAdd(LERR, "Short read on %s", fileName);
 			fclose(fp);
 			return 0;
 		}
@@ -92,14 +92,14 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 
 		if (ferror(fp)) {
 
-			conAdd(1, "%s", strerror( errno ));
+			conAdd(LNORM, "%s", strerror( errno ));
 			fclose(fp);
 			return 0;
 
 		}
 #if 0
 		if (i) {
-			conAdd(0, "%3.1f%% (%.0f / %.0f)", 100*(float)pos/(float)size,(float)pos / 1024 / 1024,(float)size / 1024 / 1024);
+			conAdd(LLOW, "%3.1f%% (%.0f / %.0f)", 100*(float)pos/(float)size,(float)pos / 1024 / 1024,(float)size / 1024 / 1024);
 #ifndef NO_GUI
 			drawAll();
 #endif
@@ -113,7 +113,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 
 	fclose(fp);
 
-	conAdd(0, "Loaded %i bytes from %s", size, fileName);
+	conAdd(LLOW, "Loaded %i bytes from %s", size, fileName);
 
 	return 1;
 }
@@ -126,7 +126,7 @@ int SaveMemoryDump(char *fileName, unsigned char *d, unsigned int total) {
 	fp = fopen(fileName, "wb");
 	if (!fp) {
 
-		conAdd(1, "count not open %s for writing");
+		conAdd(LNORM, "count not open %s for writing");
 		return 0;
 
 	}
@@ -148,7 +148,7 @@ int SaveMemoryDump(char *fileName, unsigned char *d, unsigned int total) {
 
 	fclose(fp);
 
-	conAdd(0, "written %u bytes to %s", written, fileName);
+	conAdd(LLOW, "written %u bytes to %s", written, fileName);
 
 	return 1;
 

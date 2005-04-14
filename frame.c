@@ -32,23 +32,23 @@ int initFrame() {
 
 	cleanMemory();
 
-//	conAdd(2, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
+//	conAdd(LERR, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
 	state.particleHistory = _aligned_malloc(FRAMESIZE * state.historyFrames, 16);
 
 	if (!state.particleHistory) {
 
-		conAdd(1, "Could not allocate %i bytes of memory for particleHistory", FRAMESIZE * state.historyFrames);
+		conAdd(LNORM, "Could not allocate %i bytes of memory for particleHistory", FRAMESIZE * state.historyFrames);
 		return 0;
 
 	}
 
 	state.memoryAllocated += FRAMESIZE * state.historyFrames;
 
-//	conAdd(2, "Allocating %i bytes", FRAMEDETAILSIZE);
+//	conAdd(LERR, "Allocating %i bytes", FRAMEDETAILSIZE);
 	state.particleDetail = calloc(sizeof(particleDetail_t),state.particleCount);
 	if (!state.particleDetail) {
 
-		conAdd(1, "Could not allocate %i bytes of memory for particleDetail", FRAMEDETAILSIZE);
+		conAdd(LNORM, "Could not allocate %i bytes of memory for particleDetail", FRAMEDETAILSIZE);
 		_aligned_free(state.particleHistory);
 		state.memoryAllocated = 0;
 		return 0;
@@ -96,7 +96,7 @@ void processMomentum() {
 
 	}
 
-	conAdd(0, "Momentum: %.10f, %.10f, %.10f", sP[0], sP[1], sP[2]);
+	conAdd(LLOW, "Momentum: %.10f, %.10f, %.10f", sP[0], sP[1], sP[2]);
 
 }
 
@@ -118,7 +118,7 @@ void processFrame() {
             state.frame /= 2;
 			state.currentFrame = state.frame;
 			state.historyNFrame *= 2;
-			conAdd(0, "historyNFrame: %i", state.historyNFrame);
+			conAdd(LLOW, "historyNFrame: %i", state.historyNFrame);
 
 			for (i = 0; i < state.frame; i++) {
 
@@ -261,7 +261,7 @@ void processCollisions() {
 				p1->vel[1] = (p1->vel[1] + p2->vel[1])/2;
 				p1->vel[2] = (p1->vel[2] + p2->vel[2])/2;
 
-				conAdd(0, "Particle %i and %i collided: newmass=%f", i, j, p1->mass);
+				conAdd(LLOW, "Particle %i and %i collided: newmass=%f", i, j, p1->mass);
 
 			}
 

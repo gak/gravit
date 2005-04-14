@@ -132,10 +132,10 @@ int processKeys() {
 			case SDLK_F10:
 				if (view.screenshotLoop) {
 					view.screenshotLoop = 0;
-					conAdd(1, "Stopped taking many screenshots! Check your screenshots directory.");
+					conAdd(LNORM, "Stopped taking many screenshots! Check your screenshots directory.");
 				} else {
 					view.screenshotLoop = 1;
- 					conAdd(1, "Taking a screenshot every frame. Careful how long you run this!");
+ 					conAdd(LNORM, "Taking a screenshot every frame. Careful how long you run this!");
 				}
 				break;
 				
@@ -151,35 +151,35 @@ int processKeys() {
 			case SDLK_t:
 				if (++view.drawTree == 3)
 					view.drawTree = 0;
-				conAdd(1, "drawTree set to %i", view.drawTree);
+				conAdd(LNORM, "drawTree set to %i", view.drawTree);
 				break;
 
 			case SDLK_SLASH:
 				view.particleColourMode ++;
 				if (view.particleColourMode == CM_LAST)
 					view.particleColourMode = 0;
-				conAdd(1, "Colour mode set to: %s" , colourModes[view.particleColourMode]);
+				conAdd(LNORM, "Colour mode set to: %s" , colourModes[view.particleColourMode]);
 				break;
 
 			case SDLK_l:
 				view.blendMode ++;
 				if (view.blendMode == 5)
 					view.blendMode = 0;
-				conAdd(1, "Blend mode set to: %i", view.blendMode);
+				conAdd(LNORM, "Blend mode set to: %i", view.blendMode);
 				break;
 
 			case SDLK_BACKSLASH:
 				view.particleRenderMode++;
 				if (view.particleRenderMode == 3)
 					view.particleRenderMode = 0;
-				conAdd(1, "particleRenderMode set to %i" , view.particleRenderMode);
+				conAdd(LNORM, "particleRenderMode set to %i" , view.particleRenderMode);
 				break;
 
 			case SDLK_MINUS:
 				view.particleSizeMin /= 2;
 				if (view.particleSizeMin < 1)
 					view.particleSizeMin = 1;
-				conAdd(0, "particlesizemin set to %.1f ", view.particleSizeMin);
+				conAdd(LLOW, "particlesizemin set to %.1f ", view.particleSizeMin);
 				break;
 
 			case SDLK_EQUALS:
@@ -187,18 +187,18 @@ int processKeys() {
 					view.particleSizeMin = 1;
 				else
 					view.particleSizeMin *= 2;
-				conAdd(0, "particlesizemin set to %.1f ", view.particleSizeMin);
+				conAdd(LLOW, "particlesizemin set to %.1f ", view.particleSizeMin);
 				if (view.particleSizeMin > view.particleSizeMax)
-					conAdd(1, "Careful! particlesizemin is bigger then particlesizemax!");
+					conAdd(LNORM, "Careful! particlesizemin is bigger then particlesizemax!");
 				break;
 
 			case SDLK_LEFTBRACKET:
 				view.particleSizeMax /= 2;
 				if (view.particleSizeMax < 1)
 					view.particleSizeMax = 1;
-				conAdd(0, "particlesizemax set to %.1f ", view.particleSizeMax);
+				conAdd(LLOW, "particlesizemax set to %.1f ", view.particleSizeMax);
 				if (view.particleSizeMin > view.particleSizeMax)
-					conAdd(1, "Careful! particlesizemin is bigger then particlesizemax!");
+					conAdd(LNORM, "Careful! particlesizemin is bigger then particlesizemax!");
 				break;
 
 			case SDLK_RIGHTBRACKET:
@@ -206,16 +206,16 @@ int processKeys() {
 					view.particleSizeMax = 1;
 				else
 					view.particleSizeMax *= 2;
-				conAdd(0, "particlesizemax set to %.1f ", view.particleSizeMax);
+				conAdd(LLOW, "particlesizemax set to %.1f ", view.particleSizeMax);
 				break;
 
 			case SDLK_m:
 				if (view.tailLength == -1) {
 					view.tailLength = 0;
-					conAdd(0, "tailLength set to 0");
+					conAdd(LLOW, "tailLength set to 0");
 				} else {
 					view.tailLength = -1;
-					conAdd(0, "tailLength set to infinite!");
+					conAdd(LLOW, "tailLength set to infinite!");
 				}
 				break;
 
@@ -224,7 +224,7 @@ int processKeys() {
 					view.tailLength = 1;
 				else
 					view.tailLength *= 2;
-				conAdd(0, "tailLength set to %i", view.tailLength);
+				conAdd(LLOW, "tailLength set to %i", view.tailLength);
 				break;
 
 			case SDLK_b:
@@ -236,57 +236,57 @@ int processKeys() {
 				else
 					view.tailLength /= 2;
 
-				conAdd(0, "tailLength set to %i", view.tailLength);
+				conAdd(LLOW, "tailLength set to %i", view.tailLength);
 				break;
 
 			case SDLK_v:
 				view.tailOpacity += 0.1f;
 				if (view.tailOpacity > 1)
 					view.tailOpacity = 1;
-				conAdd(0, "tailOpacity set to %.1f", view.tailOpacity);
+				conAdd(LLOW, "tailOpacity set to %.1f", view.tailOpacity);
 				break;
 
 			case SDLK_c:
 				view.tailOpacity -= 0.1f;
 				if (view.tailOpacity < 0)
 					view.tailOpacity = 0;
-				conAdd(0, "tailOpacity set to %.1f", view.tailOpacity);
+				conAdd(LLOW, "tailOpacity set to %.1f", view.tailOpacity);
 				break;
 
 			case SDLK_x:
 				view.tailFaded = (!view.tailFaded)?1:0;
-				conAdd(0, "tailFaded set to %i", view.tailFaded);
+				conAdd(LLOW, "tailFaded set to %i", view.tailFaded);
 				break;
 
 			case SDLK_COMMA:
 				view.tailSkip /= 2;
 				if (view.tailSkip < 1)
 					view.tailSkip = 1;
-				conAdd(0, "tailSkip set to %i", view.tailSkip);
+				conAdd(LLOW, "tailSkip set to %i", view.tailSkip);
 				break;
 
 			case SDLK_PERIOD:
 				view.tailSkip *= 2;
-				conAdd(0, "tailSkip set to %i", view.tailSkip);
+				conAdd(LLOW, "tailSkip set to %i", view.tailSkip);
 				break;
 
 			case SDLK_QUOTE:
 				view.tailWidth += 1;
 				if (view.tailWidth > 10)
 					view.tailWidth = 10;
-				conAdd(0, "tailWidth set to %.0f", view.tailWidth);
+				conAdd(LLOW, "tailWidth set to %.0f", view.tailWidth);
 				break;
 
 			case SDLK_SEMICOLON:
 				view.tailWidth -= 1;
 				if (view.tailWidth < 1)
 					view.tailWidth = 1;
-				conAdd(0, "tailWidth set to %.0f", view.tailWidth);
+				conAdd(LLOW, "tailWidth set to %.0f", view.tailWidth);
 				break;
 
 			case SDLK_o:
 				view.drawOSD = (!view.drawOSD)?1:0;
-				conAdd(0, "drawOSD set to %i", view.drawOSD);
+				conAdd(LLOW, "drawOSD set to %i", view.drawOSD);
 				break;
 
 			default:

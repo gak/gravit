@@ -136,23 +136,23 @@ void pickPositions() {
 
 	if (gals <= 0) {
 
-		conAdd(2, "For some reason galaxies to spawn is 0 or less. Not possible!");
+		conAdd(LERR, "For some reason galaxies to spawn is 0 or less. Not possible!");
 		return;
 
 	}
 
 	if (gals >= 100) {
 
-		conAdd(2, "Maximum galaxies to spawn is 100");
+		conAdd(LERR, "Maximum galaxies to spawn is 100");
 		return;
 
 	}
 
 	spawnRange = frand(spawnVars.minSpawnRange, spawnVars.maxSpawnRange);
 
-	conAdd(1, "Spawning new simulation...");
-	conAdd(0, "- %i particles...", state.particleCount);
-	conAdd(0, "- %i galaxies...", gals);
+	conAdd(LNORM, "Spawning new simulation...");
+	conAdd(LLOW, "- %i particles...", state.particleCount);
+	conAdd(LLOW, "- %i galaxies...", gals);
 
 	for (g = 0; g < gals; g++) {
 
@@ -238,16 +238,16 @@ void pickPositions() {
 
 	}
 
-	conAdd(0, "- %f total mass...", totalMass);
-	conAdd(0, "- %f galaxy mass...", totalMass / gals);
-	conAdd(0, "- %f particle mass...", totalMass / state.particleCount);
+	conAdd(LLOW, "- %f total mass...", totalMass);
+	conAdd(LLOW, "- %f galaxy mass...", totalMass / gals);
+	conAdd(LLOW, "- %f particle mass...", totalMass / state.particleCount);
 
 }
 
 int isSpawning() {
 
 	if (state.currentlySpawning) {
-		conAdd(1, "Please wait until all particles are spawned...");
+		conAdd(LNORM, "Please wait until all particles are spawned...");
 		return 1;
 	}
 

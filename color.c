@@ -45,7 +45,7 @@ void setColoursByVel() {
 		distance(zero, p->vel, velSpeed);
 
 		if (velSpeed < 0)
-			conAdd(1, "VelSpeed < 0!");
+			conAdd(LNORM, "VelSpeed < 0!");
 
 		if (i == 0) {
 

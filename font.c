@@ -41,7 +41,7 @@ int loadFonts() {
 
 	if (!font) {
 
-		conAdd(2, "Could not open Vera.ttf");
+		conAdd(LERR, "Could not open Vera.ttf");
 		return 0;
 
 	}

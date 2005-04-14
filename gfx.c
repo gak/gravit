@@ -116,16 +116,16 @@ int gfxInit() {
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
-        conAdd(2, "SDL Init failed");
-		conAdd(2, SDL_GetError());
+        conAdd(LERR, "SDL Init failed");
+		conAdd(LERR, SDL_GetError());
         return 0;
 
     }
 
     if (TTF_Init()) {
 
-        conAdd(2, "SDL_ttf Init failed");
-		conAdd(2, SDL_GetError());
+        conAdd(LERR, "SDL_ttf Init failed");
+		conAdd(LERR, SDL_GetError());
 		return 0;
 
     }
@@ -149,16 +149,16 @@ gfxInitRetry:
 
 	if (!gfxSetResolution()) {
 
-		conAdd(2, "SDL_SetVideoMode failed: %s", SDL_GetError());
+		conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError());
 
 		if (video.screenAA) {
-			conAdd(2, "You have videoantialiasing on. I'm turning it off and restarting...");
+			conAdd(LERR, "You have videoantialiasing on. I'm turning it off and restarting...");
 			video.screenAA = 0;
 			goto gfxInitRetry;
 		}
 
 		if (detectedBPP != video.screenBPP) {
-			conAdd(2, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
+			conAdd(LERR, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
 			video.screenBPP = detectedBPP;
 			goto gfxInitRetry;
 		}
@@ -167,12 +167,12 @@ gfxInitRetry:
 
 	}
 
-	conAdd(0, "Your video mode is %ix%ix%i", video.screenW, video.screenH, video.gfxInfo->vfmt->BitsPerPixel );
+	conAdd(LLOW, "Your video mode is %ix%ix%i", video.screenW, video.screenH, video.gfxInfo->vfmt->BitsPerPixel );
 
 	if (!video.screenAA && view.particleRenderMode == 1) {
-		conAdd(2, "Warning! You don't have videoantialiasing set to 1. From what I've seen so far");
-		conAdd(2, "this might cause particlerendermode 1 not to work. If you don't see any particles");
-		conAdd(2, "after spawning, hit the \\ (backslash) key).");
+		conAdd(LERR, "Warning! You don't have videoantialiasing set to 1. From what I've seen so far");
+		conAdd(LERR, "this might cause particlerendermode 1 not to work. If you don't see any particles");
+		conAdd(LERR, "after spawning, hit the \\ (backslash) key).");
 	}
 
     glClearColor(0, 0, 0, 0);
@@ -222,12 +222,12 @@ void drawFrame() {
 
 		if (view.particleSizeMin < pointRange[0]) {
 			view.particleSizeMin = pointRange[0];
-			conAdd(1, "Point Size has reached its minimum of %f", view.particleSizeMin);
+			conAdd(LNORM, "Point Size has reached its minimum of %f", view.particleSizeMin);
 		}
 
 		if (view.particleSizeMin > pointRange[1]) {
 			view.particleSizeMin = pointRange[1];
-			conAdd(1, "Point Size has reached its maximum of %f", view.particleSizeMin);
+			conAdd(LNORM, "Point Size has reached its maximum of %f", view.particleSizeMin);
 		}
 
 		glPointSize(view.particleSizeMin);
@@ -240,9 +240,9 @@ void drawFrame() {
 		
 		if (!video.supportPointParameters || !video.supportPointSprite) {
 
-			conAdd(1, "Sorry, Your video card does not support GL_ARB_point_parameters and/or GL_ARB_point_sprite.");
-			conAdd(1, "This means you can't have really pretty looking particles.");
-			conAdd(1, "Setting particleRenderMode to 0");
+			conAdd(LNORM, "Sorry, Your video card does not support GL_ARB_point_parameters and/or GL_ARB_point_sprite.");
+			conAdd(LNORM, "This means you can't have really pretty looking particles.");
+			conAdd(LNORM, "Setting particleRenderMode to 0");
 			view.particleRenderMode = 0;
 			return;
 
@@ -622,7 +622,7 @@ void drawAll() {
 
 	if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
 		view.tailSkip*=2;
-		conAdd(1, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
+		conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
 	}
 
 	glViewport(0, 0, video.screenW, video.screenH);

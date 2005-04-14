@@ -5,7 +5,7 @@ BASEFILES = README COPYING Vera.ttf gravit.cfg demo.cfg screensaver.cfg ChangeLo
 CFLAGS = -O4 -Wall `sdl-config --cflags` -Wall
 LDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs`
 
-DISTDIR = gravit-0.3.1
+DISTDIR = gravit-0.3.2
 TMPBASE = /tmp
 TMPDIR = $(TMPBASE)/$(DISTDIR)
 

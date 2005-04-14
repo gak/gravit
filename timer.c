@@ -85,7 +85,7 @@ void timerAdd(char *name, float interval, int reps, char *command) {
 
 	mytimer_t *t = timerNew();
 	if (!t) {
-		conAdd(2, "Sorry, Maximum timers reached");
+		conAdd(LERR, "Sorry, Maximum timers reached");
 		return;
 	}
 	strncpy(t->name, name, TIMER_NAME_LENGTH);
@@ -95,14 +95,14 @@ void timerAdd(char *name, float interval, int reps, char *command) {
 	t->executed = 0;
 	t->lastExec = getMS();
 
-	conAdd(1, "Added timer '%s'", name);
+	conAdd(LNORM, "Added timer '%s'", name);
 
 }
 
 void timerDelbyID(int i) {
 
 	if (!timers[i]) return;
-	conAdd(1, "Deleting timer '%s'", timers[i]->name);
+	conAdd(LNORM, "Deleting timer '%s'", timers[i]->name);
 	free(timers[i]);
 	timers[i] = 0;
 
@@ -162,9 +162,9 @@ void timerList() {
 		if (!t) continue;
 
 		if (t->repetitions == 0)
-			conAdd(1, "%s: Executes \"%s\" every %.3fs lots of times", t->name, t->command, t->interval/1000);
+			conAdd(LNORM, "%s: Executes \"%s\" every %.3fs lots of times", t->name, t->command, t->interval/1000);
 		else
-			conAdd(1, "%s: Executes \"%s\" every %.3fs %i times (%i left)", t->name, t->command, t->interval/1000, t->repetitions, t->repetitions-t->executed);
+			conAdd(LNORM, "%s: Executes \"%s\" every %.3fs %i times (%i left)", t->name, t->command, t->interval/1000, t->repetitions, t->repetitions-t->executed);
 		
 	}
 
