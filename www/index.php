@@ -65,9 +65,6 @@ echo '</table>';
 
 ?>
 
-<h2>Demonstration Videos</h2>
-<p>Sorry, I can't afford the bandwidth!</p>
-
 <h2>Features</h2>
 <ul>
 <li>It looks pretty :)</li>
@@ -90,6 +87,9 @@ echo '</table>';
 <li>It uses the <a href="http://www.amara.com/papers/nbody.html#tcu">Barnes-Hut Algorithm</a> (with room for optimisation).</li>
 <li>Gravit was called Graviton, but i changed the name because someone already used Graviton for their project!</li>
 </ul>
+
+<h2>Documentation</h2>
+<p>So far I have made a <a href="docs/Console.html">Console Commands and Variables</a> documentation page. More to come soon.</p>
 
 <h2>Download</h2>
 <p>In Gravit 0.3.1 your view moves around to where particles are. I've added timer code, a fullscreen toggle by hitting alt-enter and several other features. Also, the screensaver has changed quite a bit.</p>

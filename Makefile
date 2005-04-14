@@ -60,4 +60,7 @@ packagewindll:
 	cp -r $(TMPBASE)/$(DISTDIR)/* windowsinstaller/files/
 	rm -fr $(TMPDIR)
 
+doc:
+	cd wikiexport;./exportDoc.py
+
 packageall: packagesrc packagewin packagewindll
