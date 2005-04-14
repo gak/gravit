@@ -72,5 +72,7 @@ void cmdTimerList(char *arg);
 void cmdPopupText(char *arg);
 void cmdHelp(char *arg);
 void cmdList(char *arg);
+void cmdSaveList(char *arg);
+void cmdSaveDelete(char *arg);
 
 #endif

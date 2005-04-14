@@ -174,8 +174,7 @@ void stateInit() {
 	state.autoRecordNext = 0;
 
 	state.gbase = 5;
-	// cmdSetG should do: state.g = -0.00001f; because of state.gbase = 5;
-	cmdSetG(0);
+	state.g = -0.00001f;
 
 }
 
@@ -337,7 +336,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	cleanMemory();
-	if (state.fileName) free(state.fileName);
+	freeFileName();
 	cmdFree();
 
 #ifndef NO_GUI

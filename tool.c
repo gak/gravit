@@ -218,16 +218,22 @@ int mymkdir(char *path) {
 	
 }
 
+void freeFileName() {
+
+	if (state.fileName) {
+		free(state.fileName);
+		state.fileName = 0;
+	}
+
+}
+
 void setFileName(char *name) {
 
 	char buf[255];
 
 	strncpy(buf, name, 255);
 
-	if (state.fileName) {
-		free(state.fileName);
-		state.fileName = 0;
-	}
+	freeFileName();
 
 	state.fileName = malloc(strlen(buf)+1);	// +1 for \0
 	strcpy(state.fileName, buf);
@@ -259,4 +265,15 @@ void setRegistryString(char *variable, char *value) {
 	RegCloseKey(hkResult);
 
 #endif
+}
+
+// return 0 on failure
+int myunlink(char *filename) {
+
+#ifdef WIN32
+	return DeleteFile(filename);
+#else
+	return !unlink(filename);
+#endif
+
 }

@@ -1,0 +1,26 @@
+--- WikiFormatter.py.0.8	2005-04-14 11:44:47.000000000 +1000
++++ WikiFormatter.py	2005-04-14 14:28:01.000000000 +1000
+@@ -264,6 +264,7 @@
+               r"""(?P<imgurl>!?([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\?\S+)?)""",
+               r"""(?P<url>!?([a-z]+://[^ ]+[^\.,' \)\]\}]))""",
+               r"""(?P<last_table_cell>\|\|$)""",
++              r"""(?P<table_cell_custom>\|\|\|[^\|]+\|)""",
+               r"""(?P<table_cell>\|\|)"""]
+ 
+     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
+@@ -385,6 +386,15 @@
+     def _last_table_cell_formatter(self, match, fullmatch):
+         return ''
+ 
++    def _table_cell_custom_formatter(self, match, fullmatch):
++        self.open_table()
++        self.open_table_row()
++        if self.in_table_cell:
++            return '</td><td '+match[3:-1].replace('&#34;','"')+'>'
++        else:
++            self.in_table_cell = 1
++            return '<td '+match[3:-1].replace('&#34;','"')+'>'
++
+     def _table_cell_formatter(self, match, fullmatch):
+         self.open_table()
+         self.open_table_row()

@@ -530,6 +530,8 @@ int mymkdir(char *path);
 void setFileName(char *name);
 char *getRegistryString(char *variable);
 void setRegistryString(char *variable, char *value);
+int myunlink(char *filename);
+void freeFileName();
 
 // spawn.c
 extern spawnVars_t spawnVars;

@@ -71,6 +71,8 @@ cmd_t cmd[] = {
 	,{ "load",						cmdLoadFrameDump,		NULL,						NULL,								NULL }
 	,{ "save",						cmdSaveFrameDump,		NULL,						NULL,								NULL }
 	,{ "saveauto",					NULL,					NULL,						&state.autoSave,					NULL }
+	,{ "savelist",					cmdSaveList,			NULL,						NULL,								NULL }
+	,{ "savedelete",				cmdSaveDelete,			NULL,						NULL,								NULL }
 
 //	,{ "fps",						cmdFps,					&view.fps,					NULL,								NULL }
 	,{ "frameskip",					NULL,					NULL,						&view.frameSkip,					NULL }
@@ -150,8 +152,6 @@ void commandInit() {
 
 	while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
 
-		int len = strlen(buffer) - 1;
-		int i = 0;
 		char *ptrCmd,*ptrDesc;
 		int c;
 
@@ -359,9 +359,7 @@ void cmdStop(char *arg) {
 
 void cmdSpawn(char *arg) {
 
-	if (state.fileName)
-		free(state.fileName);
-	state.fileName = 0;
+	freeFileName();
 
 	if (state.currentlySpawning) {
 		state.restartSpawning = 1;
@@ -1039,3 +1037,29 @@ void cmdList(char *arg) {
 
 }
 
+void cmdSaveList(char *arg) {
+
+		
+
+}
+
+void cmdSaveDelete(char *arg) {
+
+	char *file;
+	if (!arg) {
+		conAdd(LHELP, "usage: savedelete [name]");
+		return;
+	}
+
+	file = va("%s/%s.info", SAVE_PATH, arg);
+	if (!myunlink(file)) { conAdd(LERR, "Unable to delete %s", file); return; }
+	file = va("%s/%s.particledetail", SAVE_PATH, arg);
+	if (!myunlink(file)) { conAdd(LERR, "Unable to delete %s", file); return; }
+	file = va("%s/%s.particles", SAVE_PATH, arg);
+	if (!myunlink(file)) { conAdd(LERR, "Unable to delete %s", file); return; }
+
+	conAdd(LNORM, "Deleted %s", arg);
+
+	freeFileName();
+
+}
