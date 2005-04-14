@@ -83,7 +83,7 @@ echo '</table>';
 </ul>
 
 <h2>Documentation</h2>
-<p>So far I have made a few pages of documentation. It is slowly being written. Currently there are <a href="docs/Console.php">Console Commands and Variables</a> and <a href="docs/StereoMode.php">Stereocopic Mode</a> documentation pages. More to come soon.</p>
+<p>So far I have made a several pages of documentation. It is slowly being written -- I'll attempt to keep it up to date. The Gravit <a href="docs">documentation is here</a>.</p>
 
 <h2>Download</h2>
 <p>In Gravit 0.3.1 your view moves around to where particles are. I've added timer code, a fullscreen toggle by hitting alt-enter and several other features. Also, the screensaver has changed quite a bit.</p>

@@ -11,7 +11,11 @@ class MyHref:
 		self.base = base
 
 	def wiki(self, page=None, version=None, diff=0, history=0):
-		return "/" + page + ".php"
+		bits = page.split("#", 1)
+		if len(bits) == 2:
+			return "/" + bits[0] + ".php#" + bits[1]
+		else:
+			return "/" + bits[0] + ".php"
 
 env = Environment.Environment("/trac/gravit")
 env.href = MyHref("")

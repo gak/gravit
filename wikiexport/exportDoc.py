@@ -2,7 +2,7 @@
 
 import os
 
-pages = ['Docs/Index', 'Docs/Console', 'Docs/StereoMode']
+pages = ['Docs/Index', 'Docs/Overview', 'Docs/Requirements', 'Docs/Console', 'Docs/StereoMode']
 
 # dodgy! what are u gonna do? :)
 # todo: find a way not to be lazy
