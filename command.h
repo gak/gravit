@@ -28,6 +28,7 @@ typedef struct cmd_s {
 	void (*func)(char *);
 	float *fVar;
 	int *iVar;
+	char *description;
 
 } cmd_t;
 
@@ -36,6 +37,8 @@ extern cmd_t cmd[];
 void cmdExecute(char *command);
 int cmdFind(char *string);
 char *cmdGetCommand(int i);
+void commandInit();
+void cmdFree();
 
 void cmdQuit(char *args);
 void cmdPause(char *args);
@@ -67,5 +70,7 @@ void cmdTimerAdd(char *arg);
 void cmdTimerDel(char *arg);
 void cmdTimerList(char *arg);
 void cmdPopupText(char *arg);
+void cmdHelp(char *arg);
+void cmdList(char *arg);
 
 #endif

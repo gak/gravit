@@ -34,6 +34,7 @@ static col_t cols[] = {
 	{0.5f, 0.5f, 0.5f}
 	,{1.0f, 1.0f, 1.0f}
 	,{0.5f, 0.2f, 0.2f}
+	,{0, .6f, .8f}
 
 };
 
@@ -49,7 +50,7 @@ void conAdd(int mode, char *f, ... ) {
 	if (strlen(s) >= CONSOLE_LENGTH-1)
 		s[CONSOLE_LENGTH-1] = 0;
 
-	if (mode > 2)
+	if (mode > 3)
 		mode = 0;
 
 	cpos++;

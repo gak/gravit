@@ -49,6 +49,7 @@ void loadDefaults() {
 	viewInit();
 	spawnDefaults();
 	stateInit();
+	commandInit();
 
 }
 
@@ -337,6 +338,7 @@ int main(int argc, char *argv[]) {
 
 	cleanMemory();
 	if (state.fileName) free(state.fileName);
+	cmdFree();
 
 #ifndef NO_GUI
 

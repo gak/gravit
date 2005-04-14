@@ -71,3 +71,4 @@ timerdel Removes a timer
 timerlist Lists all timers
 popuptext Displays some text on the screen.
 cd Change directory. Not apparently useful!
+help Displays some help, like this help!
