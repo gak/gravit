@@ -11,7 +11,7 @@ class MyHref:
 		self.base = base
 
 	def wiki(self, page=None, version=None, diff=0, history=0):
-		return "/ " + page + ".html"
+		return "/" + page + ".php"
 
 env = Environment.Environment("/trac/gravit")
 env.href = MyHref("")
@@ -20,6 +20,5 @@ database = env.get_db_cnx()
 populate_page_dict(database, env)
 
 out = wiki_to_html(sys.stdin.read(), "", env, "")
-out = out.replace('Docs/', '')
 
 print out

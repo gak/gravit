@@ -1,4 +1,3 @@
-scp index.php slowchop@slowchop.com:www/gravit/
-cp ../ChangeLog dist
-scp dist/ChangeLog slowchop@slowchop.com:www/gravit/dist/
-scp docs/* slowchop@slowchop.com:www/gravit/docs/
+scp gravit.css index.php slowchop@slowchop.com:www/gravit/
+scp docs/*.php slowchop@slowchop.com:www/gravit/docs/
+scp docs/images/*.jpg slowchop@slowchop.com:www/gravit/docs/images/

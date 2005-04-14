@@ -8,13 +8,7 @@
 <title>Gravit - A gravity simulator</title>
 
 <style type="text/css">
-body { background-color: black; color: white; font-family: verdana; font-size: 11px; }
-.darkertext { color: #A0A0A0 }
-a { color: yellow; text-decoration: none; }
-a:hover { color: red; text-decoration: underline; }
-.darkertext { color: #A0A0A0; }
-.normtext { color: #E0E0E0; }
-img { border: none; }
+@import url(gravit.css);
 </style>
 
 <link rel="shortcut icon" href="favicon.ico">
@@ -25,7 +19,7 @@ img { border: none; }
 
 <body>
 
-<h1>Gravit</h1>
+<h1>Gravit - A gravity simulator</h1>
 
 <h2>About</h2>
 <p>Gravit is a gravity simulator which runs under Linux and Windows. It's released under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a> which makes it free. It uses simple newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. It records the history of each particle so it can animate and display a path of its travels. At any stage you can rotate your view in 3D and zoom in and out. Gravit uses OpenGL with <a href="http://www.libsdl.org/">SDL</a>, <a href="http://www.libsdl.org/projects/SDL_ttf/">SDL_ttf</a> and <a href="http://www.libsdl.org/projects/SDL_image/">SDL_image</a>.</p>
@@ -54,7 +48,7 @@ for ($i = $from; $i <= $to; $i++) {
 
 	$fn = sprintf( '%03u', $i);
 	
-	echo '<td>';
+	echo '<td style="background-color: transparent; text-align: center;">';
 	echo '<a href="screenies/big/' . $fn . '.jpg">';
 	echo '<img width="200" height="160" src="screenies/small/' . $fn . '.jpg" alt="Gravit Screenshot">';
 	echo '</a>';
@@ -68,7 +62,7 @@ echo '</table>';
 <h2>Features</h2>
 <ul>
 <li>It looks pretty :)</li>
-<li>View the simulation in 3D using <a href="http://www.angelfire.com/ca/erker/freeview.html">stereoscopic imaging</a>!</li>
+<li>View the simulation in 3D using <a href="docs/StereoMode.php">stereoscopic imaging</a>!</li>
 <li>Can be installed as a screen saver in Windows</li>
 <li>You can record, then play back at any speed</li>
 <li>Stores every particle's position for every frame in memory</li>
@@ -89,7 +83,7 @@ echo '</table>';
 </ul>
 
 <h2>Documentation</h2>
-<p>So far I have made a <a href="docs/Console.php">Console Commands and Variables</a> documentation page. More to come soon.</p>
+<p>So far I have made a few pages of documentation. It is slowly being written. Currently there are <a href="docs/Console.php">Console Commands and Variables</a> and <a href="docs/StereoMode.php">Stereocopic Mode</a> documentation pages. More to come soon.</p>
 
 <h2>Download</h2>
 <p>In Gravit 0.3.1 your view moves around to where particles are. I've added timer code, a fullscreen toggle by hitting alt-enter and several other features. Also, the screensaver has changed quite a bit.</p>

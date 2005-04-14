@@ -4,13 +4,13 @@
 <head>
 <title>Gravit Documentation - Console</title>
 <style type="text/css">
-@import url(doc.css);
+@import url(../gravit.css);
 </style>
 </head>
 <body>
 <h1>Console Commands and Variables</h1>
 <p>
-<a class="ext-link" title="http:.." href="http:..">Gravit Home</a>
+<a class="ext-link" title="http:.." href="http:..">Gravit Home</a> / <a href="Index.php">Documentation Index</a>
 </p>
 <h2>Overview</h2>
 <p>
@@ -114,12 +114,16 @@ Here's a list of commands and variables. The values in the <strong>Type</strong>
 </td></tr><tr><td>colourschemenew</td><td>C</td><td>Clears out the current colour scheme.
 </td></tr><tr><td>colourschemeadd</td><td>C</td><td>Add a new colour to the colour scheme.
 </td></tr></table>
-<h2>Misc</h2>
+<h2>Timers</h2>
 <table class="wiki">
 <tr><td style="width: 200px"><strong>Command</strong></td><td style="width: 50px"><strong>Type</strong></td><td><strong>Description</strong>
 </td></tr><tr><td>timeradd</td><td>C</td><td>Adds a timer
 </td></tr><tr><td>timerdel</td><td>C</td><td>Removes a timer
 </td></tr><tr><td>timerlist</td><td>C</td><td>Lists all timers
+</td></tr></table>
+<h2>Misc</h2>
+<table class="wiki">
+<tr><td style="width: 200px"><strong>Command</strong></td><td style="width: 50px"><strong>Type</strong></td><td><strong>Description</strong>
 </td></tr><tr><td>popuptext</td><td>C</td><td>Displays some text on the screen.
 </td></tr><tr><td>cd</td><td>C</td><td>Change directory. Not apparently useful!
 </td></tr></table>

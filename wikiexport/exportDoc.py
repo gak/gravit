@@ -2,7 +2,7 @@
 
 import os
 
-pages = ['Docs/Console']
+pages = ['Docs/Index', 'Docs/Console', 'Docs/StereoMode']
 
 # dodgy! what are u gonna do? :)
 # todo: find a way not to be lazy
@@ -24,7 +24,10 @@ for page in pages:
 	buf = f.read()
 	f.close()
 	
-	buf = header.replace("[[TITLE]]", page.replace("Docs/","")) + buf + footer
+	page = page.replace("Docs/","")
+	buf = buf.replace("/Docs/","")
+	
+	buf = header.replace("[[TITLE]]", page) + buf + footer
 	
 	f = open(filename, "wb")
 	f.write(buf)
