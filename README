@@ -1,4 +1,4 @@
-Gravit Version 0.3.1
+Gravit Version 0.3.2
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
@@ -10,6 +10,12 @@ Overview
 Configuration
 
     Once you have installed Gravit (see below) you should configure it to make it work as well as possible on your system. To do this, open up gravit.cfg in your favorite text editor and follow the instructions. By default the configuration is set to use 256MB of RAM, and only run in windowed mode at 800x600x32.
+
+Documentation
+
+    The documentation is a work in progress at:
+
+    * http://gravit.slowchop.com/docs/ 
 
 Troubleshooting
 
@@ -67,4 +73,4 @@ Contributors
     * Martin White (renwald@slowchop.com)
     * James Stewart (yattah@bigpond.com)
     * Sam Lander (sam.lander@gmail.com) 
-
+    

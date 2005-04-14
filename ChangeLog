@@ -2,6 +2,16 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.3.2 2005/04/15
+
+    * fixed compiliation on Mac OS X (Thanks Grigory Entin!)
+    * added help command for help
+    * added list command to list all available console commands
+    * added savelist to list all saved simulations
+    * added savedelete to delete a simulation
+    * help console messages are now blue
+    * "G" set message is gone 
+
 0.3.1 2005/04/13
 
     * Added recording statistics that display percentage completed for generating the tree and adding velocities.
@@ -132,3 +142,4 @@ Gravit ChangeLog
 0.1 2005/04/04
 
     * Initial Release 
+
