@@ -63,7 +63,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <string.h>
 	#include <errno.h>
 	#include <termios.h>
-    #include <sys/select.h>
     #include <sys/time.h>
     #include <sys/types.h>
     #include <unistd.h>

@@ -15,15 +15,13 @@ dep:
 	@makedepend $(CFLAGS) *.c 2> /dev/null
 
 final: $(OBJS)
-	@echo gcc $(LDFLAGS) $(OBJS) -o$(FINAL)
-	@gcc $(LDFLAGS) $(OBJS) -o$(FINAL)
+	gcc $(LDFLAGS) $(OBJS) -o $(FINAL)
 
 clean:
-	rm -rf *.o $(FINAL)
+	rm -f *.o $(FINAL)
 
 .c.o:
-	@echo gcc -c $(CFLAGS) $(subst ,, $*.c) -o$*.o
-	@gcc -c $(CFLAGS) $(subst ,, $*.c) -o$*.o
+	gcc -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
 
 packagesrc:
 	if [ -d $(TMPDIR) ]; then rm -fr $(TMPDIR); fi
