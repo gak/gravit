@@ -1,0 +1,12 @@
+body { background-color: black; color: white; font-family: verdana; font-size: 12px; }
+.darkertext { color: #A0A0A0 }
+a { color: yellow; text-decoration: none; }
+a:hover { color: red; text-decoration: underline; }
+.darkertext { color: #A0A0A0; }
+.normtext { color: #E0E0E0; }
+img { border: none; }
+table { width: 100%; font-size: 12px; }
+td { vertical-align: top; background-color: #00648E; padding: 4px 4px 4px 4px; }
+h1 { background-color: #006090; padding: 4px 4px 4px 4px; }
+h2 { background-color: #004060; padding: 3px 3px 3px 3px; }
+h3 { background-color: #003040; padding: 2px 2px 2px 2px; }
