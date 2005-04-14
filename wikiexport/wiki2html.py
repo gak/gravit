@@ -20,7 +20,6 @@ database = env.get_db_cnx()
 populate_page_dict(database, env)
 
 out = wiki_to_html(sys.stdin.read(), "", env, "")
-
 out = out.replace('Docs/', '')
 
 print out

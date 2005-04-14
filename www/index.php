@@ -8,16 +8,13 @@
 <title>Gravit - A gravity simulator</title>
 
 <style type="text/css">
-
 body { background-color: black; color: white; font-family: verdana; font-size: 11px; }
 .darkertext { color: #A0A0A0 }
 a { color: yellow; text-decoration: none; }
 a:hover { color: red; text-decoration: underline; }
 .darkertext { color: #A0A0A0; }
 .normtext { color: #E0E0E0; }
-
 img { border: none; }
-
 </style>
 
 <link rel="shortcut icon" href="favicon.ico">

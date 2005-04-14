@@ -23,116 +23,116 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 static cmd_t cmd[] = {
 
-	//	   cmd				func			varf,	vari
-	{ "quit",			cmdQuit,			NULL,	NULL }
+//	   cmd							func					varf,						vari
+	 { "quit",						cmdQuit,				NULL,						NULL }
 
-	,{ "exec",			cmdRunScript,		NULL,	NULL }
+	,{ "exec",						cmdRunScript,			NULL,						NULL }
 
-	,{ "memoryavailable",		NULL,		NULL,	&state.memoryAvailable }
+	,{ "memoryavailable",			NULL,					NULL,						&state.memoryAvailable }
 
 #ifndef NO_GUI
-	,{ "videorestart",		cmdVideoRestart,			NULL,	NULL }
+	,{ "videorestart",				cmdVideoRestart,		NULL,						NULL }
 
-	,{ "videowidth",		NULL,			NULL,	&video.screenWtoApply }
-	,{ "videoheight",		NULL,			NULL,	&video.screenHtoApply }
-	,{ "videobpp",			NULL,			NULL,	&video.screenBPP }
-	,{ "videofullscreen",	NULL,			NULL,	&video.screenFS }
-	,{ "videoantialiasing",	NULL,			NULL,	&video.screenAA }
+	,{ "videowidth",				NULL,					NULL,						&video.screenWtoApply }
+	,{ "videoheight",				NULL,					NULL,						&video.screenHtoApply }
+	,{ "videobpp",					NULL,					NULL,						&video.screenBPP }
+	,{ "videofullscreen",			NULL,					NULL,						&video.screenFS }
+	,{ "videoantialiasing",			NULL,					NULL,						&video.screenAA }
 
-	,{ "fontfile",			cmdFontFile,	NULL,	NULL }
-	,{ "fontsize",			NULL,			NULL,	&video.fontSize }
+	,{ "fontfile",					cmdFontFile,			NULL,						NULL }
+	,{ "fontsize",					NULL,					NULL,						&video.fontSize }
 
 #endif
 
-	,{ "recordingvideorefreshtime",	NULL,	NULL,	&view.recordingVideoRefreshTime }
+	,{ "recordingvideorefreshtime",	NULL,					NULL,						&view.recordingVideoRefreshTime }
 
-	,{ "start",			cmdStart,			NULL,	NULL }
-	,{ "record",		cmdRecord,			NULL,	NULL }
-	,{ "play",			cmdPlay,			NULL,	NULL }
-	,{ "stop",			cmdStop,			NULL,	NULL }
-	,{ "spawn",			cmdSpawn,			NULL,	NULL }
-	,{ "status",		cmdStatus,			NULL,	NULL }
+	,{ "start",						cmdStart,				NULL,						NULL }
+	,{ "record",					cmdRecord,				NULL,						NULL }
+	,{ "play",						cmdPlay,				NULL,						NULL }
+	,{ "stop",						cmdStop,				NULL,						NULL }
+	,{ "spawn",						cmdSpawn,				NULL,						NULL }
+	,{ "status",					cmdStatus,				NULL,						NULL }
 
-	,{ "screensaver",		NULL,			NULL,	&view.screenSaver }
-	,{ "installscreensaver",		cmdInstallScreenSaver,			NULL,	NULL }
+	,{ "screensaver",				NULL,					NULL,						&view.screenSaver }
+	,{ "installscreensaver",		cmdInstallScreenSaver,	NULL,						NULL }
 
-	,{ "cd",			cmdChangeDir,		NULL,	NULL }
+	,{ "cd",						cmdChangeDir,			NULL,						NULL }
 
-	,{ "showcursor",		NULL,			NULL,	&view.showCursor }
-	
-	,{ "g",				cmdSetG,			NULL,	&state.gbase }
+	,{ "showcursor",				NULL,					NULL,						&view.showCursor }
 
-	,{ "blendmode",		NULL,				NULL,	&view.blendMode }
+	,{ "g",							cmdSetG,				NULL,						&state.gbase }
 
-	,{ "screenshot",		cmdScreenshot,		NULL,	NULL }
-	,{ "screenshotloop",	NULL,			NULL,	&view.screenshotLoop}
+	,{ "blendmode",					NULL,					NULL,						&view.blendMode }
 
-	,{ "load",			cmdLoadFrameDump,		NULL,	NULL }
-	,{ "save",			cmdSaveFrameDump,		NULL,	NULL }
-	,{ "saveauto",		NULL,					NULL,	&state.autoSave }
+	,{ "screenshot",				cmdScreenshot,			NULL,						NULL }
+	,{ "screenshotloop",			NULL,					NULL,						&view.screenshotLoop}
 
-//	,{ "fps",			cmdFps,				&view.fps,	NULL }
-	,{ "frameskip",		NULL,				NULL, &view.frameSkip }
-	,{ "frame",			NULL,				NULL, &state.currentFrame }
+	,{ "load",						cmdLoadFrameDump,		NULL,						NULL }
+	,{ "save",						cmdSaveFrameDump,		NULL,						NULL }
+	,{ "saveauto",					NULL,					NULL,						&state.autoSave }
 
-	,{ "tailskip",		cmdTailSkipCheck,	NULL, &view.tailSkip }
-	,{ "tailfaded",		NULL,				NULL, &view.tailFaded }
-	,{ "tailopacity",	NULL,				&view.tailOpacity, NULL }
-	,{ "taillength",	NULL,				NULL, &view.tailLength }
-	,{ "tailwidth",		NULL,				&view.tailWidth, NULL }
+//	,{ "fps",						cmdFps,					&view.fps,					NULL }
+	,{ "frameskip",					NULL,					NULL,						&view.frameSkip }
+	,{ "frame",						NULL,					NULL,						&state.currentFrame }
 
-	,{ "drawaxis",		NULL,				NULL, &view.drawAxis }
-	,{ "drawtree",		NULL,				NULL, &view.drawTree }
-	,{ "drawosd",		NULL,				NULL, &view.drawOSD }
-	,{ "drawcolourscheme",		NULL,				NULL, &view.drawColourScheme }
+	,{ "tailskip",					cmdTailSkipCheck,		NULL,						&view.tailSkip }
+	,{ "tailfaded",					NULL,					NULL,						&view.tailFaded }
+	,{ "tailopacity",				NULL,					&view.tailOpacity,			NULL }
+	,{ "taillength",				NULL,					NULL,						&view.tailLength }
+	,{ "tailwidth",					NULL,					&view.tailWidth,			NULL }
 
-	,{ "particlecount",			NULL,				NULL, &state.particlesToSpawn }
+	,{ "drawaxis",					NULL,					NULL,						&view.drawAxis }
+	,{ "drawtree",					NULL,					NULL,						&view.drawTree }
+	,{ "drawosd",					NULL,					NULL,						&view.drawOSD }
+	,{ "drawcolourscheme",			NULL,					NULL,						&view.drawColourScheme }
 
-	,{ "particlerendermode",	NULL,				NULL, &view.particleRenderMode }
-	,{ "particlerendertexture",	NULL,				NULL, &view.particleRenderTexture }
-	,{ "particlecolourmode",	NULL,				NULL, &view.particleColourMode }
-	,{ "particlesizemin",			NULL,			&view.particleSizeMin, NULL }
-	,{ "particlesizemax",			NULL,			&view.particleSizeMax, NULL }
+	,{ "particlecount",				NULL,					NULL,						&state.particlesToSpawn }
 
-	,{ "spawngalcountmin",		NULL,				NULL, &spawnVars.minGalCount }
-	,{ "spawngalcountmax",		NULL,				NULL, &spawnVars.maxGalCount }
-	,{ "spawngalmassmin",		NULL,				&spawnVars.minGalMass, NULL }
-	,{ "spawngalmassmax",		NULL,				&spawnVars.maxGalMass, NULL }
-	,{ "spawngalsizemin",		NULL,				&spawnVars.minGalSize, NULL }
-	,{ "spawngalsizemax",		NULL,				&spawnVars.maxGalSize, NULL }
-	,{ "spawngalvelmin",		NULL,				&spawnVars.minGalVel, NULL }
-	,{ "spawngalvelmax",		NULL,				&spawnVars.maxGalVel, NULL }
-	,{ "spawnrangemin",			NULL,				&spawnVars.minSpawnRange, NULL }
-	,{ "spawnrangemax",			NULL,				&spawnVars.maxSpawnRange, NULL }
+	,{ "particlerendermode",		NULL,					NULL,						&view.particleRenderMode }
+	,{ "particlerendertexture",		NULL,					NULL,						&view.particleRenderTexture }
+	,{ "particlecolourmode",		NULL,					NULL,						&view.particleColourMode }
+	,{ "particlesizemin",			NULL,					&view.particleSizeMin,		NULL }
+	,{ "particlesizemax",			NULL,					&view.particleSizeMax,		NULL }
 
-	,{ "colourschemenew",		cmdColourSchemeNew,			NULL, NULL }
-	,{ "colourschemeadd",		cmdColourSchemeAdd,			NULL, NULL }
+	,{ "spawngalcountmin",			NULL,					NULL,						&spawnVars.minGalCount }
+	,{ "spawngalcountmax",			NULL,					NULL,						&spawnVars.maxGalCount }
+	,{ "spawngalmassmin",			NULL,					&spawnVars.minGalMass,		NULL }
+	,{ "spawngalmassmax",			NULL,					&spawnVars.maxGalMass,		NULL }
+	,{ "spawngalsizemin",			NULL,					&spawnVars.minGalSize,		NULL }
+	,{ "spawngalsizemax",			NULL,					&spawnVars.maxGalSize,		NULL }
+	,{ "spawngalvelmin",			NULL,					&spawnVars.minGalVel,		NULL }
+	,{ "spawngalvelmax",			NULL,					&spawnVars.maxGalVel,		NULL }
+	,{ "spawnrangemin",				NULL,					&spawnVars.minSpawnRange,	NULL }
+	,{ "spawnrangemax",				NULL,					&spawnVars.maxSpawnRange,	NULL }
 
-	,{ "framecompression",		NULL,				NULL, &state.frameCompression }
+	,{ "colourschemenew",			cmdColourSchemeNew,		NULL,						NULL }
+	,{ "colourschemeadd",			cmdColourSchemeAdd,		NULL,						NULL }
 
-	,{ "verbose",				NULL,				NULL, &view.verboseMode }
+	,{ "framecompression",			NULL,					NULL,						&state.frameCompression }
 
-	,{ "processors",			NULL,				NULL, &state.processFrameThreads }
+	,{ "verbose",					NULL,					NULL,						&view.verboseMode }
 
-	,{ "zoom",					NULL,				&view.zoom, NULL }
-	,{ "autorotate",			cmdAutoRotate,			NULL,	NULL }
-	,{ "autorecord",			NULL,				NULL, &state.autoRecord }
+	,{ "processors",				NULL,					NULL,						&state.processFrameThreads }
 
-	,{ "stereoseparation",		NULL,				&view.stereoSeparation, NULL }
-	,{ "stereo",				cmdStereoWarning,				NULL, &view.stereoMode }
+	,{ "zoom",						NULL,					&view.zoom,					NULL }
+	,{ "autorotate",				cmdAutoRotate,			NULL,						NULL }
+	,{ "autorecord",				NULL,					NULL,						&state.autoRecord }
 
-	,{ "timeradd",				cmdTimerAdd,			NULL, NULL }
-	,{ "timerdel",				cmdTimerDel,			NULL, NULL }
-	,{ "timerlist",				cmdTimerList,			NULL, NULL }
+	,{ "stereoseparation",			NULL,					&view.stereoSeparation,		NULL }
+	,{ "stereo",					cmdStereoWarning,		NULL,						&view.stereoMode }
 
-	,{ "popuptext",				cmdPopupText,			NULL, NULL }
+	,{ "timeradd",					cmdTimerAdd,			NULL,						NULL }
+	,{ "timerdel",					cmdTimerDel,			NULL,						NULL }
+	,{ "timerlist",					cmdTimerList,			NULL,						NULL }
 
-	,{ "autocenter",				NULL,			NULL, &view.autoCenter }
+	,{ "popuptext",					cmdPopupText,			NULL,						NULL }
 
-	,{ "maxvertices",				NULL,			NULL, &view.maxVertices }
-	
+	,{ "autocenter",				NULL,					NULL,						&view.autoCenter }
 
-	,{ NULL,			NULL,				NULL }
+	,{ "maxvertices",				NULL,					NULL,						&view.maxVertices }
+
+
+	,{ NULL,						NULL,					NULL,						NULL }
 
 };
 
@@ -313,7 +313,7 @@ cmdSpawnRestartSpawning:
 
 	state.particleCount = state.particlesToSpawn;
 	state.historyFrames = (int)((float)(state.memoryAvailable * 1024 * 1024) / FRAMESIZE);
-	
+
 	if (!initFrame()) {
 		conAdd(1, "Could not init frame");
 		return;
@@ -486,7 +486,7 @@ void cmdSaveFrameDump(char *arg) {
 		arg = state.fileName;
 
 	}
-	
+
 	if (!mymkdir(SAVE_PATH)) {
 		conAdd(2, "Could not create %s directory", SAVE_PATH);
 		return;
@@ -586,7 +586,7 @@ void cmdLoadFrameDump(char *arg) {
 	conAdd(1, "Simulation loaded sucesfully!");
 
 	setFileName(arg);
-	
+
 }
 
 void cmdFps(char *arg) {
@@ -684,13 +684,13 @@ void cmdScreenshot(char *arg) {
 
 	SDL_LockSurface(sdlSurfUpsideDown);
 	SDL_LockSurface(sdlSurfNormal);
-	
+
 	for (i = 0; i < video.screenH; i++) {
 
 		memcpy(
 			(unsigned char *)sdlSurfNormal->pixels + (video.screenH - i - 1) * sdlSurfNormal->pitch,
 			(unsigned char *)sdlSurfUpsideDown->pixels + i * sdlSurfUpsideDown->pitch,
-			3 * video.screenW		
+			3 * video.screenW
 		);
 
 	}
@@ -699,7 +699,7 @@ void cmdScreenshot(char *arg) {
 	SDL_UnlockSurface(sdlSurfNormal);
 
 	if (!mymkdir(SCREENSHOT_PATH)) {
-		conAdd(2, "Could not create screenshot directory");		
+		conAdd(2, "Could not create screenshot directory");
 		return;
 	}
 
@@ -715,7 +715,7 @@ void cmdScreenshot(char *arg) {
 			break;
 
 		fclose(fp);
-		
+
 	}
 
 	SDL_SaveBMP(sdlSurfNormal, fileName);
@@ -750,11 +750,11 @@ void cmdColourSchemeAdd(char *arg) {
 	g = strtok(NULL, " \t");
 	if (!g) return;
 	c[1] = atof(g);
-	
+
 	b = strtok(NULL, " \t");
 	if (!b) return;
 	c[2] = atof(b);
-	
+
 	a = strtok(NULL, " \t");
 	if (!a) c[3] = 1; else c[3] = atof(a);
 
@@ -779,8 +779,8 @@ void cmdSetG(char *arg) {
 
 	newg = -pow(10, -state.gbase);
 	conAdd(0, "\"G\" set to %f", newg);
-	state.g = newg;  
-	
+	state.g = newg;
+
 }
 
 void cmdAutoRotate(char *arg) {
@@ -852,7 +852,7 @@ void cmdStereoWarning(char *arg) {
 
 void cmdVideoRestart(char *arg) {
 
-	gfxSetResolution();	
+	gfxSetResolution();
 
 }
 
