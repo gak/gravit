@@ -17,7 +17,7 @@ f.close()
 
 for page in pages:
 	print page
-	filename = "../www/" + page + ".html";
+	filename = "../www/" + page + ".php";
 	os.system('trac-admin /trac/gravit wiki export ' + page + '>tmp')
 	os.system('./wiki2html.py < tmp > lah')
 	f = open('lah', "rb")

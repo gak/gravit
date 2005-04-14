@@ -89,7 +89,7 @@ echo '</table>';
 </ul>
 
 <h2>Documentation</h2>
-<p>So far I have made a <a href="docs/Console.html">Console Commands and Variables</a> documentation page. More to come soon.</p>
+<p>So far I have made a <a href="docs/Console.php">Console Commands and Variables</a> documentation page. More to come soon.</p>
 
 <h2>Download</h2>
 <p>In Gravit 0.3.1 your view moves around to where particles are. I've added timer code, a fullscreen toggle by hitting alt-enter and several other features. Also, the screensaver has changed quite a bit.</p>

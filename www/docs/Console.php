@@ -1,13 +1,17 @@
+<? header("Content-type: text/html; charset=iso-8859-1"); ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>Gravit Documentation - Console</title>
 <style type="text/css">
 @import url(doc.css);
 </style>
-
 </head>
 <body>
 <h1>Console Commands and Variables</h1>
+<p>
+<a class="ext-link" title="http:.." href="http:..">Gravit Home</a>
+</p>
 <h2>Overview</h2>
 <p>
 Here's a list of commands and variables. The values in the <strong>Type</strong> column below are <strong>C</strong> for command and <strong>V</strong> for variable. Some variables are actually commands that act like variables like <i>g</i> and <i>autorotate</i>. Words that are in <i>italics</i> refer to a command or variable.

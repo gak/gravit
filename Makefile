@@ -63,4 +63,7 @@ packagewindll:
 doc:
 	cd wikiexport;./exportDoc.py
 
+distdoc: doc
+	cd www;./updateIndex.sh
+
 packageall: packagesrc packagewin packagewindll
