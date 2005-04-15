@@ -86,7 +86,7 @@ echo '</table>';
 <p>So far I have made a several pages of documentation. It is slowly being written -- I'll attempt to keep it up to date. The Gravit <a href="docs/">documentation is here</a>.</p>
 
 <h2>Download</h2>
-<p>In Gravit 0.3.1 your view moves around to where particles are. I've added timer code, a fullscreen toggle by hitting alt-enter and several other features. Also, the screensaver has changed quite a bit.</p>
+<p>Gravit 0.3.2 has a working Mac OS X Makefile. There is now console help by typing 'help' in the console. You can list and delete saved simulations (savelist, savedelete). The console is now easy to nagivate using cursor keys.</p>
 <p>Read the <a href="dist/ChangeLog">ChangeLog</a> for the latest release details.</p>
 <?
 
@@ -124,9 +124,10 @@ function showFileHeading($s) {
 
 
 showFileHeading("Latest Release");
-showFiles("0.3.1");
+showFiles("0.3.2");
 
 showFileHeading("Older Releases");
+showFiles("0.3.1");
 showFiles("0.3.0");
 showFiles("0.2.2");
 showFiles("0.2.1");

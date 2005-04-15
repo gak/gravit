@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=Gravit
-AppVerName=Gravit 0.3.1
-OutputBaseFilename=gravit-0.3.1-win32-installer
+AppVerName=Gravit 0.3.2
+OutputBaseFilename=gravit-0.3.2-win32-installer
 AppPublisherURL=http://gravit.slowchop.com
 AppSupportURL=http://gravit.slowchop.com
 AppUpdatesURL=http://gravit.slowchop.com
@@ -31,6 +31,7 @@ Source: "D:\src\gravit\windowsinstaller\files\*.png"; DestDir: "{app}"; Flags: i
 Source: "D:\src\gravit\windowsinstaller\files\*.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\src\gravit\windowsinstaller\files\*.ttf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\src\gravit\windowsinstaller\files\COPYING"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\src\gravit\windowsinstaller\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: "D:\src\gravit\windowsinstaller\files\*.DLL"; DestDir: "{sys}"; Flags: sharedfile
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
