@@ -4,11 +4,15 @@ Gravit ChangeLog
 
 0.3.2 2005/04/15
 
-    * fixed compiliation on Mac OS X (Thanks Grigory Entin!)
+    * fixed compilation on Mac OS X (Thanks Grigory Entin!)
     * added help command for help
     * added list command to list all available console commands
     * added savelist to list all saved simulations
     * added savedelete to delete a simulation
+    * more keys can be typed in the console
+    * console key repeat is now on (holding down a key to print multiple keys)
+    * console typed history, pressing up and down will scroll through your typed history
+    * console left and right keys will move the cursor around
     * help console messages are now blue
     * "G" set message is gone 
 
@@ -142,4 +146,3 @@ Gravit ChangeLog
 0.1 2005/04/04
 
     * Initial Release 
-
