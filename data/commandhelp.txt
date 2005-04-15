@@ -72,3 +72,6 @@ timerlist Lists all timers
 popuptext Displays some text on the screen.
 cd Change directory. Not apparently useful!
 help Displays some help, like this help!
+list Displays the names of every console command available
+savelist Displays a list of each saved simulation along with some details.
+savedelete This will delete a saved simulation
