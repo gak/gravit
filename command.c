@@ -29,6 +29,8 @@ cmd_t cmd[] = {
 	,{ "help",						cmdHelp,				NULL,						NULL,								NULL }
 	,{ "list",						cmdList,				NULL,						NULL,								NULL }
 
+	,{ "unhelpful",					cmdUnhelpful,			NULL,						NULL,								NULL }
+
 	,{ "memoryavailable",			NULL,					NULL,						&state.memoryAvailable,				NULL }
 
 #ifndef NO_GUI
@@ -1107,5 +1109,26 @@ void cmdSaveDelete(char *arg) {
 	conAdd(LNORM, "Deleted %s", arg);
 
 	freeFileName();
+
+}
+
+void cmdUnhelpful(char *arg) {
+
+	int i = -1;
+	cmd_t *c;
+
+	while (1) {
+
+		i++;
+		c = &cmd[i];
+
+		if (!c->cmd)
+			return;
+
+		if (!c->description || !c->description[0]) {
+			conAdd(LNORM, "%s", c->cmd);
+		}
+
+	}
 
 }

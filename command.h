@@ -74,5 +74,6 @@ void cmdHelp(char *arg);
 void cmdList(char *arg);
 void cmdSaveList(char *arg);
 void cmdSaveDelete(char *arg);
+void cmdUnhelpful(char *arg);
 
 #endif
