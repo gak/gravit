@@ -29,6 +29,10 @@ int conCommandPos;
 unsigned int conBlinkTime;
 int conBlinkOn;
 
+char *conTypedHistory[CONSOLE_TYPED_HISTORY];
+int conTypedHistoryPos;
+int conTypedHistoryPointer;
+
 static col_t cols[] = {
 
 	{0.5f, 0.5f, 0.5f}
@@ -172,11 +176,28 @@ void conInit() {
 	conBlinkTime = getMS();
 	conBlinkOn = 1;
 
+	memset(conTypedHistory, 0, sizeof(conTypedHistory));
+	conTypedHistoryPos = 0;
+	conTypedHistoryPointer = 0;
+
 }
 
-void conInput(char c) {
+void conFree() {
 
-	if (c == SDLK_MINUS || c == SDLK_PERIOD || c == SDLK_SPACE || (c >= SDLK_a && c <= SDLK_z) || ( c >= SDLK_0 && c <= SDLK_9 ) ) {
+	int i;
+
+	for (i = 0; i < CONSOLE_TYPED_HISTORY; i++) {
+		if (conTypedHistory[i]) {
+			free(conTypedHistory[i]);
+			conTypedHistory[i] = 0;
+		}
+	}
+
+}
+
+void conInput(SDLKey c) {
+
+	if (c == SDLK_MINUS || c == SDLK_PERIOD || c == SDLK_SPACE || (c > 32 && c < 128) ) {
 
 		if (c == SDLK_SPACE && conCommandPos == 0)
 			return;
@@ -213,6 +234,9 @@ void conInput(char c) {
 			return;		
         }
 
+		// add command to typed history
+		conTypedHistoryAdd(conCommand);
+
 		cmdExecute(conCommand);
 
 		conCommand[0] = 0;
@@ -232,10 +256,60 @@ void conInput(char c) {
 	}
 
 	if (c == SDLK_TAB) {
-
 		return;
-
 	}
+
+	if (c == SDLK_UP) {
+		conTypedHistoryChange(-1);
+		return;
+	}
+
+	if (c == SDLK_DOWN) {
+		conTypedHistoryChange(1);
+		return;
+	}
+
+	conAdd(LLOW, "unknown key: %u", c);
+
+}
+
+void conTypedHistoryAdd(char *s) {
+	
+	conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(s)+1);
+	strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
+
+	conTypedHistoryPos++;
+
+	if (conTypedHistoryPos == CONSOLE_TYPED_HISTORY) {
+		conTypedHistoryPos = 0;
+	}
+
+	conTypedHistoryPointer = conTypedHistoryPos;
+
+}
+
+void conTypedHistoryChange(int i) {
+
+	int lastPtr = conTypedHistoryPointer;
+	conTypedHistoryPointer+=i;
+
+	if (conTypedHistoryPointer < 0) conTypedHistoryPointer = CONSOLE_TYPED_HISTORY-1;
+	if (conTypedHistoryPointer >= CONSOLE_TYPED_HISTORY) conTypedHistoryPointer = 0;
+
+	// make sure conCommand is at conTypedHistoryPos
+	if (conTypedHistoryPos == lastPtr) {
+		conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(conCommand)+1);
+		strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
+	}
+
+	//
+	if (!conTypedHistory[conTypedHistoryPointer]) {
+		conTypedHistoryPointer = lastPtr;
+		return;
+	}
+
+	strcpy(conCommand, conTypedHistory[conTypedHistoryPointer]);
+	conCommandPos = strlen(conCommand);
 
 }
 

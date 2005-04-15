@@ -338,6 +338,7 @@ int main(int argc, char *argv[]) {
 	cleanMemory();
 	freeFileName();
 	cmdFree();
+	conFree();
 
 #ifndef NO_GUI
 

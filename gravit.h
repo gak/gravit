@@ -182,6 +182,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define CONSOLE_LENGTH 255
 #define CONSOLE_BLINK_TIME 500
 #define CONSOLE_WIDTH 500
+#define CONSOLE_TYPED_HISTORY 50
 
 #define LLOW 0
 #define LNORM 1
@@ -544,7 +545,10 @@ extern con_t con[CONSOLE_HISTORY];
 void conAdd(int mode, char *f, ... );
 void conInit();
 void conDraw();
-void conInput(char c);
+void conInput(SDLKey c);
+void conTypedHistoryAdd(char *s);
+void conTypedHistoryChange(int i);
+void conFree();
 
 #ifndef NO_GUI
 
