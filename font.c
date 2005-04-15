@@ -188,6 +188,21 @@ float getWordWidth(char *s) {
 
 }
 
+float getnWordWidth(char *s, int n) {
+
+	int i;
+	float x = 0;
+
+	for (i = 0; i < n; i++) {
+
+		x += fonts[(int)s[i]].ow;
+
+	}
+
+	return x;
+
+}
+
 void drawFontWordRA(float x, float y, char *word) {
 
 	int i;

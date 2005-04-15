@@ -128,7 +128,7 @@ void conDraw() {
 
 		if (conBlinkOn) {
 
-			w = getWordWidth(conCommand);
+			w = getnWordWidth(conCommand, conCommandPos);
 			glDisable(GL_BLEND);
 			glLineWidth(1.0f);
 			glBindTexture(GL_TEXTURE_2D, 0);
@@ -197,16 +197,19 @@ void conFree() {
 
 void conInput(SDLKey c) {
 
-	if (c == SDLK_MINUS || c == SDLK_PERIOD || c == SDLK_SPACE || (c > 32 && c < 128) ) {
+	if (c >= 32 && c < 128) {
 
 		if (c == SDLK_SPACE && conCommandPos == 0)
 			return;
 
 		if (conCommandPos < CONSOLE_LENGTH) {
-
+			int i,l;
+			l = strlen(conCommand);
+			for (i = strlen(conCommand); i > conCommandPos-1; i--)
+				conCommand[i+1]=conCommand[i];
+			
 			conCommand[conCommandPos] = c;
 			conCommandPos++;
-			conCommand[conCommandPos] = 0;
 
 		}
 		return;
@@ -217,8 +220,8 @@ void conInput(SDLKey c) {
 
 		if (conCommandPos > 0) {
 
+			strcpy(&conCommand[conCommandPos-1], &conCommand[conCommandPos]);
 			conCommandPos--;
-			conCommand[conCommandPos] = 0;
 
 		}
 		return;
@@ -266,6 +269,20 @@ void conInput(SDLKey c) {
 
 	if (c == SDLK_DOWN) {
 		conTypedHistoryChange(1);
+		return;
+	}
+
+	if (c == SDLK_LEFT) {
+		if (conCommandPos > 0) {
+			conCommandPos--;
+		}
+		return;
+	}
+
+	if (c == SDLK_RIGHT) {
+		if (conCommandPos < (signed)strlen(conCommand)) {
+			conCommandPos++;
+		}
 		return;
 	}
 
