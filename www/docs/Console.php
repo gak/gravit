@@ -10,7 +10,7 @@
 <body>
 <h1 id="ConsoleCommandsandVariables">Console Commands and Variables</h1>
 <p>
-<a class="ext-link" title="http:.." href="http:..">Gravit Home</a> / <a href="Index.php">Documentation Index</a>
+<a class="ext-link" title=".." href="..">Gravit Home</a> / <a href="Index.php">Documentation Index</a>
 </p>
 <h2 id="Overview">Overview</h2>
 <p>

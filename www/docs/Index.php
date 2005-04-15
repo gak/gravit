@@ -10,7 +10,7 @@
 <body>
 <h1 id="GravitDocumentation">Gravit Documentation</h1>
 <p>
-<a class="ext-link" title="http:.." href="http:..">Gravit Home</a>
+<a class="ext-link" title=".." href="..">Gravit Home</a>
 </p>
 <h2 id="QuickIntroduction">Quick Introduction</h2>
 <p>
@@ -29,7 +29,8 @@ Here's the documentation for Gravit. I will try to maintain it along with new fe
 <a href="Requirements.php#Overview">Overview</a></li><li>
 <a href="Requirements.php#MinimumRequirements">Minimum Requirements</a></li><li>
 <a href="Requirements.php#TestedSystems">Tested Systems</a><ol><li>
-<a href="Requirements.php#TestedandWorkingOperatingSystems">Tested and Working Operating Systems</a></li><li>
+<a href="Requirements.php#ReportedWorkingArchitectures">Reported Working Architectures</a></li><li>
+<a href="Requirements.php#ReportedWorkingOperatingSystems">Reported Working Operating Systems</a></li><li>
 <a href="Requirements.php#UntestedOperatingSystems">Untested Operating Systems</a></li><li>
 <a href="Requirements.php#VideoCardsTested">Video Cards Tested</a></li></ol>
 </li></ol>
@@ -53,13 +54,23 @@ Here's the documentation for Gravit. I will try to maintain it along with new fe
 <a href="StereoMode.php#Parallel">Parallel</a></li><li>
 <a href="StereoMode.php#Crosseyed">Cross-eyed</a></li></ol>
 </li></ol>
+</li><li>
+<a href="Examples.php#ExamplesTipsandCustomization">Examples, Tips and Customization</a><ol><li>
+<a href="Examples.php#Overview">Overview</a></li><li>
+<a href="Examples.php#ScreenSaveronasinglesimulation">Screen Saver on a single simulation</a></li><li>
+<a href="Examples.php#ARandomGalaxy">A Random Galaxy</a></li><li>
+<a href="Examples.php#APerfectGalaxy">A Perfect Galaxy</a></li></ol>
+</li><li>
+<a href="Troubleshooting.php#Troubleshooting">Troubleshooting</a><ol><li>
+<a href="Troubleshooting.php#Overview">Overview</a></li><li>
+<a href="Troubleshooting.php#AntiAliasing">Anti-Aliasing</a></li><li>
+<a href="Troubleshooting.php#ParticleRendering">Particle Rendering</a></li><li>
+<a href="Troubleshooting.php#Tooslow">Too slow</a></li></ol>
 </ol>
 
 </p>
 <h2 id="Todo">Todo</h2>
 <ul><li>Recording and Playback
-</li><li>Examples
-</li><li>Troubleshooting
 </li></ul>
 </body>
 </html>

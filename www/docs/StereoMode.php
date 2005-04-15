@@ -10,7 +10,7 @@
 <body>
 <h1 id="StereoscopicMode">Stereoscopic Mode</h1>
 <p>
-<a class="ext-link" title="http:.." href="http:..">Gravit Home</a> / <a href="Index.php">Documentation Index</a>
+<a class="ext-link" title=".." href="..">Gravit Home</a> / <a href="Index.php">Documentation Index</a>
 </p>
 <h2 id="Overview">Overview</h2>
 <p>
@@ -20,18 +20,18 @@ Stereoscopy is a way to see a 3D image on a 2D screen. It is similar to the way 
 There are two ways Gravit can display stereoscopic images. They are cross-eyed and parallel viewing.
 </p>
 <p>
-To get cross-eyed viewing set up in Gravit, you'll need to get into the console using the ` key and type in the following:
+To get parallel viewing set up in Gravit, you'll need to get into the console using the ` key and type in the following:
 </p>
-<pre class="wiki"> stereo 1
- stereoseparation -100
+<pre class="wiki">stereo 1
+stereoseparation -100
 </pre><p>
 The <i>stereoseparation</i> value is adjustable, the more negative this number is, the more 'depth' you will see.
 </p>
 <p>
-To get parallel viewing going, the <i>stereoseparation</i> variable is positive:
+To get cross-eyed viewing going, the <i>stereoseparation</i> variable is positive:
 </p>
-<pre class="wiki"> stereo 1
- stereoseparation 100
+<pre class="wiki">stereo 1
+stereoseparation 100
 </pre><p>
 Increasing <i>stereoseparation</i> to a larger number will increse depth.
 </p>

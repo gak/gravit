@@ -113,8 +113,6 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
 
 	fclose(fp);
 
-	conAdd(LLOW, "Loaded %i bytes from %s", size, fileName);
-
 	return 1;
 }
 

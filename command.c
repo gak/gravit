@@ -1039,7 +1039,53 @@ void cmdList(char *arg) {
 
 void cmdSaveList(char *arg) {
 
-		
+	char *file;
+	saveInfo_t si;
+
+#ifdef WIN32
+
+	HANDLE h = NULL;
+	WIN32_FIND_DATA fd;
+	h = FindFirstFile(SAVE_PATH "/*.info", &fd);
+	while (1) {
+
+		file = 	fd.cFileName;		
+
+#else
+
+	DIR *d;
+	struct dirent *f;
+	d = opendir(SAVE_PATH);
+	if (!d) {
+		conAdd(LERR, "Could not access %s", SAVE_PATH);
+		return;
+	}
+
+    while ((f = readdir(d)) != NULL) {
+		file = f->d_name;
+		if (strcmp(&file[strlen(file)-5], ".info"))
+			continue;
+
+#endif
+
+		if (!LoadMemoryDump(va("%s/%s", SAVE_PATH, file), (unsigned char *)&si, sizeof(si))) {
+			conAdd(LERR, "Failed to load %s", file);
+			return;
+		}
+		file[strlen(file)-5] = 0;
+		conAdd(LNORM, "%s - %i particles, %i frames", file, si.particleCount, si.totalFrames);
+
+#ifdef WIN32
+
+		if (!FindNextFile(h, &fd)) break;
+	}
+
+#else
+
+	}
+    closedir(d);
+
+#endif
 
 }
 

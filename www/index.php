@@ -22,7 +22,7 @@
 <h1>Gravit - A gravity simulator</h1>
 
 <h2>About</h2>
-<p>Gravit is a gravity simulator which runs under Linux and Windows. It's released under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a> which makes it free. It uses simple newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. It records the history of each particle so it can animate and display a path of its travels. At any stage you can rotate your view in 3D and zoom in and out. Gravit uses OpenGL with <a href="http://www.libsdl.org/">SDL</a>, <a href="http://www.libsdl.org/projects/SDL_ttf/">SDL_ttf</a> and <a href="http://www.libsdl.org/projects/SDL_image/">SDL_image</a>.</p>
+<p>Gravit is a gravity simulator which runs under Linux, Windows and Mac OS X. It's released under the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a> which makes it free. It uses simple newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. It records the history of each particle so it can animate and display a path of its travels. At any stage you can rotate your view in 3D and zoom in and out. Gravit uses OpenGL with <a href="http://www.libsdl.org/">SDL</a>, <a href="http://www.libsdl.org/projects/SDL_ttf/">SDL_ttf</a> and <a href="http://www.libsdl.org/projects/SDL_image/">SDL_image</a>.</p>
 
 <h2>Screen Shots</h2>
 
@@ -83,7 +83,7 @@ echo '</table>';
 </ul>
 
 <h2>Documentation</h2>
-<p>So far I have made a several pages of documentation. It is slowly being written -- I'll attempt to keep it up to date. The Gravit <a href="docs">documentation is here</a>.</p>
+<p>So far I have made a several pages of documentation. It is slowly being written -- I'll attempt to keep it up to date. The Gravit <a href="docs/">documentation is here</a>.</p>
 
 <h2>Download</h2>
 <p>In Gravit 0.3.1 your view moves around to where particles are. I've added timer code, a fullscreen toggle by hitting alt-enter and several other features. Also, the screensaver has changed quite a bit.</p>

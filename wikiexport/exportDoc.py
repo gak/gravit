@@ -2,7 +2,7 @@
 
 import os
 
-pages = ['Docs/Index', 'Docs/Overview', 'Docs/Requirements', 'Docs/Console', 'Docs/StereoMode']
+pages = ['Docs/Index', 'Docs/Overview', 'Docs/Requirements', 'Docs/Console', 'Docs/StereoMode', 'Docs/Examples', 'Docs/Troubleshooting']
 
 # dodgy! what are u gonna do? :)
 # todo: find a way not to be lazy
@@ -26,6 +26,7 @@ for page in pages:
 	
 	page = page.replace("Docs/","")
 	buf = buf.replace("/Docs/","")
+	buf = buf.replace("http:..","..")
 	
 	buf = header.replace("[[TITLE]]", page) + buf + footer
 	
