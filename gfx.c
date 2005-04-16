@@ -50,7 +50,7 @@ void drawFrameSet3D() {
 void loadParticleTexture() {
 
 	SDL_Surface *particleSurface;
-	particleSurface = IMG_Load("particle.png");
+	particleSurface = IMG_Load("data/particle.png");
 
 	glGenTextures(1, &particleTextureID);
 	glCheck();
