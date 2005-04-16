@@ -205,7 +205,7 @@ void drawOSD() {
 	{
 
 		float i;
-		float cols[3];
+		VectorNew(cols);
 		char z[2] = {0,0};
 
 		for (i = 0; i < 1; i += 0.01f) {

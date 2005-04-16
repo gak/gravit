@@ -29,8 +29,8 @@ void processFramePP(int start, int amount) {
 	particleDetail_t *pd1;
 	particleDetail_t *pd2;
 
-	float dv[3];
-	float dv2[3];
+	VectorNew(dv);
+	VectorNew(dv2);
 
 	float inverseSquareDistance;
 	float force;

@@ -114,9 +114,9 @@ void pickPositions() {
 
 	int gals;
 
-	float galPos[100][3];
-	float galVel[100][3];
-	float shit[3];
+	VectorNew(galPos[100]);
+	VectorNew(galVel[100]);
+	VectorNew(shit);
 
 	float galSize[100];
 	float galMassMin[100];

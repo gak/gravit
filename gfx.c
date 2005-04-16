@@ -553,9 +553,9 @@ void translateToCenter() {
 
 	int i;
 	particle_t *p;
-	VectorNew(pos)
+	VectorNew(pos);
 
-	VectorZero(pos)
+	VectorZero(pos);
 
 	for (i = 0; i < state.particleCount; i++) {
 
@@ -573,7 +573,7 @@ void drawAll() {
 
 //	int i;
 	int bits;
-	VectorNew(rotateIncrement)
+	VectorNew(rotateIncrement);
 
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

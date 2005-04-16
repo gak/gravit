@@ -138,7 +138,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define NBODY_METHOD METHOD_OT
 
-#define VectorNew(a) float a[3];
+#define VectorNew(a) VectorNew(a);
 
 #define VectorCopy(a,b) { b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; }
 #define VectorAdd(a,b,c) { c[0] = a[0] + b[0]; c[1] = a[1] + b[1]; c[2] = a[2] + b[2]; }
@@ -280,8 +280,8 @@ typedef struct col_s {
 // things that change per frame
 typedef struct particle_s {
 
-	float pos[3];
-	float vel[3];
+	VectorNew(pos);
+	VectorNew(vel);
 
 } particle_t;
 
@@ -312,7 +312,7 @@ typedef struct state_s {
 
 	int frameCompression;
 
-	float center[3];
+	VectorNew(center);
 	int mode;
 	float massRange[2];
 
@@ -369,7 +369,7 @@ typedef struct view_s {
 	int lastMousePosition[2];
 	int showCursor;
 
-	float rot[3];
+	VectorNew(rot);
 	float zoom;
 
 	int maxVertices;	// 0 for infinite, otherwise tailskip will double when hit
@@ -378,10 +378,10 @@ typedef struct view_s {
 	int keys[SDLK_LAST];
 #endif
 
-	float pos[3];	// todo, position of camera
-	float face[3];
+	VectorNew(pos);	// todo, position of camera
+	VectorNew(face);
 
-	float autoRotate[3];
+	VectorNew(autoRotate);
 
 	// mouse movement/keys will quit
 	int screenSaver;
@@ -594,10 +594,10 @@ void processFramePP(int s, int n);
 // frame-ot.c
 typedef struct node_s {
 
-	float min[3];
-	float max[3];
-	float c[3];
-	float cm[3];
+	VectorNew(min);
+	VectorNew(max);
+	VectorNew(c);
+	VectorNew(cm);
 
 	particle_t *p;
     struct node_t *b[8];

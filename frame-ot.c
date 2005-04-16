@@ -60,7 +60,7 @@ int otGetParticleInBox(float *min, float *max, particle_t **gp, float *m, float 
 	particleDetail_t *pd;
 	int i;
 
-	float vec[3];
+	VectorNew(vec);
 
 	memset(cm, 0, sizeof(float) * 3);
 
@@ -109,7 +109,7 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 	node_t *b;
 	int c;
 
-	float cm[3];
+	VectorNew(cm);
 
 	c = otGetParticleInBox(min, max, &p, &mass, (float*)&cm);
 
@@ -154,8 +154,8 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 
 void otBranchNode(node_t *n) {
 
-	float min[3];
-	float max[3];
+	VectorNew(min);
+	VectorNew(max);
 
 	doVideoUpdate();
 
@@ -360,7 +360,7 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 // 		frDoGravity(p,n,d); was
 
 		{ // now
-			float dv[3];
+			VectorNew(dv);
 			float force;
 			dv[0] = info->p->pos[0] - info->n->cm[0];
 			dv[1] = info->p->pos[1] - info->n->cm[1];
@@ -402,7 +402,7 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 				// frDoGravity(p,b,d);
 
 				{ // now
-					float dv[3];
+					VectorNew(dv);
 					float force;
 					dv[0] = info->p->pos[0] - b->cm[0];
 					dv[1] = info->p->pos[1] - b->cm[1];
@@ -464,11 +464,11 @@ void processFrameOT(int start, int amount) {
 
 void otDrawField() {
 
-	VectorNew(pos)
-	VectorNew(force)
+	VectorNew(pos);
+	VectorNew(force);
 
-	VectorZero(pos)
-	VectorZero(force)
+	VectorZero(pos);
+	VectorZero(force);
 
 	if (!r)
 		return;
@@ -496,8 +496,8 @@ void otDrawFieldRecursive(float *pos, node_t *node, float *force) {
 
 	float f;
 
-	VectorNew(newForce)
-	VectorZero(newForce)
+	VectorNew(newForce);
+	VectorZero(newForce);
 
 	for (i = 0; i < 8; i++) {
 
@@ -522,7 +522,7 @@ void otDrawFieldRecursive(float *pos, node_t *node, float *force) {
 		} else {
 
 			{
-				float dv[3];
+				VectorNew(dv);
 				dv[0] = pos[0] - b->cm[0];
 				dv[1] = pos[1] - b->cm[1];
 				dv[2] = pos[2] - b->cm[2];

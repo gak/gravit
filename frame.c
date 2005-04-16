@@ -227,8 +227,8 @@ void processCollisions() {
 	int i,j;
 	particle_t *p1;
 	particle_t *p2;
-	float dv[3];
-	float dv2[3];
+	VectorNew(dv);
+	VectorNew(dv2);
 	float d;
 
 	for (i = 0; i < state.particleCount; i++) {
@@ -279,7 +279,7 @@ void forceToCenter() {
 
 	int i;
 	particle_t *p;
-	float dv[3];
+	VectorNew(dv);
 	float d;
 	float force;
 
