@@ -138,7 +138,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #define NBODY_METHOD METHOD_OT
 
-#define VectorNew(a) VectorNew(a);
+#define VectorNew(a) float a[3]
 
 #define VectorCopy(a,b) { b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; }
 #define VectorAdd(a,b,c) { c[0] = a[0] + b[0]; c[1] = a[1] + b[1]; c[2] = a[2] + b[2]; }
@@ -171,8 +171,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 
 #ifndef WIN32
-#define _aligned_malloc(a,b) malloc(a)
-#define _aligned_free(a) free(a)
+//#define _aligned_malloc(a,b) malloc(a)
+//#define _aligned_free(a) free(a)
 #endif
 
 #define _aligned_malloc(a,b) malloc(a)
