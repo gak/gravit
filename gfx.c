@@ -132,7 +132,7 @@ int gfxInit() {
 
 	video.sdlStarted = 1;
 
-	icon = IMG_Load("gravit.png");
+	icon = IMG_Load("data/gravit.png");
 	SDL_WM_SetIcon(icon, NULL);
 	SDL_FreeSurface(icon);
 
