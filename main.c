@@ -41,7 +41,7 @@ void loadDefaults() {
 	video.screenFS = 0;
 	video.screenAA = 0;
 
-	strcpy(video.fontFile, "Vera.ttf");
+	strcpy(video.fontFile, "data/Vera.ttf");
 	video.fontSize = 11;
 	
 #endif
