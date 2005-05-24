@@ -240,11 +240,13 @@ void conInput(SDLKey c) {
 		// add command to typed history
 		conTypedHistoryAdd(conCommand);
 
+		view.consoleMode = 0;
+
 		cmdExecute(conCommand);
 
 		conCommand[0] = 0;
 		conCommandPos = 0;
-		view.consoleMode = 0;
+
 		return;
 
 	}

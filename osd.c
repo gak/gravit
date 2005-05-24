@@ -102,8 +102,10 @@ void drawOSD() {
 			glColor4f(1,1,0,.8f);
 			y += fontHeight; 
 			y = drawFontWord(x, y, "SPAWNING");
-			DUHC();
-			DUH("status", va("%.1f%%", (float)view.recordParticlesDone/state.particleCount*100));
+
+			// This doesn't work since i've added lua
+			// DUHC();
+			// DUH("status", va("%.1f%%", (float)view.recordParticlesDone/state.particleCount*100));
 
 		}
 

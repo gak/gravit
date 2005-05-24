@@ -57,20 +57,19 @@ void cleanMemory() {
 
 	if (state.particleHistory) {
 
-//		conAdd(LLOW, "Freeing state.particleHistory");
 		_aligned_free(state.particleHistory);
+		state.particleHistory = 0;
 
 	}
 
 	if (state.particleDetail) {
 
-//		conAdd(LLOW, "Freeing state.particleDetail");
 		_aligned_free(state.particleDetail);
+		state.particleDetail = 0;
 
 	}
 
 	state.memoryAllocated = 0;
-
 
 }
 
@@ -230,6 +229,28 @@ int init(int argc, char *argv[]) {
 
 }
 
+void clean() {
+
+	cleanMemory();
+	freeFileName();
+	cmdFree();
+	conFree();
+	luaFree();
+
+#ifndef NO_GUI
+
+	colourSpectrumClear();
+	timerFree();
+
+	if (video.sdlStarted) {
+		TTF_Quit();
+		SDL_Quit();
+	}
+
+#endif
+
+}
+
 void runInput() {
 
 #ifndef NO_GUI
@@ -335,22 +356,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	cleanMemory();
-	freeFileName();
-	cmdFree();
-	conFree();
-
-#ifndef NO_GUI
-
-	colourSpectrumClear();
-	timerFree();
-
-	if (video.sdlStarted) {
-		TTF_Quit();
-		SDL_Quit();
-	}
-
-#endif
+	clean();
 
 	return 0;
 

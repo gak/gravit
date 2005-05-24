@@ -105,6 +105,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdarg.h>
 #include <ctype.h>
 
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+
 #ifndef MAX_PATH
 #define MAX_PATH 260
 #endif
@@ -216,7 +220,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			runInput(); \
 			runVideo(); \
 		} \
-		if (view.quit) return; \
+		if (view.quit) return 0; \
 	}
 
 #include "command.h"
@@ -333,6 +337,8 @@ typedef struct state_s {
 
 	int autoRecord;	// will start recording after spawning
 	int autoRecordNext; // is a value to do a cmdRecord in the main loop, it goes to 0 after doing this
+
+	lua_State *lua;
 
 } state_t;
 
@@ -631,6 +637,13 @@ void timerUpdate();
 void timerAdd(char *name, float seconds, int reps, char *command);
 void timerDel(char *name);
 void timerList();
+
+// lua.c
+int luaInit();
+int luag_spawn(lua_State *L);
+void luaFree();
+int luag_log(lua_State *L);
+int luaExecute(char *f);
 
 #endif
 

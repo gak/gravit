@@ -361,6 +361,14 @@ void cmdStop(char *arg) {
 
 void cmdSpawn(char *arg) {
 
+	char *scriptName;
+	char *scriptFile;
+
+	if (arg)
+		scriptName = arg;
+	else
+		scriptName = "default";
+
 	freeFileName();
 
 	if (state.currentlySpawning) {
@@ -382,10 +390,28 @@ cmdSpawnRestartSpawning:
 		return;
 	}
 
-	pickPositions();
+	luaInit();
 
-	if (state.restartSpawning)
+	lua_pushnumber(state.lua, state.particleCount);
+	lua_setglobal(state.lua, "spawnparticles");
+
+	scriptFile = va("scripts/%s.lua", scriptName);
+
+	luaExecute(scriptFile);
+	lua_getglobal(state.lua, "spawn");
+	if (lua_pcall(state.lua, 0, 1, 0)) {
+        conAdd(LERR, "Could not execute spawn function in %s", scriptFile);
+        conAdd(LERR, "%s", lua_tostring(state.lua, -1));
+		cleanMemory();
+		state.currentlySpawning = 0;
+		state.particleCount = 0;
+		luaFree();
+		return;
+	}
+
+	if (state.restartSpawning) {
 		goto cmdSpawnRestartSpawning;
+	}
 
 #ifndef NO_GUI
 	setColours();
@@ -399,6 +425,8 @@ cmdSpawnRestartSpawning:
 	if (state.autoRecord) {
 		state.autoRecordNext = 1;
 	}
+
+	luaFree();
 
 }
 

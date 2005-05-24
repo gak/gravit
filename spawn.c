@@ -42,8 +42,6 @@ void spawnDefaults() {
 
 }
 
-
-
 void setRangePosition(float *org, float range) {
 
 	float ranged;
@@ -109,7 +107,7 @@ void pickPositions_() {
 
 
 }
-
+#if 0
 void pickPositions() {
 
 	int gals;
@@ -243,6 +241,7 @@ void pickPositions() {
 	conAdd(LLOW, "- %f particle mass...", totalMass / state.particleCount);
 
 }
+#endif
 
 int isSpawning() {
 

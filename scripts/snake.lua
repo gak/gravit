@@ -1,0 +1,41 @@
+
+require("scripts/functions.lua")
+
+function spawn()
+
+	curveness = randomfloat(0, 0.5)
+	speed = randomfloat(0,1)
+	if (randomint(0,1) == 0) then
+		massincrement = randomfloat(-0.01,0.01)
+	else
+		massincrement = 0
+	end
+		
+	massrandom = randomfloat(0,100)
+
+	pos = v(0,0,0)
+	vel = v(0,0,0)
+	ang1 = 0
+	ang2 = 0
+
+	for i=0,spawnparticles-1 do
+	
+		pos.x = pos.x + math.cos(ang1)
+		pos.y = pos.y + math.sin(ang1)
+		pos.y = pos.y + math.cos(ang2)
+		pos.z = pos.z + math.sin(ang2)
+		
+		vel.x = math.cos(ang1) * speed
+		vel.y = math.sin(ang1) * speed
+		vel.y = math.cos(ang2) * speed
+		vel.z = math.sin(ang2) * speed
+
+		ang1 = ang1 + randomfloat(-curveness,curveness)
+		ang2 = ang2 + randomfloat(-curveness,curveness)
+		
+		particle(i, pos, vel, randomfloat(0,massrandom) + massincrement * i)
+	
+	end
+
+end
+

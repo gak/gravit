@@ -169,11 +169,9 @@ void setColoursByMass() {
 
 		if (d < 0) {
 
-			float s;
-
-			s = pd->col[0];
-			pd->col[0] = pd->col[1];
-			pd->col[1] = s;
+			pd->col[0] = 1 - pd->col[0];
+			pd->col[1] = 1 - pd->col[1];
+			pd->col[2] = 1 - pd->col[2];
 
 		}
 
