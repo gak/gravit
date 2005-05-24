@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-const char *colourModes[] = { "mass", "velocity", "acceleration (need >1 frames)" };
+const char *colourModes[] = { "mass", "velocity", "acceleration", "kinetic energy", "momentum" };
 
 #ifndef NO_GUI
 
@@ -69,6 +69,110 @@ void setColoursByVel() {
 		distance(zero, p->vel, velSpeed);
 
 		d = velSpeed / velMax;
+		colourFromNormal(pd->col, (float)fabs((double)d));
+
+	}
+
+}
+
+void setColoursByKinetic() {
+
+	int i;
+	particle_t *p;
+	particleDetail_t *pd;
+	float d;
+	float kinMax = 0;
+	float kinValue;
+	float velocity;
+
+	VectorNew(zero);
+	VectorZero(zero);
+
+	for (i = 0; i < state.particleCount; i++) {
+
+		p = getParticleCurrentFrame(i);
+		pd = getParticleDetail(i);
+
+		distance(zero, p->vel, velocity);
+		kinValue = velocity * velocity * pd->mass * 0.5;
+
+		if (kinValue < 0)
+			conAdd(LNORM, "Kinetic force < 0!");
+
+		if (i == 0) {
+
+			kinMax = kinValue;
+
+		} else {
+
+			if (kinValue > kinMax)
+				kinMax = kinValue;
+
+		}
+
+	}
+
+	for (i = 0; i < state.particleCount; i++) {
+
+		p = getParticleFirstFrame(i);
+		pd = getParticleDetail(i);
+
+		distance(zero, p->vel, velocity);
+		kinValue = velocity * velocity * pd->mass * 0.5;
+
+		d = kinValue / kinMax;
+		colourFromNormal(pd->col, (float)fabs((double)d));
+
+	}
+
+}
+
+void setColoursByMomentum() {
+
+	int i;
+	particle_t *p;
+	particleDetail_t *pd;
+	float d;
+	float kinMax = 0;
+	float kinValue;
+	float velocity;
+
+	VectorNew(zero);
+	VectorZero(zero);
+
+	for (i = 0; i < state.particleCount; i++) {
+
+		p = getParticleCurrentFrame(i);
+		pd = getParticleDetail(i);
+
+		distance(zero, p->vel, velocity);
+		kinValue = velocity * pd->mass;
+
+		if (kinValue < 0)
+			conAdd(LNORM, "Kinetic force < 0!");
+
+		if (i == 0) {
+
+			kinMax = kinValue;
+
+		} else {
+
+			if (kinValue > kinMax)
+				kinMax = kinValue;
+
+		}
+
+	}
+
+	for (i = 0; i < state.particleCount; i++) {
+
+		p = getParticleFirstFrame(i);
+		pd = getParticleDetail(i);
+
+		distance(zero, p->vel, velocity);
+		kinValue = velocity * pd->mass;
+
+		d = kinValue / kinMax;
 		colourFromNormal(pd->col, (float)fabs((double)d));
 
 	}
@@ -193,6 +297,11 @@ void setColours() {
 		case CM_ACC:
 			setColoursByAcceleration(); break;
 
+		case CM_KIN:
+			setColoursByKinetic(); break;
+
+		case CM_MOM:
+			setColoursByMomentum(); break;
 	}
 
 }

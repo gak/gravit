@@ -135,7 +135,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define CM_MASS 0
 #define CM_VEL 1
 #define CM_ACC 2
-#define CM_LAST 3
+#define CM_KIN 3
+#define CM_MOM 4
+#define CM_LAST 5
 
 #define METHOD_PP 0
 #define METHOD_OT 1
