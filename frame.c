@@ -57,6 +57,8 @@ int initFrame() {
 
 	state.memoryAllocated += FRAMEDETAILSIZE;
 
+	memset(state.particleHistory, 0, FRAMESIZE);
+
 	return 1;
 
 }

@@ -413,6 +413,33 @@ cmdSpawnRestartSpawning:
 		goto cmdSpawnRestartSpawning;
 	}
 
+	// make sure no two particles are in the same spot
+	{
+		int i,j;
+restart:
+		for (i = 0; i < state.particleCount - 1; i++) {
+			for (j = i+1; j < state.particleCount; j++) {
+				particle_t *p1;
+				particle_t *p2;
+				VectorNew(diff);
+
+				p1 = getParticleFirstFrame(i);
+				p2 = getParticleFirstFrame(j);
+				
+				VectorSub(p1->pos, p2->pos, diff);
+
+				if (diff[0] == 0 && diff[1] == 0 && diff[2] == 0) {
+					p1->pos[0] += frand(-1,1);
+					p1->pos[1] += frand(-1,1);
+					p1->pos[2] += frand(-1,1);
+					conAdd(LERR, "Particle %i and %i are in the same position, moving...", i, j);
+					goto restart;
+				}
+
+			}
+		}
+	}
+
 #ifndef NO_GUI
 	setColours();
 #endif
