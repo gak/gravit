@@ -416,27 +416,59 @@ cmdSpawnRestartSpawning:
 	// make sure no two particles are in the same spot
 	{
 		int i,j;
+		int needrestart;
 restart:
-		for (i = 0; i < state.particleCount - 1; i++) {
-			for (j = i+1; j < state.particleCount; j++) {
+		needrestart = 0;
+		for (i = 0; i < state.particleCount; i++) {
+			for (j = 0; j < state.particleCount; j++) {
 				particle_t *p1;
 				particle_t *p2;
+				particleDetail_t *pd1;
+				particleDetail_t *pd2;
 				VectorNew(diff);
 
-				p1 = getParticleFirstFrame(i);
-				p2 = getParticleFirstFrame(j);
-				
-				VectorSub(p1->pos, p2->pos, diff);
+				if (j == i)
+					continue;
 
-				if (diff[0] == 0 && diff[1] == 0 && diff[2] == 0) {
-					p1->pos[0] += frand(-1,1);
-					p1->pos[1] += frand(-1,1);
-					p1->pos[2] += frand(-1,1);
+				p1 = getParticleCurrentFrame(i);
+				p2 = getParticleCurrentFrame(j);
+				pd1 = getParticleDetail(i);
+				pd2 = getParticleDetail(j);
+
+				if (pd1->mass == 0) {
+					conAdd(LERR, "Particle %i has no mass", i);
+					pd1->mass = 1;
+					needrestart = 1;
+				}
+
+				if (pd2->mass == 0) {
+					conAdd(LERR, "Particle %i has no mass", j);
+					pd2->mass = 1;
+					needrestart = 1;
+				}
+
+				VectorSub(p1->pos, p2->pos, diff);
+				#define MIN_STEP 0.001
+				if (fabs(diff[0]) < MIN_STEP && fabs(diff[1]) < MIN_STEP && fabs(diff[2]) < MIN_STEP) {
 					conAdd(LERR, "Particle %i and %i are in the same position, moving...", i, j);
-					goto restart;
+					conAdd(LERR, "%f %f %f", p1->pos[0], p1->pos[1], p1->pos[2]);
+					conAdd(LERR, "%f %f %f", p2->pos[0], p2->pos[1], p2->pos[2]);
+					conAdd(LERR, "%f %f %f", diff[0], diff[1], diff[2]);
+					p1->pos[0] += frand(-10,10);
+					p1->pos[1] += frand(-10,10);
+					p1->pos[2] += frand(-10,10);
+					p2->pos[0] += frand(-10,10);
+					p2->pos[1] += frand(-10,10);
+					p2->pos[2] += frand(-10,10);
+					needrestart = 1;
 				}
 
 			}
+		}
+
+		if (needrestart) {
+			conAdd(LERR, "Loop");
+			goto restart;
 		}
 	}
 

@@ -17,8 +17,9 @@ function randomfloat(min,max)
 	return math.random() * (max-min) + min
 end
 
+-- returns an integer between min and max inclusive
 function randomint(min,max)
-	return math.floor(randomfloat(min,max))
+	return math.random(min,max)
 end
 
 function distance(v1,v2)
@@ -26,8 +27,10 @@ function distance(v1,v2)
 end
 
 function randomrange(radius)
-	bigrange = radius * math.pi
-	origin = v(0,0,0)
+	local bigrange = radius * math.pi
+	local origin = v(0,0,0)
+	local pos
+	local d
 	repeat
 		pos = v(randomfloat(-bigrange,bigrange),randomfloat(-bigrange,bigrange),randomfloat(-bigrange,bigrange))
 		d = distance(pos, origin)
@@ -35,12 +38,64 @@ function randomrange(radius)
 	return pos
 end
 
-function makeball(org, vel, radius, firstparticle, particles, massmin, massmax)
+function rotatevector(pos, theta, around)
+
+	local result = v(0,0,0)
+
+	local costheta = math.cos(theta)
+	local sintheta = math.sin(theta)
+
+	result.x = result.x + (costheta + (1 - costheta) * around.x * around.x) * pos.x
+	result.x = result.x + ((1 - costheta) * around.x * around.y - around.z * sintheta) * pos.y
+	result.x = result.x + ((1 - costheta) * around.x * around.z + around.y * sintheta) * pos.z
+
+	result.y = result.y + ((1 - costheta) * around.x * around.y + around.z * sintheta) * pos.x
+	result.y = result.y + (costheta + (1 - costheta) * around.y * around.y) * pos.y
+	result.y = result.y +((1 - costheta) * around.y * around.z - around.x * sintheta) * pos.z
+
+	result.z = result.z + ((1 - costheta) * around.x * around.z - around.y * sintheta) * pos.x
+	result.z = result.z + ((1 - costheta) * around.y * around.z + around.x * sintheta) * pos.y
+	result.z = result.z + (costheta + (1 - costheta) * around.z * around.z) * pos.z
+
+	return result
+
+end
+
+function makeball(org, vel, radius, massmin, massmax, firstparticle, particles)
 
 	for i=firstparticle,firstparticle+particles-1 do
-		pos = org + randomrange(radius)
-		mass = randomfloat(massmin, massmax)
+		local pos = org + randomrange(radius)
+		local mass = randomfloat(massmin, massmax)
 		particle(i, pos, vel, mass)
 	end
 	
 end
+
+function makespiral(galpos, galvel, galradius, massmin, massmax, firstparticle, particles)		
+
+	local estmass = (massmin + massmax) / 2 * particles
+	local speedbase = .0000001
+	local galaxyrotation = randomrange(1)
+    local galaxyangle = randomfloat(0, 2 * math.pi);
+	local velocitychaos = randomfloat(0.00000001, 0.00001)
+	local pos
+	local vel
+	local mass
+	local radius
+	local speed
+	local angle
+
+	for i=firstparticle,firstparticle+particles-1 do
+        radius = randomfloat(0, galradius)
+        speed = speedbase * radius * math.sqrt(estmass)
+        angle = randomfloat(0,2*math.pi)
+        pos = v(math.cos(angle)*radius, math.sin(angle)*radius, randomfloat(-1,1))
+        vel = v(math.cos(angle+math.pi/2)*speed*radius, math.sin(angle+math.pi/2)*speed*radius, 0)
+        mass = randomfloat(massmin,massmax)
+		pos = rotatevector(pos, galaxyangle, galaxyrotation)
+		vel = rotatevector(vel, galaxyangle, galaxyrotation)
+        particle(i, galpos + pos, galvel + vel, mass)
+	end
+
+end
+

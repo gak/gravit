@@ -120,7 +120,6 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
 	n->b[br] = _aligned_malloc(sizeof(node_t), 16);
 	b = (node_t *)n->b[br];
 
-
 	memset(b, 0, sizeof(node_t));
 
 	VectorCopy(min, b->min);

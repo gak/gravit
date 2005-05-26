@@ -3,37 +3,35 @@ require("scripts/functions.lua")
 
 function spawn()
 
-	curveness1 = randomfloat(0, 0.1)
-	curveness2 = randomfloat(0, 0.1)
+	local curveness1 = randomfloat(0, 0.1)
+	local curveness2 = randomfloat(0, 0.1)
 
-	curvechangelimit = 0.0001
+	local curvechangelimit = 0.0001
+	local curvechange1 = 0
+	local curvechange2 = 0
 	
 	if (randomint(0,4) == 0) then
 		curvechange1 = randomfloat(-curvechangelimit,curvechangelimit)
-	else
-		curvechange1 = 0
 	end
 	
 	if (randomint(0,4) == 0) then
 		curvechange2 = randomfloat(-curvechangelimit,curvechangelimit)
-	else
-		curvechange2 = 0
 	end
 	
-	speed = randomfloat(0,5)
+	local speed = randomfloat(0,5)
+	local massincrement = 0
+
 	if (randomint(0,1) == 0) then
 		massincrement = randomfloat(-0.01,0.01)
-	else
-		massincrement = 0
 	end
 		
-	massrandom = randomfloat(0,100)
-	distance = randomfloat(0.1, 5)
+	local massrandom = randomfloat(0,100)
+	local distance = randomfloat(0.1, 5)
 
-	pos = v(0,0,0)
-	vel = v(0,0,0)
-	ang1 = 0
-	ang2 = 0
+	local pos = v(0,0,0)
+	local vel = v(0,0,0)
+	local ang1 = 0
+	local ang2 = 0
 
 	for i=0,spawnparticles-1 do
 	
