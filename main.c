@@ -320,7 +320,7 @@ void run() {
 
 			if (view.frameSkip < 0) {
 				view.frameSkipCounter++;
-				if (view.frameSkipCounter >= -view.frameSkip) {
+				if (view.frameSkipCounter > -view.frameSkip) {
 					view.frameSkipCounter = 0;
 					state.currentFrame++;
 				}

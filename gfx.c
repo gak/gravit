@@ -199,7 +199,7 @@ inline void particleInterpolate(int i, float t, float *v) {
     
     p1 = state.particleHistory + state.particleCount * state.currentFrame + i;
 
-    if (state.currentFrame == state.historyFrames) {
+    if (state.currentFrame == state.historyFrames || state.historyFrames == 0 || state.mode & SM_RECORD) {
         VectorCopy(p1->pos, v);
 		return;
     }
@@ -479,7 +479,7 @@ void drawFrame() {
 
 			}
 					
-			if (view.frameSkip < 0) {
+			if (view.frameSkip < 0 && !(state.mode & SM_RECORD)) {
 				VectorNew(pos);
 				particleInterpolate(i, ((float)view.frameSkipCounter / view.frameSkip), pos);
 				glVertex3fv(pos);

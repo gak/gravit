@@ -77,7 +77,7 @@ cmd_t cmd[] = {
 	,{ "savedelete",				cmdSaveDelete,			NULL,						NULL,								NULL }
 	
 //	,{ "fps",						cmdFps,					&view.fps,					NULL,								NULL }
-	,{ "frameskip",					NULL,					NULL,						&view.frameSkip,					NULL }
+	,{ "frameskip",					cmdFrameSkip,			NULL,						NULL,								NULL }
 	,{ "frame",						NULL,					NULL,						&state.currentFrame,				NULL }
 
 	,{ "tailskip",					cmdTailSkipCheck,		NULL,						&view.tailSkip,						NULL }
@@ -766,14 +766,11 @@ void cmdFps(char *arg) {
 
 void cmdFrameSkip(char *arg) {
 
-    char *sz;
-
-	sz = strtok(arg, " ");
-
-	if (sz[0])
-		view.frameSkip = atoi(sz);
-	else
-		conAdd(LERR, "nope");
+	if (arg) {
+		view.frameSkip = atoi(arg);
+		view.frameSkipCounter = 0;
+	}
+	conAdd(LNORM, "frameSkip = %i", view.frameSkip);
 
 }
 
