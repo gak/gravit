@@ -338,8 +338,8 @@ void run() {
 			cmdRecord(0);
 		}
 
+		setColours();
 		runVideo();
-	
 
 	}
 

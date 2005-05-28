@@ -580,8 +580,6 @@ void drawAll() {
 
 	view.vertices = 0;
 
-	setColours();
-
 	if (view.stereoMode)
 		bits = 2;
 	else
