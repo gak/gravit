@@ -438,6 +438,7 @@ void drawFrame() {
 
 		for (i = 0; i < state.particleCount; i++) {
 
+			int to;
 			p = 0;
 
 			glBegin(GL_LINE_STRIP);
@@ -449,13 +450,17 @@ void drawFrame() {
 			else
 				k = state.currentFrame - (view.tailLength+2);
 
-			for (j = k; j < state.currentFrame; j+=view.tailSkip ) {
+			if (state.mode & SM_RECORD)
+				to = state.currentFrame;
+			else
+				to = state.currentFrame + 1;
+
+			for (j = k; j <= state.currentFrame; j+=view.tailSkip ) {
 			//for (j = state.currentFrame; j >= k; j-=view.tailSkip ) {
 
 				if (j >= state.historyFrames)
 					continue;
 
-				p = state.particleHistory + state.particleCount * j + i;
 				pd = state.particleDetail + i;
 
 				if (view.tailFaded)
@@ -467,15 +472,21 @@ void drawFrame() {
 				sc[3] *= c;
 				glColor4fv(sc);
 
+				p = state.particleHistory + state.particleCount * j + i;
 				glVertex3fv(p->pos);
 
 				view.vertices++;
 
 			}
-
-			p = state.particleHistory + state.particleCount * state.currentFrame + i;
-
-			glVertex3fv(p->pos);
+					
+			if (view.frameSkip < 0) {
+				VectorNew(pos);
+				particleInterpolate(i, ((float)view.frameSkipCounter / view.frameSkip), pos);
+				glVertex3fv(pos);
+			} else {
+				p = state.particleHistory + state.particleCount * state.currentFrame + i;
+				glVertex3fv(p->pos);
+			}
 
 			glEnd();
 
