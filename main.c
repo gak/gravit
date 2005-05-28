@@ -79,6 +79,7 @@ void viewInit() {
 
 	view.rot[0] = view.rot[1] = view.rot[2] = 0;
 	view.zoom = 10000;
+	view.zoomFitAuto = 1;
 	view.textMode = view.textMode;
 	memset(view.pos, 0, sizeof(view.pos));
 	memset(view.face, 0, sizeof(view.face));

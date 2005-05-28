@@ -379,6 +379,7 @@ typedef struct view_s {
 
 	VectorNew(rot);
 	float zoom;
+	int zoomFitAuto;
 
 	int maxVertices;	// 0 for infinite, otherwise tailskip will double when hit
 
