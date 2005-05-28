@@ -191,6 +191,27 @@ gfxInitRetry:
 
 }
 
+inline void particleInterpolate(int i, float t, float *v) {
+
+    particle_t *p1;
+    particle_t *p2;
+	VectorNew(moo);
+    
+    p1 = state.particleHistory + state.particleCount * state.currentFrame + i;
+
+    if (state.currentFrame == state.historyFrames) {
+        VectorCopy(p1->pos, v);
+		return;
+    }
+
+    p2 = state.particleHistory + state.particleCount * (state.currentFrame+1) + i;
+
+	VectorSub(p1->pos, p2->pos, moo);
+	VectorMultiply(moo, t, moo);
+	VectorAdd(p1->pos, moo, v);
+
+}   
+
 void drawFrame() {
 
 	particle_t *p;
@@ -288,10 +309,17 @@ void drawFrame() {
 		glBegin(GL_POINTS);
 		for (i = 0; i < state.particleCount; i++) {
 
-			p = state.particleHistory + state.particleCount * state.currentFrame + i;
+			VectorNew(pos);
+
 			pd = state.particleDetail + i;
 			glColor4fv(pd->col);
-			glVertex3fv(p->pos);
+			if (view.frameSkip < 0) {
+				particleInterpolate(i, ((float)view.frameSkipCounter / view.frameSkip), pos);
+				glVertex3fv(pos);
+			} else {
+				p = state.particleHistory + state.particleCount * state.currentFrame + i;
+				glVertex3fv(p->pos);
+			}
 			view.vertices++;
 
 		}
@@ -342,12 +370,21 @@ void drawFrame() {
 		for (i = 0; i < state.particleCount; i++) {
 
 			double size;
+			VectorNew(moo);
+			float *pos;
+			pos = moo;
 
-			p = state.particleHistory + state.particleCount * state.currentFrame + i;
 			pd = state.particleDetail + i;
 
+			if (view.frameSkip < 0) {
+				particleInterpolate(i, ((float)view.frameSkipCounter / view.frameSkip), moo);
+			} else {
+				p = state.particleHistory + state.particleCount * state.currentFrame + i;
+				pos = p->pos;
+			}
+
 			gluProject(
-				p->pos[0],p->pos[1],p->pos[2],
+				pos[0],pos[1],pos[2],
 				matModelView, matProject, viewport,
 				&screen[0], &screen[1], &screen[2]
 			);
