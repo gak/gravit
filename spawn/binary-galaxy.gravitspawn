@@ -1,5 +1,9 @@
 
-require("scripts/functions.lua")
+require("spawn/functions.lua")
+
+function describe()
+    log("Two galaxies rotating around each other")
+end
 
 function spawn()
 

@@ -1,4 +1,8 @@
-require("scripts/functions.lua")
+require("spawn/functions.lua")
+
+function describe()
+	log("One spiral galaxy")
+end
 
 function spawn()
 	particlemassmin = randomfloat(1,1000)

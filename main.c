@@ -197,7 +197,7 @@ int init(int argc, char *argv[]) {
 		return 0;
 
 	if (!state.dontExecuteDefaultScript)
-		configRead("gravit.cfg");
+		configRead("gravit.cfg", 0);
 
 #ifndef NO_GUI
 

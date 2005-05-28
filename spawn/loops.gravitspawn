@@ -1,5 +1,11 @@
 
-require("scripts/functions.lua")
+require("spawn/functions.lua")
+
+function describe()
+
+	log("Random looping patterns of particles")
+
+end
 
 function spawn()
 

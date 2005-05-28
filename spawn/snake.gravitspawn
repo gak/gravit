@@ -1,6 +1,11 @@
 
-require("scripts/functions.lua")
+require("spawn/functions.lua")
 
+function describe()
+    log("Random shaped string of particles")
+end
+
+	
 function spawn()
 
 	curveness = randomfloat(0, 0.5)

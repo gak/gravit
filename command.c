@@ -361,6 +361,16 @@ void cmdStop(char *arg) {
 
 }
 
+void cmdSpawnCancel(void) {
+
+	conAdd(LERR, "%s", lua_tostring(state.lua, -1));
+	cleanMemory();
+	state.currentlySpawning = 0;
+	state.particleCount = 0;
+	luaFree();
+
+}
+
 void cmdSpawn(char *arg) {
 
 	char *scriptName;
@@ -400,14 +410,16 @@ cmdSpawnRestartSpawning:
 	scriptFile = va("spawn/%s.gravitspawn", scriptName);
 
 	luaExecute(scriptFile);
+	lua_getglobal(state.lua, "describe");
+	if (lua_pcall(state.lua, 0, 1, 0)) {
+		conAdd(LERR, "Could not execute spawn function in %s", scriptFile);
+		cmdSpawnCancel();	
+		return;
+	}
 	lua_getglobal(state.lua, "spawn");
 	if (lua_pcall(state.lua, 0, 1, 0)) {
-        conAdd(LERR, "Could not execute spawn function in %s", scriptFile);
-        conAdd(LERR, "%s", lua_tostring(state.lua, -1));
-		cleanMemory();
-		state.currentlySpawning = 0;
-		state.particleCount = 0;
-		luaFree();
+		conAdd(LERR, "Could not execute spawn function in %s", scriptFile);
+		cmdSpawnCancel();	
 		return;
 	}
 

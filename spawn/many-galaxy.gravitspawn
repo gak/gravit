@@ -1,4 +1,8 @@
-require("scripts/functions.lua")
+require("spawn/functions.lua")
+
+function describe()
+    log("Many sphere and spiral galaxies")
+end
 
 function spawn()
 	-- work out a number of galaxies based on spawnparticles
