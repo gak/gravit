@@ -1,0 +1,39 @@
+
+require("scripts/functions.lua")
+
+function spawn()
+
+	log("mooo!")
+	
+	local massiveparticles = randomint(1, 3)
+	local smallrange = randomfloat(100, 10000)
+	local bigrange = randomfloat(0, 10000)
+	local bigmass = randomfloat(1000, 100000)
+	local smallmass = randomfloat(100, 1000)
+	local smallmassvaries = randomint(0,1)
+	local initvel = randomfloat(1, 100)
+	
+	for i=0,spawnparticles-1 do
+
+		log(i)
+		
+		if (i < massiveparticles) then
+			pos = randomrange(bigrange)
+			vel = v(0,0,0)
+			mass = bigmass
+		else
+			pos = randomrange(smallrange)
+			vel = randomrange(initvel)
+			if (smallmassvaries == 1) then
+				mass = randomfloat(1,smallmass)
+			else
+				mass = smallmass
+			end
+		end
+		
+		particle(i, pos, vel, mass)
+	
+	end
+
+end
+
