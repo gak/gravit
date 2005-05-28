@@ -408,6 +408,7 @@ typedef struct view_s {
 
 	int drawTree;
 	int frameSkip;
+	int frameSkipCounter;
 
 	int drawOSD;
 	int drawColourScheme;

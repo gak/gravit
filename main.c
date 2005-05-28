@@ -110,6 +110,7 @@ void viewInit() {
 	view.fps = 100;
 	view.drawTree = 0;
 	view.frameSkip = 0;
+	view.frameSkipCounter = 0;
 
 	view.drawOSD = 1;
 	view.drawColourScheme = 1;
@@ -317,8 +318,16 @@ void run() {
 
 		else if (state.mode & SM_PLAY) {
 
-			state.currentFrame++;
-			state.currentFrame+=view.frameSkip;
+			if (view.frameSkip < 0) {
+				view.frameSkipCounter++;
+				if (view.frameSkipCounter >= -view.frameSkip) {
+					view.frameSkipCounter = 0;
+					state.currentFrame++;
+				}
+			} else {
+				state.currentFrame++;
+				state.currentFrame+=view.frameSkip;
+			}
 
 			if (state.currentFrame >= state.frame)
 				state.currentFrame = 0;

@@ -75,7 +75,7 @@ cmd_t cmd[] = {
 	,{ "saveauto",					NULL,					NULL,						&state.autoSave,					NULL }
 	,{ "savelist",					cmdSaveList,			NULL,						NULL,								NULL }
 	,{ "savedelete",				cmdSaveDelete,			NULL,						NULL,								NULL }
-
+	
 //	,{ "fps",						cmdFps,					&view.fps,					NULL,								NULL }
 	,{ "frameskip",					NULL,					NULL,						&view.frameSkip,					NULL }
 	,{ "frame",						NULL,					NULL,						&state.currentFrame,				NULL }
