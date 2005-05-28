@@ -392,42 +392,6 @@ int commandLineRead(int argc, char *argv[]) {
 
 #define CheckCommand(x) !strncmp(argv[i], x, strlen(x))
 
-/*
-
-	GetValue() is good for:
-
-	--exec value
-	--exec=value
-
-*/
-
-#define GetValue() \
-	if (strlen(parm) == strlen(argv[i])) \
-		argvptr = argv[++i]; \
-	else \
-		argvptr = argv[i] + strlen(parm); \
-	while (argvptr[0] == ' ' || argvptr[0] == '=' || argvptr[0] == 0) argvptr++;
-
-/*
-
-	example of checkCommandAndGetValue(x)
-
-	CheckCommandAndGetValue("--execute")
-		cmdExecute(argvptr);
-	}
-
-	because it's like this when it expands:
-
-	parm = "--execute";
-	if (CheckCommand(parm)) {
-		GetValue();
-		cmdExecute(argvptr);
-	}
-
-*/
-
-#define CheckCommandAndGetValue(x) parm = x; if (CheckCommand(parm)) { GetValue();
-
 	for (i = 1; i < argc; i++) {
 
 		// version, quit
@@ -444,16 +408,6 @@ int commandLineRead(int argc, char *argv[]) {
 			usage();
 			return 0;
 
-		}
-
-		// -e or --exec
-		// runs a command
-		if (CheckCommand("--exec") || CheckCommand("-e")) {
-			conAdd(LLOW, "Sorry, --exec has been removed -- just add your commands to the command line as they are");
-			conAdd(LLOW, "  eg. gravit exec \"\" ");
-			cmdQuit(0);
-			return 0;
-			continue;
 		}
 
 		// -n or --noscript

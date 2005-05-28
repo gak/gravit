@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-int configRead(char *filename) {
+int configRead(char *filename, int ignoreMissing) {
 
 	FILE *fp;
 	char buffer[FILE_CHUNK_SIZE_SMALL];
@@ -29,6 +29,7 @@ int configRead(char *filename) {
 	fp = fopen(filename, "rb");
 	if (!fp) {
 
+		if (ignoreMissing) return 1;
 		conAdd(LERR, "Could not open script: %s", filename);
 		return 0;
 

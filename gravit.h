@@ -627,7 +627,7 @@ extern float fpsCurrentAverageFT;
 void fpsInit();
 void fpsUpdate(float);
 
-int configRead(char *filename);
+int configRead(char *filename, int ignoreMissing);
 
 void drawCube();
 

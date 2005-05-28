@@ -397,7 +397,7 @@ cmdSpawnRestartSpawning:
 	lua_pushnumber(state.lua, state.particleCount);
 	lua_setglobal(state.lua, "spawnparticles");
 
-	scriptFile = va("scripts/%s.lua", scriptName);
+	scriptFile = va("spawn/%s.gravitspawn", scriptName);
 
 	luaExecute(scriptFile);
 	lua_getglobal(state.lua, "spawn");
@@ -806,10 +806,12 @@ void cmdFontFile(char *arg) {
 void cmdRunScript(char *arg) {
 
     char *sz;
+	char *opt;
 	sz = strtok(arg, " ");
-	if (!sz)
-		return;
-	configRead(sz);
+	if (!sz) return;
+	opt = strtok(NULL, " ");
+	configRead(sz, (opt && !strcmp(opt, "ignoremissing")));
+	printf("TODO\n");
 
 }
 
