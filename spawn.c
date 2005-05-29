@@ -61,53 +61,6 @@ void setRangePosition(float *org, float range) {
 
 }
 
-void pickPositions_() {
-
-	particle_t *p;
-	particleDetail_t *pd;
-	int i;
-	float angle;
-	float radius;
-	float angle2;
-
-	angle = 0;
-
-	for (i = 0; i < state.particleCount; i++) {
-
-		p = getParticleFirstFrame(i);
-		pd = getParticleDetail(i);
-
-		// pd->mass = frand(spawnVars.minGalMass, spawnVars.maxGalMass);
-		pd->mass = 100;
-
-		angle = frand(0, PI*2);
-		radius = frand(spawnVars.minGalSize, spawnVars.maxGalSize);
-//		radius = 100;
-//		angle += (PI / 2);
-
-		p->pos[0] = cos(angle) * radius;
-		p->pos[1] = sin(angle) * radius;
-		p->pos[2] = frand(spawnVars.minGalSize, spawnVars.maxGalSize / 2);
-		p->pos[2] = 0;
-
-		angle2 = angle + PI / 2;
-		p->vel[0] = cos(angle2) * radius * 0.1f;
-		p->vel[1] = sin(angle2) * radius * 0.1f;
-		p->vel[2] = 0;
-
-		if (i == 0) {
-
-			//p->pos[1] += 1;
-
-		}
-
-//		VectorZero(p->vel);
-
-	}
-
-
-}
-#if 0
 void pickPositions() {
 
 	int gals;
@@ -218,22 +171,6 @@ void pickPositions() {
 			p->vel[2] = -p->vel[2];
 		}
 
-		// velocity
-//		VectorCopy(galVel[g], p->vel);
-//		setRangePosition(p->vel, frand(0, 100) );
-		/*
-		if (i == 0) {
-
-			pd->mass = 10000;
-			p->pos[0] = 0;
-			p->pos[1] = 0;
-			p->pos[2] = 0;
-
-			VectorZero(p->vel);
-
-		}
-*/
-
 	}
 
 	conAdd(LLOW, "- %f total mass...", totalMass);
@@ -241,7 +178,6 @@ void pickPositions() {
 	conAdd(LLOW, "- %f particle mass...", totalMass / state.particleCount);
 
 }
-#endif
 
 int isSpawning() {
 

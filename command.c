@@ -363,11 +363,15 @@ void cmdStop(char *arg) {
 
 void cmdSpawnCancel(void) {
 
+#ifdef USE_LUA
+	
 	conAdd(LERR, "%s", lua_tostring(state.lua, -1));
 	cleanMemory();
 	state.currentlySpawning = 0;
 	state.particleCount = 0;
 	luaFree();
+
+#endif
 
 }
 
@@ -402,6 +406,8 @@ cmdSpawnRestartSpawning:
 		return;
 	}
 
+#ifdef USE_LUA
+
 	luaInit();
 
 	lua_pushnumber(state.lua, state.particleCount);
@@ -423,6 +429,14 @@ cmdSpawnRestartSpawning:
 		return;
 	}
 
+	luaFree();
+
+#else
+
+	pickPositions();
+	
+#endif
+	
 	if (state.restartSpawning) {
 		goto cmdSpawnRestartSpawning;
 	}
@@ -503,7 +517,6 @@ restart:
 		cmdZoomFit(NULL);
 	}
 
-	luaFree();
 
 }
 

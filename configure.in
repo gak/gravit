@@ -41,6 +41,8 @@ if test "${with_lua}" = yes; then
 		AC_MSG_WARN([LUA not found, some functionality will not be present])
 		AM_CONDITIONAL([LUA], false)
 		])
+else
+	AM_CONDITIONAL([LUA], false)
 fi
 
 # Checks for header files.

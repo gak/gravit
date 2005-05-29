@@ -237,7 +237,6 @@ void clean() {
 	freeFileName();
 	cmdFree();
 	conFree();
-	luaFree();
 
 #ifndef NO_GUI
 

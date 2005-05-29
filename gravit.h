@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define GRAVIT_VERSION "Gravit 0.4.0"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
+#include "config.h"
+
 // #define NO_GUI
 
 #define MAX_THREADS 1
@@ -105,9 +107,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdarg.h>
 #include <ctype.h>
 
+#ifdef USE_LUA
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#endif
 
 #ifndef MAX_PATH
 #define MAX_PATH 260
@@ -340,7 +344,9 @@ typedef struct state_s {
 	int autoRecord;	// will start recording after spawning
 	int autoRecordNext; // is a value to do a cmdRecord in the main loop, it goes to 0 after doing this
 
+#ifdef USE_LUA
 	lua_State *lua;
+#endif
 
 } state_t;
 
@@ -642,12 +648,14 @@ void timerAdd(char *name, float seconds, int reps, char *command);
 void timerDel(char *name);
 void timerList();
 
+#ifdef USE_LUA
 // lua.c
 int luaInit();
 int luag_spawn(lua_State *L);
 void luaFree();
 int luag_log(lua_State *L);
 int luaExecute(char *f);
+#endif
 
 #endif
 
