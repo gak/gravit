@@ -265,8 +265,8 @@ void drawFrame() {
 
 			conAdd(LNORM, "Sorry, Your video card does not support GL_ARB_point_parameters and/or GL_ARB_point_sprite.");
 			conAdd(LNORM, "This means you can't have really pretty looking particles.");
-			conAdd(LNORM, "Setting particleRenderMode to 0");
-			view.particleRenderMode = 0;
+			conAdd(LNORM, "Setting particleRenderMode to 2");
+			view.particleRenderMode = 2;
 			return;
 
 		}
