@@ -169,6 +169,7 @@ int processKeys() {
 				if (view.particleColourMode == CM_LAST)
 					view.particleColourMode = 0;
 				conAdd(LNORM, "Colour mode set to: %s" , colourModes[view.particleColourMode]);
+				setColours();
 				break;
 
 			case SDLK_l:

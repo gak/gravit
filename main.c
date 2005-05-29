@@ -299,6 +299,8 @@ void run() {
 
 		if (state.mode & SM_RECORD) {
 
+			view.frameSkipCounter = 0;
+
 			if (view.verboseMode)
 				conAdd(LLOW, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
 
@@ -309,9 +311,9 @@ void run() {
 			view.deltaRecordFrame = ts - view.lastRecordFrame;
 			view.lastRecordFrame = ts;
 
-			if (state.autoSave && (state.frame - state.lastSave) >= state.autoSave) {
+			if (state.autoSave && (state.totalFrames - state.lastSave) >= state.autoSave) {
 				cmdSaveFrameDump(0);
-				state.lastSave = state.frame;
+				state.lastSave = state.totalFrames;
 			}
 
 		}
@@ -329,8 +331,10 @@ void run() {
 				state.currentFrame+=view.frameSkip;
 			}
 
-			if (state.currentFrame >= state.frame)
+			if (state.currentFrame >= state.frame) {
 				state.currentFrame = 0;
+				view.frameSkipCounter = 0;
+			}
 
 			if (view.verboseMode)
 				conAdd(LLOW, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
