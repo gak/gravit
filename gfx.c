@@ -191,7 +191,7 @@ gfxInitRetry:
 
 }
 
-inline void particleInterpolate(int i, float t, float *v) {
+void particleInterpolate(int i, float t, float *v) {
 
     particle_t *p1;
     particle_t *p2;

@@ -441,7 +441,7 @@ int commandLineRead(int argc, char *argv[]) {
 			}
 			SetCurrentDirectory(path);
 
-			configRead("screensaver.cfg");
+			configRead("screensaver.cfg", 0);
 			state.dontExecuteDefaultScript = 1;
 			view.screenSaver = 1;
 

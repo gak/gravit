@@ -25,7 +25,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define GRAVIT_VERSION "Gravit 0.4.0"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#else
+#define USE_LUA
+#endif
 
 // #define NO_GUI
 
@@ -552,7 +556,7 @@ void freeFileName();
 
 // spawn.c
 extern spawnVars_t spawnVars;
-void pickPositions();
+int pickPositions();
 void spawnDefaults();
 int isSpawning();
 

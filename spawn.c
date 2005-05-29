@@ -61,7 +61,7 @@ void setRangePosition(float *org, float range) {
 
 }
 
-void pickPositions() {
+int pickPositions() {
 
 	int gals;
 
@@ -88,14 +88,14 @@ void pickPositions() {
 	if (gals <= 0) {
 
 		conAdd(LERR, "For some reason galaxies to spawn is 0 or less. Not possible!");
-		return;
+		return 0;
 
 	}
 
 	if (gals >= 100) {
 
 		conAdd(LERR, "Maximum galaxies to spawn is 100");
-		return;
+		return 0;
 
 	}
 
@@ -124,7 +124,7 @@ void pickPositions() {
 		}
 
 		if (state.restartSpawning) {
-			return;
+			return 0;
 		}
 		
 		p = getParticleFirstFrame(i);
@@ -176,6 +176,8 @@ void pickPositions() {
 	conAdd(LLOW, "- %f total mass...", totalMass);
 	conAdd(LLOW, "- %f galaxy mass...", totalMass / gals);
 	conAdd(LLOW, "- %f particle mass...", totalMass / state.particleCount);
+
+	return 0;
 
 }
 
