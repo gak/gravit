@@ -1,0 +1,67 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.59)
+AC_INIT(gravit, 0.4.0, gravit@slowchop.com)
+AC_CONFIG_SRCDIR([config.c])
+AC_CONFIG_HEADER([config.h])
+AM_INIT_AUTOMAKE
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_PATH_XTRA
+
+CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+LIBS="$LIBS $X_LIBS"
+
+# Checks for libraries.
+AC_CHECK_LIB([GL], [glBegin], [], [AC_MSG_ERROR(GL is required)])
+AC_CHECK_LIB([GLU], [gluLookAt], [], [AC_MSG_ERROR(GLU is required)])
+AC_CHECK_LIB([SDL], [SDL_Init], [], [AC_MSG_ERROR(SDL is required)])
+AC_CHECK_LIB([SDL_image], [IMG_Load], [], [AC_MSG_ERROR(SDL_image is required)])
+AC_CHECK_LIB([SDL_ttf], [TTF_Init], [], [AC_MSG_ERROR(SDL_ttf is required)])
+with_lua=${with_lua:-yes}
+AC_ARG_WITH(lua, [  --with-lua              compile with LUA support])
+if test "${with_lua}" = yes; then
+	AC_CHECK_LIB([lua], [lua_open], [
+		LIBS_stored="$LIBS"
+		LIBS="$LIBS -llua"
+		AC_CHECK_LIB([lualib], [luaopen_base], [
+			AM_CONDITIONAL([LUA], true)
+			AC_DEFINE(USE_LUA, [], [Use LUA])
+			LIBS="$LIBS -llualib"
+			], [
+			AC_MSG_WARN([LUA not found, some functionality will not be present])
+			AM_CONDITIONAL([LUA], false)
+			LIBS="$LIBS_stored"
+		])
+		], [
+		AC_MSG_WARN([LUA not found, some functionality will not be present])
+		AM_CONDITIONAL([LUA], false)
+		])
+fi
+
+# Checks for header files.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_CHECK_HEADERS([stdlib.h string.h sys/time.h sys/timeb.h termios.h unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_HEADER_TIME
+
+# Checks for library functions.
+AC_FUNC_CLOSEDIR_VOID
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_SELECT_ARGTYPES
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([ftime memset mkdir pow select sqrt strerror strstr])
+
+AM_PATH_SDL(1.2.8, [], [AC_MSG_ERROR(SDL is required for Gravit)])
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
