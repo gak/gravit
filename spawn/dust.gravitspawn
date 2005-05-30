@@ -1,9 +1,9 @@
 
-require("spawn/functions.lua")
+require("functions.lua")
 
 function describe()
 	
-	log("A few massive particles and a ball of relatevely ligher particles with random veclocities")	
+	log("A few massive particles and a ball of relatively ligher particles with random velocities")	
 
 end
 

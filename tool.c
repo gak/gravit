@@ -275,3 +275,48 @@ int myunlink(char *filename) {
 #endif
 
 }
+
+int fileExists(char *path) {
+
+	FILE *fp;
+	fp = fopen(path, "rb");
+	if (!fp) return 0;
+	fclose(fp);
+	return 1;
+
+}
+
+// finds a file in gravit's search paths
+char *findFile(char *file) {
+
+	char *homeDir;
+	char *tmp;
+
+	// first assume no path, so someone could load "/tmp/script" or "currentdirectory.cfg"
+	conAdd(LLOW, "Searching %s", file);
+	if (fileExists(file))
+		return file;
+
+#ifndef WIN32
+	// now look in the users gravit directory (only in UNIX) - /home/user/.gravit/file
+	homeDir = getenv("HOME");
+	if (homeDir) {
+		tmp = va("%s/.gravit/%s", homeDir, file);	
+		conAdd(LLOW, "Searching %s", tmp);
+		if (fileExists(tmp)) {
+			return tmp;
+		}
+	}			
+#endif
+
+	// finally look in SYSCONFDIR
+	tmp = va("%s/%s", SYSCONFDIR, file);	
+	conAdd(LLOW, "Searching %s", tmp);
+	if (fileExists(tmp)) {
+		return tmp;
+	}
+
+	return 0;
+	
+}
+

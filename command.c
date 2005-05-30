@@ -148,9 +148,9 @@ void commandInit() {
 	FILE *fp;
 	char buffer[FILE_CHUNK_SIZE_SMALL];
 
-	fp = fopen("data/commandhelp.txt", "rb");
+	fp = fopen(MISCDIR "/commandhelp.txt", "rb");
 	if (!fp) {
-		conAdd(LERR, "Could not open data/commandhelp.txt");
+		conAdd(LERR, "Could not open " MISCDIR "/commandhelp.txt");
 		return;
 	}
 
@@ -410,10 +410,14 @@ cmdSpawnRestartSpawning:
 
 	luaInit();
 
+	// tell lua where to find the spawn scripts
+	lua_pushstring(state.lua, SPAWNDIR "/?");
+	lua_setglobal(state.lua, "LUA_PATH");
+	
 	lua_pushnumber(state.lua, state.particleCount);
 	lua_setglobal(state.lua, "spawnparticles");
 
-	scriptFile = va("spawn/%s.gravitspawn", scriptName);
+	scriptFile = va(SPAWNDIR "/%s.gravitspawn", scriptName);
 
 	luaExecute(scriptFile);
 	lua_getglobal(state.lua, "describe");
@@ -832,8 +836,7 @@ void cmdRunScript(char *arg) {
 	sz = strtok(arg, " ");
 	if (!sz) return;
 	opt = strtok(NULL, " ");
-	configRead(sz, (opt && !strcmp(opt, "ignoremissing")));
-	printf("TODO\n");
+	configRead(findFile(sz), (opt && !strcmp(opt, "ignoremissing")));
 
 }
 

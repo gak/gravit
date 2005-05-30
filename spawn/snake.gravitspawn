@@ -1,10 +1,9 @@
 
-require("spawn/functions.lua")
+require("functions.lua")
 
 function describe()
     log("Random shaped string of particles")
 end
-
 	
 function spawn()
 

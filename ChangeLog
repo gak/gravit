@@ -2,6 +2,22 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.4.0 2005/05/29
+
+    * Added an optional dependency - lua
+    * Gravit now uses autoconf and automake (Thanks Alec Thomas)
+    * Scriptable spawn locations using lua
+          o the spawn command accepts a lua script argument that executes /spawn/filename.gravitspawn
+          o spawn by itself will execute /spawn/default.gravitspawn which picks a random script
+          o added spawn scripts: one-galaxy, binary-galaxy, many-galaxy, dust, snake, loop
+          o galaxies can spawn on arbitrary angles 
+    * recordingvideorefreshtime in gravit.cfg is now 100
+    * Added two colour schemes: momentum and kinetic energy
+    * Added zoomfix and zoomfitauto to automatically zoom in or out to fit all the particles on the screen (zoomfitauto is on by default)
+    * When two particles spawned in the same location gravit crashes on the first frame. Particles now get checked and moved on spawn.
+    * saveauto stopped saving after it reached max frames -- fixed
+    * When the GL_ARB_point_parameters and GL_ARB_point_sprite extensions don't work, default to particlemode 2 instead of 0 
+
 0.3.2 2005/04/15
 
     * fixed compilation on Mac OS X (Thanks Grigory Entin!)
@@ -145,4 +161,4 @@ Gravit ChangeLog
 
 0.1 2005/04/04
 
-    * Initial Release 
+    * Initial Release

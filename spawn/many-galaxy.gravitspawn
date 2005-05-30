@@ -1,7 +1,7 @@
-require("spawn/functions.lua")
+require("functions.lua")
 
 function describe()
-    log("Many sphere and spiral galaxies")
+    log("Many elliptical and spiral galaxies with initial velocities")
 end
 
 function spawn()
@@ -16,12 +16,7 @@ function spawn()
 		local massmax = randomfloat(10,1000)
 		local particlestart = spawnparticles/galaxies*i
 		local particlecount = spawnparticles/galaxies
-		-- sometimes make a ball of particles, sometimes a spiral disc 
-		if (randomint(0,2) == 0) then
-			makeball(pos, vel, rad, massmin, massmax, particlestart, particlecount)
-		else
-			makespiral(pos, vel, rad, massmin, massmax, particlestart, particlecount)
-		end
+		makegalaxy(pos, vel, rad, massmin, massmax, particlestart, particlecount)
 	end
 end
 

@@ -1,4 +1,4 @@
-require("spawn/functions.lua")
+require("functions.lua")
 
 function describe()
 	log("One spiral galaxy")

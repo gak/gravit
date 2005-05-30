@@ -26,13 +26,17 @@ int configRead(char *filename, int ignoreMissing) {
 	FILE *fp;
 	char buffer[FILE_CHUNK_SIZE_SMALL];
 
+	if (!filename || filename[0] == 0) {
+		if (ignoreMissing) return 1;
+		conAdd(LERR, "Could not open script");
+		return 0;
+	}
+	
 	fp = fopen(filename, "rb");
 	if (!fp) {
-
 		if (ignoreMissing) return 1;
 		conAdd(LERR, "Could not open script: %s", filename);
 		return 0;
-
 	}
 
 	while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {

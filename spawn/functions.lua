@@ -73,7 +73,8 @@ end
 
 function makespiral(galpos, galvel, galradius, massmin, massmax, firstparticle, particles)		
 
-	local estmass = (massmin + massmax) / 2 * particles
+	local massrange = math.abs(massmin - massmax)
+	local estmass = massrange / 2 * particles
 	local speedbase = .0000001
 	local galaxyrotation = randomrange(1)
     local galaxyangle = randomfloat(0, 2 * math.pi);
@@ -95,6 +96,16 @@ function makespiral(galpos, galvel, galradius, massmin, massmax, firstparticle, 
 		pos = rotatevector(pos, galaxyangle, galaxyrotation)
 		vel = rotatevector(vel, galaxyangle, galaxyrotation)
         particle(i, galpos + pos, galvel + vel, mass)
+	end
+
+end
+
+function makegalaxy(galpos, galvel, galradius, massmin, massmax, firstparticle, particles)
+
+	if randomint(0, 2) == 0 then
+		makeball(galpos, galvel, galradius, massmin, massmax, firstparticle, particles)		
+	else
+		makespiral(galpos, galvel, galradius, massmin, massmax, firstparticle, particles)		
 	end
 
 end

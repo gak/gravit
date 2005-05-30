@@ -34,16 +34,22 @@ int loadFonts() {
 	static SDL_Color fontColour = {255,255,255};
 	char letter[2];
 	int i;
+	char *p;
 
 	letter[1] = 0;
 
-	font = TTF_OpenFont(video.fontFile, video.fontSize);
+	p = va("%s/%s", MISCDIR, video.fontFile);
+	
+	if (!fileExists(p)) {
+		conAdd(LERR, "Could not open %s", p);
+		return 0;
+	}
+
+	font = TTF_OpenFont(p, video.fontSize);
 
 	if (!font) {
-
-		conAdd(LERR, "Could not open Vera.ttf");
+		conAdd(LERR, "Could not open %s", p);
 		return 0;
-
 	}
 
 	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);

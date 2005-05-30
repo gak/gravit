@@ -31,6 +31,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define USE_LUA
 #endif
 
+// normally /etc 
+#ifndef SYSCONFDIR
+#define SYSCONFDIR "."
+#endif
+
+// DATADIR is normally /usr/share/gravit/data or /usr/local/share/gravit/data
+// no -DDATADIR="path" assume we're working in the current directory
+#ifndef DATADIR
+#define DATADIR "."
+#endif
+
+#define CONFIG_FILE "gravit.cfg"
+#define SCREENSAVER_FILE "screensaver.cfg"
+
+#define SPAWNDIR DATADIR "/spawn"
+#define MISCDIR DATADIR "/data"
+
+#define SCREENSHOT_PATH "screenshots"
+#define SAVE_PATH "save"
+
 // #define NO_GUI
 
 #define MAX_THREADS 1
@@ -133,9 +153,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define getParticleDetail(i) state.particleDetail + (i)
 
 #define PI 3.14159265358979f
-
-#define SCREENSHOT_PATH "screenshots"
-#define SAVE_PATH "save"
 
 #define STRING_RECORD "Recording"
 #define STRING_PLAY "Playing"
@@ -553,6 +570,8 @@ char *getRegistryString(char *variable);
 void setRegistryString(char *variable, char *value);
 int myunlink(char *filename);
 void freeFileName();
+char *findFile(char *file); // finds a file in gravit's search path
+int fileExists(char *file); // sees if a file is openable
 
 // spawn.c
 extern spawnVars_t spawnVars;

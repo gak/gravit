@@ -47,10 +47,14 @@ void drawFrameSet3D() {
 
 }
 
-void loadParticleTexture() {
+int loadParticleTexture() {
 
 	SDL_Surface *particleSurface;
-	particleSurface = IMG_Load("data/particle.png");
+	
+	if (!fileExists(MISCDIR "/particle.png"))
+		return 0;
+		
+	particleSurface = IMG_Load(MISCDIR "/particle.png");
 
 	glGenTextures(1, &particleTextureID);
 	glCheck();
@@ -68,6 +72,8 @@ void loadParticleTexture() {
 	glCheck();
 
 	SDL_FreeSurface(particleSurface);
+
+	return 1;
 
 }
 
@@ -94,18 +100,21 @@ int gfxSetResolution() {
 	if (video.screenFS)
 		video.flags |= SDL_FULLSCREEN;
 
-    if (!SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags ))
-		return 0;
+    if (!SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags )) {
+		conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError());
+		return 1;
+	}
 
 	glEnable(GL_TEXTURE_2D);
 
 	// need to reload textures
 	if (!loadFonts())
-		return 0;
+		return 2;
 
-	loadParticleTexture();
+	if (!loadParticleTexture())
+		return 3;
 
-	return 1;
+	return 0;
 
 }
 
@@ -113,6 +122,7 @@ int gfxInit() {
 
 	int detectedBPP;
 	SDL_Surface *icon;
+	int ret;
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
@@ -132,7 +142,7 @@ int gfxInit() {
 
 	video.sdlStarted = 1;
 
-	icon = IMG_Load("data/gravit.png");
+	icon = IMG_Load(MISCDIR "/gravit.png");
 	SDL_WM_SetIcon(icon, NULL);
 	SDL_FreeSurface(icon);
 
@@ -141,26 +151,30 @@ int gfxInit() {
     video.gfxInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
 	detectedBPP = video.gfxInfo->vfmt->BitsPerPixel;
 
+	conAdd(LLOW, "Detected %i BPP", detectedBPP);
+
 gfxInitRetry:
 
 	if (video.screenBPP == 0)
 		video.screenBPP = detectedBPP;
 
+	ret = gfxSetResolution();
+	if (ret) {
 
-	if (!gfxSetResolution()) {
+		if (ret == 1) {
 
-		conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError());
+			if (video.screenAA) {
+				conAdd(LERR, "You have videoantialiasing on. I'm turning it off and restarting...");
+				video.screenAA = 0;
+				goto gfxInitRetry;
+			}
 
-		if (video.screenAA) {
-			conAdd(LERR, "You have videoantialiasing on. I'm turning it off and restarting...");
-			video.screenAA = 0;
-			goto gfxInitRetry;
-		}
-
-		if (detectedBPP != video.screenBPP) {
-			conAdd(LERR, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
-			video.screenBPP = detectedBPP;
-			goto gfxInitRetry;
+			if (detectedBPP != video.screenBPP) {
+				conAdd(LERR, "Your BPP setting is different to your desktop BPP. I'm restarting with your desktop BPP...");
+				video.screenBPP = detectedBPP;
+				goto gfxInitRetry;
+			}
+		
 		}
 
 		return 0;

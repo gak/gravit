@@ -41,21 +41,14 @@ void setColoursByVel() {
 	for (i = 0; i < state.particleCount; i++) {
 
 		p = getParticleCurrentFrame(i);
-
 		distance(zero, p->vel, velSpeed);
-
-		if (velSpeed < 0)
-			conAdd(LNORM, "VelSpeed < 0!");
+		velSpeed = fabs(velSpeed);
 
 		if (i == 0) {
-
 			velMax = velSpeed;
-
 		} else {
-
 			if (velSpeed > velMax)
 				velMax = velSpeed;
-
 		}
 
 	}
@@ -94,10 +87,8 @@ void setColoursByKinetic() {
 		pd = getParticleDetail(i);
 
 		distance(zero, p->vel, velocity);
+		velocity = fabs(velocity);
 		kinValue = velocity * velocity * pd->mass * 0.5;
-
-		if (kinValue < 0)
-			conAdd(LNORM, "Kinetic force < 0!");
 
 		if (i == 0) {
 
@@ -146,10 +137,8 @@ void setColoursByMomentum() {
 		pd = getParticleDetail(i);
 
 		distance(zero, p->vel, velocity);
+		velocity = fabs(velocity);
 		kinValue = velocity * pd->mass;
-
-		if (kinValue < 0)
-			conAdd(LNORM, "Kinetic force < 0!");
 
 		if (i == 0) {
 

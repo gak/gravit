@@ -1,5 +1,5 @@
 
-require("spawn/functions.lua")
+require("functions.lua")
 
 function describe()
     log("Two galaxies rotating around each other")
@@ -16,16 +16,7 @@ function spawn()
 	local ballsize1 = randomfloat(500,1000)
 	local ballsize2 = randomfloat(500,1000)
 
-	if (randomint(0,1) == 0) then
-		makeball(v(0,dist,0), v(-vel,0,0), ballsize1, mass1min, mass1max, 0, spawnparticles/2)
-	else
-		makespiral(v(0,dist,0), v(-vel,0,0), ballsize1, mass1min, mass1max, 0, spawnparticles/2)
-	end
-	
-	if (randomint(0,1) == 0) then
-		makeball(v(0,-dist,0), v(vel,0,0), ballsize2, mass2min, mass2max, spawnparticles/2, spawnparticles/2)
-	else
-		makespiral(v(0,-dist,0), v(vel,0,0), ballsize2, mass2min, mass2max, spawnparticles/2, spawnparticles/2)
-	end
+	makegalaxy(v(0,dist,0), v(-vel,0,0), ballsize1, mass1min, mass1max, 0, spawnparticles/2)
+	makegalaxy(v(0,-dist,0), v(vel,0,0), ballsize2, mass2min, mass2max, spawnparticles/2, spawnparticles/2)
 	
 end

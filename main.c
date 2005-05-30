@@ -41,7 +41,7 @@ void loadDefaults() {
 	video.screenFS = 0;
 	video.screenAA = 0;
 
-	strcpy(video.fontFile, "data/Vera.ttf");
+	strcpy(video.fontFile, "Vera.ttf");
 	video.fontSize = 11;
 	
 #endif
@@ -198,7 +198,7 @@ int init(int argc, char *argv[]) {
 		return 0;
 
 	if (!state.dontExecuteDefaultScript)
-		configRead("gravit.cfg", 0);
+		configRead(findFile(CONFIG_FILE), 0);
 
 #ifndef NO_GUI
 
@@ -361,7 +361,7 @@ int main(int argc, char *argv[]) {
 
 	if (init(argc, argv)) {
 
-		conAdd(LERR, "There has been an error on start-up. Read gravit.cfg to possibly fix this.");
+		conAdd(LERR, "There has been an error on start-up. Read your gravit configration file to possibly fix this.");
 
 	} else {
 
@@ -385,12 +385,12 @@ void usage() {
 	conAdd(LLOW, "");
 //	ShowHelp("-e, --exec=COMMAND",	"execute a command. eg. --exec=\"load foo\"")
 //	ShowHelp("",					"  commands will execute in order from left to right.")
-	ShowHelp("-n, --noscript",		"don't load gravit.cfg")
+	ShowHelp("-n, --noscript",		"don't load gravit configuration")
 	ShowHelp("-h, --help",			"you're looking at it")
 	ShowHelp("-v, --version",		"display version and quit")
 	conAdd(LLOW, "");
 	conAdd(LLOW, "  'COMMAND' should be encapsulated in quotes when there are spaces involved.");
-	conAdd(LLOW, "  For example: gravit \"drawosd 0\" spawn record \"saveauto 20\"");
+	conAdd(LLOW, "  For example: gravit spawn record \"save mysim\" \"saveauto 20\"");
 	conAdd(LLOW, "");
 	cmdQuit(0);
 
@@ -441,7 +441,7 @@ int commandLineRead(int argc, char *argv[]) {
 			}
 			SetCurrentDirectory(path);
 
-			configRead("screensaver.cfg", 0);
+			configRead(findFile(SCREENSAVER_FILE), 0);
 			state.dontExecuteDefaultScript = 1;
 			view.screenSaver = 1;
 

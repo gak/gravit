@@ -1,5 +1,5 @@
 
-require("spawn/functions.lua")
+require("functions.lua")
 
 function describe()
 
@@ -15,6 +15,11 @@ function spawn()
 	local curvechangelimit = 0.0001
 	local curvechange1 = 0
 	local curvechange2 = 0
+
+	local negativemass = 0
+	if (randomint(0,5) == 0) then
+		negativemass = 1
+	end
 	
 	if (randomint(0,4) == 0) then
 		curvechange1 = randomfloat(-curvechangelimit,curvechangelimit)
@@ -56,8 +61,12 @@ function spawn()
 
 		curveness1 = curveness1 + curvechange1
 		curveness2 = curveness2 + curvechange2
-		
-		particle(i, pos, vel, randomfloat(0,massrandom) + massincrement * i)
+	
+		if negativemass == 1 then
+			particle(i, pos, vel, randomfloat(-massrandom,massrandom) + massincrement * i)
+		else
+			particle(i, pos, vel, randomfloat(0,massrandom) + massincrement * i)
+		end
 	
 	end
 
