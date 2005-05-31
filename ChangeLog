@@ -5,18 +5,28 @@ Gravit ChangeLog
 0.4.0 2005/05/29
 
     * Added an optional dependency - lua
-    * Gravit now uses autoconf and automake (Thanks Alec Thomas)
     * Scriptable spawn locations using lua
-          o the spawn command accepts a lua script argument that executes /spawn/filename.gravitspawn
-          o spawn by itself will execute /spawn/default.gravitspawn which picks a random script
-          o added spawn scripts: one-galaxy, binary-galaxy, many-galaxy, dust, snake, loop
-          o galaxies can spawn on arbitrary angles 
+          o The spawn command accepts an argument that executes a lua script called [name].gravitspawn in your spawn directory
+          o spawn by itself will execute default.gravitspawn which picks a random script
+          o Added spawn scripts: one-galaxy, binary-galaxy, many-galaxy, dust, snake, loop
+          o binary-galaxy and many-galaxy will randomly spawn elliptical and spiral galaxies
+          o Spiral galaxies now spawn on arbitrary angles 
+    * frameskip accepts negative values to play back in slow motion
+          o the negative number represents how many video frames display each recorded frame
+          o particles are interpolated between frames 
+    * Gravit now uses autoconf and automake (Thanks Alec Thomas)
+          o It now stores data and config files in configured places (/usr/local/bin,/usr/local/share/gravit,/etc) 
+    * Supports multiple users for UNIX builds
+    * Removed gravit-x.x.x-win32.zip package
+    * Renamed gravit-x.x.x-src.tgz package to gravit-x.x.x.tar.gz
     * recordingvideorefreshtime in gravit.cfg is now 100
-    * Added two colour schemes: momentum and kinetic energy
+    * Added two colour schemes: momentum and kinetic energy (Thanks Sam Lander)
+    * Colours are only updated once per frame and when changing colour modes
     * Added zoomfix and zoomfitauto to automatically zoom in or out to fit all the particles on the screen (zoomfitauto is on by default)
     * When two particles spawned in the same location gravit crashes on the first frame. Particles now get checked and moved on spawn.
+    * When the GL_ARB_point_parameters and GL_ARB_point_sprite extensions don't work, default to particlemode 2 instead of 0
     * saveauto stopped saving after it reached max frames -- fixed
-    * When the GL_ARB_point_parameters and GL_ARB_point_sprite extensions don't work, default to particlemode 2 instead of 0 
+    * "Can't load custom.cfg" warning gone -- if it's not there it's ignored using "ignoremissing" 
 
 0.3.2 2005/04/15
 
@@ -162,3 +172,4 @@ Gravit ChangeLog
 0.1 2005/04/04
 
     * Initial Release
+

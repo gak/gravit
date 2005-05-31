@@ -1165,8 +1165,11 @@ void cmdSaveList(char *arg) {
 
 	char *file;
 	saveInfo_t si;
+
+#ifdef WIN32
 	HANDLE h;
 	WIN32_FIND_DATA fd;
+#endif
 
 	if (!checkHomePath()) return;
 	

@@ -1,11 +1,11 @@
-Gravit Version 0.3.2
+Gravit Version 0.4.0
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
 
 Overview
 
-    Gravit is currently in a development stage. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
+    Gravit is a multi-platform gravity simulator. It's released under the GNU General Public License which makes it free. It uses simple newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
 
 Configuration
 
@@ -20,48 +20,32 @@ Documentation
 Troubleshooting
 
     * If you have any problems check the gravit.cfg file, it has lots of information about possible problems.
+    * Read the documentation on the web site, I keep it up to date with known problems.
     * Otherwise send me an e-mail describing the problem along with video card, cpu, o/s, etc.. 
 
-Prerequisites
+Installation for Windows
 
-    You need the following libraries before attempting to compile or run Gravit.
-
-    * SDL (at least version 1.2.6)
-          o http://www.libsdl.org/download-1.2.php 
-    * SDL_ttf
-          o http://www.libsdl.org/projects/SDL_ttf/ 
-    * SDL_image
-          o http://www.libsdl.org/projects/SDL_image/ 
-
-Installation for Windows (Windows Installer)
-
-   1. Execute the installer (as you already have)
+   1. Run the installer
    2. At the end of the installer:
           * Ask you to modify gravit.cfg. Do it, and read through it... especially if you have problems or want the coolest effects!
           * The installer will prompt you to install the screensaver. This will popup the screensaver dialog when it installs it.
           * Ask you to run Gravit. This will run Gravit with default settings. 
    3. Once Gravit is installed, you will have some handy short cuts in your Program Group in your Start Menu. 
 
-Installation for Windows (Windows Zip)
-
-   1. Extract the ZIP file as you already have into a directory.
-   2. You may need to download copy SDL.dll, SDL_ttf.dll and SDL_image.dll (and corresponding dll's) into your c:\windows\system32 (or wherever it is on your computer)
-          * SDL.dll is at http://www.libsdl.org/release/SDL-1.2.8-win32.zip
-          * SDL_ttf.dll is at http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.7-win32.zip
-          * SDL_image.dll is at http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4-win32.zip 
-   3. Open up gravit.cfg and change it to your liking.
-   4. Run gravit.exe from that directory! 
-
-Installation for Linux
+Installation for UNIX
 
    1. Extract the tarball somewhere as you already have:
-          * tar xzvf gravit-src-0.2.tgz 
+          * tar xzvf gravit-0.4.0.tar.gz 
    2. You will need:
-          * SDL, SDL_ttf and SDL_image installed and working. (Try sdl-config --version)
-          * OpenGL (accelerated preferably) 
-   3. Run make
+          * SDL, SDL_ttf. and SDL_image installed and working. (Try sdl-config --version)
+          * lua is optional for scriptable spawn locations (recommended)
+          * OpenGL (accelerated recommended) 
+   3. Build gravit:
+          * ./configure
+          * make
+          * make install 
    4. Open up gravit.cfg and change it to your liking.
-   5. Hopefully that should have compiled a gravit binary! 
+   5. Run gravit 
 
 Author
 
@@ -72,5 +56,5 @@ Contributors
     * Alec Thomas (alec@swapoff.org)
     * Martin White (renwald@slowchop.com)
     * James Stewart (yattah@bigpond.com)
-    * Sam Lander (sam.lander@gmail.com) 
-    
+    * Sam Lander (sam.lander@gmail.com)
+
