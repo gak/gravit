@@ -48,8 +48,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define SPAWNDIR DATADIR "/spawn"
 #define MISCDIR DATADIR "/data"
 
+#ifdef WIN32
 #define SCREENSHOT_PATH "screenshots"
 #define SAVE_PATH "save"
+#else
+#define SCREENSHOT_PATH va("%s/.gravit/screenshots", getenv("HOME"))
+#define SAVE_PATH va("%s/.gravit/save", getenv("HOME"))
+#endif
 
 // #define NO_GUI
 
@@ -572,6 +577,7 @@ int myunlink(char *filename);
 void freeFileName();
 char *findFile(char *file); // finds a file in gravit's search path
 int fileExists(char *file); // sees if a file is openable
+int checkHomePath();
 
 // spawn.c
 extern spawnVars_t spawnVars;

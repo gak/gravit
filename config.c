@@ -39,6 +39,8 @@ int configRead(char *filename, int ignoreMissing) {
 		return 0;
 	}
 
+	conAdd(LLOW, "Executing Script: %s", filename);
+
 	while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
 	int len = strlen(buffer) - 1;
 

@@ -22,6 +22,6 @@ EXTRA_gravit_SOURCES =
 gravit_LDADD =
 endif
 
-AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATADIR=\"$(datadir)\" @SDL_CFLAGS@ -g -Wall -O3
+AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATADIR=\"$(datadir)\" @SDL_CFLAGS@ -g -Wall
 AM_LIBS = @SDL_LIBS@
 

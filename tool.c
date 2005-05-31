@@ -320,3 +320,22 @@ char *findFile(char *file) {
 	
 }
 
+// check to see if we can save into $HOME/.gravit/save/ directory or not
+int checkHomePath() {
+
+	char *user;
+	
+#ifdef WIN32
+	return 1;
+#else
+	user = getenv("HOME");
+	if (!user) {
+		conAdd(LERR, "$HOME environment variable not set, can not continue.");
+		return 0;
+	}
+	mymkdir(va("%s/.gravit", user));
+	return 1;
+#endif
+
+}
+

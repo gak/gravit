@@ -671,6 +671,8 @@ void cmdSaveFrameDump(char *arg) {
 		arg = state.fileName;
 
 	}
+	
+	if (!checkHomePath()) return;
 
 	if (!mymkdir(SAVE_PATH)) {
 		conAdd(LERR, "Could not create %s directory", SAVE_PATH);
@@ -687,19 +689,20 @@ void cmdSaveFrameDump(char *arg) {
 	conAdd(LNORM, "Please Wait...");
 	runVideo();
 
-	fileName = va(SAVE_PATH "/%s.info", arg);
+	fileName = va("%s/%s.info", SAVE_PATH, arg);
 	if (!SaveMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
 		conAdd(LERR, "Failed to create %s", fileName);
 		return;
 	}
 
-	fileName = va(SAVE_PATH "/%s.particledetail", arg);
+	fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
 	if (!SaveMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
 		conAdd(LERR, "Failed to create %s", fileName);
 		return;
 	}
 
-	if (!SaveMemoryDump(va(SAVE_PATH "/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
+	fileName = va("%s/%s.particles", SAVE_PATH, arg);
+	if (!SaveMemoryDump(fileName, (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
 		conAdd(LERR, "Failed to create %s", fileName);
 		return;
 	}
@@ -729,8 +732,10 @@ void cmdLoadFrameDump(char *arg) {
 		arg = state.fileName;
 
 	}
+	
+	if (!checkHomePath()) return;
 
-	fileName = va(SAVE_PATH "/%s.info", arg);
+	fileName = va("%s/%s.info", SAVE_PATH, arg);
 	if (!LoadMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
 		conAdd(LERR, "Failed to load %s", fileName);
 		return;
@@ -756,12 +761,14 @@ void cmdLoadFrameDump(char *arg) {
 	conAdd(LNORM, "Please Wait...");
 	runVideo();
 
-	if (!LoadMemoryDump(va(SAVE_PATH "/%s.particledetail", arg), (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
+	fileName = va("%s/%s.particledetail", SAVE_PATH, arg); 
+	if (!LoadMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
 		conAdd(LERR, "Failed to load %s", fileName);
 		return;
 	}
 
-	if (!LoadMemoryDump(va(SAVE_PATH "/%s.particles", arg), (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
+	fileName = va("%s/%s.particles", SAVE_PATH, arg);
+	if (!LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
 		conAdd(LERR, "Failed to load %s", fileName);
 		return;
 	}
@@ -858,6 +865,9 @@ void cmdScreenshot(char *arg) {
 	int i;
 	char *fileName;
 
+	if (!checkHomePath())
+		return;
+	
 	sdlSurfUpsideDown = SDL_CreateRGBSurface(SDL_SWSURFACE, video.screenW, video.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
 	sdlSurfNormal = SDL_CreateRGBSurface(SDL_SWSURFACE, video.screenW, video.screenH, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
 
@@ -891,7 +901,7 @@ void cmdScreenshot(char *arg) {
 
 		FILE *fp;
 
-		fileName = va(SCREENSHOT_PATH "/gravit%05u.bmp", view.screenshotIndex++);
+		fileName = va("%s/gravit%05u.bmp", SCREENSHOT_PATH, view.screenshotIndex++);
 		fp = fopen(fileName, "rb");
 
 		if (!fp)
@@ -1156,11 +1166,13 @@ void cmdSaveList(char *arg) {
 	char *file;
 	saveInfo_t si;
 
+	if (!checkHomePath()) return;
+	
 #ifdef WIN32
 
 	HANDLE h = NULL;
 	WIN32_FIND_DATA fd;
-	h = FindFirstFile(SAVE_PATH "/*.info", &fd);
+	h = FindFirstFile("%s/*.info", SAVE_PATH, &fd);
 	while (1) {
 
 		file = 	fd.cFileName;		
@@ -1210,6 +1222,8 @@ void cmdSaveDelete(char *arg) {
 		conAdd(LHELP, "usage: savedelete [name]");
 		return;
 	}
+	
+	if (!checkHomePath()) return;
 
 	file = va("%s/%s.info", SAVE_PATH, arg);
 	if (!myunlink(file)) { conAdd(LERR, "Unable to delete %s", file); return; }
