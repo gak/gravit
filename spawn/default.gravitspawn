@@ -1,9 +1,9 @@
 
-scripts = { "one-galaxy", "binary-galaxy", "many-galaxy", "snake", "loops", "dust", "negative-collision", "negative-sphere", "negative-spiral" }
+scripts = { "one-galaxy", "binary-galaxy", "many-galaxy", "snake", "loops", "dust", "negative-collision", "negative-sphere", "negative-spiral", "negative-surround" }
+
 n = table.getn(scripts)
 r = math.random(1,n)
 log("Spawining " .. scripts[r])
 spawn = nil
 require (scripts[r] .. ".gravitspawn")
--- require (scripts[r])
 

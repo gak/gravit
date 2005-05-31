@@ -1,0 +1,13 @@
+
+require("functions.lua")
+
+function describe()
+    log("A positive mass group of particles surrounded by a negative mass group of particles")
+end
+
+function spawn()
+
+	makegalaxy(v(0,0,0), v(0,0,0), randomfloat(1,1000), randomfloat(1, 1000), 0, 0, spawnparticles/2)
+	makeball(v(0,0,0), v(0,0,0), randomfloat(1000,10000), 0, -randomfloat(1, 1000), spawnparticles/2, spawnparticles/2)
+	
+end
