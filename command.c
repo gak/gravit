@@ -378,7 +378,9 @@ void cmdSpawnCancel(void) {
 void cmdSpawn(char *arg) {
 
 	char *scriptName;
+#ifdef USE_LUA
 	char *scriptFile;
+#endif
 
 	if (arg)
 		scriptName = arg;
