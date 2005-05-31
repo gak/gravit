@@ -1,0 +1,19 @@
+
+require("functions.lua")
+
+function describe()
+    log("Negative and positive massed galaxies charging against each other")
+end
+
+function spawn()
+
+	masses = randomfloat(10,1000)
+	range = randomfloat(1000,5000)
+	speed = randomfloat(.1,1)
+	masses = 100
+	range = 2000
+	speed = 5
+	makegalaxy(v(-range,0,0), v(speed,0,0), randomfloat(10,1000), 0, masses, 0, spawnparticles/2)
+	makegalaxy(v(range,0,0), v(-speed,0,0), randomfloat(10,1000), 0, -masses, spawnparticles/2, spawnparticles/2)
+	
+end

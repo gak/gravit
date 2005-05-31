@@ -1,0 +1,13 @@
+
+require("functions.lua")
+
+function describe()
+    log("A spiral galaxy of positive and negative massed particles")
+end
+
+function spawn()
+
+	masses = randomfloat(10,1000);
+	makespiral(v(0,0,0), v(0,0,0), randomfloat(10,1000), -masses, masses, 0, spawnparticles)
+	
+end
