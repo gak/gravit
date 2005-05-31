@@ -1165,17 +1165,17 @@ void cmdSaveList(char *arg) {
 
 	char *file;
 	saveInfo_t si;
+	HANDLE h;
+	WIN32_FIND_DATA fd;
 
 	if (!checkHomePath()) return;
 	
 #ifdef WIN32
 
-	HANDLE h = NULL;
-	WIN32_FIND_DATA fd;
-	h = FindFirstFile("%s/*.info", SAVE_PATH, &fd);
+	h = FindFirstFile(va("%s/*.info", SAVE_PATH), &fd);
 	while (1) {
 
-		file = 	fd.cFileName;		
+		file = fd.cFileName;		
 
 #else
 
