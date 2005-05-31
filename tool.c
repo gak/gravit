@@ -289,7 +289,9 @@ int fileExists(char *path) {
 // finds a file in gravit's search paths
 char *findFile(char *file) {
 
+#ifndef WIN32
 	char *homeDir;
+#endif
 	char *tmp;
 
 	// first assume no path, so someone could load "/tmp/script" or "currentdirectory.cfg"
@@ -328,7 +330,9 @@ char *findFile(char *file) {
 // check to see if we can save into $HOME/.gravit/save/ directory or not
 int checkHomePath() {
 
+#ifndef WIN32
 	char *user;
+#endif
 	
 #ifdef WIN32
 	return 1;
