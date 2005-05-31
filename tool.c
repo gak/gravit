@@ -297,6 +297,11 @@ char *findFile(char *file) {
 	if (fileExists(file))
 		return file;
 
+#ifdef WIN32
+	// windows users only have one place to look, that is the current directory
+	return 0;
+#endif
+
 #ifndef WIN32
 	// now look in the users gravit directory (only in UNIX) - /home/user/.gravit/file
 	homeDir = getenv("HOME");
