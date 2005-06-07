@@ -12,7 +12,7 @@ function spawn()
 	local galaxies = math.floor(spawnparticles / galaxysize) + 1
 	for i=0,galaxies-1 do
 		local pos = randomrange(galaxies * 2000)
-		local vel = randomrange(50)
+		local vel = randomrange(100)
 		local rad = randomfloat(50, 1000)
 		local massmin = randomfloat(10,1000)
 		local massmax = randomfloat(10,1000)
