@@ -14,7 +14,7 @@ function spawn()
 
 	if (onlyone == 1) then
 		massiveparticles = 1
-		bigrange = 0
+		bigrange = .1 
 	else
 		massiveparticles = randomint(1, 3)
 		bigrange = randomfloat(1, 10000)
