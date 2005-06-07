@@ -1,3 +1,4 @@
+-- vim:syntax=lua tabstop=4
 
 require("functions.lua")
 

@@ -1,3 +1,4 @@
+-- vim:syntax=lua tabstop=4
 
 scripts = { "one-galaxy", "binary-galaxy", "many-galaxy", "snake", "loops", "dust", "negative-collision", "negative-sphere", "negative-spiral", "negative-surround" }
 
