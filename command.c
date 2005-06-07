@@ -63,7 +63,7 @@ cmd_t cmd[] = {
 
 	,{ "showcursor",				NULL,					NULL,						&view.showCursor,					NULL }
 
-	,{ "g",							cmdSetG,				NULL,						&state.gbase,						NULL }
+	,{ "g",							cmdSetG,				&state.gbase,				NULL,								NULL }
 
 	,{ "blendmode",					NULL,					NULL,						&view.blendMode,					NULL }
 
@@ -962,7 +962,7 @@ void cmdColourSchemeAdd(char *arg) {
 
 	memcpy(&view.colourSpectrum[(view.colourSpectrumSteps-1)*4], &c, sizeof(float)*4);
 
-	conAdd(LLOW, "Added colour (%f %f %f %f) to colour scheme", c[0], c[1], c[2], c[3]);
+	conAdd(LLOW, "Added colour (%.2f %.2f %.2f %.2f) to colour scheme", c[0], c[1], c[2], c[3]);
 
 #endif
 
@@ -973,7 +973,7 @@ void cmdSetG(char *arg) {
 	float newg;
 
 	newg = -pow(10, -state.gbase);
-	conAdd(LLOW, "\"G\" set to %f", newg);
+	conAdd(LLOW, "\"G\" set to %.20f", newg);
 	state.g = newg;
 
 }

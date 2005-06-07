@@ -343,7 +343,7 @@ typedef struct state_s {
 	int historyFrames;
 	int historyNFrame;
 
-	int gbase;
+	float gbase;
 	float g;
 
 	int frameCompression;
