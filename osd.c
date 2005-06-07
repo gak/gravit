@@ -66,7 +66,11 @@ void drawOSD() {
 
 		DUH("actual frames", va("%i", state.totalFrames));
 		DUH("recording skip", va("%i", state.historyNFrame));
-		DUH("display frame", va("%i", state.currentFrame));
+		if (view.frameSkip && state.mode & SM_PLAY) {		
+			DUH("display frame", va("%i (%i/%i)", state.currentFrame, view.frameSkipCounter, view.frameSkip));
+		} else {
+			DUH("display frame", va("%i", state.currentFrame));
+		}
 		DUH("recorded frames", va("%i", state.frame));
 		DUH("max frames", va("%i", state.historyFrames));
 		DUH("particle vertices", va("%i", view.vertices));

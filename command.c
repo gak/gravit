@@ -523,6 +523,7 @@ restart:
 		cmdZoomFit(NULL);
 	}
 
+	view.frameSkipCounter = 0;
 
 }
 
