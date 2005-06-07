@@ -8,7 +8,6 @@ spawndir=@datadir@/gravit/spawn
 
 bin_PROGRAMS=gravit
 gravit_SOURCES=color.c command.c command.h config.c console.c font.c font.h fps.c frame-ot.c frame-pp.c frame.c gfx.c gravit.h input.c main.c osd.c sdlk.h spawn.c texture.c timer.c tool.c
-#EXTRA_DIST=README COPYING gravit.cfg demo.cfg screensaver.cfg ChangeLog data/gravit.png data/particle.png data/gravit.ico data/commandhelp.txt data/Vera.ttf $(shell ls spawn/*)
 EXTRA_DIST=README COPYING gravit.cfg demo.cfg screensaver.cfg ChangeLog $(shell ls data/*) $(shell ls spawn/*)
 sysconf_DATA = gravit.cfg screensaver.cfg
 misc_DATA = $(shell ls data/*)
@@ -22,6 +21,5 @@ EXTRA_gravit_SOURCES =
 gravit_LDADD =
 endif
 
-AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATA_DIR=\"$(datadir)\" @SDL_CFLAGS@ -g -Wall
-AM_LIBS = @SDL_LIBS@
+AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATA_DIR=\"$(datadir)\" -g -Wall
 

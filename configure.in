@@ -64,6 +64,8 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([ftime memset mkdir pow select sqrt strerror strstr])
 
 AM_PATH_SDL(1.2.6, [], [AC_MSG_ERROR(SDL is required for Gravit)])
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+LIBS="$LIBS $SDL_LIBS"
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
