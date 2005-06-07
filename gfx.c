@@ -567,8 +567,8 @@ void drawAxis() {
 
 void drawRGB() {
 
-	float width = 10;
-	float margin = 10;
+	float width = 5;
+	float margin = 5;
 	float i;
 	float sx = (float)video.screenW - width - margin;
 	float sy = margin;
@@ -583,6 +583,7 @@ void drawRGB() {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// positive
 	for (i = 0; i < 1; i+=step) {
 
 		colourFromNormal(c, i);
@@ -608,7 +609,45 @@ void drawRGB() {
 		glVertex2f(sx-1,		sy-1);
 	glEnd();
 	glEnable(GL_LINE_SMOOTH);
+	
+	// negative
+	if (1) {
+	
+		sx -= margin * 1.5;	
+		
+		for (i = 0; i  < 1; i+=step) {
 
+			colourFromNormal(c, i);
+
+			c[0] = 1 - c[0];
+			c[1] = 1 - c[1];
+			c[2] = 1 - c[2];
+			
+			glBegin(GL_QUADS);
+			glColor4fv(c);
+			glVertex2f(sx,		sy + wy * i);
+			glVertex2f(sx + wx,	sy + wy * i);
+			glVertex2f(sx + wx,	sy + wy * (i + step));
+			glVertex2f(sx,		sy + wy * (i + step));
+			glEnd();
+
+		}
+
+		glColor3f(0.5f,0.5f,0.5f);
+		glLineWidth(1.0f);
+		glDisable(GL_LINE_SMOOTH);
+		glBegin(GL_LINE_STRIP);
+			glVertex2f(sx-1,		sy-1);
+			glVertex2f(sx+1 + wx,	sy-1);
+			glVertex2f(sx+1 + wx,	sy+2 + wy);
+			glVertex2f(sx-1,		sy+2 + wy);
+			glVertex2f(sx-1,		sy-1);
+		glEnd();
+		glEnable(GL_LINE_SMOOTH);
+
+
+	}
+	
 }
 
 void translateToCenter() {

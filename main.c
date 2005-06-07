@@ -351,6 +351,9 @@ void run() {
 		}
 
 		setColours();
+        if (view.zoomFitAuto == 2)
+            cmdZoomFit(0);
+
 		runVideo();
 
 	}

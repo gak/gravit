@@ -8,7 +8,7 @@ spawndir=@datadir@/gravit/spawn
 
 bin_PROGRAMS=gravit
 gravit_SOURCES=color.c command.c command.h config.c console.c font.c font.h fps.c frame-ot.c frame-pp.c frame.c gfx.c gravit.h input.c main.c osd.c sdlk.h spawn.c texture.c timer.c tool.c
-EXTRA_DIST=README COPYING gravit.cfg demo.cfg screensaver.cfg ChangeLog $(shell ls data/*) $(shell ls spawn/*)
+EXTRA_DIST=README COPYING gravit.cfg demo.cfg screensaver.cfg ChangeLog Makefile.old $(shell ls data/*) $(shell ls spawn/*)
 sysconf_DATA = gravit.cfg screensaver.cfg
 misc_DATA = $(shell ls data/*)
 spawn_DATA = $(shell ls spawn/*)
