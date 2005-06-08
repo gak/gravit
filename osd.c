@@ -67,7 +67,7 @@ void drawOSD() {
 		DUH("actual frames", va("%i", state.totalFrames));
 		DUH("recording skip", va("%i", state.historyNFrame));
 		if (view.frameSkip && state.mode & SM_PLAY) {		
-			DUH("display frame", va("%i (%i/%i)", state.currentFrame, view.frameSkipCounter, view.frameSkip));
+			DUH("display frame", va("%i (%i)", state.currentFrame, view.frameSkip));
 		} else {
 			DUH("display frame", va("%i", state.currentFrame));
 		}
@@ -76,7 +76,7 @@ void drawOSD() {
 		DUH("particle vertices", va("%i", view.vertices));
 		DUH("tree nodes allocated", va("%i", view.recordNodes));
 		DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
-
+		
 		if (state.mode & SM_RECORD) {
 			
 			glColor4f(1,0,0,.8f);
