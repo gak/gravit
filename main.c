@@ -135,7 +135,7 @@ void viewInit() {
 	view.stereoMode = 0;
 	view.stereoModeCurrentBit = 0;
 	// http://www.angelfire.com/ca/erker/freeview.html
-	view.stereoSeparation = 500; // negative for "Parallel", positive for "Cross-eyed"
+	view.stereoSeparation = 5; // negative for "Parallel", positive for "Cross-eyed"
 
 	cmdFps(NULL);
 

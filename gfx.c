@@ -700,14 +700,10 @@ void drawAll() {
 		VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
 		VectorAdd(rotateIncrement, view.rot, view.rot);
 
-		if (view.stereoMode == 1) {
-			glTranslatef(((float)view.stereoModeCurrentBit-.5)*view.stereoSeparation, 0, 0);
-		}
-
 		glTranslatef(0, 0, -view.zoom);
 	
 		glRotatef((float)view.rot[0], 1, 0, 0);
-		if (view.stereoMode == 2) {
+		if (view.stereoMode) {
 			glRotatef((float)view.rot[1] + (view.stereoModeCurrentBit-.5) * view.stereoSeparation, 0, 1, 0);
 		} else {
 			glRotatef((float)view.rot[1], 0, 1, 0);

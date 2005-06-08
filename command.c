@@ -1033,21 +1033,14 @@ void cmdChangeDir(char *arg) {
 
 void cmdStereoWarning(char *arg) {
 
-	if (view.stereoMode == 1) {
-		conAdd(LHELP, "You have selected stereo mode 1. The stereoseparation value is how much distance between your 'eyes' there are. This number can vary quite a bit.");
-		conAdd(LHELP, "Use a negative value for parallel viewing and positive for cross-eyed viewing. Try a stereoseparation between -500 and 500.");
-	} else if (view.stereoMode == 2) {
-		conAdd(LHELP, "You have selected stereo mode 2. The stereoseparation value is how many degrees between your eyes there are. Recommended values are less then 5 degrees.");
-		conAdd(LHELP, "Use a negative value for parallel viewing and positive for cross-eyed viewing.");
+	if (view.stereoMode) {
+		conAdd(LHELP, "You have selected stereoscopic mode. The stereoseparation value is how many degrees between your eyes there are. ");
+		conAdd(LHELP, "Use a negative value for parallel viewing and positive for cross-eyed viewing. Recommended are less then 5 degrees.");
 	}
 	
 	if (view.stereoMode)
 		conAdd(LERR, "WARNING: Stereo mode may damage your eyes or other things. Use with caution.");
 
-	if (view.stereoMode == 2 && fabs(view.stereoSeparation) > 5) {
-		conAdd(LERR, "WARNING: Your stereoseparation value is more then 5 degrees. This may not work too well!");
-	}
-	
 }
 
 void cmdVideoRestart(char *arg) {
