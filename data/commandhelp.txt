@@ -1,5 +1,5 @@
 quit Will quit Gravit.
-exec Execute a Gravit script. The path can be absolute or relative. Scripts are just text files that contain console commands. Lines starting with a # are ignored.
+exec Execute a Gravit script. The path can be absolute or relative. Scripts are just text files that contain console commands. Lines starting with a # are ignored. Append ''ignoremissing'' to not warn about missing files.
 record Recording is when Gravit simulates gravity. The command will stop recording if it's already recording otherwise it will start recording.
 autorecord Setting this to 1 will automatically start recording after the ''spawn'' command.
 play Replay's a recording that is currently in memory. It will loop the simulation over and over.
@@ -7,26 +7,26 @@ stop Simply stops recording or playing.
 status Will display some statistics
 g Set the accuracy and speed of a simulation. The default value is 5. Increase it for a slower, more accurate simulation. Decrease it for the opposite. A value too low (like 1 or 2) will create a chaotic simulation. Technically this creates a small value used for the gravity calculations. The forumula for this number is G = -10 ^ -g. This is used in F = Gm1m2/d^2.
 framecompression When Gravit uses up all memory for storing particles, it can 'compress' the history by removing every second frame. The simulation then will resume half way and only save every second frame. Turning this variable on will allow this, otherwise the simulation will stop.
-frameskip When playing a simulation, increase this number to skip played back frames for a faster playback.
+frameskip When playing a simulation, increase this number to skip played back frames for a faster playback. To slow down playback change this number to be negative.
 frame Jumps to a frame number in playback mode
 start An alias to ''spawn''
 spawn Will create a new simulation with ''particlecount'' particles and will allocate ''memoryavailable'' memory.
 particlecount Next time ''spawn'' gets executed, this is how many particles will spawn
 memoryavailable This is the amount of memory (in MB) that Gravit will allocate when spawning a new simulation.
-spawngalcountmin Determines the minimum amount of galaxies to spawn.
-spawngalcountmax Determines the maximum amount of galaxies to spawn.
-spawngalmassmin The minimum mass of a particle. Each galaxy will pick a range between ''spawngalmassmin'' and ''spawngalmassmax'' to determine the mass of each particle within it.
-spawngalmassmax The maximum mass of a particle. Each galaxy will pick a range between ''spawngalmassmin'' and ''spawngalmassmax'' to determine the mass of each particle within it.
-spawngalsizemin The minimum radius of a galaxy.
-spawngalsizemax The maximum radius of a galaxy.
-spawngalvelmin The minimum velocity of a galaxy.
-spawngalvelmax The maximum velocity of a galaxy.
-spawnrangemin The minimum size of the universe where galaxies may spawn in.
-spawnrangemax The maximum size of the universe where galaxies may spawn in.
+spawngalcountmin Determines the minimum amount of galaxies to spawn. Obselete as of 0.4.0.
+spawngalcountmax Determines the maximum amount of galaxies to spawn. Obselete as of 0.4.0.
+spawngalmassmin The minimum mass of a particle. Each galaxy will pick a range between ''spawngalmassmin'' and ''spawngalmassmax'' to determine the mass of each particle within it. Obselete as of 0.4.0.
+spawngalmassmax The maximum mass of a particle. Each galaxy will pick a range between ''spawngalmassmin'' and ''spawngalmassmax'' to determine the mass of each particle within it. Obselete as of 0.4.0.
+spawngalsizemin The minimum radius of a galaxy. Obselete as of 0.4.0.
+spawngalsizemax The maximum radius of a galaxy. Obselete as of 0.4.0..
+spawngalvelmin The minimum velocity of a galaxy. Obselete as of 0.4.0.
+spawngalvelmax The maximum velocity of a galaxy. Obselete as of 0.4.0.
+spawnrangemin The minimum size of the universe where galaxies may spawn in. Obselete as of 0.4.0. 
+spawnrangemax The maximum size of the universe where galaxies may spawn in. Obselete as of 0.4.0.
 load Load a previously saved simulation. Most simulation settings are saved except for ''g''.
 save Saves the current simulation by the name you give it (eg. "save mysimulation"). If you have saved or loaded recently, you will have a "simulation name" which is shown on the top of your screen. If you have this, you don't need to specify a name to save -- it will automatically use the simulation name.
 saveauto When set to a number bigger then 0, it will automatically save every n frames.
-videorestart Restarts the video display with the new video settings. The settings that are applied by this command are ''videowidth'', ''videoheight'', ''videobpp'', ''videofullscreen'', ''videoantialiasing'', ''fontfile'' and ''fontsize''.
+videorestart Restarts the video display with the new video settings. The settings that are applied by this command are ''videowidth'', ''videoheight'', ''videobpp'', ''videofullscreen'', ''videoantialiasing'', ''fontfile'' and ''fontsize''. This sometimes doesn't work on some computers.
 videowidth Video resolution width Gravit will use when ''videorestart'' is executed or when the program starts. This usually needs to be used with ''videoheight''. Good combos are 800x600, 1024x768, 1280x1024 and 1600x1200 -- depending on your video capabilities
 videoheight Video resolution height. See ''videowidth''.
 videobpp Video bits per pixel. A good value for this is 16, 24, 32.
@@ -38,12 +38,12 @@ recordingvideorefreshtime This setting allows the screen to update while recordi
 showcursor Set this to 0 to hide the mouse cursor, 1 to display it.
 blendmode There are 5 blend modes (0 to 4). 0 disables OpenGL blending. 1,2,3,4 use different combinations of blend settings. They can be pretty and wierd effects.
 fps Not implemented
-autocenter Tracks the center of the simulation when set to 1
-maxvertices Sets a limit to how many vertices to render. If it hits this value, ''tailskip'' will be doubled.
+autocenter Tracks the center of the simulation when set to 1. This is on by default.
+maxvertices Sets a limit to how many vertices to render. If it hits this value, ''tailskip'' will be doubled. 100000 is the default.
 zoom The current zoom. 0 means you're at the center of the simulation.
 autorotate This accepts 3 arguments for X Y and Z. Set these to 0 for no rotation.
 stereo When set to 1, Gravit will render the scene twice -- one on the left and one on the right. It is used for creating stereoscopic images to see Gravit in 3D.
-stereoseparation When ''stereo'' is set to 1, modify this value to determine the depth of the 3D image. Negative values are for parallel viewing, positive values are for cross-eyed viewing.
+stereoseparation When ''stereo'' is set to 1, modify this value to determine the depth of the 3D image. Negative values are for parallel viewing, positive values are for cross-eyed viewing. Try a number like 5.
 screenshot Creates a bitmap (BMP) screenshot in the screenshots directory
 screenshotloop Every frame rendered to the screen will execute the screenshot command. This will easily fill up your hard drive with BMP files.
 screensaver This is set to 1 when Gravit is running as a screensaver. It will quit on any mouse movement or keystroke.
@@ -63,7 +63,7 @@ drawtree Will display the octtree. 1 will show the tree using lines, 2 will show
 drawosd Setting this to 0 will hide all text on the screen.
 drawcolourscheme Will display or hide the colour key on the top right of the screen
 colourschemenew Clears out the current colour scheme.
-colourschemeadd Add a new colour to the colour scheme.
+colourschemeadd Add a new colour to the colour scheme. It accepts 4 arguments, red green blue alpha.
 verbose Will spit out some statistics to the console every frame.
 processors Not implemented
 timeradd Adds a timer
@@ -75,3 +75,5 @@ help Displays some help, like this help!
 list Displays the names of every console command available
 savelist Displays a list of each saved simulation along with some details.
 savedelete This will delete a saved simulation
+zoomfit Causes the zoom level to fit your entire simulation
+zoomfitauto Setting this to 1 will automatically execute ''zoomfit'' when spawning a new simulation. Setting it to 2 will execute ''zoomfit'' every frame.
