@@ -1,11 +1,11 @@
-Gravit Version 0.4.0
+Gravit Version 0.4.1
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
 
 Overview
 
-    Gravit is a multi-platform gravity simulator. It's released under the GNU General Public License which makes it free. It uses simple newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
+    Gravit is a multi-platform gravity simulator. It's released under the GNU General Public License which makes it free. It uses Newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
 
 Configuration
 
@@ -35,7 +35,7 @@ Installation for Windows
 Installation for UNIX
 
    1. Extract the tarball somewhere as you already have:
-          * tar xzvf gravit-0.4.0.tar.gz 
+          * tar xzvf gravit-0.4.1.tar.gz 
    2. You will need:
           * SDL, SDL_ttf. and SDL_image installed and working. (Try sdl-config --version)
           * lua is optional for scriptable spawn locations (recommended)

@@ -2,6 +2,23 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.4.1 2005/06/08
+
+    * Stereoscopic mode uses degrees instead of a distance and keeps the simulation in the middle of your view
+    * autoconf uses sdl-config
+    * Added a vim syntax highlighting and tabstop setting to the top of all .gravitspawn files
+    * Fixed an endless loop in dust.gravitspawn
+    * Slightly modified dust.gravitspawn to sometimes only have one particle in the center of the dust cloud
+    * Less significant figures shown for colorschemeadd
+    * More significant figures shown when setting g
+    * g is now a float
+    * osd displays frameskip with display frame in playback
+    * Fixed a bug when frameskip is on, spawning a new simulation caused the simulation to display incorrectly
+    * Added negative mass colour key and the colour key is thinner
+    * Added "zoomfitauto 2" to autofit every frame ("zoomfitauto 1" is still default)
+    * Added original Makefile (Makefile.old) to source distribution
+    * Increased initial velocities in many-galaxy.spawnparticles 
+
 0.4.0 2005/05/31
 
     * Added an optional dependency - lua
