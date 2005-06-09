@@ -150,8 +150,19 @@ int processKeys() {
 				break;
 				
 			case SDLK_s:
+				// save (control-s)
 				if (SDL_GetModState() & KMOD_LCTRL || SDL_GetModState() & KMOD_RCTRL)
 					cmdSaveFrameDump(NULL);
+				// toggle stereo mode
+				else {
+					if (view.stereoMode)
+						view.stereoMode = 0;
+					else {
+						view.stereoMode = 1;
+						cmdStereoWarning(0);
+					}
+					conAdd(LNORM, "stereoMode set to %i", view.stereoMode);
+				}
 				break;
 
 			case SDLK_BACKQUOTE:
@@ -312,6 +323,16 @@ int processKeys() {
 				conAdd(LLOW, "frameSkip set to %i", view.frameSkip);
 				break;
 
+			case SDLK_d:
+				view.stereoSeparation--;
+				conAdd(LLOW, "stereoSeparation set to %.1f", view.stereoSeparation);
+				break;
+				
+			case SDLK_f:
+				view.stereoSeparation++;
+				conAdd(LLOW, "stereoSeparation set to %.1f", view.stereoSeparation);
+				break;
+				
 			default:
 				break;
 

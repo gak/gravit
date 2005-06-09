@@ -278,9 +278,9 @@ void otDrawTreeRecursive(node_t *n) {
 	case 1:
 	default:
 		if (n->p)
-			glColor3f(0, 0, 1.0f);
+			glColor4f(0, 0, 1.0f, 1);
 		else
-			glColor3f(0, 0, 0.25f);
+			glColor4f(0, 0, 0.25f, 1);
 		break;
 
 	// fill mode
@@ -298,9 +298,7 @@ void otDrawTreeRecursive(node_t *n) {
 	glTranslatef(n->c[0], n->c[1], n->c[2]);
 	glScalef(n->max[0] - n->min[0], n->max[1] - n->min[1], n->max[2] - n->min[2]);
 	glScalef(0.5f, 0.5f, 0.5f);
-	
 	drawCube();
-
 	glPopMatrix();
 
 	for (i = 0; i < 8; i++)

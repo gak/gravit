@@ -151,23 +151,25 @@ void drawOSD() {
 		WHITEHEADINGNL("GENERAL SHORTCUT KEYS");
 
 		WHITEHEADINGNL("Recording/Playback");
-
 		DUHC();
 		DUH("F5", "play");
 		DUH("F6", "record");
 		DUH("F7", "pause");
 		DUH("F8", "spawn particles");
 		DUH("Q W", "decrease / increase playback speed");
-		DUH("ctrl + s", "quick save");
+		DUH("CTRL + S", "quick save");
 
 		WHITEHEADINGNL("View Controls");
-
 		DUHC();
 		DUH("mouse X Y + button", "rotate (with mouse button)");
 		DUH("A Z", "zoom");
+		
+		WHITEHEADINGNL("Stereoscopy");
+		DUHC();
+		DUH("S", "Toggle Stereo");
+		DUH("D F", "decrease / increase stereoseparation");
 
 		WHITEHEADINGNL("Other");
-
 		DUHC();
 		DUH("T", "display current oct tree");
 		DUH("O", "toggles drawing text");

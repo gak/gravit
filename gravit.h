@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.4.1"
+#define GRAVIT_VERSION "Gravit 0.4.2"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2005 Gerald Kaszuba"
 
 #ifdef HAVE_CONFIG_H
@@ -471,7 +471,8 @@ typedef struct view_s {
 	int stereoMode;
 	float stereoSeparation;
 	int stereoModeCurrentBit;
-
+	int stereoOSD;
+	
 	int recordStatus;
 	int recordParticlesDone;
 	int recordNodes;

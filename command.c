@@ -126,8 +126,9 @@ cmd_t cmd[] = {
 	,{ "autorotate",				cmdAutoRotate,			NULL,						NULL,								NULL }
 	,{ "autorecord",				NULL,					NULL,						&state.autoRecord,					NULL }
 
-	,{ "stereoseparation",			NULL,					&view.stereoSeparation,		NULL,								NULL }
 	,{ "stereo",					cmdStereoWarning,		NULL,						&view.stereoMode,					NULL }
+	,{ "stereoseparation",			NULL,					&view.stereoSeparation,		NULL,								NULL }
+	,{ "stereoosd",					NULL,					NULL,						&view.stereoOSD,					NULL }
 
 	,{ "timeradd",					cmdTimerAdd,			NULL,						NULL,								NULL }
 	,{ "timerdel",					cmdTimerDel,			NULL,						NULL,								NULL }

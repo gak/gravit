@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(gravit, 0.4.1, gravit@slowchop.com)
+AC_INIT(gravit, 0.4.2, gravit@slowchop.com)
 AC_CONFIG_SRCDIR([config.c])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE

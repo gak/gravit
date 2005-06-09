@@ -719,31 +719,47 @@ void drawAll() {
 
 		drawFrame();
 
+		if (view.stereoOSD == 1) {
+			if (view.drawOSD) {
+				drawOSD();
+				if (view.drawColourScheme) drawRGB();
+			}
+			conDraw();
+			drawPopupText();
+		}
+
 	}
 
 	if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
 		view.tailSkip*=2;
 		conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
 	}
-
+		
 	glViewport(0, 0, video.screenW, video.screenH);
-
+	if (view.stereoOSD == 0) {
+		if (view.drawOSD) {
+			drawOSD();
+			if (view.drawColourScheme) drawRGB();
+		}
+		conDraw();
+		drawPopupText();
+	}
+		
 	// just a test...
 	// otDrawField();
 
 //	if (view.drawAxis)
 //		drawAxis();
 
-	if (view.drawOSD) {
+//	if (view.drawOSD) {
 
-		drawOSD();
-		if (view.drawColourScheme) drawRGB();
+//		drawOSD();
+//		if (view.drawColourScheme) drawRGB();
 		
-	}
+//	}
 	
-	conDraw();
+//	conDraw();
 
-	drawPopupText();
 	
 	if (view.screenshotLoop)
 		cmdScreenshot(NULL);
@@ -864,7 +880,7 @@ void drawPopupText() {
 	glScalef(scale,scale,scale);
 	drawFontWord((float)video.screenW / 2 / scale - w / 2 / scale, (float)video.screenH / 2 / scale - (fontHeight*scale) / 2 / scale, view.popupTextMessage);
 	glPopMatrix();
-
+	
 }
 
 #endif

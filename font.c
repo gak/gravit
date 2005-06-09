@@ -175,6 +175,8 @@ float drawFontWord(float x, float y, char *word) {
 
 	}
 
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
 	return y + fontHeight;
 
 }

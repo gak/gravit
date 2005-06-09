@@ -99,16 +99,16 @@ void conDraw() {
 	p = cpos;
 
 	x = 10;
+		
+	drawFrameSet2D();
+	glEnable(GL_BLEND);
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (view.consoleMode) {
 
 		int inputBoxMargin = 3;
 	
-		drawFrameSet2D();
-		glEnable(GL_BLEND);
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glBindTexture(GL_TEXTURE_2D, 0);
-
 		// cursor position
 		y = video.screenH - 10 - fontHeight;
 
@@ -160,19 +160,23 @@ void conDraw() {
 
 	}
 
-	// draw console history
-	y = video.screenH - 15 - fontHeight * 2;
+	if ((view.consoleMode && !view.drawOSD) || view.drawOSD) {
+		
+		// draw console history
+		y = video.screenH - 15 - fontHeight * 2;
 
-	for (i = 0; i < CONSOLE_HISTORY; i++) {
+		for (i = 0; i < CONSOLE_HISTORY; i++) {
 
-		glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(CONSOLE_HISTORY-i) / CONSOLE_HISTORY + 0.2f);
+			glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(CONSOLE_HISTORY-i) / CONSOLE_HISTORY + 0.2f);
 
-		drawFontWord(x, y, con[p].s);
-		y -= fontHeight;
+			drawFontWord(x, y, con[p].s);
+			y -= fontHeight;
 
-		p--;
-		if (p < 0)
-			p = CONSOLE_HISTORY - 1;
+			p--;
+			if (p < 0)
+				p = CONSOLE_HISTORY - 1;
+
+		}
 
 	}
 
