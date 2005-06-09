@@ -316,8 +316,16 @@ void colourFromNormal(float *c, float n) {
 	if (n > 1)
 		n = 1;
 
-	if (view.colourSpectrumSteps <= 1 || view.colourSpectrum == 0) {
+	if (view.colourSpectrumSteps == 0 || view.colourSpectrum == 0) {
 		c[0] = c[1] = c[2] = c[3] = 1;
+		return;
+	}
+
+	if (view.colourSpectrumSteps == 1) {
+		c[0] = view.colourSpectrum[0];
+		c[1] = view.colourSpectrum[1];
+		c[2] = view.colourSpectrum[2];
+		c[3] = view.colourSpectrum[3];
 		return;
 	}
 	
