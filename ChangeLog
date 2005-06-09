@@ -2,6 +2,18 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.4.2 2005/06/10
+
+    * Console tab completion
+    * Added Q and W keys for lowering and increasing frameskip
+    * added S key to toggle stereo mode
+    * added D and F to decrease and increase stereoseparation
+    * Reorganised F1 help
+    * Added stereoosd to make the osd shown in stereo (but stretched for now)
+    * When drawosd is 0, the console and console log will be displayed when you activate the console
+    * Fixed a bug with the octree (and others) sometimes not being drawn
+    * Fixed colour scheme bug with one colour 
+
 0.4.1 2005/06/08
 
     * Stereoscopic mode uses degrees instead of a distance and keeps the simulation in the middle of your view

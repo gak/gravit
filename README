@@ -1,4 +1,4 @@
-Gravit Version 0.4.1
+Gravit Version 0.4.2
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
@@ -35,7 +35,7 @@ Installation for Windows
 Installation for UNIX
 
    1. Extract the tarball somewhere as you already have:
-          * tar xzvf gravit-0.4.1.tar.gz 
+          * tar xzvf gravit-0.4.2.tar.gz 
    2. You will need:
           * SDL, SDL_ttf. and SDL_image installed and working. (Try sdl-config --version)
           * lua is optional for scriptable spawn locations (recommended)
