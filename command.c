@@ -27,6 +27,13 @@ cmd_t cmd[] = {
 	 { "quit",						cmdQuit,				NULL,						NULL,								NULL }
 	,{ "exec",						cmdRunScript,			NULL,						NULL,								NULL }
 	,{ "help",						cmdHelp,				NULL,						NULL,								NULL }
+	
+	,{ "load",						cmdLoadFrameDump,		NULL,						NULL,								NULL }
+	,{ "save",						cmdSaveFrameDump,		NULL,						NULL,								NULL }
+	,{ "saveauto",					NULL,					NULL,						&state.autoSave,					NULL }
+	,{ "savelist",					cmdSaveList,			NULL,						NULL,								NULL }
+	,{ "savedelete",				cmdSaveDelete,			NULL,						NULL,								NULL }
+	
 	,{ "list",						cmdList,				NULL,						NULL,								NULL }
 
 	,{ "unhelpful",					cmdUnhelpful,			NULL,						NULL,								NULL }
@@ -47,14 +54,14 @@ cmd_t cmd[] = {
 
 #endif
 
-	,{ "recordingvideorefreshtime",	NULL,					NULL,						&view.recordingVideoRefreshTime,	NULL }
-
 	,{ "start",						cmdStart,				NULL,						NULL,								NULL }
 	,{ "record",					cmdRecord,				NULL,						NULL,								NULL }
 	,{ "play",						cmdPlay,				NULL,						NULL,								NULL }
 	,{ "stop",						cmdStop,				NULL,						NULL,								NULL }
 	,{ "spawn",						cmdSpawn,				NULL,						NULL,								NULL }
 	,{ "status",					cmdStatus,				NULL,						NULL,								NULL }
+	
+	,{ "recordingvideorefreshtime",	NULL,					NULL,						&view.recordingVideoRefreshTime,	NULL }
 
 	,{ "screensaver",				NULL,					NULL,						&view.screenSaver,					NULL }
 	,{ "installscreensaver",		cmdInstallScreenSaver,	NULL,						NULL,								NULL }
@@ -70,12 +77,6 @@ cmd_t cmd[] = {
 	,{ "screenshot",				cmdScreenshot,			NULL,						NULL,								NULL }
 	,{ "screenshotloop",			NULL,					NULL,						&view.screenshotLoop}
 
-	,{ "load",						cmdLoadFrameDump,		NULL,						NULL,								NULL }
-	,{ "save",						cmdSaveFrameDump,		NULL,						NULL,								NULL }
-	,{ "saveauto",					NULL,					NULL,						&state.autoSave,					NULL }
-	,{ "savelist",					cmdSaveList,			NULL,						NULL,								NULL }
-	,{ "savedelete",				cmdSaveDelete,			NULL,						NULL,								NULL }
-	
 //	,{ "fps",						cmdFps,					&view.fps,					NULL,								NULL }
 	,{ "frameskip",					cmdFrameSkip,			NULL,						NULL,								NULL }
 	,{ "frame",						NULL,					NULL,						&state.currentFrame,				NULL }
@@ -99,16 +100,16 @@ cmd_t cmd[] = {
 	,{ "particlesizemin",			NULL,					&view.particleSizeMin,		NULL,								NULL }
 	,{ "particlesizemax",			NULL,					&view.particleSizeMax,		NULL,								NULL }
 
-	,{ "spawngalcountmin",			NULL,					NULL,						&spawnVars.minGalCount,				NULL }
-	,{ "spawngalcountmax",			NULL,					NULL,						&spawnVars.maxGalCount,				NULL }
-	,{ "spawngalmassmin",			NULL,					&spawnVars.minGalMass,		NULL,								NULL }
-	,{ "spawngalmassmax",			NULL,					&spawnVars.maxGalMass,		NULL,								NULL }
-	,{ "spawngalsizemin",			NULL,					&spawnVars.minGalSize,		NULL,								NULL }
-	,{ "spawngalsizemax",			NULL,					&spawnVars.maxGalSize,		NULL,								NULL }
-	,{ "spawngalvelmin",			NULL,					&spawnVars.minGalVel,		NULL,								NULL }
-	,{ "spawngalvelmax",			NULL,					&spawnVars.maxGalVel,		NULL,								NULL }
-	,{ "spawnrangemin",				NULL,					&spawnVars.minSpawnRange,	NULL,								NULL }
-	,{ "spawnrangemax",				NULL,					&spawnVars.maxSpawnRange,	NULL,								NULL }
+//	,{ "spawngalcountmin",			NULL,					NULL,						&spawnVars.minGalCount,				NULL }
+//	,{ "spawngalcountmax",			NULL,					NULL,						&spawnVars.maxGalCount,				NULL }
+//	,{ "spawngalmassmin",			NULL,					&spawnVars.minGalMass,		NULL,								NULL }
+//	,{ "spawngalmassmax",			NULL,					&spawnVars.maxGalMass,		NULL,								NULL }
+//	,{ "spawngalsizemin",			NULL,					&spawnVars.minGalSize,		NULL,								NULL }
+//	,{ "spawngalsizemax",			NULL,					&spawnVars.maxGalSize,		NULL,								NULL }
+//	,{ "spawngalvelmin",			NULL,					&spawnVars.minGalVel,		NULL,								NULL }
+//	,{ "spawngalvelmax",			NULL,					&spawnVars.maxGalVel,		NULL,								NULL }
+//	,{ "spawnrangemin",				NULL,					&spawnVars.minSpawnRange,	NULL,								NULL }
+//	,{ "spawnrangemax",				NULL,					&spawnVars.maxSpawnRange,	NULL,								NULL }
 
 	,{ "colourschemenew",			cmdColourSchemeNew,		NULL,						NULL,								NULL }
 	,{ "colourschemeadd",			cmdColourSchemeAdd,		NULL,						NULL,								NULL }

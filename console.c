@@ -33,6 +33,13 @@ char *conTypedHistory[CONSOLE_TYPED_HISTORY];
 int conTypedHistoryPos;
 int conTypedHistoryPointer;
 
+#define MAX_COMPLETE_LIST 20
+int conCompPos;	// the position of the last BC
+char conCompWord[CONSOLE_LENGTH+1]; // the current BC
+int conCompWordsFoundCount; // commands found starting with BC
+char *conCompWordsFoundPtrs[MAX_COMPLETE_LIST]; // an array of commands starting with BC
+int conCompWordsFoundIndex;
+
 static col_t cols[] = {
 
 	{0.5f, 0.5f, 0.5f}
@@ -185,6 +192,12 @@ void conInit() {
 	conTypedHistoryPos = 0;
 	conTypedHistoryPointer = 0;
 
+	conCompPos = 0;
+	conCompWord[0] = 0;
+	conCompWordsFoundCount = 0;
+	memset(conCompWordsFoundPtrs, 0, sizeof(conCompWordsFoundPtrs));
+	conCompWordsFoundIndex = 0;
+
 }
 
 void conFree() {
@@ -215,6 +228,7 @@ void conInput(SDLKey c) {
 			
 			conCommand[conCommandPos] = c;
 			conCommandPos++;
+			conCompWord[0] = 0;
 
 		}
 		return;
@@ -229,6 +243,7 @@ void conInput(SDLKey c) {
 			conCommandPos--;
 
 		}
+		conCompWord[0] = 0;
 		return;
 
 	}
@@ -251,6 +266,7 @@ void conInput(SDLKey c) {
 
 		conCommand[0] = 0;
 		conCommandPos = 0;
+		conCompWord[0] = 0;
 
 		return;
 
@@ -261,11 +277,13 @@ void conInput(SDLKey c) {
 		view.consoleMode = 0;
 		conCommandPos = 0;
 		conCommand[0] = 0;
+		conCompWord[0] = 0;
 		return;
 
 	}
 
 	if (c == SDLK_TAB) {
+		conAutoComplete();
 		return;
 	}
 
@@ -335,5 +353,96 @@ void conTypedHistoryChange(int i) {
 	strcpy(conCommand, conTypedHistory[conTypedHistoryPointer]);
 	conCommandPos = strlen(conCommand);
 
+}
+
+void conAutoComplete() {
+
+	int lenCommand;
+	int lenString;
+	int i, j;
+	cmd_t *c;
+	
+	// eg:
+	// aut[tab]
+	// collect all words starting with aut
+	// while collecting find biggest part of a word. eg
+	//   * automoo (max = automoo)
+	//   * autorecord (max = auto)
+	//   * autotest (max = auto)
+	// automatically change conCommand to the biggest common part of all words (BC)
+	// set a tabcompletepos to be the length of the BC
+	// if tabcompleteoword != BC
+	//   set a tabcompleteindex to 0 (automoo)
+	// else
+	//   tabcompleteindex++ (with checks to go back to 0)
+	// change conCommand to be words[tabcompleteindex]
+
+	if (!strlen(conCommand))
+		return;
+	
+	// see if there is an tab complete in progress
+	if (strlen(conCompWord) == 0 || strncmp(conCompWord, conCommand, strlen(conCompWord)) != 0) {
+
+		// new tab complete, lets search for words
+		conCompWordsFoundCount = 0;
+		conCompWord[0] = 0;
+		lenString = strlen(conCommand);
+		i = -1;
+
+		while (1) {
+
+			i++;
+			c = &cmd[i];
+
+			if (!c->cmd)
+				break;
+
+			lenCommand = strlen(c->cmd);
+
+			if (lenString > lenCommand) {
+				continue;
+			}
+
+			if (!strncmp(conCommand, c->cmd, lenString)) {
+				conAdd(LLOW, c->cmd);
+				// this is the first command found, so lets save it as the most common word
+				if (!conCompWordsFoundCount) {
+					strcpy(conCompWord, c->cmd);
+				// see what we can match
+				} else {
+					int l;
+					l = strlen(conCompWord);
+					if (lenCommand < l)
+						l = lenCommand;
+					for (j = 0; j < l; j++) {
+						if (conCompWord[j] != c->cmd[j])
+							break;
+					}
+					conCompWord[j] = 0;
+				}
+				if (conCompWordsFoundCount < MAX_COMPLETE_LIST) {
+					conCompWordsFoundPtrs[conCompWordsFoundCount] = c->cmd;
+					conCompWordsFoundCount++;
+				} else {
+					break;
+				}
+			}
+		}
+	
+		conCompWordsFoundIndex = -1;
+		
+	}
+
+	if (!conCompWordsFoundCount) {
+		conAdd(LLOW, "No commands to autocomplete");
+		return;
+	}
+	
+	conCompWordsFoundIndex++;
+	if (conCompWordsFoundIndex >= conCompWordsFoundCount)
+		conCompWordsFoundIndex = 0;
+	strcpy(conCommand, conCompWordsFoundPtrs[conCompWordsFoundIndex]);
+	conCommandPos = strlen(conCommand);
+	
 }
 

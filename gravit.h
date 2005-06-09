@@ -594,6 +594,7 @@ void conInput(SDLKey c);
 void conTypedHistoryAdd(char *s);
 void conTypedHistoryChange(int i);
 void conFree();
+void conAutoComplete();
 
 #ifndef NO_GUI
 
