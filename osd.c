@@ -166,7 +166,7 @@ void drawOSD() {
 		
 		WHITEHEADINGNL("Stereoscopy");
 		DUHC();
-		DUH("S", "Toggle Stereo");
+		DUH("S", "toggle stereo mode");
 		DUH("D F", "decrease / increase stereoseparation");
 
 		WHITEHEADINGNL("Other");
