@@ -139,9 +139,10 @@ void drawOSD() {
 		NEWLINE();
 
 		DUHC();
-		DUH("ESC", "Exit Console/Help/Gravit");
 		DUH("F1", "General Shortcut Keys");
 		DUH("F2", "Visual Effects Keys");
+		DUH("` (above TAB)", "Use the Console");
+		DUH("ESC", "Exit Console/Help/Gravit");
 
 	}
 
@@ -156,9 +157,7 @@ void drawOSD() {
 		DUH("F6", "record");
 		DUH("F7", "pause");
 		DUH("F8", "spawn particles");
-		DUH("F9", "take one screenshot");
-		DUH("F10", "take a screenshot every frame (CAREFUL!)");
-
+		DUH("Q W", "decrease / increase playback speed");
 		DUH("ctrl + s", "quick save");
 
 		WHITEHEADINGNL("View Controls");
@@ -172,7 +171,8 @@ void drawOSD() {
 		DUHC();
 		DUH("T", "display current oct tree");
 		DUH("O", "toggles drawing text");
-		DUH("` (above TAB)", "use the console");
+		DUH("F9", "take one screenshot");
+		DUH("F10", "take a screenshot every frame (CAREFUL!)");
 
 	}
 
@@ -205,26 +205,6 @@ void drawOSD() {
 
 	}
 	
-	conDraw();
-	
-#if 0
-	{
-
-		float i;
-		VectorNew(cols);
-		char z[2] = {0,0};
-
-		for (i = 0; i < 1; i += 0.01f) {
-	
-			colourFromNormal(cols, i);
-			glColor3fv(cols);
-			z[0] = 65 + (int)(i * 26);
-			drawFontWord(i * video.screenW, 0, z);
-
-		}
-
-	}
-#endif 
 }
 
 #endif

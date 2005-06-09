@@ -740,6 +740,8 @@ void drawAll() {
 		if (view.drawColourScheme) drawRGB();
 		
 	}
+	
+	conDraw();
 
 	drawPopupText();
 	

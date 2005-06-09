@@ -300,6 +300,18 @@ int processKeys() {
 				conAdd(LLOW, "drawOSD set to %i", view.drawOSD);
 				break;
 
+			case SDLK_q:
+				view.frameSkip--;
+				view.frameSkipCounter = 0;
+				conAdd(LLOW, "frameSkip set to %i", view.frameSkip);
+				break;
+
+			case SDLK_w:
+				view.frameSkip++;
+				view.frameSkipCounter = 0;
+				conAdd(LLOW, "frameSkip set to %i", view.frameSkip);
+				break;
+
 			default:
 				break;
 
