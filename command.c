@@ -100,16 +100,16 @@ cmd_t cmd[] = {
 	,{ "particlesizemin",			NULL,					&view.particleSizeMin,		NULL,								NULL }
 	,{ "particlesizemax",			NULL,					&view.particleSizeMax,		NULL,								NULL }
 
-//	,{ "spawngalcountmin",			NULL,					NULL,						&spawnVars.minGalCount,				NULL }
-//	,{ "spawngalcountmax",			NULL,					NULL,						&spawnVars.maxGalCount,				NULL }
-//	,{ "spawngalmassmin",			NULL,					&spawnVars.minGalMass,		NULL,								NULL }
-//	,{ "spawngalmassmax",			NULL,					&spawnVars.maxGalMass,		NULL,								NULL }
-//	,{ "spawngalsizemin",			NULL,					&spawnVars.minGalSize,		NULL,								NULL }
-//	,{ "spawngalsizemax",			NULL,					&spawnVars.maxGalSize,		NULL,								NULL }
-//	,{ "spawngalvelmin",			NULL,					&spawnVars.minGalVel,		NULL,								NULL }
-//	,{ "spawngalvelmax",			NULL,					&spawnVars.maxGalVel,		NULL,								NULL }
-//	,{ "spawnrangemin",				NULL,					&spawnVars.minSpawnRange,	NULL,								NULL }
-//	,{ "spawnrangemax",				NULL,					&spawnVars.maxSpawnRange,	NULL,								NULL }
+	,{ "spawngalcountmin",			NULL,					NULL,						&spawnVars.minGalCount,				NULL }
+	,{ "spawngalcountmax",			NULL,					NULL,						&spawnVars.maxGalCount,				NULL }
+	,{ "spawngalmassmin",			NULL,					&spawnVars.minGalMass,		NULL,								NULL }
+	,{ "spawngalmassmax",			NULL,					&spawnVars.maxGalMass,		NULL,								NULL }
+	,{ "spawngalsizemin",			NULL,					&spawnVars.minGalSize,		NULL,								NULL }
+	,{ "spawngalsizemax",			NULL,					&spawnVars.maxGalSize,		NULL,								NULL }
+	,{ "spawngalvelmin",			NULL,					&spawnVars.minGalVel,		NULL,								NULL }
+	,{ "spawngalvelmax",			NULL,					&spawnVars.maxGalVel,		NULL,								NULL }
+	,{ "spawnrangemin",				NULL,					&spawnVars.minSpawnRange,	NULL,								NULL }
+	,{ "spawnrangemax",				NULL,					&spawnVars.maxSpawnRange,	NULL,								NULL }
 
 	,{ "colourschemenew",			cmdColourSchemeNew,		NULL,						NULL,								NULL }
 	,{ "colourschemeadd",			cmdColourSchemeAdd,		NULL,						NULL,								NULL }
