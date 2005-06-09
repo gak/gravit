@@ -362,21 +362,6 @@ void conAutoComplete() {
 	int i, j;
 	cmd_t *c;
 	
-	// eg:
-	// aut[tab]
-	// collect all words starting with aut
-	// while collecting find biggest part of a word. eg
-	//   * automoo (max = automoo)
-	//   * autorecord (max = auto)
-	//   * autotest (max = auto)
-	// automatically change conCommand to the biggest common part of all words (BC)
-	// set a tabcompletepos to be the length of the BC
-	// if tabcompleteoword != BC
-	//   set a tabcompleteindex to 0 (automoo)
-	// else
-	//   tabcompleteindex++ (with checks to go back to 0)
-	// change conCommand to be words[tabcompleteindex]
-
 	if (!strlen(conCommand))
 		return;
 	
@@ -434,7 +419,7 @@ void conAutoComplete() {
 	}
 
 	if (!conCompWordsFoundCount) {
-		conAdd(LLOW, "No commands to autocomplete");
+		conAdd(LLOW, "No commands starting with %s", conCommand);
 		return;
 	}
 	
