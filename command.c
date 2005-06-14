@@ -487,9 +487,6 @@ restart:
 				#define MIN_STEP 0.001
 				if (fabs(diff[0]) < MIN_STEP && fabs(diff[1]) < MIN_STEP && fabs(diff[2]) < MIN_STEP) {
 					conAdd(LERR, "Particle %i and %i are in the same position, moving...", i, j);
-					conAdd(LERR, "%f %f %f", p1->pos[0], p1->pos[1], p1->pos[2]);
-					conAdd(LERR, "%f %f %f", p2->pos[0], p2->pos[1], p2->pos[2]);
-					conAdd(LERR, "%f %f %f", diff[0], diff[1], diff[2]);
 					p1->pos[0] += frand(-10,10);
 					p1->pos[1] += frand(-10,10);
 					p1->pos[2] += frand(-10,10);
@@ -503,7 +500,6 @@ restart:
 		}
 
 		if (needrestart) {
-			conAdd(LERR, "Loop");
 			goto restart;
 		}
 	}
