@@ -190,16 +190,10 @@ void processFrame() {
 		
 	);
 
-
 	for (i = 0; i < state.particleCount; i++) {
-
 		p = state.particleHistory + state.particleCount * (state.frame+1) + i;
-
 		VectorAdd(p->pos, p->vel, p->pos);
-
 	}
-
-
 
 	state.totalFrames ++;
 
