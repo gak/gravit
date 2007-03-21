@@ -55,6 +55,8 @@ int loadParticleTexture() {
 		return 0;
 		
 	particleSurface = IMG_Load(MISCDIR "/particle.png");
+//    SDL_SaveBMP(particleSurface, "test.bmp");
+//    particleSurface = SDL_LoadBMP("test.bmp");
 
 	glGenTextures(1, &particleTextureID);
 	glCheck();
@@ -107,7 +109,7 @@ int gfxSetResolution() {
 
 	glEnable(GL_TEXTURE_2D);
 
-	// need to reload textures
+	// need to (re)load textures
 	if (!loadFonts())
 		return 2;
 
@@ -128,6 +130,7 @@ int gfxInit() {
 
         conAdd(LERR, "SDL Init failed");
 		conAdd(LERR, SDL_GetError());
+        sdlCheck();
         return 0;
 
     }
@@ -136,6 +139,7 @@ int gfxInit() {
 
         conAdd(LERR, "SDL_ttf Init failed");
 		conAdd(LERR, SDL_GetError());
+        sdlCheck();
 		return 0;
 
     }
@@ -143,6 +147,9 @@ int gfxInit() {
 	video.sdlStarted = 1;
 
 	icon = IMG_Load(MISCDIR "/gravit.png");
+    if (!icon) {
+        sdlCheck();
+    }
 	SDL_WM_SetIcon(icon, NULL);
 	SDL_FreeSurface(icon);
 

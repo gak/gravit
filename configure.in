@@ -4,7 +4,7 @@
 AC_PREREQ(2.59)
 AC_INIT(gravit, 0.4.2, gravit@slowchop.com)
 AC_CONFIG_SRCDIR([config.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
 
 # Checks for programs.
@@ -15,35 +15,6 @@ AC_PATH_XTRA
 
 CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 LIBS="$LIBS $X_LIBS"
-
-# Checks for libraries.
-AC_CHECK_LIB([GL], [glBegin], [], [AC_MSG_ERROR(GL is required)])
-AC_CHECK_LIB([GLU], [gluLookAt], [], [AC_MSG_ERROR(GLU is required)])
-AC_CHECK_LIB([SDL], [SDL_Init], [], [AC_MSG_ERROR(SDL is required)])
-AC_CHECK_LIB([SDL_image], [IMG_Load], [], [AC_MSG_ERROR(SDL_image is required)])
-AC_CHECK_LIB([SDL_ttf], [TTF_Init], [], [AC_MSG_ERROR(SDL_ttf is required)])
-with_lua=${with_lua:-yes}
-AC_ARG_WITH(lua, [  --with-lua              compile with LUA support])
-if test "${with_lua}" = yes; then
-	AC_CHECK_LIB([lua], [lua_open], [
-		LIBS_stored="$LIBS"
-		LIBS="$LIBS -llua"
-		AC_CHECK_LIB([lualib], [luaopen_base], [
-			AM_CONDITIONAL([LUA], true)
-			AC_DEFINE(USE_LUA, [], [Use LUA])
-			LIBS="$LIBS -llualib"
-			], [
-			AC_MSG_WARN([LUA not found, some functionality will not be present])
-			AM_CONDITIONAL([LUA], false)
-			LIBS="$LIBS_stored"
-		])
-		], [
-		AC_MSG_WARN([LUA not found, some functionality will not be present])
-		AM_CONDITIONAL([LUA], false)
-		])
-else
-	AM_CONDITIONAL([LUA], false)
-fi
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -67,5 +38,51 @@ AM_PATH_SDL(1.2.6, [], [AC_MSG_ERROR(SDL is required for Gravit)])
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
+# Checks for libraries.
+AC_CHECK_LIB([GL], [glBegin], [], [AC_MSG_ERROR(GL is required)])
+AC_CHECK_LIB([GLU], [gluLookAt], [], [AC_MSG_ERROR(GLU is required)])
+AC_CHECK_LIB([SDL], [SDL_Init], [], [AC_MSG_ERROR(SDL is required)])
+AC_CHECK_LIB([SDL_image], [IMG_Load], [], [AC_MSG_ERROR(SDL_image is required)])
+AC_CHECK_LIB([SDL_ttf], [TTF_Init], [], [AC_MSG_ERROR(SDL_ttf is required)])
+
+dnl Check for lua - borrowed from lighttpd
+AC_MSG_CHECKING(if lua support is requested)
+AC_ARG_WITH(lua, AC_HELP_STRING([--with-lua], [LUA support for custom spawn locations (recommended)]), [WITH_LUA=$withval], [WITH_LUA=yes])
+
+AC_MSG_RESULT($WITH_LUA)
+if test "$WITH_LUA" != "no"; then
+ AM_CONDITIONAL(LUA, true)
+ AC_PATH_PROG(LUACONFIG, lua-config)
+
+ if test x"$LUACONFIG" != x; then
+   LUA_CFLAGS=`$LUACONFIG --include`
+   LUA_LIBS=`$LUACONFIG --libs --extralibs`
+   AC_DEFINE([HAVE_LUA], [1], [liblua])
+   AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+ else
+   AC_CHECK_LIB(lua, lua_open, [
+     AC_CHECK_HEADERS([lua.h],[
+       LUA_LIBS="-llua -llualib"
+       AC_DEFINE([HAVE_LUA], [1], [liblua])
+       AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+     ])
+   ])
+ fi
+
+ if test x"$LUA_LIBS" = x; then
+   # try pkgconfig
+   PKG_CHECK_MODULES(LUA, lua >= 5.0, [
+     AC_DEFINE([HAVE_LUA], [1], [liblua])
+     AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+   ])
+ fi
+
+ AC_SUBST(LUA_CFLAGS)
+ AC_SUBST(LUA_LIBS)
+else
+ AM_CONDITIONAL(LUA, false)
+fi
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
+

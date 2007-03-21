@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #else
-#define USE_LUA
+#define HAVE_LUA
 #endif
 
 // normally /etc 
@@ -120,7 +120,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	#include <SDL_opengl.h>
 	#include <SDL_image.h>
 
-	#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LNORM, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
+	#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
+	#define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
 
 #else
 
@@ -136,7 +137,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdarg.h>
 #include <ctype.h>
 
-#ifdef USE_LUA
+#ifdef HAVE_LUA
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -370,7 +371,7 @@ typedef struct state_s {
 	int autoRecord;	// will start recording after spawning
 	int autoRecordNext; // is a value to do a cmdRecord in the main loop, it goes to 0 after doing this
 
-#ifdef USE_LUA
+#ifdef HAVE_LUA
 	lua_State *lua;
 #endif
 
@@ -679,7 +680,7 @@ void timerAdd(char *name, float seconds, int reps, char *command);
 void timerDel(char *name);
 void timerList();
 
-#ifdef USE_LUA
+#ifdef HAVE_LUA
 // lua.c
 int luaInit();
 int luag_spawn(lua_State *L);

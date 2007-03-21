@@ -15,11 +15,11 @@ spawn_DATA = $(shell ls spawn/*)
 
 if LUA
 EXTRA_gravit_SOURCES = lua.c
-gravit_LDADD = lua.o
+gravit_LDADD = lua.o $(LUA_LIBS)
 else
-EXTRA_gravit_SOURCES = 
+EXTRA_gravit_SOURCES =
 gravit_LDADD =
 endif
 
-AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATA_DIR=\"$(datadir)\" -g -Wall
+AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATA_DIR=\"$(datadir)\" -g -Wall $(LUA_CFLAGS)
 

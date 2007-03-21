@@ -39,7 +39,7 @@ int loadFonts() {
 	letter[1] = 0;
 
 	p = va("%s/%s", MISCDIR, video.fontFile);
-	
+
 	if (!fileExists(p)) {
 		conAdd(LERR, "Could not open %s", p);
 		return 0;
@@ -65,6 +65,7 @@ int loadFonts() {
 
 		if (!fontSurface) {
 
+            printf("%s\n", TTF_GetError());
 			TTF_CloseFont(font);
 			return 0;
 
@@ -83,7 +84,7 @@ int loadFonts() {
 			fonts[i].h = fonts[i].w;
 		if (fonts[i].h > fonts[i].w)
 			fonts[i].w = fonts[i].h;
-
+        
 		tmp = SDL_CreateRGBSurface(SDL_SWSURFACE, fonts[i].w, fonts[i].h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 
 		if (!tmp) {

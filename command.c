@@ -365,7 +365,7 @@ void cmdStop(char *arg) {
 
 void cmdSpawnCancel(void) {
 
-#ifdef USE_LUA
+#ifdef HAVE_LUA
 	
 	conAdd(LERR, "%s", lua_tostring(state.lua, -1));
 	cleanMemory();
@@ -380,7 +380,7 @@ void cmdSpawnCancel(void) {
 void cmdSpawn(char *arg) {
 
 	char *scriptName;
-#ifdef USE_LUA
+#ifdef HAVE_LUA
 	char *scriptFile;
 #endif
 
@@ -410,7 +410,7 @@ cmdSpawnRestartSpawning:
 		return;
 	}
 
-#ifdef USE_LUA
+#ifdef HAVE_LUA
 
 	luaInit();
 
