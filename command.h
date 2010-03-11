@@ -24,11 +24,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 typedef struct cmd_s {
 
-	char *cmd;
-	void (*func)(char *);
-	float *fVar;
-	int *iVar;
-	char *description;
+    char *cmd;
+    void (*func)(char *);
+    float *fVar;
+    int *iVar;
+    char *description;
 
 } cmd_t;
 

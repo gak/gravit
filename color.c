@@ -27,339 +27,344 @@ const char *colourModes[] = { "mass", "velocity", "acceleration", "kinetic energ
 
 void setColoursByVel() {
 
-	int i;
-	particle_t *p;
-	particleDetail_t *pd;
-	float d;
-	float velMax = 0;
-	float velSpeed;
+    int i;
+    particle_t *p;
+    particleDetail_t *pd;
+    float d;
+    float velMax = 0;
+    float velSpeed;
 
-	VectorNew(zero);
-	VectorZero(zero);
+    VectorNew(zero);
+    VectorZero(zero);
 
-	// works out the highest velocity
-	for (i = 0; i < state.particleCount; i++) {
+    // works out the highest velocity
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleCurrentFrame(i);
-		distance(zero, p->vel, velSpeed);
-		velSpeed = fabs(velSpeed);
+        p = getParticleCurrentFrame(i);
+        distance(zero, p->vel, velSpeed);
+        velSpeed = fabs(velSpeed);
 
-		if (i == 0) {
-			velMax = velSpeed;
-		} else {
-			if (velSpeed > velMax)
-				velMax = velSpeed;
-		}
+        if (i == 0) {
+            velMax = velSpeed;
+        } else {
+            if (velSpeed > velMax)
+                velMax = velSpeed;
+        }
 
-	}
+    }
 
-	// applies velocity based on the highest
-	for (i = 0; i < state.particleCount; i++) {
+    // applies velocity based on the highest
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleFirstFrame(i);
-		pd = getParticleDetail(i);
+        p = getParticleFirstFrame(i);
+        pd = getParticleDetail(i);
 
-		distance(zero, p->vel, velSpeed);
+        distance(zero, p->vel, velSpeed);
 
-		d = velSpeed / velMax;
-		colourFromNormal(pd->col, (float)fabs((double)d));
+        d = velSpeed / velMax;
+        colourFromNormal(pd->col, (float)fabs((double)d));
 
-	}
+    }
 
 }
 
 void setColoursByKinetic() {
 
-	int i;
-	particle_t *p;
-	particleDetail_t *pd;
-	float d;
-	float kinMax = 0;
-	float kinValue;
-	float velocity;
+    int i;
+    particle_t *p;
+    particleDetail_t *pd;
+    float d;
+    float kinMax = 0;
+    float kinValue;
+    float velocity;
 
-	VectorNew(zero);
-	VectorZero(zero);
+    VectorNew(zero);
+    VectorZero(zero);
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleCurrentFrame(i);
-		pd = getParticleDetail(i);
+        p = getParticleCurrentFrame(i);
+        pd = getParticleDetail(i);
 
-		distance(zero, p->vel, velocity);
-		velocity = fabs(velocity);
-		kinValue = velocity * velocity * pd->mass * 0.5;
+        distance(zero, p->vel, velocity);
+        velocity = fabs(velocity);
+        kinValue = velocity * velocity * pd->mass * 0.5;
 
-		if (i == 0) {
+        if (i == 0) {
 
-			kinMax = kinValue;
+            kinMax = kinValue;
 
-		} else {
+        } else {
 
-			if (kinValue > kinMax)
-				kinMax = kinValue;
+            if (kinValue > kinMax)
+                kinMax = kinValue;
 
-		}
+        }
 
-	}
+    }
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleFirstFrame(i);
-		pd = getParticleDetail(i);
+        p = getParticleFirstFrame(i);
+        pd = getParticleDetail(i);
 
-		distance(zero, p->vel, velocity);
-		kinValue = velocity * velocity * pd->mass * 0.5;
+        distance(zero, p->vel, velocity);
+        kinValue = velocity * velocity * pd->mass * 0.5;
 
-		d = kinValue / kinMax;
-		colourFromNormal(pd->col, (float)fabs((double)d));
+        d = kinValue / kinMax;
+        colourFromNormal(pd->col, (float)fabs((double)d));
 
-	}
+    }
 
 }
 
 void setColoursByMomentum() {
 
-	int i;
-	particle_t *p;
-	particleDetail_t *pd;
-	float d;
-	float kinMax = 0;
-	float kinValue;
-	float velocity;
+    int i;
+    particle_t *p;
+    particleDetail_t *pd;
+    float d;
+    float kinMax = 0;
+    float kinValue;
+    float velocity;
 
-	VectorNew(zero);
-	VectorZero(zero);
+    VectorNew(zero);
+    VectorZero(zero);
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleCurrentFrame(i);
-		pd = getParticleDetail(i);
+        p = getParticleCurrentFrame(i);
+        pd = getParticleDetail(i);
 
-		distance(zero, p->vel, velocity);
-		velocity = fabs(velocity);
-		kinValue = velocity * pd->mass;
+        distance(zero, p->vel, velocity);
+        velocity = fabs(velocity);
+        kinValue = velocity * pd->mass;
 
-		if (i == 0) {
+        if (i == 0) {
 
-			kinMax = kinValue;
+            kinMax = kinValue;
 
-		} else {
+        } else {
 
-			if (kinValue > kinMax)
-				kinMax = kinValue;
+            if (kinValue > kinMax)
+                kinMax = kinValue;
 
-		}
+        }
 
-	}
+    }
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleFirstFrame(i);
-		pd = getParticleDetail(i);
+        p = getParticleFirstFrame(i);
+        pd = getParticleDetail(i);
 
-		distance(zero, p->vel, velocity);
-		kinValue = velocity * pd->mass;
+        distance(zero, p->vel, velocity);
+        kinValue = velocity * pd->mass;
 
-		d = kinValue / kinMax;
-		colourFromNormal(pd->col, (float)fabs((double)d));
+        d = kinValue / kinMax;
+        colourFromNormal(pd->col, (float)fabs((double)d));
 
-	}
+    }
 
 }
 
 void setColoursByAcceleration() {
 
-	int i;
-	particle_t *p, *plast;
-	particleDetail_t *pd;
-	float d;
-	float accMax = 0;
-	float accCurrent;
-	float velSpeed1;
-	float velSpeed2;
+    int i;
+    particle_t *p, *plast;
+    particleDetail_t *pd;
+    float d;
+    float accMax = 0;
+    float accCurrent;
+    float velSpeed1;
+    float velSpeed2;
 
-	VectorNew(zero);
-	VectorZero(zero);
+    VectorNew(zero);
+    VectorZero(zero);
 
-	if (state.currentFrame == 0)
-		return;
+    if (state.currentFrame == 0)
+        return;
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleCurrentFrame(i);
-		plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
-		distance(zero, p->vel, velSpeed1);
-		distance(p->vel, plast->vel, velSpeed2);
-		accCurrent = abs(velSpeed2 - velSpeed1);
+        p = getParticleCurrentFrame(i);
+        plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
+        distance(zero, p->vel, velSpeed1);
+        distance(p->vel, plast->vel, velSpeed2);
+        accCurrent = abs(velSpeed2 - velSpeed1);
 
-		if (i == 0) {
+        if (i == 0) {
 
-			accMax = accCurrent;
+            accMax = accCurrent;
 
-		} else {
+        } else {
 
-			if (accCurrent > accMax)
-				accMax = accCurrent;
+            if (accCurrent > accMax)
+                accMax = accCurrent;
 
-		}
+        }
 
-	}
+    }
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleCurrentFrame(i);
-		plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
-		distance(zero, p->vel, velSpeed1);
-		distance(p->vel, plast->vel, velSpeed2);
-		accCurrent = velSpeed2 - velSpeed1;
-		pd = getParticleDetail(i);
+        p = getParticleCurrentFrame(i);
+        plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
+        distance(zero, p->vel, velSpeed1);
+        distance(p->vel, plast->vel, velSpeed2);
+        accCurrent = velSpeed2 - velSpeed1;
+        pd = getParticleDetail(i);
 
-		d = accCurrent / accMax;
-		colourFromNormal(pd->col, (float)fabs((double)d));
+        d = accCurrent / accMax;
+        colourFromNormal(pd->col, (float)fabs((double)d));
 
-	}
+    }
 
 }
 
 
 void setColoursByMass() {
 
-	int i;
-	particle_t *p;
-	particleDetail_t *pd;
-	float d;
+    int i;
+    particle_t *p;
+    particleDetail_t *pd;
+    float d;
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleCurrentFrame(i);
-		pd = getParticleDetail(i);
+        p = getParticleCurrentFrame(i);
+        pd = getParticleDetail(i);
 
-		if (i == 0) {
+        if (i == 0) {
 
-			state.massRange[0] = pd->mass;
-			state.massRange[1] = pd->mass;
+            state.massRange[0] = pd->mass;
+            state.massRange[1] = pd->mass;
 
-		} else {
+        } else {
 
-			if (pd->mass < state.massRange[0])
-				state.massRange[0] = pd->mass;
+            if (pd->mass < state.massRange[0])
+                state.massRange[0] = pd->mass;
 
-			if (pd->mass > state.massRange[1])
-				state.massRange[1] = pd->mass;
+            if (pd->mass > state.massRange[1])
+                state.massRange[1] = pd->mass;
 
-		}
+        }
 
-	}
+    }
 
-	for (i = 0; i < state.particleCount; i++) {
+    for (i = 0; i < state.particleCount; i++) {
 
-		p = getParticleCurrentFrame(i);
-		pd = getParticleDetail(i);
+        p = getParticleCurrentFrame(i);
+        pd = getParticleDetail(i);
 
-		d = pd->mass / state.massRange[1];
-		colourFromNormal(pd->col, (float)fabs(d));
+        d = pd->mass / state.massRange[1];
+        colourFromNormal(pd->col, (float)fabs(d));
 
-		if (d < 0) {
+        if (d < 0) {
 
-			pd->col[0] = 1 - pd->col[0];
-			pd->col[1] = 1 - pd->col[1];
-			pd->col[2] = 1 - pd->col[2];
+            pd->col[0] = 1 - pd->col[0];
+            pd->col[1] = 1 - pd->col[1];
+            pd->col[2] = 1 - pd->col[2];
 
-		}
+        }
 
-	}
+    }
 
 }
 
 void setColours() {
 
-	switch (view.particleColourMode) {
+    switch (view.particleColourMode) {
 
-		case CM_MASS:
-		default:
-			setColoursByMass();	break;
+    case CM_MASS:
+    default:
+        setColoursByMass();
+        break;
 
-		case CM_VEL:
-			setColoursByVel(); break;
+    case CM_VEL:
+        setColoursByVel();
+        break;
 
-		case CM_ACC:
-			setColoursByAcceleration(); break;
+    case CM_ACC:
+        setColoursByAcceleration();
+        break;
 
-		case CM_KIN:
-			setColoursByKinetic(); break;
+    case CM_KIN:
+        setColoursByKinetic();
+        break;
 
-		case CM_MOM:
-			setColoursByMomentum(); break;
-	}
+    case CM_MOM:
+        setColoursByMomentum();
+        break;
+    }
 
 }
 
 void colourSpectrumClear() {
 
-	if (view.colourSpectrum) {
-		free(view.colourSpectrum);
-		view.colourSpectrum = 0;
-	}
+    if (view.colourSpectrum) {
+        free(view.colourSpectrum);
+        view.colourSpectrum = 0;
+    }
 
-	view.colourSpectrumSteps = 0;
+    view.colourSpectrumSteps = 0;
 
 }
 
 void colourFromNormal(float *c, float n) {
 
-	int i;
-	int bits;
+    int i;
+    int bits;
 
-	if (n < 0)
-		n = 0;
-	if (n > 1)
-		n = 1;
+    if (n < 0)
+        n = 0;
+    if (n > 1)
+        n = 1;
 
-	if (view.colourSpectrumSteps == 0 || view.colourSpectrum == 0) {
-		c[0] = c[1] = c[2] = c[3] = 1;
-		return;
-	}
+    if (view.colourSpectrumSteps == 0 || view.colourSpectrum == 0) {
+        c[0] = c[1] = c[2] = c[3] = 1;
+        return;
+    }
 
-	if (view.colourSpectrumSteps == 1) {
-		c[0] = view.colourSpectrum[0];
-		c[1] = view.colourSpectrum[1];
-		c[2] = view.colourSpectrum[2];
-		c[3] = view.colourSpectrum[3];
-		return;
-	}
-	
-	bits = view.colourSpectrumSteps - 1;
+    if (view.colourSpectrumSteps == 1) {
+        c[0] = view.colourSpectrum[0];
+        c[1] = view.colourSpectrum[1];
+        c[2] = view.colourSpectrum[2];
+        c[3] = view.colourSpectrum[3];
+        return;
+    }
 
-	for (i = 0; i < bits; i++) {
+    bits = view.colourSpectrumSteps - 1;
 
-		if (n <= (float)(i+1) / bits) {
+    for (i = 0; i < bits; i++) {
 
-			float j;
-			float l,h;
-			int col;
+        if (n <= (float)(i+1) / bits) {
 
-			j = (n - (float)i / bits) * (float)bits;
+            float j;
+            float l,h;
+            int col;
 
-			for (col = 0; col < 4; col++) {
+            j = (n - (float)i / bits) * (float)bits;
 
-				if (view.colourSpectrum[i*4+col] < view.colourSpectrum[(i+1)*4+col]) {
-					l = view.colourSpectrum[i*4+col];
-					h = view.colourSpectrum[(i+1)*4+col];
-					c[col] = (h - l) * j + l;
-				} else {
-					l = view.colourSpectrum[(i+1)*4+col];
-					h = view.colourSpectrum[i*4+col];
-					c[col] = (h - l) * (1-j) + l;
-				}
+            for (col = 0; col < 4; col++) {
 
-			}
+                if (view.colourSpectrum[i*4+col] < view.colourSpectrum[(i+1)*4+col]) {
+                    l = view.colourSpectrum[i*4+col];
+                    h = view.colourSpectrum[(i+1)*4+col];
+                    c[col] = (h - l) * j + l;
+                } else {
+                    l = view.colourSpectrum[(i+1)*4+col];
+                    h = view.colourSpectrum[i*4+col];
+                    c[col] = (h - l) * (1-j) + l;
+                }
 
-			break;
+            }
 
-		}
+            break;
 
-	}
+        }
+
+    }
 
 }
 

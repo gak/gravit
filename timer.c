@@ -27,13 +27,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 typedef struct {
 
-	char name[TIMER_NAME_LENGTH];
-	float interval;		// how often to execute (seconds)
-	int repetitions;	// how many times to execute
-	int executed;		// number of executions
-	Uint32 lastExec;	// timestamp of last execution
-	char command[TIMER_COMMAND_LENGTH];
-	struct mytimer_t *next;
+    char name[TIMER_NAME_LENGTH];
+    float interval;		// how often to execute (seconds)
+    int repetitions;	// how many times to execute
+    int executed;		// number of executions
+    Uint32 lastExec;	// timestamp of last execution
+    char command[TIMER_COMMAND_LENGTH];
+    struct mytimer_t *next;
 
 } mytimer_t;
 
@@ -41,132 +41,132 @@ mytimer_t *timers[50];	// array of pointers...
 
 void timerInit() {
 
-	memset(timers, 0, sizeof(timers));
+    memset(timers, 0, sizeof(timers));
 
 }
 
 void timerFree() {
 
-	int i;
-	mytimer_t *t;
+    int i;
+    mytimer_t *t;
 
-	for (i = 0; i < MAX_TIMERS; i++) {
+    for (i = 0; i < MAX_TIMERS; i++) {
 
-		t = timers[i];
-		if (!t) continue;
-		
-		free(timers[i]);
-		timers[i] = 0;
-		return;
+        t = timers[i];
+        if (!t) continue;
 
-	}
+        free(timers[i]);
+        timers[i] = 0;
+        return;
+
+    }
 
 }
 
 mytimer_t *timerNew() {
 
-	int i;
-	
-	for (i = 0; i < MAX_TIMERS; i++) {
+    int i;
 
-		if (timers[i])
-			continue;
+    for (i = 0; i < MAX_TIMERS; i++) {
 
-		timers[i] = (mytimer_t*)malloc(sizeof(mytimer_t));
-		return timers[i];
+        if (timers[i])
+            continue;
 
-	}
+        timers[i] = (mytimer_t*)malloc(sizeof(mytimer_t));
+        return timers[i];
 
-	return NULL;
+    }
+
+    return NULL;
 
 }
 
 void timerAdd(char *name, float interval, int reps, char *command) {
 
-	mytimer_t *t = timerNew();
-	if (!t) {
-		conAdd(LERR, "Sorry, Maximum timers reached");
-		return;
-	}
-	strncpy(t->name, name, TIMER_NAME_LENGTH);
-	strncpy(t->command, command, TIMER_COMMAND_LENGTH);
-	t->interval = interval * 1000;	// seconds to milliseconds
-	t->repetitions = reps;
-	t->executed = 0;
-	t->lastExec = getMS();
+    mytimer_t *t = timerNew();
+    if (!t) {
+        conAdd(LERR, "Sorry, Maximum timers reached");
+        return;
+    }
+    strncpy(t->name, name, TIMER_NAME_LENGTH);
+    strncpy(t->command, command, TIMER_COMMAND_LENGTH);
+    t->interval = interval * 1000;	// seconds to milliseconds
+    t->repetitions = reps;
+    t->executed = 0;
+    t->lastExec = getMS();
 
-	conAdd(LNORM, "Added timer '%s'", name);
+    conAdd(LNORM, "Added timer '%s'", name);
 
 }
 
 void timerDelbyID(int i) {
 
-	if (!timers[i]) return;
-	conAdd(LNORM, "Deleting timer '%s'", timers[i]->name);
-	free(timers[i]);
-	timers[i] = 0;
+    if (!timers[i]) return;
+    conAdd(LNORM, "Deleting timer '%s'", timers[i]->name);
+    free(timers[i]);
+    timers[i] = 0;
 
 }
 
 void timerDel(char *name) {
 
-	int i;
-	mytimer_t *t;
+    int i;
+    mytimer_t *t;
 
-	for (i = 0; i < MAX_TIMERS; i++) {
+    for (i = 0; i < MAX_TIMERS; i++) {
 
-		t = timers[i];
-		if (!t) continue;
-		if (strncmp(t->name, name, TIMER_NAME_LENGTH)) continue;
-		timerDelbyID(i);
-		return;
+        t = timers[i];
+        if (!t) continue;
+        if (strncmp(t->name, name, TIMER_NAME_LENGTH)) continue;
+        timerDelbyID(i);
+        return;
 
-	}
+    }
 
 }
 
 void timerUpdate() {
 
-	int i;
-	mytimer_t *t;
-	Uint32 ms;
+    int i;
+    mytimer_t *t;
+    Uint32 ms;
 
-	ms = getMS();
+    ms = getMS();
 
-	for (i = 0; i < MAX_TIMERS; i++) {
+    for (i = 0; i < MAX_TIMERS; i++) {
 
-		t = timers[i];
-		if (!t) continue;
-		if (ms < t->lastExec + t->interval) continue;
-		t->lastExec = ms;
-		cmdExecute(t->command);
-		t->executed++;
-		if (t->repetitions == 0) continue;
-		if (t->executed == t->repetitions)
-			timerDelbyID(i);
-		
-		return;
+        t = timers[i];
+        if (!t) continue;
+        if (ms < t->lastExec + t->interval) continue;
+        t->lastExec = ms;
+        cmdExecute(t->command);
+        t->executed++;
+        if (t->repetitions == 0) continue;
+        if (t->executed == t->repetitions)
+            timerDelbyID(i);
 
-	}
+        return;
+
+    }
 
 }
 
 void timerList() {
 
-	int i;
-	mytimer_t *t;
+    int i;
+    mytimer_t *t;
 
-	for (i = 0; i < MAX_TIMERS; i++) {
+    for (i = 0; i < MAX_TIMERS; i++) {
 
-		t = timers[i];
-		if (!t) continue;
+        t = timers[i];
+        if (!t) continue;
 
-		if (t->repetitions == 0)
-			conAdd(LNORM, "%s: Executes \"%s\" every %.3fs lots of times", t->name, t->command, t->interval/1000);
-		else
-			conAdd(LNORM, "%s: Executes \"%s\" every %.3fs %i times (%i left)", t->name, t->command, t->interval/1000, t->repetitions, t->repetitions-t->executed);
-		
-	}
+        if (t->repetitions == 0)
+            conAdd(LNORM, "%s: Executes \"%s\" every %.3fs lots of times", t->name, t->command, t->interval/1000);
+        else
+            conAdd(LNORM, "%s: Executes \"%s\" every %.3fs %i times (%i left)", t->name, t->command, t->interval/1000, t->repetitions, t->repetitions-t->executed);
+
+    }
 
 }
 

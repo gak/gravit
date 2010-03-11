@@ -42,47 +42,47 @@ int conCompWordsFoundIndex;
 
 static col_t cols[] = {
 
-	{0.5f, 0.5f, 0.5f}
-	,{1.0f, 1.0f, 1.0f}
-	,{0.5f, 0.2f, 0.2f}
-	,{0, .6f, .8f}
+    {0.5f, 0.5f, 0.5f}
+    ,{1.0f, 1.0f, 1.0f}
+    ,{0.5f, 0.2f, 0.2f}
+    ,{0, .6f, .8f}
 
 };
 
 void conAdd(int mode, char *f, ... ) {
 
-	char s[1024];
-	va_list		argptr;
+    char s[1024];
+    va_list		argptr;
 
-	va_start (argptr, f);
-	vsprintf (s, f, argptr);
-	va_end (argptr);
+    va_start (argptr, f);
+    vsprintf (s, f, argptr);
+    va_end (argptr);
 
-	if (strlen(s) >= CONSOLE_LENGTH-1)
-		s[CONSOLE_LENGTH-1] = 0;
+    if (strlen(s) >= CONSOLE_LENGTH-1)
+        s[CONSOLE_LENGTH-1] = 0;
 
-	if (mode > 3)
-		mode = 0;
+    if (mode > 3)
+        mode = 0;
 
-	cpos++;
+    cpos++;
 
-	if (cpos > CONSOLE_HISTORY - 1)
-		cpos = 0;
+    if (cpos > CONSOLE_HISTORY - 1)
+        cpos = 0;
 
-	strncpy(con[cpos].s, s, CONSOLE_LENGTH-1);
-	memcpy(&con[cpos].c, &cols[mode], sizeof(con[cpos].c));
+    strncpy(con[cpos].s, s, CONSOLE_LENGTH-1);
+    memcpy(&con[cpos].c, &cols[mode], sizeof(con[cpos].c));
 
-	printf("%s\n", s);
+    printf("%s\n", s);
 
 #if 0
-	{
+    {
 
-		FILE *fp;
-		fp = fopen("meh.txt", "a");
-		fprintf(fp, "%s\n", s);
-		fclose(fp);
-	}
-#endif	
+        FILE *fp;
+        fp = fopen("meh.txt", "a");
+        fprintf(fp, "%s\n", s);
+        fclose(fp);
+    }
+#endif
 
 }
 
@@ -90,95 +90,95 @@ void conAdd(int mode, char *f, ... ) {
 
 void conDraw() {
 
-	int i, p;
+    int i, p;
 
-	float x,y,w;
+    float x,y,w;
 
-	unsigned int currentTime;
+    unsigned int currentTime;
 
-	p = cpos;
+    p = cpos;
 
-	x = 10;
-		
-	drawFrameSet2D();
-	glEnable(GL_BLEND);
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glBindTexture(GL_TEXTURE_2D, 0);
+    x = 10;
 
-	if (view.consoleMode) {
+    drawFrameSet2D();
+    glEnable(GL_BLEND);
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-		int inputBoxMargin = 3;
-	
-		// cursor position
-		y = video.screenH - 10 - fontHeight;
+    if (view.consoleMode) {
 
-		// draw box
-		glDisable(GL_BLEND);
-		glBindTexture(GL_TEXTURE_2D, 0);
+        int inputBoxMargin = 3;
 
-		glBegin(GL_QUADS);
+        // cursor position
+        y = video.screenH - 10 - fontHeight;
 
-		glColor4f(0,0,.5f,.5f);
-		glVertex2f(x - inputBoxMargin, y + fontHeight + inputBoxMargin);	// bot left
-		glVertex2f(x - inputBoxMargin, y - inputBoxMargin);					// top left
-		
-		glColor4f(0,0,0,0);
-		glVertex2f(x + video.screenW / 2, y - inputBoxMargin);				// top right
-		glVertex2f(x + video.screenW / 2, y + fontHeight + inputBoxMargin);	// bot right
+        // draw box
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-		glEnd();
+        glBegin(GL_QUADS);
 
-		// draw cursor
-		currentTime = SDL_GetTicks();
+        glColor4f(0,0,.5f,.5f);
+        glVertex2f(x - inputBoxMargin, y + fontHeight + inputBoxMargin);	// bot left
+        glVertex2f(x - inputBoxMargin, y - inputBoxMargin);					// top left
 
-		if (conBlinkTime + CONSOLE_BLINK_TIME < currentTime) {
+        glColor4f(0,0,0,0);
+        glVertex2f(x + video.screenW / 2, y - inputBoxMargin);				// top right
+        glVertex2f(x + video.screenW / 2, y + fontHeight + inputBoxMargin);	// bot right
 
-			conBlinkOn = !conBlinkOn;
-			conBlinkTime = currentTime;
+        glEnd();
 
-		}
+        // draw cursor
+        currentTime = SDL_GetTicks();
 
-		if (conBlinkOn) {
+        if (conBlinkTime + CONSOLE_BLINK_TIME < currentTime) {
 
-			w = getnWordWidth(conCommand, conCommandPos);
-			glDisable(GL_BLEND);
-			glLineWidth(1.0f);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glColor4f(1,1,1,1);
-			glBegin(GL_LINES);
+            conBlinkOn = !conBlinkOn;
+            conBlinkTime = currentTime;
 
-				glVertex2f(x + w, y);
-				glVertex2f(x + w, y + fontHeight);
+        }
 
-			glEnd();
+        if (conBlinkOn) {
 
-		}
+            w = getnWordWidth(conCommand, conCommandPos);
+            glDisable(GL_BLEND);
+            glLineWidth(1.0f);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glColor4f(1,1,1,1);
+            glBegin(GL_LINES);
 
-		// draw current command
-		glColor4f(1,1,1,1);
-		drawFontWord(x, y, conCommand);
+            glVertex2f(x + w, y);
+            glVertex2f(x + w, y + fontHeight);
 
-	}
+            glEnd();
 
-	if ((view.consoleMode && !view.drawOSD) || view.drawOSD) {
-		
-		// draw console history
-		y = video.screenH - 15 - fontHeight * 2;
+        }
 
-		for (i = 0; i < CONSOLE_HISTORY; i++) {
+        // draw current command
+        glColor4f(1,1,1,1);
+        drawFontWord(x, y, conCommand);
 
-			glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(CONSOLE_HISTORY-i) / CONSOLE_HISTORY + 0.2f);
+    }
 
-			drawFontWord(x, y, con[p].s);
-			y -= fontHeight;
+    if ((view.consoleMode && !view.drawOSD) || view.drawOSD) {
 
-			p--;
-			if (p < 0)
-				p = CONSOLE_HISTORY - 1;
+        // draw console history
+        y = video.screenH - 15 - fontHeight * 2;
 
-		}
+        for (i = 0; i < CONSOLE_HISTORY; i++) {
 
-	}
+            glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(CONSOLE_HISTORY-i) / CONSOLE_HISTORY + 0.2f);
+
+            drawFontWord(x, y, con[p].s);
+            y -= fontHeight;
+
+            p--;
+            if (p < 0)
+                p = CONSOLE_HISTORY - 1;
+
+        }
+
+    }
 
 }
 
@@ -186,252 +186,252 @@ void conDraw() {
 
 void conInit() {
 
-	memset(con, 0, sizeof(con));
-	memset(conCommand, 0, sizeof(conCommand));
-	conCommandPos = 0;
-	conBlinkTime = getMS();
-	conBlinkOn = 1;
+    memset(con, 0, sizeof(con));
+    memset(conCommand, 0, sizeof(conCommand));
+    conCommandPos = 0;
+    conBlinkTime = getMS();
+    conBlinkOn = 1;
 
-	memset(conTypedHistory, 0, sizeof(conTypedHistory));
-	conTypedHistoryPos = 0;
-	conTypedHistoryPointer = 0;
+    memset(conTypedHistory, 0, sizeof(conTypedHistory));
+    conTypedHistoryPos = 0;
+    conTypedHistoryPointer = 0;
 
-	conCompPos = 0;
-	conCompWord[0] = 0;
-	conCompWordsFoundCount = 0;
-	memset(conCompWordsFoundPtrs, 0, sizeof(conCompWordsFoundPtrs));
-	conCompWordsFoundIndex = 0;
+    conCompPos = 0;
+    conCompWord[0] = 0;
+    conCompWordsFoundCount = 0;
+    memset(conCompWordsFoundPtrs, 0, sizeof(conCompWordsFoundPtrs));
+    conCompWordsFoundIndex = 0;
 
 }
 
 void conFree() {
 
-	int i;
+    int i;
 
-	for (i = 0; i < CONSOLE_TYPED_HISTORY; i++) {
-		if (conTypedHistory[i]) {
-			free(conTypedHistory[i]);
-			conTypedHistory[i] = 0;
-		}
-	}
+    for (i = 0; i < CONSOLE_TYPED_HISTORY; i++) {
+        if (conTypedHistory[i]) {
+            free(conTypedHistory[i]);
+            conTypedHistory[i] = 0;
+        }
+    }
 
 }
 
 void conInput(SDLKey c) {
 
-	if (c >= 32 && c < 128) {
+    if (c >= 32 && c < 128) {
 
-		if (c == SDLK_SPACE && conCommandPos == 0)
-			return;
+        if (c == SDLK_SPACE && conCommandPos == 0)
+            return;
 
-		if (conCommandPos < CONSOLE_LENGTH) {
-			int i,l;
-			l = strlen(conCommand);
-			for (i = strlen(conCommand); i > conCommandPos-1; i--)
-				conCommand[i+1]=conCommand[i];
-			
-			conCommand[conCommandPos] = c;
-			conCommandPos++;
-			conCompWord[0] = 0;
+        if (conCommandPos < CONSOLE_LENGTH) {
+            int i,l;
+            l = strlen(conCommand);
+            for (i = strlen(conCommand); i > conCommandPos-1; i--)
+                conCommand[i+1]=conCommand[i];
 
-		}
-		return;
+            conCommand[conCommandPos] = c;
+            conCommandPos++;
+            conCompWord[0] = 0;
 
-	}
+        }
+        return;
 
-	if (c == SDLK_BACKSPACE) {
+    }
 
-		if (conCommandPos > 0) {
+    if (c == SDLK_BACKSPACE) {
 
-			strcpy(&conCommand[conCommandPos-1], &conCommand[conCommandPos]);
-			conCommandPos--;
+        if (conCommandPos > 0) {
 
-		}
-		conCompWord[0] = 0;
-		return;
+            strcpy(&conCommand[conCommandPos-1], &conCommand[conCommandPos]);
+            conCommandPos--;
 
-	}
+        }
+        conCompWord[0] = 0;
+        return;
 
-	if (c == SDLK_RETURN || c == 10) {
+    }
 
-		printf("\n\r");
+    if (c == SDLK_RETURN || c == 10) {
+
+        printf("\n\r");
 
         if (conCommandPos == 0) {
-			view.consoleMode = 0;
-			return;		
+            view.consoleMode = 0;
+            return;
         }
 
-		// add command to typed history
-		conTypedHistoryAdd(conCommand);
+        // add command to typed history
+        conTypedHistoryAdd(conCommand);
 
-		view.consoleMode = 0;
+        view.consoleMode = 0;
 
-		cmdExecute(conCommand);
+        cmdExecute(conCommand);
 
-		conCommand[0] = 0;
-		conCommandPos = 0;
-		conCompWord[0] = 0;
+        conCommand[0] = 0;
+        conCommandPos = 0;
+        conCompWord[0] = 0;
 
-		return;
+        return;
 
-	}
+    }
 
-	if (c == SDLK_BACKQUOTE || c == SDLK_ESCAPE) {
+    if (c == SDLK_BACKQUOTE || c == SDLK_ESCAPE) {
 
-		view.consoleMode = 0;
-		conCommandPos = 0;
-		conCommand[0] = 0;
-		conCompWord[0] = 0;
-		return;
+        view.consoleMode = 0;
+        conCommandPos = 0;
+        conCommand[0] = 0;
+        conCompWord[0] = 0;
+        return;
 
-	}
+    }
 
-	if (c == SDLK_TAB) {
-		conAutoComplete();
-		return;
-	}
+    if (c == SDLK_TAB) {
+        conAutoComplete();
+        return;
+    }
 
-	if (c == SDLK_UP) {
-		conTypedHistoryChange(-1);
-		return;
-	}
+    if (c == SDLK_UP) {
+        conTypedHistoryChange(-1);
+        return;
+    }
 
-	if (c == SDLK_DOWN) {
-		conTypedHistoryChange(1);
-		return;
-	}
+    if (c == SDLK_DOWN) {
+        conTypedHistoryChange(1);
+        return;
+    }
 
-	if (c == SDLK_LEFT) {
-		if (conCommandPos > 0) {
-			conCommandPos--;
-		}
-		return;
-	}
+    if (c == SDLK_LEFT) {
+        if (conCommandPos > 0) {
+            conCommandPos--;
+        }
+        return;
+    }
 
-	if (c == SDLK_RIGHT) {
-		if (conCommandPos < (signed)strlen(conCommand)) {
-			conCommandPos++;
-		}
-		return;
-	}
+    if (c == SDLK_RIGHT) {
+        if (conCommandPos < (signed)strlen(conCommand)) {
+            conCommandPos++;
+        }
+        return;
+    }
 
-	conAdd(LLOW, "unknown key: %u", c);
+    conAdd(LLOW, "unknown key: %u", c);
 
 }
 
 void conTypedHistoryAdd(char *s) {
-	
-	conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(s)+1);
-	strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
 
-	conTypedHistoryPos++;
+    conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(s)+1);
+    strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
 
-	if (conTypedHistoryPos == CONSOLE_TYPED_HISTORY) {
-		conTypedHistoryPos = 0;
-	}
+    conTypedHistoryPos++;
 
-	conTypedHistoryPointer = conTypedHistoryPos;
+    if (conTypedHistoryPos == CONSOLE_TYPED_HISTORY) {
+        conTypedHistoryPos = 0;
+    }
+
+    conTypedHistoryPointer = conTypedHistoryPos;
 
 }
 
 void conTypedHistoryChange(int i) {
 
-	int lastPtr = conTypedHistoryPointer;
-	conTypedHistoryPointer+=i;
+    int lastPtr = conTypedHistoryPointer;
+    conTypedHistoryPointer+=i;
 
-	if (conTypedHistoryPointer < 0) conTypedHistoryPointer = CONSOLE_TYPED_HISTORY-1;
-	if (conTypedHistoryPointer >= CONSOLE_TYPED_HISTORY) conTypedHistoryPointer = 0;
+    if (conTypedHistoryPointer < 0) conTypedHistoryPointer = CONSOLE_TYPED_HISTORY-1;
+    if (conTypedHistoryPointer >= CONSOLE_TYPED_HISTORY) conTypedHistoryPointer = 0;
 
-	// make sure conCommand is at conTypedHistoryPos
-	if (conTypedHistoryPos == lastPtr) {
-		conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(conCommand)+1);
-		strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
-	}
+    // make sure conCommand is at conTypedHistoryPos
+    if (conTypedHistoryPos == lastPtr) {
+        conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(conCommand)+1);
+        strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
+    }
 
-	//
-	if (!conTypedHistory[conTypedHistoryPointer]) {
-		conTypedHistoryPointer = lastPtr;
-		return;
-	}
+    //
+    if (!conTypedHistory[conTypedHistoryPointer]) {
+        conTypedHistoryPointer = lastPtr;
+        return;
+    }
 
-	strcpy(conCommand, conTypedHistory[conTypedHistoryPointer]);
-	conCommandPos = strlen(conCommand);
+    strcpy(conCommand, conTypedHistory[conTypedHistoryPointer]);
+    conCommandPos = strlen(conCommand);
 
 }
 
 void conAutoComplete() {
 
-	int lenCommand;
-	int lenString;
-	int i, j;
-	cmd_t *c;
-	
-	if (!strlen(conCommand))
-		return;
-	
-	// see if there is an tab complete in progress
-	if (strlen(conCompWord) == 0 || strncmp(conCompWord, conCommand, strlen(conCompWord)) != 0) {
+    int lenCommand;
+    int lenString;
+    int i, j;
+    cmd_t *c;
 
-		// new tab complete, lets search for words
-		conCompWordsFoundCount = 0;
-		conCompWord[0] = 0;
-		lenString = strlen(conCommand);
-		i = -1;
+    if (!strlen(conCommand))
+        return;
 
-		while (1) {
+    // see if there is an tab complete in progress
+    if (strlen(conCompWord) == 0 || strncmp(conCompWord, conCommand, strlen(conCompWord)) != 0) {
 
-			i++;
-			c = &cmd[i];
+        // new tab complete, lets search for words
+        conCompWordsFoundCount = 0;
+        conCompWord[0] = 0;
+        lenString = strlen(conCommand);
+        i = -1;
 
-			if (!c->cmd)
-				break;
+        while (1) {
 
-			lenCommand = strlen(c->cmd);
+            i++;
+            c = &cmd[i];
 
-			if (lenString > lenCommand) {
-				continue;
-			}
+            if (!c->cmd)
+                break;
 
-			if (!strncmp(conCommand, c->cmd, lenString)) {
-				conAdd(LLOW, c->cmd);
-				// this is the first command found, so lets save it as the most common word
-				if (!conCompWordsFoundCount) {
-					strcpy(conCompWord, c->cmd);
-				// see what we can match
-				} else {
-					int l;
-					l = strlen(conCompWord);
-					if (lenCommand < l)
-						l = lenCommand;
-					for (j = 0; j < l; j++) {
-						if (conCompWord[j] != c->cmd[j])
-							break;
-					}
-					conCompWord[j] = 0;
-				}
-				if (conCompWordsFoundCount < MAX_COMPLETE_LIST) {
-					conCompWordsFoundPtrs[conCompWordsFoundCount] = c->cmd;
-					conCompWordsFoundCount++;
-				} else {
-					break;
-				}
-			}
-		}
-	
-		conCompWordsFoundIndex = -1;
-		
-	}
+            lenCommand = strlen(c->cmd);
 
-	if (!conCompWordsFoundCount) {
-		conAdd(LLOW, "No commands starting with %s", conCommand);
-		return;
-	}
-	
-	conCompWordsFoundIndex++;
-	if (conCompWordsFoundIndex >= conCompWordsFoundCount)
-		conCompWordsFoundIndex = 0;
-	strcpy(conCommand, conCompWordsFoundPtrs[conCompWordsFoundIndex]);
-	conCommandPos = strlen(conCommand);
-	
+            if (lenString > lenCommand) {
+                continue;
+            }
+
+            if (!strncmp(conCommand, c->cmd, lenString)) {
+                conAdd(LLOW, c->cmd);
+                // this is the first command found, so lets save it as the most common word
+                if (!conCompWordsFoundCount) {
+                    strcpy(conCompWord, c->cmd);
+                    // see what we can match
+                } else {
+                    int l;
+                    l = strlen(conCompWord);
+                    if (lenCommand < l)
+                        l = lenCommand;
+                    for (j = 0; j < l; j++) {
+                        if (conCompWord[j] != c->cmd[j])
+                            break;
+                    }
+                    conCompWord[j] = 0;
+                }
+                if (conCompWordsFoundCount < MAX_COMPLETE_LIST) {
+                    conCompWordsFoundPtrs[conCompWordsFoundCount] = c->cmd;
+                    conCompWordsFoundCount++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        conCompWordsFoundIndex = -1;
+
+    }
+
+    if (!conCompWordsFoundCount) {
+        conAdd(LLOW, "No commands starting with %s", conCommand);
+        return;
+    }
+
+    conCompWordsFoundIndex++;
+    if (conCompWordsFoundIndex >= conCompWordsFoundCount)
+        conCompWordsFoundIndex = 0;
+    strcpy(conCommand, conCompWordsFoundPtrs[conCompWordsFoundIndex]);
+    conCommandPos = strlen(conCommand);
+
 }
 

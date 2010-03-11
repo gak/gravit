@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "config.h"
 #endif
 
-// normally /etc 
+// normally /etc
 #ifndef SYSCONFDIR
 #define SYSCONFDIR "."
 #endif
@@ -60,71 +60,71 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifdef WIN32
 
-	#define WIN32SCREENSAVER
+#define WIN32SCREENSAVER
 
-	#include <windows.h>
-	#include <conio.h>
-	#include <stdio.h>
+#include <windows.h>
+#include <conio.h>
+#include <stdio.h>
 
 #ifdef WIN32SCREENSAVER
 
-	#include <scrnsave.h>
-	#include <SDL_syswm.h>
+#include <scrnsave.h>
+#include <SDL_syswm.h>
 
 #endif
 
-	#include <vfw.h>
+#include <vfw.h>
 
-	#define REGISTRY_KEY "Software\\Gravit"
-	#define REGISTRY_NAME_PATH "path"
+#define REGISTRY_KEY "Software\\Gravit"
+#define REGISTRY_NAME_PATH "path"
 
-	// stupid hack to fix linking errors with isspace
-	#undef isspace
-	#define isspace(x) (x == 32)
+// stupid hack to fix linking errors with isspace
+#undef isspace
+#define isspace(x) (x == 32)
 
-	// stop conversion from 'double ' to 'float ', possible loss of data
-	#pragma warning ( disable : 4244 ) 
+// stop conversion from 'double ' to 'float ', possible loss of data
+#pragma warning ( disable : 4244 )
 
 #else
 
-	#include <stdarg.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include <errno.h>
-	#include <termios.h>
-    #include <sys/time.h>
-    #include <sys/types.h>
-    #include <unistd.h>
-	#include <sys/timeb.h>
-	#include <pthread.h>
-	#include <dirent.h>
-	#include <sys/stat.h>
-	#include "dirent.h"
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <termios.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/timeb.h>
+#include <pthread.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include "dirent.h"
 
-	// used for the opengl extensions
-	#ifndef APIENTRY
-	#define APIENTRY
-	#endif
+// used for the opengl extensions
+#ifndef APIENTRY
+#define APIENTRY
+#endif
 
 #endif
 
 #ifndef NO_GUI
 
-	// this removes the header requirement for glext.h in gl.h
-	#define GL_GLEXT_LEGACY
+// this removes the header requirement for glext.h in gl.h
+#define GL_GLEXT_LEGACY
 
-	#include <SDL.h>
-	#include <SDL_ttf.h>
-	#include <SDL_opengl.h>
-	#include <SDL_image.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_opengl.h>
+#include <SDL_image.h>
 
-	#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
-	#define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
+#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
+#define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
 
 #else
 
-	// sdlkeys mappings
-	#include "sdlk.h"
+// sdlkeys mappings
+#include "sdlk.h"
 
 #endif
 
@@ -198,11 +198,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define distance(a,b,c) { float d; distance2(a,b,d); c = (float)sqrt((double)d); }
 
 #ifndef Uint32
-	#define Uint32 unsigned int
+#define Uint32 unsigned int
 #endif
 
 #ifndef Uint8
-	#define Uint8 unsigned char
+#define Uint8 unsigned char
 #endif
 
 #ifndef WIN32
@@ -280,25 +280,25 @@ extern FPglPointParameterfvARB glPointParameterfvARB_ptr;
 
 typedef struct conf_s {
 
-	int screenBPP;
-	int screenW;
-	int screenH;
-	int screenFS;
-	int screenAA;
-	int flags;
+    int screenBPP;
+    int screenW;
+    int screenH;
+    int screenFS;
+    int screenAA;
+    int flags;
 
-	int screenWtoApply;
-	int screenHtoApply;
+    int screenWtoApply;
+    int screenHtoApply;
 
-	int supportPointSprite;
-	int supportPointParameters;
+    int supportPointSprite;
+    int supportPointParameters;
 
-	char fontFile[MAX_FONT_LENGTH];
-	int fontSize;
+    char fontFile[MAX_FONT_LENGTH];
+    int fontSize;
 
-	SDL_VideoInfo* gfxInfo;
+    SDL_VideoInfo* gfxInfo;
 
-	int sdlStarted;
+    int sdlStarted;
 
 } video_t;
 
@@ -306,232 +306,232 @@ typedef struct conf_s {
 
 typedef struct col_s {
 
-	float r;
-	float g;
-	float b;
+    float r;
+    float g;
+    float b;
 
 } col_t;
 
 // things that change per frame
 typedef struct particle_s {
 
-	VectorNew(pos);
-	VectorNew(vel);
+    VectorNew(pos);
+    VectorNew(vel);
 
 } particle_t;
 
 // things that change less often
 typedef struct particleDetail_s {
 
-	float mass;
-	float col[4];
+    float mass;
+    float col[4];
 
 } particleDetail_t;
 
 typedef struct state_s {
 
-	particle_t *particleHistory;
-	particleDetail_t *particleDetail;
+    particle_t *particleHistory;
+    particleDetail_t *particleDetail;
 
-	int memoryAvailable;	// MB
-	
-	int particleCount;
-	int frame;
-	int totalFrames;
-	int currentFrame;
-	int historyFrames;
-	int historyNFrame;
+    int memoryAvailable;	// MB
 
-	float gbase;
-	float g;
+    int particleCount;
+    int frame;
+    int totalFrames;
+    int currentFrame;
+    int historyFrames;
+    int historyNFrame;
 
-	int frameCompression;
+    float gbase;
+    float g;
 
-	VectorNew(center);
-	int mode;
-	float massRange[2];
+    int frameCompression;
 
-	int processFrameThreads;
+    VectorNew(center);
+    int mode;
+    float massRange[2];
 
-	int particlesToSpawn;
+    int processFrameThreads;
 
-	unsigned int memoryAllocated;
+    int particlesToSpawn;
 
-	int lastSave;	// last frame saved
-	int autoSave;	// auto save every n frames. 0 for off.
-	char *fileName; // if null dont autosave or incsave.
+    unsigned int memoryAllocated;
 
-	int currentlySpawning;
-	int restartSpawning;
+    int lastSave;	// last frame saved
+    int autoSave;	// auto save every n frames. 0 for off.
+    char *fileName; // if null dont autosave or incsave.
 
-	int dontExecuteDefaultScript;
+    int currentlySpawning;
+    int restartSpawning;
 
-	int autoRecord;	// will start recording after spawning
-	int autoRecordNext; // is a value to do a cmdRecord in the main loop, it goes to 0 after doing this
+    int dontExecuteDefaultScript;
+
+    int autoRecord;	// will start recording after spawning
+    int autoRecordNext; // is a value to do a cmdRecord in the main loop, it goes to 0 after doing this
 
 #ifdef HAVE_LUA
-	lua_State *lua;
+    lua_State *lua;
 #endif
 
 } state_t;
 
 typedef struct saveInfo_s {
 
-	int particleCount;
-	int historyFrames;
-	int totalFrames;
-	int frame;
-	int historyNFrame;
+    int particleCount;
+    int historyFrames;
+    int totalFrames;
+    int frame;
+    int historyNFrame;
 //	float g;
 
 } saveInfo_t;
 
 typedef struct view_s {
 
-	Uint32 lastVideoFrame;
-	Uint32 deltaVideoFrame;
+    Uint32 lastVideoFrame;
+    Uint32 deltaVideoFrame;
 
-	Uint32 lastRecordFrame;
-	Uint32 deltaRecordFrame;
+    Uint32 lastRecordFrame;
+    Uint32 deltaRecordFrame;
 
-	// recordingVideoRefreshTime
-	// Set this to 0 to never refresh video while rendering
-	// Set this to > 0 to refresh video every Nms while rendering
-	Uint32 recordingVideoRefreshTime;
+    // recordingVideoRefreshTime
+    // Set this to 0 to never refresh video while rendering
+    // Set this to > 0 to refresh video every Nms while rendering
+    Uint32 recordingVideoRefreshTime;
 
-	Uint32 firstTimeStamp;
+    Uint32 firstTimeStamp;
 
-	int quit;
+    int quit;
 
-	Uint8 mouseButtons[2];	// 0 now, 1 last
-	int currentMousePosition[2];
-	int lastMousePosition[2];
-	int showCursor;
+    Uint8 mouseButtons[2];	// 0 now, 1 last
+    int currentMousePosition[2];
+    int lastMousePosition[2];
+    int showCursor;
 
-	VectorNew(rot);
-	float zoom;
-	int zoomFitAuto;
+    VectorNew(rot);
+    float zoom;
+    int zoomFitAuto;
 
-	int maxVertices;	// 0 for infinite, otherwise tailskip will double when hit
+    int maxVertices;	// 0 for infinite, otherwise tailskip will double when hit
 
 #ifndef NO_GUI
-	int keys[SDLK_LAST];
+    int keys[SDLK_LAST];
 #endif
 
-	VectorNew(pos);	// todo, position of camera
-	VectorNew(face);
+    VectorNew(pos);	// todo, position of camera
+    VectorNew(face);
 
-	VectorNew(autoRotate);
+    VectorNew(autoRotate);
 
-	// mouse movement/keys will quit
-	int screenSaver;
+    // mouse movement/keys will quit
+    int screenSaver;
 
-	float tailWidth;
-	int tailLength;
-	float tailOpacity;
-	int tailFaded;
-	int tailSkip;
+    float tailWidth;
+    int tailLength;
+    float tailOpacity;
+    int tailFaded;
+    int tailSkip;
 
-	int drawAxis;
+    int drawAxis;
 
-	int textMode;
-	int consoleMode;
+    int textMode;
+    int consoleMode;
 
-	int drawTree;
-	int frameSkip;
-	int frameSkipCounter;
+    int drawTree;
+    int frameSkip;
+    int frameSkipCounter;
 
-	int drawOSD;
-	int drawColourScheme;
+    int drawOSD;
+    int drawColourScheme;
 
-	float fps;
-	int vertices;
+    float fps;
+    int vertices;
 
-	int verboseMode;
+    int verboseMode;
 
-	int blendMode;
+    int blendMode;
 
-	int screenshotIndex;	// the next available screenshot file (eg screenshot/gravit00001.bmp)
-	int screenshotLoop;	// will do a screenshot every frame
+    int screenshotIndex;	// the next available screenshot file (eg screenshot/gravit00001.bmp)
+    int screenshotLoop;	// will do a screenshot every frame
 
-	int particleColourMode;	// 0 for colour based on mass, 1 for colour based on velocity
-	int particleRenderMode;	// 0 for standard GL_POINT, 1 for GL_ARB_point_sprite
-	
-	// in particleRenderMode 1, you can render a texture onto the point
-	// this doesnt work in some implementations...
-	int particleRenderTexture;
-	
-	float particleSizeMin;	// can be anything 0 or higher
-	float particleSizeMax;	// -1 for the maximum supported. if its bigger then supported, it will simply use the supported value.
+    int particleColourMode;	// 0 for colour based on mass, 1 for colour based on velocity
+    int particleRenderMode;	// 0 for standard GL_POINT, 1 for GL_ARB_point_sprite
 
-	float *colourSpectrum;		// determines what colour to draw a particle with
-	int colourSpectrumSteps;
+    // in particleRenderMode 1, you can render a texture onto the point
+    // this doesnt work in some implementations...
+    int particleRenderTexture;
 
-	int stereoMode;
-	float stereoSeparation;
-	int stereoModeCurrentBit;
-	int stereoOSD;
-	
-	int recordStatus;
-	int recordParticlesDone;
-	int recordNodes;
+    float particleSizeMin;	// can be anything 0 or higher
+    float particleSizeMax;	// -1 for the maximum supported. if its bigger then supported, it will simply use the supported value.
 
-	char popupTextMessage[255];
-	Uint32 popupTextStart;
-	Uint32 popupTextLength;
-	float popupTextFadeTime;	// ms
+    float *colourSpectrum;		// determines what colour to draw a particle with
+    int colourSpectrumSteps;
 
-	int autoCenter;
+    int stereoMode;
+    float stereoSeparation;
+    int stereoModeCurrentBit;
+    int stereoOSD;
+
+    int recordStatus;
+    int recordParticlesDone;
+    int recordNodes;
+
+    char popupTextMessage[255];
+    Uint32 popupTextStart;
+    Uint32 popupTextLength;
+    float popupTextFadeTime;	// ms
+
+    int autoCenter;
 
 } view_t;
 
 typedef struct spawnVars_s {
 
-	int minGalCount;
-	int maxGalCount;
-	float minGalMass;
-	float maxGalMass;
-	float minGalSize;
-	float maxGalSize;
-	float minGalVel;
-	float maxGalVel;
-	float minSpawnRange;
-	float maxSpawnRange;
+    int minGalCount;
+    int maxGalCount;
+    float minGalMass;
+    float maxGalMass;
+    float minGalSize;
+    float maxGalSize;
+    float minGalVel;
+    float maxGalVel;
+    float minSpawnRange;
+    float maxSpawnRange;
 
 } spawnVars_t;
 
 typedef struct con_s {
 
-	col_t c;
-	char s[255];
+    col_t c;
+    char s[255];
 
 } con_t;
 
 // for processframeot
 typedef struct otinfo_s {
 
-	particle_t *p;
-	particleDetail_t *pd;
-	struct node_s *n;
+    particle_t *p;
+    particleDetail_t *pd;
+    struct node_s *n;
 
 } otinfo_t;
 
 // for otComputeParticleToTreeRecursive
 typedef struct pttr_s {
 
-	particle_t *p;
-	particleDetail_t *pd;
-	struct node_s *n;
+    particle_t *p;
+    particleDetail_t *pd;
+    struct node_s *n;
 
 } pttr_t;
 
 typedef struct pib_s {
 
-	float *min;
-	float *max;
-	particle_t *gp;
-	float m;
-	float *cm;
+    float *min;
+    float *max;
+    particle_t *gp;
+    float m;
+    float *cm;
 
 } pib_t;
 
@@ -640,15 +640,15 @@ void processFramePP(int s, int n);
 // frame-ot.c
 typedef struct node_s {
 
-	VectorNew(min);
-	VectorNew(max);
-	VectorNew(c);
-	VectorNew(cm);
+    VectorNew(min);
+    VectorNew(max);
+    VectorNew(c);
+    VectorNew(cm);
 
-	particle_t *p;
+    particle_t *p;
     struct node_t *b[8];
-	float mass;
-	float length;
+    float mass;
+    float length;
 
 } node_t;
 

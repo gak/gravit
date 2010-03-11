@@ -23,32 +23,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 int configRead(char *filename, int ignoreMissing) {
 
-	FILE *fp;
-	char buffer[FILE_CHUNK_SIZE_SMALL];
+    FILE *fp;
+    char buffer[FILE_CHUNK_SIZE_SMALL];
 
-	if (!filename || filename[0] == 0) {
-		if (ignoreMissing) return 1;
-		conAdd(LERR, "Could not open script");
-		return 0;
-	}
-	
-	fp = fopen(filename, "rb");
-	if (!fp) {
-		if (ignoreMissing) return 1;
-		conAdd(LERR, "Could not open script: %s", filename);
-		return 0;
-	}
+    if (!filename || filename[0] == 0) {
+        if (ignoreMissing) return 1;
+        conAdd(LERR, "Could not open script");
+        return 0;
+    }
 
-	conAdd(LLOW, "Executing Script: %s", filename);
+    fp = fopen(filename, "rb");
+    if (!fp) {
+        if (ignoreMissing) return 1;
+        conAdd(LERR, "Could not open script: %s", filename);
+        return 0;
+    }
 
-	while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
-	int len = strlen(buffer) - 1;
+    conAdd(LLOW, "Executing Script: %s", filename);
 
-		while (len >= 0 && (isspace(buffer[len]) || buffer[len] == 13 || buffer[len] == 10)) buffer[len--] = 0;
-		if (len <= 0 || buffer[0] == '#') continue;
-		cmdExecute(buffer);
-	}
+    while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
+        int len = strlen(buffer) - 1;
 
-	return 1;
+        while (len >= 0 && (isspace(buffer[len]) || buffer[len] == 13 || buffer[len] == 10)) buffer[len--] = 0;
+        if (len <= 0 || buffer[0] == '#') continue;
+        cmdExecute(buffer);
+    }
+
+    return 1;
 
 }

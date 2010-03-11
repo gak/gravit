@@ -28,205 +28,205 @@ float fontHeight;
 
 int loadFonts() {
 
-	TTF_Font		*font = NULL;
-	SDL_Surface		*fontSurface = NULL;
-	SDL_Surface		*tmp = NULL;
-	static SDL_Color fontColour = {255,255,255};
-	char letter[2];
-	int i;
-	char *p;
+    TTF_Font		*font = NULL;
+    SDL_Surface		*fontSurface = NULL;
+    SDL_Surface		*tmp = NULL;
+    static SDL_Color fontColour = {255,255,255};
+    char letter[2];
+    int i;
+    char *p;
 
-	letter[1] = 0;
+    letter[1] = 0;
 
-	p = va("%s/%s", MISCDIR, video.fontFile);
+    p = va("%s/%s", MISCDIR, video.fontFile);
 
-	if (!fileExists(p)) {
-		conAdd(LERR, "Could not open %s", p);
-		return 0;
-	}
+    if (!fileExists(p)) {
+        conAdd(LERR, "Could not open %s", p);
+        return 0;
+    }
 
-	font = TTF_OpenFont(p, video.fontSize);
+    font = TTF_OpenFont(p, video.fontSize);
 
-	if (!font) {
-		conAdd(LERR, "Could not open %s", p);
-		return 0;
-	}
+    if (!font) {
+        conAdd(LERR, "Could not open %s", p);
+        return 0;
+    }
 
-	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
+    TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 
-	memset(fonts, 0, sizeof(fonts));
-	fontHeight = 0;
+    memset(fonts, 0, sizeof(fonts));
+    fontHeight = 0;
 
-	for (i = 32; i < 128; i++) {
+    for (i = 32; i < 128; i++) {
 
-		letter[0] = i;
+        letter[0] = i;
 
-		fontSurface = TTF_RenderText_Solid(font, letter, fontColour);
+        fontSurface = TTF_RenderText_Solid(font, letter, fontColour);
 
-		if (!fontSurface) {
+        if (!fontSurface) {
 
             printf("%s\n", TTF_GetError());
-			TTF_CloseFont(font);
-			return 0;
+            TTF_CloseFont(font);
+            return 0;
 
-		}
+        }
 
-		fonts[i].ow = fontSurface->w;
-		fonts[i].oh = fontSurface->h;
+        fonts[i].ow = fontSurface->w;
+        fonts[i].oh = fontSurface->h;
 
-		if (fonts[i].oh > fontHeight)
-			fontHeight = (float)fonts[i].oh;
+        if (fonts[i].oh > fontHeight)
+            fontHeight = (float)fonts[i].oh;
 
-		fonts[i].w = gfxPowerOfTwo(fonts[i].ow);
-		fonts[i].h = gfxPowerOfTwo(fonts[i].oh);
+        fonts[i].w = gfxPowerOfTwo(fonts[i].ow);
+        fonts[i].h = gfxPowerOfTwo(fonts[i].oh);
 
-		if (fonts[i].w > fonts[i].h)
-			fonts[i].h = fonts[i].w;
-		if (fonts[i].h > fonts[i].w)
-			fonts[i].w = fonts[i].h;
-        
-		tmp = SDL_CreateRGBSurface(SDL_SWSURFACE, fonts[i].w, fonts[i].h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+        if (fonts[i].w > fonts[i].h)
+            fonts[i].h = fonts[i].w;
+        if (fonts[i].h > fonts[i].w)
+            fonts[i].w = fonts[i].h;
 
-		if (!tmp) {
+        tmp = SDL_CreateRGBSurface(SDL_SWSURFACE, fonts[i].w, fonts[i].h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 
-			TTF_CloseFont(font);
-			SDL_FreeSurface(fontSurface);
+        if (!tmp) {
 
-			return 0;
+            TTF_CloseFont(font);
+            SDL_FreeSurface(fontSurface);
 
-		}
+            return 0;
 
-		if (SDL_BlitSurface(fontSurface, NULL, tmp, NULL)) {
+        }
 
-			TTF_CloseFont(font);
-			SDL_FreeSurface(tmp);
-			SDL_FreeSurface(fontSurface);
+        if (SDL_BlitSurface(fontSurface, NULL, tmp, NULL)) {
 
-			return 0;
+            TTF_CloseFont(font);
+            SDL_FreeSurface(tmp);
+            SDL_FreeSurface(fontSurface);
 
-		}
+            return 0;
 
-		glGenTextures(1, &fonts[i].id);
-		glCheck();
+        }
 
-		glBindTexture(GL_TEXTURE_2D, fonts[i].id);
-		glCheck();
+        glGenTextures(1, &fonts[i].id);
+        glCheck();
 
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, fonts[i].w, fonts[i].h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
-		glCheck();
+        glBindTexture(GL_TEXTURE_2D, fonts[i].id);
+        glCheck();
 
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glCheck();
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, fonts[i].w, fonts[i].h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+        glCheck();
 
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		glCheck();
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glCheck();
 
-		SDL_FreeSurface(tmp);
-		SDL_FreeSurface(fontSurface);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glCheck();
 
-	}
+        SDL_FreeSurface(tmp);
+        SDL_FreeSurface(fontSurface);
 
-	TTF_CloseFont(font);
+    }
 
-	return 1;
+    TTF_CloseFont(font);
+
+    return 1;
 
 
 }
 
 void drawFontLetter(float x, float y, int letter) {
 
-	glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
-	glCheck();
+    glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
+    glCheck();
 
-	glPushMatrix();
+    glPushMatrix();
 
-	glTranslatef(x,y,0);
+    glTranslatef(x,y,0);
 
-	glBegin(GL_QUADS);
+    glBegin(GL_QUADS);
 
-		glTexCoord2f(0, 0);
-		glVertex2i(0,0);
+    glTexCoord2f(0, 0);
+    glVertex2i(0,0);
 
-		glTexCoord2f(0, 1);
-		glVertex2i(0,fonts[letter].h);
+    glTexCoord2f(0, 1);
+    glVertex2i(0,fonts[letter].h);
 
-		glTexCoord2f(1, 1);
-		glVertex2i(fonts[letter].w,fonts[letter].h);
+    glTexCoord2f(1, 1);
+    glVertex2i(fonts[letter].w,fonts[letter].h);
 
-		glTexCoord2f(1, 0);
-		glVertex2i(fonts[letter].w,0);
+    glTexCoord2f(1, 0);
+    glVertex2i(fonts[letter].w,0);
 
-	glEnd();
+    glEnd();
 
-	glPopMatrix();
+    glPopMatrix();
 
 }
 
 float drawFontWord(float x, float y, char *word) {
 
-	int i;
+    int i;
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	for (i = 0; i < (signed)strlen(word); i++) {
+    for (i = 0; i < (signed)strlen(word); i++) {
 
-		drawFontLetter(x, y, word[i]);
-		x += fonts[(int)word[i]].ow;
+        drawFontLetter(x, y, word[i]);
+        x += fonts[(int)word[i]].ow;
 
-	}
+    }
 
-	glBindTexture(GL_TEXTURE_2D, 0);
-	
-	return y + fontHeight;
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return y + fontHeight;
 
 }
 
 float getWordWidth(char *s) {
 
-	int i;
-	float x = 0;
+    int i;
+    float x = 0;
 
-	for (i = 0; i < (signed)strlen(s); i++) {
+    for (i = 0; i < (signed)strlen(s); i++) {
 
-		x += fonts[(int)s[i]].ow;
+        x += fonts[(int)s[i]].ow;
 
-	}
+    }
 
-	return x;
+    return x;
 
 }
 
 float getnWordWidth(char *s, int n) {
 
-	int i;
-	float x = 0;
+    int i;
+    float x = 0;
 
-	for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
 
-		x += fonts[(int)s[i]].ow;
+        x += fonts[(int)s[i]].ow;
 
-	}
+    }
 
-	return x;
+    return x;
 
 }
 
 void drawFontWordRA(float x, float y, char *word) {
 
-	int i;
+    int i;
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	for (i = strlen(word); i >= 0; i--) {
+    for (i = strlen(word); i >= 0; i--) {
 
-		drawFontLetter(x, y, word[i]);
+        drawFontLetter(x, y, word[i]);
 
-		if (i > 0)
-		x -= fonts[(int)word[i-1]].ow;
+        if (i > 0)
+            x -= fonts[(int)word[i-1]].ow;
 
-	}
+    }
 
 
 }

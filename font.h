@@ -26,11 +26,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 typedef struct font_s {
 
-	GLuint id;
-	int w;
-	int h;
-	int ow;
-	int oh;
+    GLuint id;
+    int w;
+    int h;
+    int ow;
+    int oh;
 
 } font_t;
 
