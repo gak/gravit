@@ -1,2 +1,5 @@
 gravit
 *.o
+*.pbxuser
+*.perspectivev3
+Xcode/Gravit/build
