@@ -9,6 +9,28 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* GravitAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* GravitAppDelegate.m */; };
+		2E8BCAB5120A22EB00F87C35 /* color.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCA9F120A22EB00F87C35 /* color.c */; };
+		2E8BCAB6120A22EB00F87C35 /* command.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA0120A22EB00F87C35 /* command.c */; };
+		2E8BCAB7120A22EB00F87C35 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA2120A22EB00F87C35 /* config.c */; };
+		2E8BCAB8120A22EB00F87C35 /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA3120A22EB00F87C35 /* console.c */; };
+		2E8BCAB9120A22EB00F87C35 /* font.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA4120A22EB00F87C35 /* font.c */; };
+		2E8BCABA120A22EB00F87C35 /* fps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA6120A22EB00F87C35 /* fps.c */; };
+		2E8BCABB120A22EB00F87C35 /* frame-ot.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA7120A22EB00F87C35 /* frame-ot.c */; };
+		2E8BCABC120A22EB00F87C35 /* frame-pp.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA8120A22EB00F87C35 /* frame-pp.c */; };
+		2E8BCABD120A22EB00F87C35 /* frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA9120A22EB00F87C35 /* frame.c */; };
+		2E8BCABE120A22EB00F87C35 /* gfx.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAA120A22EB00F87C35 /* gfx.c */; };
+		2E8BCABF120A22EB00F87C35 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAC120A22EB00F87C35 /* input.c */; };
+		2E8BCAC0120A22EB00F87C35 /* lua.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAD120A22EB00F87C35 /* lua.c */; };
+		2E8BCAC1120A22EB00F87C35 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAE120A22EB00F87C35 /* main.c */; };
+		2E8BCAC2120A22EB00F87C35 /* osd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAF120A22EB00F87C35 /* osd.c */; };
+		2E8BCAC3120A22EB00F87C35 /* spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB1120A22EB00F87C35 /* spawn.c */; };
+		2E8BCAC4120A22EB00F87C35 /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB2120A22EB00F87C35 /* texture.c */; };
+		2E8BCAC5120A22EB00F87C35 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB3120A22EB00F87C35 /* timer.c */; };
+		2E8BCAC6120A22EB00F87C35 /* tool.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB4120A22EB00F87C35 /* tool.c */; };
+		2E8BCACA120A241E00F87C35 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCAC9120A241E00F87C35 /* SDL_image.framework */; };
+		2E8BCACC120A241E00F87C35 /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCACB120A241E00F87C35 /* SDL_ttf.framework */; };
+		2E8BCACE120A241E00F87C35 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCACD120A241E00F87C35 /* SDL.framework */; };
+		2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCB4C120A29E400F87C35 /* OpenGL.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -25,6 +47,32 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2E8BCA9F120A22EB00F87C35 /* color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = color.c; path = ../../color.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA0120A22EB00F87C35 /* command.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = command.c; path = ../../command.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA1120A22EB00F87C35 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = command.h; path = ../../command.h; sourceTree = SOURCE_ROOT; };
+		2E8BCAA2120A22EB00F87C35 /* config.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = config.c; path = ../../config.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA3120A22EB00F87C35 /* console.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = console.c; path = ../../console.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA4120A22EB00F87C35 /* font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = font.c; path = ../../font.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA5120A22EB00F87C35 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = font.h; path = ../../font.h; sourceTree = SOURCE_ROOT; };
+		2E8BCAA6120A22EB00F87C35 /* fps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fps.c; path = ../../fps.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA7120A22EB00F87C35 /* frame-ot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "frame-ot.c"; path = "../../frame-ot.c"; sourceTree = SOURCE_ROOT; };
+		2E8BCAA8120A22EB00F87C35 /* frame-pp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "frame-pp.c"; path = "../../frame-pp.c"; sourceTree = SOURCE_ROOT; };
+		2E8BCAA9120A22EB00F87C35 /* frame.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = frame.c; path = ../../frame.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAA120A22EB00F87C35 /* gfx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gfx.c; path = ../../gfx.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAB120A22EB00F87C35 /* gravit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gravit.h; path = ../../gravit.h; sourceTree = SOURCE_ROOT; };
+		2E8BCAAC120A22EB00F87C35 /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input.c; path = ../../input.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAD120A22EB00F87C35 /* lua.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lua.c; path = ../../lua.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAE120A22EB00F87C35 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../../main.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAF120A22EB00F87C35 /* osd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = osd.c; path = ../../osd.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB0120A22EB00F87C35 /* sdlk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sdlk.h; path = ../../sdlk.h; sourceTree = SOURCE_ROOT; };
+		2E8BCAB1120A22EB00F87C35 /* spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spawn.c; path = ../../spawn.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB2120A22EB00F87C35 /* texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture.c; path = ../../texture.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB3120A22EB00F87C35 /* timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = timer.c; path = ../../timer.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB4120A22EB00F87C35 /* tool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool.c; path = ../../tool.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAC9120A241E00F87C35 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
+		2E8BCACB120A241E00F87C35 /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
+		2E8BCACD120A241E00F87C35 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
+		2E8BCB4C120A29E400F87C35 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Gravit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Gravit-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Gravit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gravit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -35,6 +83,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				2E8BCACA120A241E00F87C35 /* SDL_image.framework in Frameworks */,
+				2E8BCACC120A241E00F87C35 /* SDL_ttf.framework in Frameworks */,
+				2E8BCACE120A241E00F87C35 /* SDL.framework in Frameworks */,
+				2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,6 +106,10 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				2E8BCAC9120A241E00F87C35 /* SDL_image.framework */,
+				2E8BCACB120A241E00F87C35 /* SDL_ttf.framework */,
+				2E8BCACD120A241E00F87C35 /* SDL.framework */,
+				2E8BCB4C120A29E400F87C35 /* OpenGL.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -79,6 +135,7 @@
 		29B97314FDCFA39411CA2CEA /* Gravit */ = {
 			isa = PBXGroup;
 			children = (
+				2E8BCA9E120A22C800F87C35 /* Sources */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -114,6 +171,35 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2E8BCA9E120A22C800F87C35 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2E8BCA9F120A22EB00F87C35 /* color.c */,
+				2E8BCAA0120A22EB00F87C35 /* command.c */,
+				2E8BCAA1120A22EB00F87C35 /* command.h */,
+				2E8BCAA2120A22EB00F87C35 /* config.c */,
+				2E8BCAA3120A22EB00F87C35 /* console.c */,
+				2E8BCAA4120A22EB00F87C35 /* font.c */,
+				2E8BCAA5120A22EB00F87C35 /* font.h */,
+				2E8BCAA6120A22EB00F87C35 /* fps.c */,
+				2E8BCAA7120A22EB00F87C35 /* frame-ot.c */,
+				2E8BCAA8120A22EB00F87C35 /* frame-pp.c */,
+				2E8BCAA9120A22EB00F87C35 /* frame.c */,
+				2E8BCAAA120A22EB00F87C35 /* gfx.c */,
+				2E8BCAAB120A22EB00F87C35 /* gravit.h */,
+				2E8BCAAC120A22EB00F87C35 /* input.c */,
+				2E8BCAAD120A22EB00F87C35 /* lua.c */,
+				2E8BCAAE120A22EB00F87C35 /* main.c */,
+				2E8BCAAF120A22EB00F87C35 /* osd.c */,
+				2E8BCAB0120A22EB00F87C35 /* sdlk.h */,
+				2E8BCAB1120A22EB00F87C35 /* spawn.c */,
+				2E8BCAB2120A22EB00F87C35 /* texture.c */,
+				2E8BCAB3120A22EB00F87C35 /* timer.c */,
+				2E8BCAB4120A22EB00F87C35 /* tool.c */,
+			);
+			name = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,6 +259,24 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* GravitAppDelegate.m in Sources */,
+				2E8BCAB5120A22EB00F87C35 /* color.c in Sources */,
+				2E8BCAB6120A22EB00F87C35 /* command.c in Sources */,
+				2E8BCAB7120A22EB00F87C35 /* config.c in Sources */,
+				2E8BCAB8120A22EB00F87C35 /* console.c in Sources */,
+				2E8BCAB9120A22EB00F87C35 /* font.c in Sources */,
+				2E8BCABA120A22EB00F87C35 /* fps.c in Sources */,
+				2E8BCABB120A22EB00F87C35 /* frame-ot.c in Sources */,
+				2E8BCABC120A22EB00F87C35 /* frame-pp.c in Sources */,
+				2E8BCABD120A22EB00F87C35 /* frame.c in Sources */,
+				2E8BCABE120A22EB00F87C35 /* gfx.c in Sources */,
+				2E8BCABF120A22EB00F87C35 /* input.c in Sources */,
+				2E8BCAC0120A22EB00F87C35 /* lua.c in Sources */,
+				2E8BCAC1120A22EB00F87C35 /* main.c in Sources */,
+				2E8BCAC2120A22EB00F87C35 /* osd.c in Sources */,
+				2E8BCAC3120A22EB00F87C35 /* spawn.c in Sources */,
+				2E8BCAC4120A22EB00F87C35 /* texture.c in Sources */,
+				2E8BCAC5120A22EB00F87C35 /* timer.c in Sources */,
+				2E8BCAC6120A22EB00F87C35 /* tool.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +341,11 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL.framework/Headers,
+					/Library/Frameworks/SDL_ttf.framework/Headers,
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
@@ -250,6 +359,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL.framework/Headers,
+					/Library/Frameworks/SDL_ttf.framework/Headers,
+				);
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};
