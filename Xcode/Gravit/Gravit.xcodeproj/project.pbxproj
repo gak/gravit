@@ -30,6 +30,9 @@
 		2E8BCACE120A241E00F87C35 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCACD120A241E00F87C35 /* SDL.framework */; };
 		2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCB4C120A29E400F87C35 /* OpenGL.framework */; };
 		2E8BCBAC120A308A00F87C35 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCBAB120A308A00F87C35 /* SDLMain.m */; };
+		2E8BCCAF120A4F4C00F87C35 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCA7120A4F4C00F87C35 /* data */; };
+		2E8BCCB0120A4F4C00F87C35 /* gravit.cfg in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */; };
+		2E8BCCD4120A5FB600F87C35 /* gravit.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCD3120A5FB600F87C35 /* gravit.icns */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,34 +42,37 @@
 		256AC3F00F4B6AF500CF3369 /* Gravit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gravit_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		2E8BCA9F120A22EB00F87C35 /* color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = color.c; path = ../../color.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA0120A22EB00F87C35 /* command.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = command.c; path = ../../command.c; sourceTree = SOURCE_ROOT; };
+		2E8BCA9F120A22EB00F87C35 /* color.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = color.c; path = ../../color.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA0120A22EB00F87C35 /* command.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = command.c; path = ../../command.c; sourceTree = SOURCE_ROOT; };
 		2E8BCAA1120A22EB00F87C35 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = command.h; path = ../../command.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAA2120A22EB00F87C35 /* config.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = config.c; path = ../../config.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA3120A22EB00F87C35 /* console.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = console.c; path = ../../console.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA4120A22EB00F87C35 /* font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = font.c; path = ../../font.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA2120A22EB00F87C35 /* config.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = config.c; path = ../../config.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA3120A22EB00F87C35 /* console.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = console.c; path = ../../console.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA4120A22EB00F87C35 /* font.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = font.c; path = ../../font.c; sourceTree = SOURCE_ROOT; };
 		2E8BCAA5120A22EB00F87C35 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = font.h; path = ../../font.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAA6120A22EB00F87C35 /* fps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fps.c; path = ../../fps.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA7120A22EB00F87C35 /* frame-ot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "frame-ot.c"; path = "../../frame-ot.c"; sourceTree = SOURCE_ROOT; };
-		2E8BCAA8120A22EB00F87C35 /* frame-pp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "frame-pp.c"; path = "../../frame-pp.c"; sourceTree = SOURCE_ROOT; };
-		2E8BCAA9120A22EB00F87C35 /* frame.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = frame.c; path = ../../frame.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAA120A22EB00F87C35 /* gfx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gfx.c; path = ../../gfx.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA6120A22EB00F87C35 /* fps.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = fps.c; path = ../../fps.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAA7120A22EB00F87C35 /* frame-ot.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = "frame-ot.c"; path = "../../frame-ot.c"; sourceTree = SOURCE_ROOT; };
+		2E8BCAA8120A22EB00F87C35 /* frame-pp.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = "frame-pp.c"; path = "../../frame-pp.c"; sourceTree = SOURCE_ROOT; };
+		2E8BCAA9120A22EB00F87C35 /* frame.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = frame.c; path = ../../frame.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAA120A22EB00F87C35 /* gfx.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = gfx.c; path = ../../gfx.c; sourceTree = SOURCE_ROOT; };
 		2E8BCAAB120A22EB00F87C35 /* gravit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gravit.h; path = ../../gravit.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAAC120A22EB00F87C35 /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input.c; path = ../../input.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAD120A22EB00F87C35 /* lua.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lua.c; path = ../../lua.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAE120A22EB00F87C35 /* main.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = main.c; path = ../../main.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAF120A22EB00F87C35 /* osd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = osd.c; path = ../../osd.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAC120A22EB00F87C35 /* input.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = input.c; path = ../../input.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAD120A22EB00F87C35 /* lua.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = lua.c; path = ../../lua.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAE120A22EB00F87C35 /* main.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = main.c; path = ../../main.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAAF120A22EB00F87C35 /* osd.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = osd.c; path = ../../osd.c; sourceTree = SOURCE_ROOT; };
 		2E8BCAB0120A22EB00F87C35 /* sdlk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sdlk.h; path = ../../sdlk.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAB1120A22EB00F87C35 /* spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spawn.c; path = ../../spawn.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAB2120A22EB00F87C35 /* texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture.c; path = ../../texture.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAB3120A22EB00F87C35 /* timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = timer.c; path = ../../timer.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAB4120A22EB00F87C35 /* tool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool.c; path = ../../tool.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB1120A22EB00F87C35 /* spawn.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = spawn.c; path = ../../spawn.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB2120A22EB00F87C35 /* texture.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = texture.c; path = ../../texture.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB3120A22EB00F87C35 /* timer.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = timer.c; path = ../../timer.c; sourceTree = SOURCE_ROOT; };
+		2E8BCAB4120A22EB00F87C35 /* tool.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = tool.c; path = ../../tool.c; sourceTree = SOURCE_ROOT; };
 		2E8BCAC9120A241E00F87C35 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
 		2E8BCACB120A241E00F87C35 /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
 		2E8BCACD120A241E00F87C35 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		2E8BCB4C120A29E400F87C35 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		2E8BCBAA120A308A00F87C35 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		2E8BCBAB120A308A00F87C35 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
+		2E8BCCA7120A4F4C00F87C35 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../data; sourceTree = SOURCE_ROOT; };
+		2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gravit.cfg; path = ../../gravit.cfg; sourceTree = SOURCE_ROOT; };
+		2E8BCCD3120A5FB600F87C35 /* gravit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = gravit.icns; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Gravit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Gravit-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Gravit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gravit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -120,6 +126,8 @@
 		29B97314FDCFA39411CA2CEA /* Gravit */ = {
 			isa = PBXGroup;
 			children = (
+				2E8BCCA7120A4F4C00F87C35 /* data */,
+				2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */,
 				2E8BCA9E120A22C800F87C35 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -140,6 +148,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2E8BCCD3120A5FB600F87C35 /* gravit.icns */,
 				2E8BCBAA120A308A00F87C35 /* SDLMain.h */,
 				2E8BCBAB120A308A00F87C35 /* SDLMain.m */,
 				8D1107310486CEB800E47090 /* Gravit-Info.plist */,
@@ -228,6 +237,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E8BCCAF120A4F4C00F87C35 /* data in Resources */,
+				2E8BCCB0120A4F4C00F87C35 /* gravit.cfg in Resources */,
+				2E8BCCD4120A5FB600F87C35 /* gravit.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

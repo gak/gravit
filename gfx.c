@@ -51,12 +51,14 @@ int loadParticleTexture() {
 
     SDL_Surface *particleSurface;
 
-    if (!fileExists(MISCDIR "/particle.png"))
+    char *particlePath = findFile(MISCDIR "/particle.png");
+    
+    if (!particlePath) {
+        conAdd(LERR, "Could not find particle graphic");
         return 0;
+    }
 
-    particleSurface = IMG_Load(MISCDIR "/particle.png");
-//    SDL_SaveBMP(particleSurface, "test.bmp");
-//    particleSurface = SDL_LoadBMP("test.bmp");
+    particleSurface = IMG_Load(particlePath);
 
     glGenTextures(1, &particleTextureID);
     glCheck();
@@ -84,12 +86,6 @@ int gfxSetResolution() {
     video.screenW = video.screenWtoApply;
     video.screenH = video.screenHtoApply;
 
-    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
     if (video.screenAA) {
 
         SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
@@ -97,11 +93,18 @@ int gfxSetResolution() {
 
     }
 
-    video.flags = SDL_OPENGL;
+    video.flags = SDL_OPENGL | SDL_RESIZABLE;
 
     if (video.screenFS)
         video.flags |= SDL_FULLSCREEN;
-
+    
+    const SDL_VideoInfo* videoInfo = SDL_GetVideoInfo();
+    
+    if (!video.screenW || !video.screenH || video.screenFS) {
+        video.screenW = videoInfo->current_w;
+        video.screenH = videoInfo->current_h;
+    }
+    
     if (!SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags )) {
         conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError());
         return 1;
@@ -146,7 +149,11 @@ int gfxInit() {
 
     video.sdlStarted = 1;
 
-    icon = IMG_Load(MISCDIR "/gravit.png");
+    char *fileName = findFile(MISCDIR "/gravit.png");
+    if (!fileName) {
+        return 0;
+    }
+    icon = IMG_Load(fileName);
     if (!icon) {
         sdlCheck();
     }

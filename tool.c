@@ -295,7 +295,7 @@ char *findFile(char *file) {
     char *tmp;
 
     // first assume no path, so someone could load "/tmp/script" or "currentdirectory.cfg"
-    conAdd(LLOW, "Searching %s", file);
+    conAdd(LLOW, "Search: %s", file);
     if (fileExists(file))
         return file;
 
@@ -304,12 +304,22 @@ char *findFile(char *file) {
     return 0;
 #endif
 
+#if __MACH__
+    
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    tmp = va("%s/../%s", [[mainBundle pathForResource:@"" ofType:@""] UTF8String], file);
+    conAdd(LLOW, " ? %s", tmp);
+    if (fileExists(tmp))
+        return tmp;
+
+#endif
+    
 #ifndef WIN32
     // now look in the users gravit directory (only in UNIX) - /home/user/.gravit/file
     homeDir = getenv("HOME");
     if (homeDir) {
         tmp = va("%s/.gravit/%s", homeDir, file);
-        conAdd(LLOW, "Searching %s", tmp);
+        conAdd(LLOW, " ? %s", tmp);
         if (fileExists(tmp)) {
             return tmp;
         }
@@ -318,11 +328,13 @@ char *findFile(char *file) {
 
     // finally look in SYSCONFDIR
     tmp = va("%s/%s", SYSCONFDIR, file);
-    conAdd(LLOW, "Searching %s", tmp);
+    conAdd(LLOW, " ? %s", tmp);
     if (fileExists(tmp)) {
         return tmp;
     }
 
+    conAdd(LLOW, " - Not Found", tmp);
+    
     return 0;
 
 }

@@ -99,7 +99,7 @@ int processKeys() {
                 break;
 
             case SDLK_RETURN:
-                if (SDL_GetModState() & KMOD_LALT || SDL_GetModState() & KMOD_RALT) {
+                if (SDL_GetModState() & KMOD_LALT || SDL_GetModState() & KMOD_RALT || SDL_GetModState() & KMOD_LMETA || SDL_GetModState() & KMOD_RMETA) {
                     video.screenFS = !video.screenFS;
                     cmdVideoRestart(0);
                 }

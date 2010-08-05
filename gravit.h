@@ -37,14 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // DATA_DIR is normally /usr/share/gravit/data or /usr/local/share/gravit/data
 // no -DDATA_DIR="path" assume we're working in the current directory
 #ifndef DATA_DIR
-#define DATA_DIR "."
+#define DATA_DIR ""
 #endif
 
 #define CONFIG_FILE "gravit.cfg"
 #define SCREENSAVER_FILE "screensaver.cfg"
 
-#define SPAWNDIR DATA_DIR "/spawn"
-#define MISCDIR DATA_DIR "/data"
+#define SPAWNDIR DATA_DIR "spawn"
+#define MISCDIR DATA_DIR "data"
 
 #ifdef WIN32
 #define SCREENSHOT_PATH "screenshots"
@@ -105,6 +105,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef APIENTRY
 #define APIENTRY
 #endif
+
+#endif
+
+#if __MACH__
+
+#include <Foundation/Foundation.h>
 
 #endif
 

@@ -38,10 +38,10 @@ int loadFonts() {
 
     letter[1] = 0;
 
-    p = va("%s/%s", MISCDIR, video.fontFile);
-
-    if (!fileExists(p)) {
-        conAdd(LERR, "Could not open %s", p);
+    p = findFile(va("%s/%s", MISCDIR, video.fontFile));
+    
+    if (!p) {
+        conAdd(LERR, "Could not open font");
         return 0;
     }
 
