@@ -25,16 +25,34 @@
 		2E8BCAC4120A22EB00F87C35 /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB2120A22EB00F87C35 /* texture.c */; };
 		2E8BCAC5120A22EB00F87C35 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB3120A22EB00F87C35 /* timer.c */; };
 		2E8BCAC6120A22EB00F87C35 /* tool.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB4120A22EB00F87C35 /* tool.c */; };
-		2E8BCACA120A241E00F87C35 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCAC9120A241E00F87C35 /* SDL_image.framework */; };
-		2E8BCACC120A241E00F87C35 /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCACB120A241E00F87C35 /* SDL_ttf.framework */; };
-		2E8BCACE120A241E00F87C35 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCACD120A241E00F87C35 /* SDL.framework */; };
 		2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCB4C120A29E400F87C35 /* OpenGL.framework */; };
 		2E8BCBAC120A308A00F87C35 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCBAB120A308A00F87C35 /* SDLMain.m */; };
 		2E8BCCAF120A4F4C00F87C35 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCA7120A4F4C00F87C35 /* data */; };
 		2E8BCCB0120A4F4C00F87C35 /* gravit.cfg in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */; };
 		2E8BCCD4120A5FB600F87C35 /* gravit.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCD3120A5FB600F87C35 /* gravit.icns */; };
+		2EB21CB1120A972400419B4C /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
+		2EB21CB3120A972400419B4C /* SDL_ttf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
+		2EB21CB5120A972400419B4C /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB4120A972400419B4C /* SDL.framework */; };
+		2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
+		2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
+		2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB4120A972400419B4C /* SDL.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2EB21CFE120A980F00419B4C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2EB21CB1120A972400419B4C /* SDL_image.framework in CopyFiles */,
+				2EB21CB3120A972400419B4C /* SDL_ttf.framework in CopyFiles */,
+				2EB21CB5120A972400419B4C /* SDL.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -64,15 +82,15 @@
 		2E8BCAB2120A22EB00F87C35 /* texture.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = texture.c; path = ../../texture.c; sourceTree = SOURCE_ROOT; };
 		2E8BCAB3120A22EB00F87C35 /* timer.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = timer.c; path = ../../timer.c; sourceTree = SOURCE_ROOT; };
 		2E8BCAB4120A22EB00F87C35 /* tool.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = tool.c; path = ../../tool.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAC9120A241E00F87C35 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
-		2E8BCACB120A241E00F87C35 /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
-		2E8BCACD120A241E00F87C35 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		2E8BCB4C120A29E400F87C35 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		2E8BCBAA120A308A00F87C35 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		2E8BCBAB120A308A00F87C35 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		2E8BCCA7120A4F4C00F87C35 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../data; sourceTree = SOURCE_ROOT; };
 		2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gravit.cfg; path = ../../gravit.cfg; sourceTree = SOURCE_ROOT; };
 		2E8BCCD3120A5FB600F87C35 /* gravit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = gravit.icns; sourceTree = "<group>"; };
+		2EB21CB0120A972400419B4C /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
+		2EB21CB2120A972400419B4C /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
+		2EB21CB4120A972400419B4C /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Gravit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Gravit-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Gravit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gravit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -82,10 +100,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */,
+				2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */,
+				2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				2E8BCACA120A241E00F87C35 /* SDL_image.framework in Frameworks */,
-				2E8BCACC120A241E00F87C35 /* SDL_ttf.framework in Frameworks */,
-				2E8BCACE120A241E00F87C35 /* SDL.framework in Frameworks */,
 				2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -97,10 +115,10 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				2E8BCAC9120A241E00F87C35 /* SDL_image.framework */,
-				2E8BCACB120A241E00F87C35 /* SDL_ttf.framework */,
-				2E8BCACD120A241E00F87C35 /* SDL.framework */,
 				2E8BCB4C120A29E400F87C35 /* OpenGL.framework */,
+				2EB21CB0120A972400419B4C /* SDL_image.framework */,
+				2EB21CB2120A972400419B4C /* SDL_ttf.framework */,
+				2EB21CB4120A972400419B4C /* SDL.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -204,6 +222,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				2EB21CFE120A980F00419B4C /* CopyFiles */,
 			);
 			buildRules = (
 			);
