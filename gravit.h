@@ -690,6 +690,7 @@ int luaInit();
 int luag_spawn(lua_State *L);
 void luaFree();
 int luag_log(lua_State *L);
+int luag_load(lua_State *L);
 int luaExecute(char *f);
 #endif
 

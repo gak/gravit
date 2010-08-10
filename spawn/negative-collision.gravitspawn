@@ -1,6 +1,6 @@
 -- vim:syntax=lua tabstop=4
 
-require("functions.lua")
+load("functions.lua")
 
 function describe()
     log("Negative and positive massed galaxies charging against each other")

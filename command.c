@@ -423,7 +423,7 @@ cmdSpawnRestartSpawning:
 
     scriptFile = va(SPAWNDIR "/%s.gravitspawn", scriptName);
 
-    luaExecute(scriptFile);
+    luaExecute(findFile(scriptFile));
     lua_getglobal(state.lua, "describe");
     if (lua_pcall(state.lua, 0, 1, 0)) {
         conAdd(LERR, "Could not execute spawn function in %s", scriptFile);

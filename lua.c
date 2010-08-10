@@ -32,10 +32,10 @@ int luaInit() {
         conAdd(LERR, "Error loading LUA");
         return 0;
     }
-    luaopen_base(state.lua);
+    
+    luaL_openlibs(state.lua);
     luaopen_base(state.lua);
     luaopen_table(state.lua);
-    luaopen_io(state.lua);
     luaopen_string(state.lua);
     luaopen_math(state.lua);
 
@@ -43,6 +43,7 @@ int luaInit() {
 
     AddFunction("particle", luag_spawn)
     AddFunction("log", luag_log)
+    AddFunction("load", luag_load);
 
     return 1;
 
@@ -57,18 +58,47 @@ void luaFree() {
 
 }
 
+void luaHandleError() {
+
+    conAdd(LNORM, "Stack size: %i", lua_gettop(state.lua));
+
+    const char *err = lua_tostring(state.lua, -1);
+    conAdd(LERR, "%s", err);
+    lua_pop(state.lua, 1);
+    
+}
+
 int luaExecute(char *f) {
 
-    if (luaL_loadfile(state.lua, f) || lua_pcall(state.lua, 0, 0, 0)) {
-        const char *err = lua_tostring(state.lua, -1);
-        conAdd(LERR, "%s", err);
-        lua_pop(state.lua, 1);
-        // luag_stackDump(state.lua, 0);
-        conAdd(LNORM, "Stack size: %i", lua_gettop(state.lua));
+    int ret = luaL_loadfile(state.lua, f);
+    
+    if (ret == LUA_ERRSYNTAX) {
+        luaHandleError();
+        return 0;
+    } else if (ret == LUA_ERRMEM) {
+        conAdd(LERR, "Out of memory loading %s", f);        
+        return 0;
+    } else if (ret == 0) {
+        // Fall through
+    } else {
+        conAdd(LERR, "Unknown Lua error: %i", ret);
         return 0;
     }
-
-    return 1;
+    
+    ret = lua_pcall(state.lua, 0, 0, 0);
+    if (ret == 0)
+        return 1;
+    
+    if (ret == LUA_ERRRUN) {
+        luaHandleError();
+        return 0;
+    } else if (ret == LUA_ERRMEM) {
+        conAdd(LERR, "Out of memory loading %s", f);        
+        return 0;
+    } 
+    
+    conAdd(LERR, "Unknown Lua error: %i", ret);
+    return 0;
 
 }
 
@@ -89,6 +119,23 @@ void luag_TableToVector(lua_State *L, float *v) {
     v[2] = lua_tonumber(L, -1);
     lua_pop(L, 1);
 
+}
+
+int luag_load(lua_State *L) {
+    
+    char *s = (char*)lua_tostring(L, -1);
+    conAdd(1, s);
+    lua_pop(L, 1);
+    
+    s = va("spawn/%s", s);
+    
+    char *f = findFile(s);
+    conAdd(1, f);
+    
+    luaExecute(findFile(f));
+    
+    return 0;
+    
 }
 
 int luag_spawn(lua_State *L) {
