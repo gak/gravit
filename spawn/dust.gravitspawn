@@ -17,7 +17,7 @@ function spawn()
 		bigrange = .1 
 	else
 		massiveparticles = randomint(1, 3)
-		bigrange = randomfloat(1, 10000)
+		bigrange = randomfloat(1, 2)
 	end
 
 	local smallrange = randomfloat(100, 10000)
