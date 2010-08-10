@@ -23,6 +23,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
+int hasCtrlOrCmdModifier() {
+    
+    return (SDL_GetModState() & KMOD_LALT || SDL_GetModState() & KMOD_RALT || SDL_GetModState() & KMOD_LMETA || SDL_GetModState() & KMOD_RMETA);
+    
+}
+
 int processKeys() {
 
     SDL_Event event;
@@ -99,7 +105,7 @@ int processKeys() {
                 break;
 
             case SDLK_RETURN:
-                if (SDL_GetModState() & KMOD_LALT || SDL_GetModState() & KMOD_RALT || SDL_GetModState() & KMOD_LMETA || SDL_GetModState() & KMOD_RMETA) {
+                if (hasCtrlOrCmdModifier()) {
                     video.screenFS = !video.screenFS;
                     cmdVideoRestart(0);
                 }
@@ -151,7 +157,7 @@ int processKeys() {
 
             case SDLK_s:
                 // save (control-s)
-                if (SDL_GetModState() & KMOD_LCTRL || SDL_GetModState() & KMOD_RCTRL)
+                if (hasCtrlOrCmdModifier())
                     cmdSaveFrameDump(NULL);
                 // toggle stereo mode
                 else {
@@ -312,6 +318,10 @@ int processKeys() {
                 break;
 
             case SDLK_q:
+                if (hasCtrlOrCmdModifier()) {
+                    cmdQuit(NULL);  // OS X cmd-q
+                    return 1;
+                }
                 view.frameSkip--;
                 view.frameSkipCounter = 0;
                 conAdd(LLOW, "frameSkip set to %i", view.frameSkip);
