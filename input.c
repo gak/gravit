@@ -68,17 +68,7 @@ int processKeys() {
             view.keys[event.key.keysym.sym] = 1;
 
             if (view.consoleMode) {
-
-                if (event.key.keysym.unicode) {
-                    if ( (event.key.keysym.unicode & 0xFF80) == 0 ) {
-                        conInput((SDLKey)(event.key.keysym.unicode & 0x7F));
-                    } else {
-                        conAdd(LERR, "Sorry no unicode");
-                    }
-                } else {
-                    conInput(event.key.keysym.sym);
-                }
-
+                conInput(event.key.keysym.sym);
                 return 0;
             }
 
