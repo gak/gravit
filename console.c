@@ -219,7 +219,7 @@ void conFree() {
 
 void conInput(SDLKey c) {
 
-    if (c >= 32 && c < 128) {
+    if (c >= 32 && c < 127) {
 
         if (c == SDLK_SPACE && conCommandPos == 0)
             return;
@@ -239,7 +239,7 @@ void conInput(SDLKey c) {
 
     }
 
-    if (c == SDLK_BACKSPACE) {
+    if (c == SDLK_BACKSPACE || c == SDLK_DELETE) {
 
         if (conCommandPos > 0) {
 
