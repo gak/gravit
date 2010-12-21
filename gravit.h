@@ -61,7 +61,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // #define NO_GUI
 
-#define MAX_THREADS 1
+#define MAX_THREADS 64
 
 #ifdef WIN32
 
