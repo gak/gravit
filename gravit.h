@@ -182,7 +182,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define METHOD_PP 0
 #define METHOD_OT 1
 
-#define NBODY_METHOD METHOD_OT
+#define NBODY_METHOD METHOD_PP
 
 #define VectorNew(a) float a[3]
 

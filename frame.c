@@ -63,7 +63,7 @@ int initFrame() {
 
 }
 
-void processFrameOTthread(int thread) {
+void processFrameThread(int thread) {
 
     int sliceStart, sliceEnd, sliceSize;
 
@@ -72,8 +72,12 @@ void processFrameOTthread(int thread) {
     sliceStart = sliceSize * thread;
     sliceEnd = sliceSize * thread + sliceSize - 1;
 
+#if NBODY_METHOD == METHOD_OT
     processFrameOT(sliceStart, sliceEnd);
-
+#else
+    processFramePP(sliceStart, sliceEnd);
+#endif
+    
 }
 
 void processMomentum() {
@@ -88,7 +92,6 @@ void processMomentum() {
     VectorZero(tmp);
     VectorZero(sP);
     for (i = 0; i < state.particleCount; i++) {
-
 
         p = state.particleHistory + state.particleCount * state.frame + i;
         pd = state.particleDetail + i;
@@ -144,33 +147,29 @@ void processFrame() {
 
     }
 
-#if NBODY_METHOD == METHOD_PP
-
-    processFramePP(0, state.particleCount);
-
-#elif NBODY_METHOD == METHOD_OT
-
+#if NBODY_METHOD == METHOD_OT
     otFreeTree();
-
-#ifdef WIN32
-    processFrameOT(0, state.particleCount);
+#endif
+    
+#ifdef WIN32    
+    processFrameThread(0);
 #else
+    
     if (state.processFrameThreads > 1) {
-
+        
         int i;
         for (i = 0; i < state.processFrameThreads; i++) {
-            pthread_create(&ptt[i], NULL, (void*)processFrameOTthread, (void*)i);
+            pthread_create(&ptt[i], NULL, (void*)processFrameThread, (void*)i);
         }
-
+        
         for (i = 0; i < state.processFrameThreads; i++) {
             pthread_join(ptt[i], NULL);
         }
-
+        
     } else {
-        processFrameOT(0, state.particleCount);
+        processFrameThread(0);
     }
-#endif
-
+    
 #endif
 
     // Check if the recording frame was cancelled, if so just return;
