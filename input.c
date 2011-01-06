@@ -88,12 +88,6 @@ int processKeys() {
                 return 1;
                 break;
 
-            case SDLK_SPACE:
-                view.screenSaver = 0;
-                view.drawOSD = 1;
-                view.showCursor = 1;
-                break;
-
             case SDLK_RETURN:
                 if (hasCtrlOrCmdModifier()) {
                     video.screenFS = !video.screenFS;
@@ -127,8 +121,10 @@ int processKeys() {
                 cmdStop(NULL);
                 break;
 
+            case SDLK_SPACE:
             case SDLK_F8:
                 cmdStart(NULL);
+                cmdRecord(NULL);
                 break;
 
             case SDLK_F9:

@@ -223,8 +223,8 @@ int init(int argc, char *argv[]) {
 
 #ifndef NO_GUI
 
-    conAdd(LHELP, "Quick Start: Hit F8 a few times then F6 to start recording.");
-    conAdd(LHELP, "Hold down a mouse button and move it around. Use A and Z keys to zoom in and out.");
+    conAdd(LHELP, "Quick Start: Hit SPACE to start a new simulation!");
+    conAdd(LHELP, "Hold down a mouse button and move it around. Use A and Z keys, or the scroll wheel to zoom in and out.");
 
 #endif
 

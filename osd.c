@@ -161,10 +161,10 @@ void drawOSD() {
 
         WHITEHEADINGNL("Recording/Playback");
         DUHC();
-        DUH("F5", "play");
+        DUH("SPACE", "spawn particles");
+        DUH("F5", "replay");
         DUH("F6", "record");
         DUH("F7", "pause");
-        DUH("F8", "spawn particles");
         DUH("Q W", "decrease / increase playback speed");
         DUH("CTRL + S", "quick save");
 
