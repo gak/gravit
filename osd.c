@@ -41,11 +41,20 @@ void drawOSD() {
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    // Top middle
+    glColor4f(1,1,1,1);
+    y = 10;
+    drawFontWordCA(video.screenW / 2, y, "Hit SPACE to start a new simulation");
+    drawFontWordCA(video.screenW / 2, y += fontHeight, "Hold down a mouse button and move it around to change your orientation.");
+    drawFontWordCA(video.screenW / 2, y += fontHeight, "Use the scroll wheel, or the A and Z keys to zoom in and out.");
+    
+    // Right
     DUHC();
     drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
     drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 3.0f, GRAVIT_VERSION);
     drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 2.0f, GRAVIT_COPYRIGHT);
 
+    // Left
     y = 10;
     x = 10;
     tab = getWordWidth("M") * 17;
