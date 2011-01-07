@@ -227,8 +227,12 @@ void drawFontWordRA(float x, float y, char *word) {
             x -= fonts[(int)word[i-1]].ow;
 
     }
+}
 
-
+void drawFontWordCA(float x, float y, char *word) {
+    
+    drawFontWord((int)(x - getWordWidth(word) / 2), y, word);
+    
 }
 
 #endif

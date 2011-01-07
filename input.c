@@ -68,17 +68,7 @@ int processKeys() {
             view.keys[event.key.keysym.sym] = 1;
 
             if (view.consoleMode) {
-
-                if (event.key.keysym.unicode) {
-                    if ( (event.key.keysym.unicode & 0xFF80) == 0 ) {
-                        conInput((SDLKey)(event.key.keysym.unicode & 0x7F));
-                    } else {
-                        conAdd(LERR, "Sorry no unicode");
-                    }
-                } else {
-                    conInput(event.key.keysym.sym);
-                }
-
+                conInput(event.key.keysym.sym);
                 return 0;
             }
 
@@ -96,12 +86,6 @@ int processKeys() {
 
                 cmdQuit(NULL);
                 return 1;
-                break;
-
-            case SDLK_SPACE:
-                view.screenSaver = 0;
-                view.drawOSD = 1;
-                view.showCursor = 1;
                 break;
 
             case SDLK_RETURN:
@@ -137,8 +121,10 @@ int processKeys() {
                 cmdStop(NULL);
                 break;
 
+            case SDLK_SPACE:
             case SDLK_F8:
                 cmdStart(NULL);
+                cmdRecord(NULL);
                 break;
 
             case SDLK_F9:

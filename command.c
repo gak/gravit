@@ -538,7 +538,7 @@ void cmdRecord(char *arg) {
 
     if (state.particleCount == 0) {
 
-        conAdd(LHELP, "You need to spawn some particles first! Press F8 to spawn some!");
+        conAdd(LHELP, "You need to spawn some particles first! Press SPACE to spawn some!");
         return;
 
     }
@@ -570,7 +570,7 @@ void cmdPlay(char *arg) {
 
     if (state.particleCount == 0) {
 
-        conAdd(LHELP, "You need to spawn some particles first! Press F8 to spawn some!");
+        conAdd(LHELP, "You need to spawn some particles first! Press SPACE to spawn some!");
         return;
 
     }
@@ -594,6 +594,7 @@ void cmdPlay(char *arg) {
     }
 
 }
+
 #if 0
 void cmdSaveFrame(char *arg) {
 
