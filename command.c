@@ -1296,7 +1296,7 @@ void cmdZoomFit(char *arg) {
     }
 
     if (d > 0)
-        view.zoom = d * 3;
+        view.zoom = d * 5;
 
 }
 
