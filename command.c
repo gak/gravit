@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "gravit.h"
+#include "AudioStreamer.h"
 
 cmd_t cmd[] = {
 
@@ -140,6 +141,7 @@ cmd_t cmd[] = {
 
     ,{ "maxvertices",				NULL,					NULL,						&view.maxVertices,					NULL }
 
+    ,{ "audiostream",               cmdPlayAudioStream,		NULL,						NULL,                               NULL }
 
     ,{ NULL,						NULL,					NULL,						NULL,								NULL }
 
@@ -1296,6 +1298,18 @@ void cmdZoomFit(char *arg) {
 
     if (d > 0)
         view.zoom = d * 3;
+
+}
+
+void cmdPlayAudioStream(char *arg) {
+
+    char *sz;
+    sz = strtok(arg, " ");
+    if (!sz)
+        return;
+
+    NSString *stream = [NSString stringWithCString:sz];
+    [AudioStreamer playWithString:stream];
 
 }
 

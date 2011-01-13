@@ -1,8 +1,8 @@
 -- vim:syntax=lua tabstop=4
 
--- package.path = package.path .. ";Content/Core/Scripts/?.lua" 
+-- package.path = package.path .. ";Content/Core/Scripts/?.lua"
 
--- package.path = package.path .. ";../spawn/" 
+-- package.path = package.path .. ";../spawn/"
 
 log(package.path)
 
@@ -10,7 +10,7 @@ scripts = { "one-galaxy", "binary-galaxy", "many-galaxy", "snake", "loops", "dus
 
 n = table.getn(scripts)
 r = math.random(1,n)
-log("Spawining " .. scripts[r])
+log("Spawning " .. scripts[r])
 
 file = scripts[r] .. ".gravitspawn"
 log(file)
