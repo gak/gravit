@@ -67,6 +67,8 @@
 		2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
 		2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
 		2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB4120A972400419B4C /* SDL.framework */; };
+		55A8C26412DD769E00CFE55A /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A8C25F12DD769E00CFE55A /* AudioStreamer.m */; };
+		55A8C27912DD771600CFE55A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A8C27812DD771600CFE55A /* AudioToolbox.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -154,6 +156,9 @@
 		2EB21CB0120A972400419B4C /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
 		2EB21CB2120A972400419B4C /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
 		2EB21CB4120A972400419B4C /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
+		55A8C25F12DD769E00CFE55A /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioStreamer.m; path = ../../AudioStreamer.m; sourceTree = SOURCE_ROOT; };
+		55A8C26012DD769E00CFE55A /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioStreamer.h; path = ../../AudioStreamer.h; sourceTree = SOURCE_ROOT; };
+		55A8C27812DD771600CFE55A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Gravit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Gravit-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Gravit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gravit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -168,6 +173,7 @@
 				2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */,
+				55A8C27912DD771600CFE55A /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +222,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				55A8C27812DD771600CFE55A /* AudioToolbox.framework */,
 			);
 			name = Gravit;
 			sourceTree = "<group>";
@@ -223,6 +230,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				55A8C26012DD769E00CFE55A /* AudioStreamer.h */,
+				55A8C25F12DD769E00CFE55A /* AudioStreamer.m */,
 				256AC3F00F4B6AF500CF3369 /* Gravit_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -437,6 +446,7 @@
 				2E13E1881210C8C700877F47 /* lzio.c in Sources */,
 				2E13E1891210C8C700877F47 /* print.c in Sources */,
 				2E13E1A01210C97000877F47 /* ltablib.c in Sources */,
+				55A8C26412DD769E00CFE55A /* AudioStreamer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

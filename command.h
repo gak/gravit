@@ -77,5 +77,6 @@ void cmdSaveDelete(char *arg);
 void cmdUnhelpful(char *arg);
 void cmdZoomFit(char *arg);
 void cmdFrameSkip(char *arg);
+void cmdPlayAudioStream(char *arg);
 
 #endif
