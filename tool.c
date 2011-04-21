@@ -204,6 +204,7 @@ void setTitle(char *state) {
 
 }
 
+#ifndef _MSC_VER
 // Borrowed from http://stackoverflow.com/questions/675039/how-can-i-create-directory-tree-in-c-linux
 
 typedef struct stat Stat;
@@ -227,6 +228,11 @@ static int do_mkdir(const char *path, mode_t mode)
     
     return(status);
 }
+#else
+//damnwindows 
+#define do_mkdir(path, mode) mymkdir(path)
+typedef int mode_t;
+#endif
 
 int mkpath(const char *path, mode_t mode)
 {

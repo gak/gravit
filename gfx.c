@@ -82,6 +82,7 @@ int loadParticleTexture() {
 }
 
 int gfxSetResolution() {
+    SDL_VideoInfo* videoInfo;
 
     video.screenW = video.screenWtoApply;
     video.screenH = video.screenHtoApply;
@@ -98,7 +99,7 @@ int gfxSetResolution() {
     if (video.screenFS)
         video.flags |= SDL_FULLSCREEN;
     
-    const SDL_VideoInfo* videoInfo = SDL_GetVideoInfo();
+    videoInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
     
     if (!video.screenW || !video.screenH || video.screenFS) {
         video.screenW = videoInfo->current_w;
@@ -128,6 +129,7 @@ int gfxInit() {
     int detectedBPP;
     SDL_Surface *icon;
     int ret;
+    char *fileName;
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
 
@@ -149,7 +151,7 @@ int gfxInit() {
 
     video.sdlStarted = 1;
 
-    char *fileName = findFile(MISCDIR "/gravit.png");
+    fileName = findFile(MISCDIR "/gravit.png");
     if (!fileName) {
         return 0;
     }
