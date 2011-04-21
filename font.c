@@ -53,6 +53,9 @@ int loadFonts() {
     }
 
     TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
+#ifdef TTF_HINTING_NORMAL
+    TTF_SetFontHinting(font, TTF_HINTING_NORMAL);
+#endif
 
     memset(fonts, 0, sizeof(fonts));
     fontHeight = 0;
@@ -61,7 +64,7 @@ int loadFonts() {
 
         letter[0] = i;
 
-        fontSurface = TTF_RenderText_Solid(font, letter, fontColour);
+        fontSurface = TTF_RenderText_Blended(font, letter, fontColour);
 
         if (!fontSurface) {
 
