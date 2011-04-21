@@ -20,7 +20,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "gravit.h"
+
+#ifdef __MACH__
+  // AudioStreamer does not compile on Windows
 #include "AudioStreamer.h"
+#endif
 
 cmd_t cmd[] = {
 
@@ -141,8 +145,10 @@ cmd_t cmd[] = {
 
     ,{ "maxvertices",				NULL,					NULL,						&view.maxVertices,					NULL }
 
+#ifdef __MACH__
     ,{ "audiostream",               cmdPlayAudioStream,		NULL,						NULL,                               NULL }
 
+#endif
     ,{ NULL,						NULL,					NULL,						NULL,								NULL }
 
 };
@@ -1302,6 +1308,7 @@ void cmdZoomFit(char *arg) {
 
 }
 
+#ifdef __MACH__
 void cmdPlayAudioStream(char *arg) {
 
     char *sz;
@@ -1313,4 +1320,4 @@ void cmdPlayAudioStream(char *arg) {
     [AudioStreamer playWithString:stream];
 
 }
-
+#endif

@@ -587,7 +587,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size);
 int SaveMemoryDump(char *FileName, unsigned char *d, unsigned int total);
 Uint32 getMS();
 void setTitle(char *state);
-int mymkdir(char *path);
+int mymkdir(const char *path);
 void setFileName(char *name);
 char *getRegistryString(char *variable);
 void setRegistryString(char *variable, char *value);

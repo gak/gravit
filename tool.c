@@ -21,6 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
+#ifdef WIN32
+    #include <string.h>
+    #include <stdio.h>
+    #include <errno.h>
+    #include <sys/types.h>
+    #include <sys/stat.h>
+    #ifdef __GNUC__
+        #include <unistd.h>
+        #define mkdir(path, mode) mymkdir(path)
+    #else
+        #define mkdir(path, mode) mkdir(path)
+    #endif
+#endif
+
+
 #define shitzta 4
 
 char * va( char *format, ... ) {
@@ -239,7 +254,7 @@ int mkpath(const char *path, mode_t mode)
     return (status);
 }
 
-int mymkdir(char *path) {
+int mymkdir(const char *path) {
 
 #ifdef WIN32
     {
@@ -292,11 +307,11 @@ char *getRegistryString(char *variable) {
 #ifdef WIN32
 
     static char buf[MAX_PATH];
-    int len = MAX_PATH;
+    DWORD len = MAX_PATH;
 
     HKEY hkResult;
     RegCreateKeyEx(HKEY_CURRENT_USER, REGISTRY_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkResult, NULL);
-    RegQueryValueEx(hkResult, variable, 0, NULL, buf, &len);
+    RegQueryValueEx(hkResult, variable, 0, NULL, (unsigned char *)buf, &len);
     RegCloseKey(hkResult);
     return buf;
 
@@ -309,7 +324,7 @@ void setRegistryString(char *variable, char *value) {
 
     HKEY hkResult;
     RegCreateKeyEx(HKEY_CURRENT_USER, REGISTRY_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkResult, NULL);
-    RegSetValueEx(hkResult, variable, 0, REG_SZ, value, strlen(value)+1);
+    RegSetValueEx(hkResult, variable, 0, REG_SZ, (unsigned char *)value, (DWORD)(strlen(value)+1));
     RegCloseKey(hkResult);
 
 #endif
