@@ -41,7 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
       4. moved declarations into scope of for loops (to help the compiler optimize stuff)
          .. if your compiler does not like this, just move all declarations back to the top of the function.
 
-	 5. experimental: add OMP directives (compile with gcc -fomp) to execute the outer loop with parallel threads.
+	 5. experimental: add OMP directives (compile with gcc -fopenmp) to execute the outer loop with parallel threads.
 		To control the number of thread, we could add "omp_set_num_threads(state.processFrameThreads);" somewhere
 		before "#pragma omp parallel for" 
   */
