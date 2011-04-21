@@ -76,6 +76,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <scrnsave.h>
 #include <SDL_syswm.h>
 
+#ifdef USE_PTHREAD
+    #include <unistd.h>
+    #include <sys/timeb.h>
+    #include <pthread.h>
+#endif
 #endif
 
 #include <vfw.h>
@@ -87,8 +92,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #undef isspace
 #define isspace(x) (x == 32)
 
+#ifndef __GNUC__
 // stop conversion from 'double ' to 'float ', possible loss of data
 #pragma warning ( disable : 4244 )
+#endif
 
 #else
 

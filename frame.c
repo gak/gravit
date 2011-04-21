@@ -58,6 +58,7 @@ int initFrame() {
     state.memoryAllocated += FRAMEDETAILSIZE;
 
     memset(state.particleHistory, 0, FRAMESIZE);
+    fpsInit();
 
     return 1;
 
@@ -67,10 +68,22 @@ void processFrameThread(int thread) {
 
     int sliceStart, sliceEnd, sliceSize;
 
+#if defined(WIN32) && !defined(USE_PTHREAD)
+    sliceSize = state.particleCount;
+    sliceStart = 0;
+    sliceEnd = sliceStart + sliceSize;
+
+#else
     sliceSize = state.particleCount / state.processFrameThreads;
 
     sliceStart = sliceSize * thread;
-    sliceEnd = sliceSize * thread + sliceSize - 1;
+    //sliceEnd = sliceSize * thread + sliceSize - 1;
+    sliceEnd = sliceSize * thread + sliceSize;  // otherwise the particle loop (i=start; i<end;i++) misses one particle!
+
+    // make sure the last thread does not miss remaining particle
+    if (thread == (state.processFrameThreads -1)) sliceEnd=state.particleCount;
+#endif
+
 
 #if NBODY_METHOD == METHOD_OT
     processFrameOT(sliceStart, sliceEnd);
@@ -112,7 +125,7 @@ void processFrame() {
 
 //	processMomentum();
 
-#ifndef WIN32
+#if !defined(WIN32) || defined(USE_PTHREAD)
     pthread_t ptt[MAX_THREADS];
 #endif
 
@@ -150,8 +163,8 @@ void processFrame() {
 #if NBODY_METHOD == METHOD_OT
     otFreeTree();
 #endif
-    
-#ifdef WIN32    
+
+#if defined(WIN32) && !defined(USE_PTHREAD)
     processFrameThread(0);
 #else
     
