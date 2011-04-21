@@ -289,13 +289,18 @@ void runVideo() {
 
 }
 
+// max. sleep time in milliseconds (33-> limit to 30fps when idle)
+#define SMALL_NAP    33
+
 void run() {
 
     view.firstTimeStamp = view.lastRecordFrame = view.lastVideoFrame = getMS();
 
     while (!view.quit) {
 
+        Uint32 ts_before, ts_after;
         Uint32 ts;
+        ts_before =  getMS();
 
         if (state.mode & SM_RECORD) {
 
@@ -357,10 +362,19 @@ void run() {
 
         runVideo();
 
+        /* if we are not recording or replaying, wait a bit -- helps to cool down you laptop :-)) */
+        if ((state.mode & (SM_RECORD|SM_PLAY) ) == 0) {
+            ts_after =  getMS();
+            if (ts_after < (ts_before + SMALL_NAP)) SDL_Delay( SMALL_NAP - (ts_after - ts_before));
+        }
+
     }
 
 }
 
+#ifdef __GNUC__
+__attribute__((externally_visible))
+#endif
 int main(int argc, char *argv[]) {
 
     if (init(argc, argv)) {
