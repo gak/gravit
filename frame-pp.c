@@ -60,6 +60,7 @@ void processFramePP(int start, int amount) {
 
 #ifdef _OPENMP
     // experimental: multi-treading with OMP. Do NOT mix with pthread (frame.c processFrameThread)
+    omp_set_num_threads(state.processFrameThreads);
     #pragma omp parallel for schedule(dynamic, 256)
 #endif
     for (i = start; i < amount; i++) {
