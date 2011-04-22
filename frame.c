@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 int initFrame() {
 
     state.frame = 0;
@@ -159,6 +163,10 @@ void processFrame() {
         }
 
     }
+
+#ifdef _OPENMP
+    omp_set_num_threads(state.processFrameThreads);
+#endif
 
 #if NBODY_METHOD == METHOD_OT
     otFreeTree();

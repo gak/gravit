@@ -21,6 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
+#ifdef _OPENMP
+// experimental OMP support
+#include <omp.h> // VC has to include this header to build the correct manifest to find vcom.dll or vcompd.dll
+#endif
+
+
 void otBranchNode(node_t *n);
 
 node_t *r = NULL;
@@ -156,7 +162,11 @@ void otBranchNode(node_t *n) {
     VectorNew(min);
     VectorNew(max);
 
+#ifndef _OPENMP
+    //#pragma omp master
+    // gcc: invalid branch to/from an OpenMP structured block
     doVideoUpdate();
+#endif
 
     // b[0]: top left front
     min[0] = n->min[0];
@@ -206,6 +216,73 @@ void otBranchNode(node_t *n) {
 
 }
 
+// copy of otBranchNode(). spawns 8 threads, one for each sub-tree
+void otBranchNode_top(node_t *n) {
+
+    VectorNew(min[8]);
+    VectorNew(max[8]);
+    int i;
+
+    doVideoUpdate();
+
+    // b[0]: top left front
+    min[0][0] = n->min[0];
+    max[0][0] = n->c[0];
+    min[0][1] = n->min[1];
+    max[0][1] = n->c[1];
+    min[0][2] = n->min[2];
+    max[0][2] = n->c[2];
+
+    // b[1]: top right front
+    VectorCopy(min[0], min[1]);
+    VectorCopy(max[0], max[1]);
+    min[1][0] = n->c[0];
+    max[1][0] = n->max[0];
+
+    // b[2]: bottom right front
+    VectorCopy(min[1], min[2]);
+    VectorCopy(max[1], max[2]);
+    min[2][1] = n->c[1];
+    max[2][1] = n->max[1];
+
+    // b[3]: bottom left front
+    VectorCopy(min[2], min[3]);
+    VectorCopy(max[2], max[3]);
+    min[3][0] = n->min[0];
+    max[3][0] = n->c[0];
+
+    // b[4]: top left back
+    VectorCopy(min[3], min[4]);
+    VectorCopy(max[3], max[4]);
+    min[4][1] = n->min[1];
+    max[4][1] = n->c[1];
+    min[4][2] = n->c[2];
+    max[4][2] = n->max[2];
+
+    // b[5]: top right back
+    VectorCopy(min[4], min[5]);
+    VectorCopy(max[4], max[5]);
+    min[5][0] = n->c[0];
+    max[5][0] = n->max[0];
+
+    // b[6]: bottom right back
+    VectorCopy(min[5], min[6]);
+    VectorCopy(max[5], max[6]);
+    min[6][1] = n->c[1];
+    max[6][1] = n->max[1];
+
+    // b[7]: bottom left back
+    VectorCopy(min[6], min[7]);
+    VectorCopy(max[6], max[7]);
+    min[7][0] = n->min[0];
+    max[7][0] = n->c[0];
+
+    #pragma omp parallel for schedule(static, 1)
+    for (i=0; i<8; i++)
+      otBranchNodeCorner(n, i, (float*)&min[i], (float*)&max[i]);
+
+}
+
 void otMakeTree() {
 
     particle_t *p;
@@ -229,7 +306,7 @@ void otMakeTree() {
     // get length
     distance(n->min, n->max, n->length);
 
-    otBranchNode(n);
+    otBranchNode_top(n);
 
 }
 
@@ -424,9 +501,6 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 void processFrameOT(int start, int amount) {
 
     int i;
-    particle_t *p;
-    particleDetail_t *pd;
-    pttr_t info;
 
     view.recordStatus = 1;
     view.recordParticlesDone = 0;
@@ -435,11 +509,22 @@ void processFrameOT(int start, int amount) {
 
     view.recordStatus = 2;
     view.recordParticlesDone = 0;
+    doVideoUpdate();
 
+
+    #pragma omp parallel for schedule(dynamic, 256)
     for (i = start; i < amount; i++) {
+        particle_t *p;
+        particleDetail_t *pd;
+        pttr_t info;
 
         view.recordParticlesDone = i;
+
+#ifndef _OPENMP
+        //#pragma omp master
+        // gcc: invalid branch to/from an OpenMP structured block
         doVideoUpdate();
+#endif
 
         p = state.particleHistory + state.particleCount * state.frame + i;
         pd = state.particleDetail + i;
