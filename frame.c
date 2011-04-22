@@ -68,7 +68,7 @@ void processFrameThread(int thread) {
 
     int sliceStart, sliceEnd, sliceSize;
 
-#if defined(WIN32) && !defined(USE_PTHREAD)
+#if (defined(WIN32) && !defined(USE_PTHREAD)) || defined(_OPENMP)
     sliceSize = state.particleCount;
     sliceStart = 0;
     sliceEnd = sliceStart + sliceSize;
@@ -125,7 +125,7 @@ void processFrame() {
 
 //	processMomentum();
 
-#if !defined(WIN32) || defined(USE_PTHREAD)
+#if (!defined(WIN32) || defined(USE_PTHREAD)) && !defined(_OPENMP)
     pthread_t ptt[MAX_THREADS];
 #endif
 
@@ -164,7 +164,7 @@ void processFrame() {
     otFreeTree();
 #endif
 
-#if defined(WIN32) && !defined(USE_PTHREAD)
+#if (defined(WIN32) && !defined(USE_PTHREAD)) || defined(_OPENMP)
     processFrameThread(0);
 #else
     

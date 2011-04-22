@@ -76,7 +76,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <scrnsave.h>
 #include <SDL_syswm.h>
 
-#ifdef USE_PTHREAD
+#if defined(USE_PTHREAD) && !defined(_OPENMP)
     #include <unistd.h>
     #include <sys/timeb.h>
     #include <pthread.h>
