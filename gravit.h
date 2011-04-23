@@ -262,6 +262,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		} \
 	}
 
+// this define is to render video in the middle of a recording
+// without aborting (needed for OMP)
+#define doVideoUpdate2() \
+	if (view.recordingVideoRefreshTime) { \
+		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
+			runInput(); \
+			runVideo(); \
+		} \
+	}
+
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
 	if (view.recordingVideoRefreshTime) { \
@@ -666,7 +676,7 @@ typedef struct node_s {
     particle_t *p;
     struct node_t *b[8];
     float mass;
-    float length;
+    float length2;
 
 } node_t;
 
