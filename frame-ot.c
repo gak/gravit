@@ -29,7 +29,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 void otBranchNode(node_t *n);
 
-node_t *r = NULL;
+static node_t *r = NULL;
+
+static int master_thread_id = 0;
 
 void otGetBoundingBox(float *otMin, float *otMax) {
 
@@ -138,7 +140,7 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
     VectorAdd(b->c, b->min, b->c);
 
     // Get Length of node
-    distance(b->min, b->max, b->length);
+    distance2(b->min, b->max, b->length2);
 
     b->mass = mass;
 
@@ -162,9 +164,11 @@ void otBranchNode(node_t *n) {
     VectorNew(min);
     VectorNew(max);
 
-#ifndef _OPENMP
-    //#pragma omp master
-    // gcc: invalid branch to/from an OpenMP structured block
+#ifdef _OPENMP
+    if(omp_get_thread_num() == master_thread_id) {doVideoUpdate2();}
+
+    if (!(state.mode & SM_RECORD)) return;
+#else
     doVideoUpdate();
 #endif
 
@@ -277,7 +281,11 @@ void otBranchNode_top(node_t *n) {
     min[7][0] = n->min[0];
     max[7][0] = n->c[0];
 
-    #pragma omp parallel for schedule(static, 1)
+
+#ifdef _OPENMP
+    master_thread_id = omp_get_thread_num();
+    #pragma omp parallel for schedule(dynamic, 1)
+#endif
     for (i=0; i<8; i++)
       otBranchNodeCorner(n, i, (float*)&min[i], (float*)&max[i]);
 
@@ -304,7 +312,7 @@ void otMakeTree() {
     VectorAdd(n->c, n->min, n->c);
 
     // get length
-    distance(n->min, n->max, n->length);
+    distance2(n->min, n->max, n->length2);
 
     otBranchNode_top(n);
 
@@ -420,7 +428,7 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
     particle_t *p2;
 
     float d;
-    float poo;
+    float poo2;
 
     if (info->n->p == info->p)
         return;
@@ -462,9 +470,9 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
             if (!d)
                 continue;
 
-            poo = b->length / (float)sqrt(d);
+	    poo2 = b->length2 / d ;
 
-            if ( poo > 0.5f ) {
+	    if ( poo2 > 0.25f ) {
                 pttr_t info2;
                 info2.n = b;
                 info2.p = info->p;
@@ -511,6 +519,9 @@ void processFrameOT(int start, int amount) {
     view.recordParticlesDone = 0;
     doVideoUpdate();
 
+#ifdef _OPENMP
+    master_thread_id = omp_get_thread_num();
+#endif
 
     #pragma omp parallel for schedule(dynamic, 256)
     for (i = start; i < amount; i++) {
@@ -519,12 +530,6 @@ void processFrameOT(int start, int amount) {
         pttr_t info;
 
         view.recordParticlesDone = i;
-
-#ifndef _OPENMP
-        //#pragma omp master
-        // gcc: invalid branch to/from an OpenMP structured block
-        doVideoUpdate();
-#endif
 
         p = state.particleHistory + state.particleCount * state.frame + i;
         pd = state.particleDetail + i;
@@ -536,7 +541,16 @@ void processFrameOT(int start, int amount) {
         info.n = r;
         info.pd = pd;
 
-        otComputeParticleToTreeRecursive(&info);
+#ifndef _OPENMP
+        doVideoUpdate();
+#else
+	// only main thread may do this
+        //#pragma omp single nowait
+	if(omp_get_thread_num() == master_thread_id) {doVideoUpdate2();}
+#endif
+
+	if (state.mode & SM_RECORD)
+	     otComputeParticleToTreeRecursive(&info);
 
     }
 
@@ -574,7 +588,7 @@ void otDrawFieldRecursive(float *pos, node_t *node, float *force) {
     node_t *b;
 
     float d;
-    float poo;
+    float poo2;
 
     float f;
 
@@ -593,9 +607,9 @@ void otDrawFieldRecursive(float *pos, node_t *node, float *force) {
         if (!d)
             continue;
 
-        poo = b->length / (float)sqrt(d);
+        poo2 = b->length2 / d;
 
-        if ( poo > 0.5f ) {
+        if ( poo2 > 0.25f ) {
 
             otDrawFieldRecursive(pos, b, newForce);
 
