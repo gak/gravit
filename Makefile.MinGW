@@ -54,9 +54,9 @@ CFLAGS = -DWITH_LUA -DHAVE_LUA -DUSE_PTHREAD \
 
 LDFLAGS = -L../lib$(ARCH)
 
-LDLIBS =  -lSDL_ttf -lSDL_image -llua50 \
+LDLIBS =  -lSDL_ttf -lSDL_image -llua -llualib \
 	  -lGLU32 -lopenGL32 \
-	  -lmingw32 -lSDLmain -lSDL -mwindows \
+	  -lmingw32 -lSDLmain -lSDL -mwindows  -lwinmm -ldxguid \
 	  -lpthread
 
 INSTALL=cp
@@ -65,9 +65,17 @@ INSTALL=cp
 #CC=gcc -flto=2 -Ofast $(P4C2opt)
 #LD=gcc -flto=2 -Ofast $(P4C2opt) $(CFLAGS)
 
+#CC=gcc -fopenmp -Ofast $(X64opt)
+#LD=gcc -fopenmp -Ofast $(X64opt)
+
+
 #for gcc < 4.6.0
-CC=gcc $(P4C2opt)
-LD=gcc $(P4C2opt)
+#CC=gcc $(P4C2opt)
+#LD=gcc $(P4C2opt)
+
+# mingw gcc 4.4.5 has openMP support.
+CC=gcc -fopenmp $(P4C2opt)
+LD=gcc -fopenmp $(P4C2opt)
 
 
 # -------------------------------
