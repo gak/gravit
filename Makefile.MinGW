@@ -9,7 +9,7 @@ DESTDIR=bin32/
 
 # -------------------------------
 
-OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o lua.o
+OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o lua.o gravitrc.o
 
 
 # -------------------------------
@@ -93,6 +93,9 @@ final: $(OBJS)
 
 clean:
 	rm -f *.o $(FINAL)
+
+gravitrc.o: gravit.rc
+	windres gravit.rc gravitrc.o
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
