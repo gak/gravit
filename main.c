@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 #ifndef NO_GUI
 video_t video;
 #endif
@@ -162,7 +166,6 @@ void viewInit() {
 
 void stateInit() {
 
-    state.processFrameThreads = 1;
     state.particlesToSpawn = 1000;
     state.particleHistory = 0;
     state.memoryAllocated = 0;
@@ -177,6 +180,12 @@ void stateInit() {
 
     state.gbase = 5;
     state.g = -0.00001f;
+
+#ifdef _OPENMP
+    state.processFrameThreads = omp_get_max_threads();
+#else
+    state.processFrameThreads = 1;
+#endif
 
 }
 
@@ -217,6 +226,11 @@ int init(int argc, char *argv[]) {
     // if we've gone this far, lets set the registry key even if it exists...
     GetCurrentDirectory(MAX_PATH, currentDirectory);
     setRegistryString(REGISTRY_NAME_PATH, currentDirectory);
+#endif
+
+#ifdef _OPENMP
+    conAdd(LLOW, "multi-threaded rendering: max threads = %d.    Found %d processors.", 
+                  state.processFrameThreads, omp_get_num_procs());
 #endif
 
     conAdd(LNORM, "Welcome to Gravit!");
