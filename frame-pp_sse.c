@@ -22,23 +22,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "gravit.h"
 
 #ifdef _OPENMP
-// experimental OMP support
-#include <omp.h> // VC has to include this header to build the correct manifest to find vcom.dll or vcompd.dll
+#include <omp.h>
 #endif
 
-
-// mm_malloc gives back aligned blocks
-//#include <mm_malloc.h>
-#include <malloc.h>
 
 // __restrict__ tell the compiler that two pointer will not point to the same location
 // if your compiler complains, just remove __restrict__
 
 #ifdef _MSC_VER
-//#define __restrict__ __restrict
-//#define __restrict__ __declspec(restrict)
-// problems with openMP
-#define __restrict__
+#define __restrict__ __restrict
+//#define __restrict__
 #endif
 
 
@@ -56,22 +49,22 @@ typedef struct {
 } vel_vectors;
 
 
-
 #include "sse_functions.h"
 
 
   /*  Optimizations:
       ===============
       * before processing, copy particle data to vector-friendly arrays
+      * use SSE to process four particles at once
       * delay multiplication with G
       * after processing, write back results
   */
 
 
 #define MIN_STEP2 0.05f
-//static const __m128 vmin_step2 ALIGNED = _mm_set1_ps(MIN_STEP2);
 static const __v128 vmin_step2 = _mm_init1_ps(MIN_STEP2);
 
+//static void __attribute__((hot)) 
 static void do_processFramePP(particle_vectors pos, vel_vectors vel, 
                               int start, int amount) {
      int i;
@@ -106,7 +99,7 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 
         int j;
 	int vector_limit;
-       	vector_limit = (i / 4) * 4;  // round down to value divisible by 4
+       	vector_limit = (i / VECT_SIZE) * VECT_SIZE;  // round down to value divisible by 4
 
 	p1_vpos_x = _mm_set1_ps(pos.x[i]);
 	p1_vpos_y = _mm_set1_ps(pos.y[i]);
@@ -115,34 +108,35 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 
 
 	// SSE loop - four particles at once
-        for (j = 0; j < vector_limit; j += 4) {
+        for (j = 0; j < vector_limit; j += VECT_SIZE) {
 	    __v128 dv_vx ;
 	    __v128 dv_vy ;
 	    __v128 dv_vz ;
 	    __v128 vInvSqDist;
 	    __v128 vforce;
 
-            dv_vx = p1_vpos_x - _mm_load_ps(&(pos.x[j]));
-            dv_vy = p1_vpos_y - _mm_load_ps(&(pos.y[j]));
-            dv_vz = p1_vpos_z - _mm_load_ps(&(pos.z[j]));
+	    dv_vx = V_SUB( p1_vpos_x, LOAD_V4(pos.x, j));
+	    dv_vy = V_SUB( p1_vpos_y, LOAD_V4(pos.y, j));
+	    dv_vz = V_SUB( p1_vpos_z, LOAD_V4(pos.z, j));
 
             // get distance^2 between the two
-	    vInvSqDist  = dv_vx * dv_vx;
-	    vInvSqDist += dv_vy * dv_vy;
-	    vInvSqDist += dv_vz * dv_vz;
-	    vInvSqDist += vmin_step2;
+	    vInvSqDist  = V_MUL( dv_vx, dv_vx);
+	    V_INCR( vInvSqDist, V_MUL( dv_vy, dv_vy));
+	    V_INCR( vInvSqDist, V_MUL( dv_vz, dv_vz));
+	    V_INCR( vInvSqDist, vmin_step2);
 
-            vforce = p1_vmass * _mm_load_ps(&(pos.mass[j])) * newtonrapson_rcp(vInvSqDist);
+	    /* compute acceleration */
+            vforce = V_MUL( V_MUL( p1_vmass, LOAD_V4(pos.mass, j)), newtonrapson_rcp(vInvSqDist));
 
             // sum of accelerations for p1
-            p1_vvel_x += dv_vx * vforce;
-            p1_vvel_y += dv_vy * vforce;
-            p1_vvel_z += dv_vz * vforce;
+            V_INCR( p1_vvel_x, V_MUL( dv_vx, vforce));
+            V_INCR( p1_vvel_y, V_MUL( dv_vy, vforce));
+            V_INCR( p1_vvel_z, V_MUL( dv_vz, vforce));
 
             // add acceleration for p2 (with negative sign, as the direction is inverted)
-            *(__v4sf *) &(vel.x[j]) -= dv_vx * vforce;
-            *(__v4sf *) &(vel.y[j]) -= dv_vy * vforce;
-            *(__v4sf *) &(vel.z[j]) -= dv_vz * vforce;
+            SUB_V4(vel.x, j, V_MUL( dv_vx, vforce));
+            SUB_V4(vel.y, j, V_MUL( dv_vy, vforce));
+            SUB_V4(vel.z, j, V_MUL( dv_vz, vforce));
 
         }
 
@@ -175,6 +169,7 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 	    inverseSquareDistance += dv[2] * dv[2];
 	    inverseSquareDistance +=  + MIN_STEP2;
 
+	    /* compute acceleration */
             force = p1_mass * pos.mass[j] / inverseSquareDistance;
 
             // sum of accelerations for p1
@@ -212,18 +207,15 @@ void processFramePP(int start, int amount) {
 
 
     // create arrays, aligned to 16 bytes
-
-    pos.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    pos.x    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    pos.y    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    pos.z    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
     pos.mass = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    //memset(pos.x, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.y, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.z, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.mass, 0, sizeof(float) * (particles_max + 16));
+
     vel.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
     vel.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
     vel.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+
     memset(vel.x, 0, sizeof(float) * (particles_max + 16));
     memset(vel.y, 0, sizeof(float) * (particles_max + 16));
     memset(vel.z, 0, sizeof(float) * (particles_max + 16));

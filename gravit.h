@@ -224,8 +224,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 
 #ifndef WIN32
-#define _aligned_malloc(a,b) malloc(a)
-#define _aligned_free(a) free(a)
+//#define _aligned_malloc(a,b) malloc(a)
+//#define _aligned_free(a) free(a)
 #else
 #include <malloc.h>
 #include <memory.h>
