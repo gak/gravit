@@ -37,7 +37,7 @@ int initFrame() {
     cleanMemory();
 
 //	conAdd(LERR, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
-    state.particleHistory = _aligned_malloc(FRAMESIZE * state.historyFrames, 16);
+    state.particleHistory = malloc(FRAMESIZE * state.historyFrames);
 
     if (!state.particleHistory) {
 
@@ -53,7 +53,7 @@ int initFrame() {
     if (!state.particleDetail) {
 
         conAdd(LNORM, "Could not allocate %i bytes of memory for particleDetail", FRAMEDETAILSIZE);
-        _aligned_free(state.particleHistory);
+        free(state.particleHistory);
         state.memoryAllocated = 0;
         return 0;
 
