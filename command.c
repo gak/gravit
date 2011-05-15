@@ -485,12 +485,6 @@ restart:
                     needrestart = 1;
                 }
 
-                if (pd2->mass == 0) {
-                    conAdd(LERR, "Particle %i has no mass", j);
-                    pd2->mass = 1;
-                    needrestart = 1;
-                }
-
                 VectorSub(p1->pos, p2->pos, diff);
 #define MIN_STEP 0.001
                 if (fabs(diff[0]) < MIN_STEP && fabs(diff[1]) < MIN_STEP && fabs(diff[2]) < MIN_STEP) {
@@ -911,7 +905,11 @@ void cmdScreenshot(char *arg) {
 
         FILE *fp;
 
+#ifdef HAVE_PNG
+        fileName = va("%s/gravit%05u.png", SCREENSHOT_PATH, view.screenshotIndex++);
+#else
         fileName = va("%s/gravit%05u.bmp", SCREENSHOT_PATH, view.screenshotIndex++);
+#endif
         fp = fopen(fileName, "rb");
 
         if (!fp)
@@ -921,7 +919,11 @@ void cmdScreenshot(char *arg) {
 
     }
 
+#ifdef HAVE_PNG
+    png_save_surface(fileName, sdlSurfNormal);
+#else
     SDL_SaveBMP(sdlSurfNormal, fileName);
+#endif
 
     SDL_FreeSurface(sdlSurfUpsideDown);
     SDL_FreeSurface(sdlSurfNormal);

@@ -197,6 +197,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define VectorAdd(a,b,c) { c[0] = a[0] + b[0]; c[1] = a[1] + b[1]; c[2] = a[2] + b[2]; }
 #define VectorSub(a,b,c) { c[0] = a[0] - b[0]; c[1] = a[1] - b[1]; c[2] = a[2] - b[2]; }
 #define VectorMultiply(a, b, c) { c[0] = a[0] * b; c[1] = a[1] * b; c[2] = a[2] * b; }
+#define VectorMultiplyAdd(a, b, c) { c[0] += a[0] * b; c[1] += a[1] * b; c[2] += a[2] * b; }
 #define VectorDivide(a, b, c) { c[0] = a[0] / b; c[1] = a[1] / b; c[2] = a[2] / b; }
 #define VectorZero(x) { x[0] = 0; x[1] = 0; x[2] = 0; }
 
@@ -223,16 +224,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define Uint8 unsigned char
 #endif
 
-#ifndef WIN32
-//#define _aligned_malloc(a,b) malloc(a)
-//#define _aligned_free(a) free(a)
-#else
+#ifdef WIN32
 #include <malloc.h>
 #include <memory.h>
 #endif
 
-//#define _aligned_malloc(a,b) malloc(a)
-//#define _aligned_free(a) free(a)
 
 #define CONSOLE_HISTORY 10
 #define CONSOLE_LENGTH 255
@@ -610,6 +606,10 @@ char *findFile(char *file); // finds a file in gravit's search path
 int fileExists(char *file); // sees if a file is openable
 int checkHomePath();
 
+// png_save.c
+extern int png_save_surface(char *filename, SDL_Surface *surf);
+
+
 // spawn.c
 extern spawnVars_t spawnVars;
 int pickPositions();
@@ -667,6 +667,9 @@ void processCollisions();
 
 // frame-pp.c
 void processFramePP(int s, int n);
+
+// frame-pp_sse.c
+void processFramePP_SSE(int s, int n);
 
 // frame-ot.c
 typedef struct node_s {
