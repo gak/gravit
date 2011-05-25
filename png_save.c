@@ -183,5 +183,5 @@ int main(int argc, char **argv)
 #endif
 
 #else
-#warning no PNG support
+#pragma message( __FILE__ " : warning : define HAVE_PNG  to enable PNG screenshot support." )
 #endif
