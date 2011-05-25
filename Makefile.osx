@@ -1,9 +1,9 @@
 FINAL = gravit
-OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o
+OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o png_save.o
 
 CFLAGS = -g -O4 -Wall `sdl-config --cflags` 
 #ALDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs` 
-LDFLAGS = -L/usr/X11R6/lib -framework OpenGL -lSDL_ttf -lSDL_image `sdl-config --libs` 
+LDFLAGS = -L/usr/X11R6/lib -framework OpenGL -lSDL_ttf -lSDL_image `sdl-config --libs` -lpng
 INSTALL=/bin/install
 
 all: final

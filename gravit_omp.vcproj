@@ -57,7 +57,7 @@
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="../include;../include/SDL"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				StringPooling="true"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="0"
@@ -88,7 +88,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua+Lib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib vcomp.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib vcomp.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit_omp.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -165,7 +165,7 @@
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="../include;../include/SDL"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				StringPooling="true"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="0"
@@ -196,7 +196,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua+Lib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib vcomp.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib vcomp.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit_omp.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -267,7 +267,7 @@
 				Optimization="0"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="../include;../include/SDL"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -297,7 +297,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua+Lib.lib Gdi32.lib Advapi32.lib User32.lib msvcrtd.lib vcompd.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrtd.lib vcompd.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit-debug_omp.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -370,7 +370,7 @@
 				Optimization="0"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="../include;../include/SDL"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -400,7 +400,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua+Lib.lib Gdi32.lib Advapi32.lib User32.lib msvcrtd.lib vcompd.lib SDL.lib SDLmain.lib SDL_ttf.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrtd.lib vcompd.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit-debug_omp.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -735,6 +735,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\frame-pp_sse.c"
+				>
+			</File>
+			<File
 				RelativePath="frame.c"
 				>
 				<FileConfiguration
@@ -949,6 +953,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\png_save.c"
+				>
 			</File>
 			<File
 				RelativePath="spawn.c"
