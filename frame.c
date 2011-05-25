@@ -23,7 +23,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifdef _OPENMP
 #include <omp.h>
+
+#pragma message("OpenMP optimized multithreading enabled.")
+#else
+#if (!defined(WIN32) || defined(USE_PTHREAD))
+#pragma message("pthreads multithreading enabled.")
+#else
+#pragma message( __FILE__ " : warning : multithreading not availeable.")
 #endif
+#endif
+
 
 int initFrame() {
 
@@ -37,7 +46,7 @@ int initFrame() {
     cleanMemory();
 
 //	conAdd(LERR, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
-    state.particleHistory = malloc(FRAMESIZE * state.historyFrames);
+    state.particleHistory = calloc(FRAMESIZE, state.historyFrames);
 
     if (!state.particleHistory) {
 
@@ -92,7 +101,11 @@ void processFrameThread(int thread) {
 #if NBODY_METHOD == METHOD_OT
     processFrameOT(sliceStart, sliceEnd);
 #else
+#ifdef HAVE_SSE
+    processFramePP_SSE(sliceStart, sliceEnd);
+#else
     processFramePP(sliceStart, sliceEnd);
+#endif
 #endif
     
 }

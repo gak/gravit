@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
+#if HAVE_SSE
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -65,7 +67,7 @@ typedef struct {
 static const __v128 vmin_step2 = _mm_init1_ps(MIN_STEP2);
 
 //static void __attribute__((hot)) 
-static void do_processFramePP(particle_vectors pos, vel_vectors vel, 
+static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel, 
                               int start, int amount) {
      int i;
 
@@ -181,7 +183,6 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
             vel.x[j] -= dv[0] * force;
             vel.y[j] -= dv[1] * force;
             vel.z[j] -= dv[2] * force;
-
         }
 
 
@@ -196,7 +197,7 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 
 
 
-void processFramePP(int start, int amount) {
+void processFramePP_SSE(int start, int amount) {
     particle_vectors pos;
     vel_vectors vel;
     particle_t *framebase = state.particleHistory + state.particleCount*state.frame;
@@ -206,7 +207,7 @@ void processFramePP(int start, int amount) {
     particles_max = state.particleCount;
 
 
-    // create arrays, aligned to 16 bytes
+    // create arrays aligned to 16 bytes
     pos.x    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
     pos.y    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
     pos.z    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
@@ -232,7 +233,7 @@ void processFramePP(int start, int amount) {
 
 
     // calculate new accelerations
-    do_processFramePP(pos, vel, start, amount);
+    do_processFramePP_SSE(pos, vel, start, amount);
 
 
     // write back results
@@ -255,3 +256,7 @@ void processFramePP(int start, int amount) {
     _mm_free(vel.z);
 
 }
+
+#else
+#pragma message( __FILE__ " : warning : define HAVE_SSE  to enable SSE support." )
+#endif

@@ -2,17 +2,24 @@
 
 #ifndef __GNUC__
 /* ******************************************************************* */
+// no GCC
 #include <xmmintrin.h>
+#define __v128 __m128
+#define _mm_init1_ps(f) {f, f, f, f}
 
 #ifdef _MSC_VER
 // microsoft specific
+
+//#if (defined(_M_IX86_FP) && (_M_IX86_FP >= 1)) || defined(_M_X64) || defined(_M_AMD64)
+//#define __SSE__
+//#define __SSE2__
+//#endif
+
 #define ALWAYS_INLINE(ret_type) static __forceinline ret_type 
+
 #else
 #define ALWAYS_INLINE(ret_type) static inline ret_type 
 #endif
-
-#define __v128 __m128
-#define _mm_init1_ps(f) {f, f, f, f}
 
 #else
 /* ******************************************************************* */
