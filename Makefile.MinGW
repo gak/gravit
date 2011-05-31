@@ -9,7 +9,7 @@ DESTDIR=bin32/
 
 # -------------------------------
 
-OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o lua.o gravitrc.o
+OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o lua.o png_save.o gravitrc.o
 
 
 # -------------------------------
@@ -18,15 +18,14 @@ OBJS = 	main.o font.o frame.o frame-pp.o frame-ot.o gfx.o input.o console.o osd.
 P4C2opt=-mtune=core2 -march=core2 \
 	-msse -msse2 -msse3 -mssse3 -mfpmath=sse \
 	-fomit-frame-pointer -momit-leaf-frame-pointer \
-	-floop-optimize -funsafe-loop-optimizations -Wunsafe-loop-optimizations
+	-floop-optimize -funsafe-loop-optimizations -Wunsafe-loop-optimizations \
+	-malign-stringops \
+	-falign-functions=6 \
+	-falign-loops=6 \
+	-falign-jumps=6
 
-#	-malign-stringops
-#	-minline-stringops-dynamically \
-# 	-mfpmath=sse \
 #	-mpreferred-stack-boundary=6 \
-#	-falign-functions=6 \
-#	-falign-loops=6 \
-#	-falign-jumps=6
+#	-minline-stringops-dynamically \
 #	-mstackrealign
 
 
@@ -46,7 +45,7 @@ X64opt= -mtune=corei7 -march=corei7 \
 
 # -------------------------------
 
-CFLAGS = -DWITH_LUA -DHAVE_LUA -DUSE_PTHREAD \
+CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
 	 -I../include$(ARCH)  -I../include$(ARCH)/SDL \
 	 -D_GNU_SOURCE=1 -Dmain=SDL_main \
 	 -O4 -ffast-math \
@@ -56,7 +55,7 @@ LDFLAGS = -L../lib$(ARCH)
 
 LDLIBS =  -lSDL_ttf -lSDL_image -llua -llualib \
 	  -lGLU32 -lopenGL32 \
-	  -lmingw32 -lSDLmain -lSDL -mwindows  -lwinmm -ldxguid \
+	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lwinmm -ldxguid \
 	  -lpthread
 
 INSTALL=cp

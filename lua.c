@@ -62,8 +62,9 @@ void luaHandleError() {
 
     conAdd(LNORM, "Stack size: %i", lua_gettop(state.lua));
 
-    const char *err = lua_tostring(state.lua, -1);
-    conAdd(LERR, "%s", err);
+    //const char *err = lua_tostring(state.lua, -1);
+    //conAdd(LERR, "%s", err);
+    conAdd(LERR, "%s", lua_tostring(state.lua, -1));
     lua_pop(state.lua, 1);
     
 }
@@ -124,12 +125,13 @@ void luag_TableToVector(lua_State *L, float *v) {
 int luag_load(lua_State *L) {
     
     char *s = (char*)lua_tostring(L, -1);
+    char *f;
     conAdd(1, s);
     lua_pop(L, 1);
     
     s = va("spawn/%s", s);
     
-    char *f = findFile(s);
+    f = findFile(s);
     conAdd(1, f);
     
     luaExecute(findFile(f));
@@ -189,5 +191,7 @@ int luag_log(lua_State *L) {
 
 }
 
+#else
+#pragma message( __FILE__ " : warning : define HAVE_LUA   to enable LUA spawn script support." )
 #endif
 
