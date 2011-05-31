@@ -125,7 +125,7 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
         return;
 
     view.recordNodes++;
-    n->b[br] = _aligned_malloc(sizeof(node_t), 16);
+    n->b[br] = malloc(sizeof(node_t));
     b = (node_t *)n->b[br];
 
     memset(b, 0, sizeof(node_t));
@@ -297,7 +297,7 @@ void otMakeTree() {
     node_t *n;
 
     // make root node
-    r = _aligned_malloc(sizeof(node_t), 16);
+    r = malloc(sizeof(node_t));
     memset(r, 0, sizeof(node_t));
     view.recordNodes = 1;
 
@@ -334,7 +334,7 @@ void otFreeTreeRecursive(node_t *n) {
 
     }
 
-    _aligned_free(n);
+    free(n);
     view.recordNodes--;
 
 }

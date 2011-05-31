@@ -16,8 +16,12 @@ function spawn()
 		local rad = randomfloat(50, 1000)
 		local massmin = randomfloat(10,1000)
 		local massmax = randomfloat(10,1000)
-		local particlestart = spawnparticles/galaxies*i
-		local particlecount = spawnparticles/galaxies
+		local particlestart = math.floor(spawnparticles/galaxies)*i
+		local particlecount = math.floor(spawnparticles/galaxies)
+		if (i == galaxies-1) then 
+		      particlecount = spawnparticles - particlestart
+		end
+
 		makegalaxy(pos, vel, rad, massmin, massmax, particlestart, particlecount)
 	end
 end

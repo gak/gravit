@@ -14,7 +14,7 @@ function spawn()
 	masses = 100
 	range = 2000
 	speed = 5
-	makegalaxy(v(-range,0,0), v(speed,0,0), randomfloat(10,1000), 0, masses, 0, spawnparticles/2)
-	makegalaxy(v(range,0,0), v(-speed,0,0), randomfloat(10,1000), 0, -masses, spawnparticles/2, spawnparticles/2)
+	makegalaxy(v(-range,0,0), v(speed,0,0), randomfloat(10,1000), 0, masses, 0, math.floor(spawnparticles/2))
+	makegalaxy(v(range,0,0), v(-speed,0,0), randomfloat(10,1000), 0, -masses, math.floor(spawnparticles/2), spawnparticles - math.floor(spawnparticles/2))
 	
 end

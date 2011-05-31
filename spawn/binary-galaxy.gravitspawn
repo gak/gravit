@@ -17,7 +17,7 @@ function spawn()
 	local ballsize1 = randomfloat(500,1000)
 	local ballsize2 = randomfloat(500,1000)
 
-	makegalaxy(v(0,dist,0), v(-vel,0,0), ballsize1, mass1min, mass1max, 0, spawnparticles/2)
-	makegalaxy(v(0,-dist,0), v(vel,0,0), ballsize2, mass2min, mass2max, spawnparticles/2, spawnparticles/2)
+	makegalaxy(v(0,dist,0), v(-vel,0,0), ballsize1, mass1min, mass1max, 0, math.floor(spawnparticles/2))
+	makegalaxy(v(0,-dist,0), v(vel,0,0), ballsize2, mass2min, mass2max, math.floor(spawnparticles/2), spawnparticles - math.floor(spawnparticles/2))
 	
 end
