@@ -85,6 +85,8 @@ int luaExecute(char *f) {
         conAdd(LERR, "Unknown Lua error: %i", ret);
         return 0;
     }
+
+    view.recordParticlesDone = 0;
     
     ret = lua_pcall(state.lua, 0, 0, 0);
     if (ret == 0)
@@ -175,6 +177,7 @@ int luag_spawn(lua_State *L) {
     VectorCopy(vel, p->vel);
     pd->mass = mass;
 
+    view.recordParticlesDone = id;
     doVideoUpdateInSpawn();
 
     return 0;
