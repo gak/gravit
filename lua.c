@@ -177,7 +177,7 @@ int luag_spawn(lua_State *L) {
     VectorCopy(vel, p->vel);
     pd->mass = mass;
 
-    view.recordParticlesDone = id;
+    view.recordParticlesDone++;
     doVideoUpdateInSpawn();
 
     return 0;
