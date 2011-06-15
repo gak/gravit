@@ -66,7 +66,7 @@ function rotatevector(pos, theta, around)
 	local result = v(0,0,0)
 
 	-- fixme: Quaternion rotation only works properly when "around" has scalar size 1
-	-- around = around * 1 / vlength(around)
+	-- around = around * (1.0 / vlength(around))
 
 	local costheta = math.cos(theta)
 	local sintheta = math.sin(theta)
