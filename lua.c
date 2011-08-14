@@ -32,12 +32,22 @@ int luaInit() {
         conAdd(LERR, "Error loading LUA");
         return 0;
     }
-    
+
+#if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM > 500
+    //new API for LUA 5.1.x and newer
     luaL_openlibs(state.lua);
     luaopen_base(state.lua);
     luaopen_table(state.lua);
     luaopen_string(state.lua);
     luaopen_math(state.lua);
+#else
+    //old API for LUA 5.0.x
+    luaopen_base(state.lua);
+    luaopen_io(state.lua);
+    luaopen_table(state.lua);
+    luaopen_string(state.lua);
+    luaopen_math(state.lua);
+#endif
 
 #define AddFunction(a,b) lua_pushcfunction(state.lua, b); lua_setglobal(state.lua, a);
 
