@@ -17,7 +17,7 @@
 # * added acinclude
 # * windres support (windows resources)
 # * Fixed LUA detection      (LUA >= 5.1 does not need lualib)
-# * Fix GL and GLU detection (other lib names required on Win32) - copy from SDL or SDL_ttf
+# * Fix GL and GLU detection (other lib names required on Win32) - borrowed from SDL_ttf
 #
 # ===============================================================================================
 
@@ -89,6 +89,10 @@ fi
 AC_SUBST(WINDRES)
 AM_CONDITIONAL(USE_ICON_RC, test x$use_icon_rc = xtrue)
 
+dnl Call in pkg-config explicitly, so we can safely put the first
+dnl PKG_CHECK_EXISTS inside an if
+PKG_PROG_PKG_CONFIG
+
 
 dnl Check for SDL
 SDL_VERSION=1.2.10
@@ -98,7 +102,6 @@ CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
 # Checks for libraries.
-AC_CHECK_LIB([SDL], [SDL_Init], [], [AC_MSG_ERROR(SDL is required)])
 AC_CHECK_LIB([SDL_image], [IMG_Load], [], [AC_MSG_ERROR(SDL_image is required)])
 AC_CHECK_LIB([SDL_ttf], [TTF_Init], [], [AC_MSG_ERROR(SDL_ttf is required)])
 
@@ -164,14 +167,30 @@ AC_ARG_WITH(lua, AC_HELP_STRING([--with-lua], [LUA support for custom spawn loca
 AC_MSG_RESULT($WITH_LUA)
 if test "$WITH_LUA" != "no"; then
  AM_CONDITIONAL(LUA, true)
- AC_PATH_PROG(LUACONFIG, lua-config)
 
+ #try lua-config
+ AC_PATH_PROG(LUACONFIG, lua-config)
  if test x"$LUACONFIG" != x; then
    LUA_CFLAGS=`$LUACONFIG --include`
    LUA_LIBS=`$LUACONFIG --libs --extralibs`
    AC_DEFINE([HAVE_LUA], [1], [liblua])
    AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
  else
+
+   #try pkgconfig
+   PKG_CHECK_EXISTS([lua5.1], [have_lua=yes], [have_lua=no])
+   if test x$have_lua = xyes
+   then
+       PKG_CHECK_MODULES(LUA,lua5.1,,[have_lua=no])
+   else
+       PKG_CHECK_EXISTS([lua], [have_lua=yes], [have_lua=no])
+       if test x$have_lua = xyes
+       then
+           PKG_CHECK_MODULES(LUA,lua >= 5.0,,[have_lua=no])
+       fi
+   fi
+
+   if test x"$LUA_LIBS" = x; then
    # try LUA51
    AC_CHECK_LIB(lua51, lua_close, [
      AC_CHECK_HEADERS([lua.h],[
@@ -180,6 +199,10 @@ if test "$WITH_LUA" != "no"; then
        AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
      ])
    ])
+   else
+     AC_DEFINE([HAVE_LUA], [1], [liblua])
+     AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+   fi
 
    if test x"$LUA_LIBS" = x; then
      # try LUA 5.1
@@ -212,11 +235,8 @@ if test "$WITH_LUA" != "no"; then
  fi
 
  if test x"$LUA_LIBS" = x; then
-   # try pkgconfig
-   PKG_CHECK_MODULES(LUA, lua >= 5.0, [
-     AC_DEFINE([HAVE_LUA], [1], [liblua])
-     AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-   ])
+   # show error
+   AC_MSG_ERROR(LUA was not found)
  fi
 
  AC_SUBST(LUA_CFLAGS)

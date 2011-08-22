@@ -26,7 +26,7 @@ EXTRA_gravit_SOURCES += lua.c
 gravit_LDADD += lua.o $(LUA_LIBS)
 endif
 
-AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATA_DIR=\"$(datadir)\" -g -O4 -Wall $(LUA_CFLAGS)
+AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" -g -O4 -Wall $(LUA_CFLAGS)
 
 
 # Rule to build windows resources
