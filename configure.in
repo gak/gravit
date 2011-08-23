@@ -1,15 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-
 # ===============================================================================================
 # ToDo (FrMo):
 # -------------
-#
-# * support for new features (-DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD)
-#   - Detect libPNG         and define -DHAVE_PNG
-#   - Detect SSE support    and define -DHAVE_SSE
-#   - Detect OpenMP support and add -fopenmp to CFLAGS and LDFLAGS 
+# * nothing ;-)
 #
 # Changes (FrMo, Aug 2011):
 # -------------
@@ -18,6 +13,10 @@
 # * windres support (windows resources)
 # * Fixed LUA detection      (LUA >= 5.1 does not need lualib)
 # * Fix GL and GLU detection (other lib names required on Win32) - borrowed from SDL_ttf
+# * support for new features (-DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD)
+#   - Detect OpenMP support and add -fopenmp to CFLAGS and LDFLAGS 
+#   - Detect SSE support    and define -DHAVE_SSE
+#   - Detect libPNG         and define -DHAVE_PNG
 #
 # ===============================================================================================
 
@@ -47,8 +46,10 @@ LIBS="$LIBS $X_LIBS"
 
 # check for OpenMP support
 AX_OPENMP
-CFLAGS="$CFLAGS $OPENMP_CFLAGS"
-LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
+AC_CHECK_HEADERS([omp.h],[
+	CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+	LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
+     ])
 
 # check for supported SIMD extensions (gcc specific)
 # if SSE is supported, HAVE_SSE will be set
@@ -251,6 +252,32 @@ if test "$WITH_LUA" != "no"; then
 else
  AM_CONDITIONAL(LUA, false)
 fi
+
+
+dnl Check for libpng - borrowed from SDL_image
+AC_ARG_WITH(png, AC_HELP_STRING([--with-png], [use PNG format for screenshots (recommended)]), [enable_png=$withval], [enable_png=yes])
+if test "x$enable_png" = xyes; then
+    PKG_CHECK_MODULES([LIBPNG], [libpng], [dnl
+        have_png_hdr=yes
+        CFLAGS="$CFLAGS $LIBPNG_CFLAGS"
+	LIBS="$LIBS $LIBPNG_LIBS"
+        have_png_lib=yes
+        AC_DEFINE([HAVE_PNG], [1], [libpng])
+      ], [dnl
+        AC_CHECK_HEADER([png.h], [have_png_hdr=yes])
+        AC_CHECK_LIB([png], [png_destroy_write_struct], [have_png_lib=yes], [], [-lz])
+   	if test x"$have_png_lib" = xyes; then
+	   LIBS="$LIBS -lpng -lz"
+           AC_DEFINE([HAVE_PNG], [1], [libpng])
+	fi
+      ])
+
+   if test x"$have_png_hdr" = x; then
+      AC_MSG_WARN([*** Unable to find PNG library (http://www.libpng.org/pub/png/libpng.html)])
+      AC_MSG_WARN([PNG screenshot support disabled])
+   fi
+fi
+
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
