@@ -125,9 +125,8 @@ void drawOSD() {
             y += fontHeight;
             y = drawFontWord(x, y, "SPAWNING");
 
-            // This doesn't work since i've added lua
-            // DUHC();
-            // DUH("status", va("%.1f%%", (float)view.recordParticlesDone/state.particleCount*100));
+            DUHC();
+            DUH("status", va("%.1f%%", (float)view.recordParticlesDone/state.particleCount*100));
 
         }
 

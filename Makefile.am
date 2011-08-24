@@ -6,20 +6,30 @@ miscdir=@datadir@/gravit/data
 # path to .gravitspawn files
 spawndir=@datadir@/gravit/spawn
 
+misc_DATA =$(shell echo data/*)
+spawn_DATA =$(shell echo spawn/*)
+
 bin_PROGRAMS=gravit
 gravit_SOURCES=color.c command.c command.h config.c console.c font.c font.h fps.c frame-ot.c frame-pp.c frame-pp_sse.c frame.c gfx.c gravit.h input.c main.c osd.c sdlk.h spawn.c texture.c timer.c tool.c png_save.c
-EXTRA_DIST=README COPYING gravit.cfg demo.cfg screensaver.cfg ChangeLog Makefile.old $(shell ls data/*) $(shell ls spawn/*)
+EXTRA_DIST=README COPYING gravit.cfg demo.cfg screensaver.cfg ChangeLog Makefile.old $(misc_DATA) $(spawn_DATA)
 sysconf_DATA = gravit.cfg screensaver.cfg
-misc_DATA = $(shell ls data/*)
-spawn_DATA = $(shell ls spawn/*)
 
-if LUA
-EXTRA_gravit_SOURCES = lua.c
-gravit_LDADD = lua.o $(LUA_LIBS)
-else
-EXTRA_gravit_SOURCES =
-gravit_LDADD =
+EXTRA_gravit_SOURCES=
+gravit_LDADD=
+
+if USE_ICON_RC
+gravit_LDADD += gravitrc.o
 endif
 
-AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)\" -DDATA_DIR=\"$(datadir)\" -g -O4 -Wall $(LUA_CFLAGS)
+if LUA
+EXTRA_gravit_SOURCES += lua.c
+gravit_LDADD += lua.o $(LUA_LIBS)
+endif
 
+AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" -O3 -Wall $(LUA_CFLAGS)
+
+
+# Rule to build windows resources
+#%.o : %.rc
+gravitrc.o: gravit.rc
+	$(WINDRES) $< $@
