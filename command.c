@@ -411,7 +411,7 @@ cmdSpawnRestartSpawning:
     state.mode = 0;
 
     state.particleCount = state.particlesToSpawn;
-    state.historyFrames = (int)((float)(state.memoryAvailable * 1024 * 1024) / FRAMESIZE);
+    state.historyFrames = (unsigned int)(((size_t)state.memoryAvailable * 1024 * 1024) / (size_t)FRAMESIZE);
 
     if (!initFrame()) {
         conAdd(LERR, "Could not init frame");
