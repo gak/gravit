@@ -1,9 +1,8 @@
-#!/bin/sh -x
+#!/bin/sh
 
-aclocal
+aclocal -I acinclude
 autoheader
-automake --add-missing
+automake --foreign --include-deps --add-missing --copy
 autoconf
 
-set +x
 echo "Now you are ready to run ./configure"

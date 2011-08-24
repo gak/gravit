@@ -1,49 +1,172 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
+# ===============================================================================================
+# ToDo (FrMo):
+# -------------
+# * nothing ;-)
+#
+# Changes (FrMo, Aug 2011):
+# -------------
+# * minor updates needed for newer autoconf versions
+# * added acinclude
+# * windres support (windows resources)
+# * Fixed LUA detection      (LUA >= 5.1 does not need lualib)
+# * Fix GL and GLU detection (other lib names required on Win32) - borrowed from SDL_ttf
+# * support for new features (-DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD)
+#   - Detect OpenMP support and add -fopenmp to CFLAGS and LDFLAGS 
+#   - Detect SSE support    and define -DHAVE_SSE
+#   - Detect libPNG         and define -DHAVE_PNG
+#
+# ===============================================================================================
+
+
 AC_PREREQ(2.59)
-AC_INIT(gravit, 0.4.2, gravit@slowchop.com)
+AC_INIT(gravit, 0.5.2, gravit@slowchop.com)
 AC_CONFIG_SRCDIR([config.c])
 AC_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE
+
+dnl Detect the canonical build and host environments
+AC_CANONICAL_HOST
+
+dnl Setup for automake
+AM_INIT_AUTOMAKE(gravit, 0.5.2)
 
 # Checks for programs.
 AC_PROG_CC
+AC_EXEEXT
 AC_PROG_INSTALL
+AC_PROG_MAKE_SET
 
 AC_PATH_XTRA
 
 CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 LIBS="$LIBS $X_LIBS"
 
+
+# check for OpenMP support
+AX_OPENMP
+AC_CHECK_HEADERS([omp.h],[
+	CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+	LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
+     ])
+
+# check for supported SIMD extensions (gcc specific)
+# if SSE is supported, HAVE_SSE will be set
+AX_EXT
+CFLAGS="$CFLAGS $SIMD_FLAGS"
+LDFLAGS="$LDFLAGS $SIMD_FLAGS"
+
+
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
+AC_HEADER_TIME
 AC_CHECK_HEADERS([stdlib.h string.h sys/time.h sys/timeb.h termios.h unistd.h])
+
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
-AC_HEADER_TIME
+AC_C_RESTRICT
+AC_TYPE_SIZE_T
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+
 
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
+AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([ftime memset mkdir pow select sqrt strerror strstr])
+AC_CHECK_FUNCS([atexit floor ftime memset mkdir pow select sqrt strchr strdup strerror strstr])
 
-AM_PATH_SDL(1.2.6, [], [AC_MSG_ERROR(SDL is required for Gravit)])
+
+# check for windres (windows ressource compiler)
+if test -z "$host_alias"; then
+    hostaliaswindres=
+else
+    hostaliaswindres="$host_alias-windres"
+fi
+AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
+if test x$WINDRES != x; then
+     use_icon_rc=true
+fi
+AC_SUBST(WINDRES)
+AM_CONDITIONAL(USE_ICON_RC, test x$use_icon_rc = xtrue)
+
+dnl Call in pkg-config explicitly, so we can safely put the first
+dnl PKG_CHECK_EXISTS inside an if
+PKG_PROG_PKG_CONFIG
+
+
+dnl Check for SDL
+SDL_VERSION=1.2.10
+AC_SUBST(SDL_VERSION)
+AM_PATH_SDL($SDL_VERSION, :, [AC_MSG_ERROR(SDL is required for Gravit)])
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
 # Checks for libraries.
-AC_CHECK_LIB([GL], [glBegin], [], [AC_MSG_ERROR(GL is required)])
-AC_CHECK_LIB([GLU], [gluLookAt], [], [AC_MSG_ERROR(GLU is required)])
-AC_CHECK_LIB([SDL], [SDL_Init], [], [AC_MSG_ERROR(SDL is required)])
 AC_CHECK_LIB([SDL_image], [IMG_Load], [], [AC_MSG_ERROR(SDL_image is required)])
 AC_CHECK_LIB([SDL_ttf], [TTF_Init], [], [AC_MSG_ERROR(SDL_ttf is required)])
+
+
+dnl Check for OpenGL - borrowed from SDL_ttf
+case "$host" in
+    *-*-cygwin* | *-*-mingw*)
+        MATHLIB=""
+        SYS_GL_LIBS="-lopengl32 -lglu32"
+        ;;
+    *-*-beos*)
+        MATHLIB=""
+        SYS_GL_LIBS="-lGL -lGLU"
+        ;;
+    *-*-darwin*)
+        MATHLIB=""
+	# cocoa video
+        SYS_GL_LIBS="-Wl,-framework,OpenGL"
+	# carbon video
+        #SYS_GL_LIBS="-Wl,-framework,AGL"
+        ;;
+    *-*-aix*)
+        if test x$ac_cv_prog_gcc = xyes; then
+            CFLAGS="-mthreads"
+	fi
+        SYS_GL_LIBS=""
+        ;;
+    *)
+        MATHLIB="-lm"
+        AC_PATH_X
+        AC_PATH_XTRA
+        if test x$have_x = xyes; then
+            CFLAGS="$CFLAGS $X_CFLAGS"
+            SYS_GL_LIBS="$X_LIBS -lGL -lGLU"
+        else
+            SYS_GL_LIBS="-lGL -lGLU"
+        fi
+        ;;
+esac
+AC_MSG_CHECKING(for OpenGL support)
+have_opengl=no
+AC_TRY_COMPILE([
+ #include "SDL_opengl.h"
+],[
+ GLuint texture;
+],[
+have_opengl=yes
+])
+AC_MSG_RESULT($have_opengl)
+if test x$have_opengl = xyes; then
+    GL_LIBS="$SYS_GL_LIBS"
+else
+    GL_LIBS=""
+    AC_MSG_ERROR(GL is required)
+fi
+LIBS="$LIBS $SYS_GL_LIBS $MATHLIB"
+
 
 dnl Check for lua - borrowed from lighttpd
 AC_MSG_CHECKING(if lua support is requested)
@@ -52,29 +175,76 @@ AC_ARG_WITH(lua, AC_HELP_STRING([--with-lua], [LUA support for custom spawn loca
 AC_MSG_RESULT($WITH_LUA)
 if test "$WITH_LUA" != "no"; then
  AM_CONDITIONAL(LUA, true)
- AC_PATH_PROG(LUACONFIG, lua-config)
 
+ #try lua-config
+ AC_PATH_PROG(LUACONFIG, lua-config)
  if test x"$LUACONFIG" != x; then
    LUA_CFLAGS=`$LUACONFIG --include`
    LUA_LIBS=`$LUACONFIG --libs --extralibs`
    AC_DEFINE([HAVE_LUA], [1], [liblua])
    AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
  else
-   AC_CHECK_LIB(lua, lua_open, [
+
+   #try pkgconfig
+   PKG_CHECK_EXISTS([lua5.1], [have_lua=yes], [have_lua=no])
+   if test x$have_lua = xyes
+   then
+       PKG_CHECK_MODULES(LUA,lua5.1,,[have_lua=no])
+   else
+       PKG_CHECK_EXISTS([lua], [have_lua=yes], [have_lua=no])
+       if test x$have_lua = xyes
+       then
+           PKG_CHECK_MODULES(LUA,lua >= 5.0,,[have_lua=no])
+       fi
+   fi
+
+   if test x"$LUA_LIBS" = x; then
+   # try LUA51
+   AC_CHECK_LIB(lua51, lua_close, [
      AC_CHECK_HEADERS([lua.h],[
-       LUA_LIBS="-llua -llualib"
-       AC_DEFINE([HAVE_LUA], [1], [liblua])
+       LUA_LIBS="-llua51"
+       AC_DEFINE([HAVE_LUA], [1], [liblua51])
        AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
      ])
    ])
+   else
+     AC_DEFINE([HAVE_LUA], [1], [liblua])
+     AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+   fi
+
+   if test x"$LUA_LIBS" = x; then
+     # try LUA 5.1
+     AC_CHECK_LIB(lua5.1, lua_close, [
+       AC_CHECK_HEADERS([lua.h],[
+         LUA_LIBS="-llua5.1"
+         AC_DEFINE([HAVE_LUA], [1], [liblua5.1])
+         AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+       ])
+     ])
+   fi
+
+   if test x"$LUA_LIBS" = x; then
+     # try old LUA API
+     AC_CHECK_LIB(lua, lua_close, [
+       AC_CHECK_HEADERS([lua.h],[
+         LUA_LIBS="-llua"
+         AC_DEFINE([HAVE_LUA], [1], [liblua])
+         AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+       ])
+     ])
+   fi
+   # do we need lualib ?
+   AC_CHECK_LIB(lualib, luaopen_base, [
+     AC_CHECK_HEADERS([lualib.h],[
+       LUA_LIBS="$LUA_LIBS -llualib"
+       AC_DEFINE([NEED_LUALIB], [1], [liblualib])
+     ])
+   ], [], [$LUA_LIBS])
  fi
 
  if test x"$LUA_LIBS" = x; then
-   # try pkgconfig
-   PKG_CHECK_MODULES(LUA, lua >= 5.0, [
-     AC_DEFINE([HAVE_LUA], [1], [liblua])
-     AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-   ])
+   # show error
+   AC_MSG_ERROR(LUA was not found)
  fi
 
  AC_SUBST(LUA_CFLAGS)
@@ -82,6 +252,32 @@ if test "$WITH_LUA" != "no"; then
 else
  AM_CONDITIONAL(LUA, false)
 fi
+
+
+dnl Check for libpng - borrowed from SDL_image
+AC_ARG_WITH(png, AC_HELP_STRING([--with-png], [use PNG format for screenshots (recommended)]), [enable_png=$withval], [enable_png=yes])
+if test "x$enable_png" = xyes; then
+    PKG_CHECK_MODULES([LIBPNG], [libpng], [dnl
+        have_png_hdr=yes
+        CFLAGS="$CFLAGS $LIBPNG_CFLAGS"
+	LIBS="$LIBS $LIBPNG_LIBS"
+        have_png_lib=yes
+        AC_DEFINE([HAVE_PNG], [1], [libpng])
+      ], [dnl
+        AC_CHECK_HEADER([png.h], [have_png_hdr=yes])
+        AC_CHECK_LIB([png], [png_destroy_write_struct], [have_png_lib=yes], [], [-lz])
+   	if test x"$have_png_lib" = xyes; then
+	   LIBS="$LIBS -lpng -lz"
+           AC_DEFINE([HAVE_PNG], [1], [libpng])
+	fi
+      ])
+
+   if test x"$have_png_hdr" = x; then
+      AC_MSG_WARN([*** Unable to find PNG library (http://www.libpng.org/pub/png/libpng.html)])
+      AC_MSG_WARN([PNG screenshot support disabled])
+   fi
+fi
+
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

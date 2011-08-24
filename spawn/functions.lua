@@ -22,25 +22,51 @@ function randomint(min,max)
 	return math.random(min,max)
 end
 
+-- scalar size of a vector
+function vlength(v1)
+	return math.sqrt((v1.x * v1.x) + (v1.y * v1.y) + (v1.z * v1.z))
+end
+
+-- scalar distance between two vectors
 function distance(v1,v2)
 	return math.sqrt((v1.x-v2.x)^2 + (v1.y-v2.y)^2 + (v1.z-v2.z)^2)
 end
 
+-- slow and buggy
+-- function randomrange(radius)
+--      ????
+--	local bigrange = radius * math.pi
+--	local origin = v(0,0,0)
+--	local pos
+--	local d
+--	repeat
+--		pos = v(randomfloat(-bigrange,bigrange),randomfloat(-bigrange,bigrange),randomfloat(-bigrange,bigrange))
+--		d = distance(pos, origin)
+--	until d < radius
+--	return pos
+-- end
+
 function randomrange(radius)
-	local bigrange = radius * math.pi
-	local origin = v(0,0,0)
 	local pos
-	local d
+	local d2
 	repeat
-		pos = v(randomfloat(-bigrange,bigrange),randomfloat(-bigrange,bigrange),randomfloat(-bigrange,bigrange))
-		d = distance(pos, origin)
-	until d < radius
-	return pos
+	        -- pick random position from cube(-1,1)
+		pos = v(randomfloat(-1,1), randomfloat(-1,1), randomfloat(-1,1))
+		-- d2 = square distance to v(0,0,0)
+		d2 = pos.x*pos.x + pos.y*pos.y + pos.z*pos.z
+                -- repeat util pos is inside a ball of radius 1
+	until d2 < 1
+	-- scale to target radius
+	return pos * radius
 end
+
 
 function rotatevector(pos, theta, around)
 
 	local result = v(0,0,0)
+
+	-- fixme: Quaternion rotation only works properly when "around" has scalar size 1
+	-- around = around * (1.0 / vlength(around))
 
 	local costheta = math.cos(theta)
 	local sintheta = math.sin(theta)

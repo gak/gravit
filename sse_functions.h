@@ -1,4 +1,7 @@
 
+//define this to sacrify accuracy for speed (up to 40% faster)
+//#define SPEED_SPEED_SPEED
+
 
 #ifndef __GNUC__
 /* ******************************************************************* */
@@ -14,17 +17,23 @@
 //#define __SSE__
 //#define __SSE2__
 //#endif
-
 #define ALWAYS_INLINE(ret_type) static __forceinline ret_type 
 
 #else
 #define ALWAYS_INLINE(ret_type) static inline ret_type 
 #endif
 
+
 #else
 /* ******************************************************************* */
 // use gcc extensions for SSE 
+#if (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) > 40500
+    // x86intrin.h availeable since gcc 4.5.0
 #include <x86intrin.h>
+#else
+#include <xmmintrin.h>
+#endif
+
 #include <mm_malloc.h>
 #define ALIGNED __attribute__((aligned (16))) 
 #define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__, __artificial__)) 
@@ -32,6 +41,7 @@
 typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
 #define _mm_init1_ps(f) {f, f, f, f}
 #endif
+
 
 
 /* ******************************************************************* */
@@ -93,6 +103,11 @@ static const __v128 _two4  = _mm_init1_ps(2.f);
 /*                            ret = 1/sqrt(v)  accuracy: approx. 22bit */
 /* ******************************************************************* */
 
+#ifdef SPEED_SPEED_SPEED
+// skip refinement step. accuracy: approx 10bit
+#define newtonrapson_rsqrt4( v ) _mm_rsqrt_ps( v )
+
+#else
 ALWAYS_INLINE(__v128) newtonrapson_rsqrt4( const __v128 v ) 
 {
   //  x = rsqrt_approx(v);
@@ -104,6 +119,8 @@ ALWAYS_INLINE(__v128) newtonrapson_rsqrt4( const __v128 v )
 		               V_SUB(_three4, 
 				          V_MUL( V_MUL(v, approx), approx) ) );
 }
+#endif
+
 
 
 /* ******************************************************************* */
@@ -111,14 +128,21 @@ ALWAYS_INLINE(__v128) newtonrapson_rsqrt4( const __v128 v )
 /*                            ret = 1/v        accuracy: approx. 22bit */
 /* ******************************************************************* */
 
+#ifdef SPEED_SPEED_SPEED
+// skip refinement step. accuracy: approx 10bit
+#define newtonrapson_rcp( v ) _mm_rcp_ps( v )
+
+#else
 ALWAYS_INLINE(__v128) newtonrapson_rcp(const __v128 v)
 {
   //  x = reciprocal_approx(v);
-  //  x' = x * (2 - x * v); --> x' = 2x - x( x*v) = (x+x) - x (x*v)
+  //  x' = x * (2 - x * v); 
+  //   --> x' = 2x - x( x*v) = (x+x) - x (x*v)
 
   __v128 r = _mm_rcp_ps(v);
   return (V_SUB( V_ADD(r, r), V_MUL( r, V_MUL(r, v))));
 }
+#endif
 
 
 
