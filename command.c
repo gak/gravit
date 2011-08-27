@@ -66,7 +66,7 @@ cmd_t cmd[] = {
     ,{ "spawn",						cmdSpawn,				NULL,						NULL,								NULL }
     ,{ "status",					cmdStatus,				NULL,						NULL,								NULL }
 
-    ,{ "recordingvideorefreshtime",	NULL,					NULL,						&view.recordingVideoRefreshTime,	NULL }
+    ,{ "recordingvideorefreshtime",	NULL,					NULL,						(int *)(&view.recordingVideoRefreshTime),	NULL }
 
     ,{ "screensaver",				NULL,					NULL,						&view.screenSaver,					NULL }
     ,{ "installscreensaver",		cmdInstallScreenSaver,	NULL,						NULL,								NULL }
