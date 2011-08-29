@@ -274,7 +274,9 @@ void setColoursByMass() {
 
 void setColours() {
 
-    switch (view.particleColourMode) {
+	if(state.particleHistory == NULL) return;
+
+	switch (view.particleColourMode) {
 
     case CM_MASS:
     default:

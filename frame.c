@@ -45,23 +45,23 @@ int initFrame() {
 
     cleanMemory();
 
-//	conAdd(LERR, "Allocating %i bytes", FRAMESIZE * state.historyFrames);
+//	conAdd(LERR, "Allocating %u bytes", FRAMESIZE * state.historyFrames);
     state.particleHistory = calloc(FRAMESIZE, state.historyFrames);
 
     if (!state.particleHistory) {
 
-        conAdd(LNORM, "Could not allocate %i bytes of memory for particleHistory", FRAMESIZE * state.historyFrames);
+        conAdd(LNORM, "Could not allocate %lu bytes of memory for particleHistory", (unsigned long)(FRAMESIZE * state.historyFrames));
         return 0;
 
     }
 
     state.memoryAllocated += FRAMESIZE * state.historyFrames;
 
-//	conAdd(LERR, "Allocating %i bytes", FRAMEDETAILSIZE);
+//	conAdd(LERR, "Allocating %u bytes", FRAMEDETAILSIZE);
     state.particleDetail = calloc(sizeof(particleDetail_t),state.particleCount);
     if (!state.particleDetail) {
 
-        conAdd(LNORM, "Could not allocate %i bytes of memory for particleDetail", FRAMEDETAILSIZE);
+        conAdd(LNORM, "Could not allocate %ld bytes of memory for particleDetail", (unsigned long)FRAMEDETAILSIZE);
         free(state.particleHistory);
         state.memoryAllocated = 0;
         return 0;

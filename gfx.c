@@ -214,7 +214,7 @@ gfxInitRetry:
     checkPointSprite();
 
     SDL_ShowCursor(view.showCursor);
-    SDL_EnableUNICODE(1);
+    SDL_EnableUNICODE(SDL_ENABLE);
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
     return 1;
@@ -841,11 +841,11 @@ FPglPointParameterfvARB glPointParameterfvARB_ptr;
 
 void checkPointParameters() {
 
-    const char *extList;
+    char *extList;
 
     video.supportPointParameters = 0;
 
-    extList = glGetString(GL_EXTENSIONS);
+    extList = (char *)glGetString(GL_EXTENSIONS);
 
     if (strstr(extList, "GL_ARB_point_parameters") == 0) {
         return;
@@ -863,11 +863,11 @@ void checkPointParameters() {
 
 void checkPointSprite() {
 
-    const char *extList;
+    char *extList;
 
     video.supportPointSprite = 0;
 
-    extList = glGetString(GL_EXTENSIONS);
+    extList = (char *)glGetString(GL_EXTENSIONS);
 
     if (strstr(extList, "GL_ARB_point_sprite") == 0)
         return;

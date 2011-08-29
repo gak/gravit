@@ -69,11 +69,13 @@ int gfxPowerOfTwo(int input) {
 
 }
 
-int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
+//tool.c(96) : warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+// make p, pos, size, amountToRead become size_t
+int LoadMemoryDump(char *fileName, unsigned char *d, size_t size) {
 
     FILE *fp;
-    unsigned int i, pos, p, amountToRead;
-    unsigned int chunkMax = FILE_CHUNK_SIZE;
+    size_t i, pos, p, amountToRead;
+    size_t chunkMax = FILE_CHUNK_SIZE;
 
     fp = fopen(fileName, "rb");
     if (!fp) {
@@ -131,10 +133,12 @@ int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size) {
     return 1;
 }
 
-int SaveMemoryDump(char *fileName, unsigned char *d, unsigned int total) {
+//tool.c(96) : warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+// make p, pos, size, amountToRead become size_t
+int SaveMemoryDump(char *fileName, unsigned char *d, size_t total) {
 
     FILE *fp;
-    unsigned int written, p, write;
+    size_t written, p, write;
 
     fp = fopen(fileName, "wb");
     if (!fp) {
@@ -161,7 +165,7 @@ int SaveMemoryDump(char *fileName, unsigned char *d, unsigned int total) {
 
     fclose(fp);
 
-    conAdd(LLOW, "written %u bytes to %s", written, fileName);
+    conAdd(LLOW, "written %lu bytes to %s", (unsigned long)written, fileName);
 
     return 1;
 

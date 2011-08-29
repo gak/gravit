@@ -382,7 +382,7 @@ typedef struct state_s {
 
     int particlesToSpawn;
 
-    unsigned int memoryAllocated;
+    size_t memoryAllocated;
 
     int lastSave;	// last frame saved
     int autoSave;	// auto save every n frames. 0 for off.
@@ -592,8 +592,8 @@ int commandLineRead(int argc, char *argv[]);
 // tool.c
 char * va( char *format, ... );
 int gfxPowerOfTwo(int input);
-int LoadMemoryDump(char *fileName, unsigned char *d, unsigned int size);
-int SaveMemoryDump(char *FileName, unsigned char *d, unsigned int total);
+int LoadMemoryDump(char *fileName, unsigned char *d, size_t size);
+int SaveMemoryDump(char *FileName, unsigned char *d, size_t total);
 Uint32 getMS();
 void setTitle(char *state);
 int mymkdir(const char *path);
