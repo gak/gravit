@@ -161,6 +161,11 @@ int processKeys() {
                 view.consoleMode = (!view.consoleMode)?1:0;
                 break;
 
+            case SDLK_CARET:
+            case SDLK_1:
+                view.consoleMode = 1;
+                break;
+
             case SDLK_t:
                 if (++view.drawTree == 3)
                     view.drawTree = 0;
