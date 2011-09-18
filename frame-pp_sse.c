@@ -110,6 +110,9 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
 
 
 	// SSE loop - four particles at once
+#ifdef __INTEL_COMPILER
+#pragma vector aligned
+#endif
         for (j = 0; j < vector_limit; j += VECT_SIZE) {
 	    __v128 dv_vx ;
 	    __v128 dv_vy ;
