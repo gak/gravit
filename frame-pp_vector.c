@@ -58,15 +58,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   //#define FREE_16(target)                    {_mm_free(target);}
 
 #else
-  // linux, unix, MacOS:  use posix_memalign
+  // linux, unix, MacOS:  use (posix_)memalign
   #include <stdlib.h>
   #include <malloc.h>
-  #if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
-  // use memalign, because test for working posix_memalign failed
+  //  #if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
+  #if defined(HAVE_MEMALIGN)
+  // use memalign -- seems this is the best choice for most unix/linux versions
     #define MALLOC_16(target, size, alignment) {target =  (float*) memalign(alignment, size);}
     #define FREE_16(target)                    {free(target);}
   #else
-  // default: use posix_memalign
+  // all others use posix_memalign
     #define MALLOC_16(target, size, alignment) {if (posix_memalign( (void **) &(target), alignment, size) != 0) target=NULL;}
     #define FREE_16(target)                    {free(target);}
   #endif
@@ -80,10 +81,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // if your compiler complains, just remove __restrict__
 
 #ifdef _MSC_VER
-//#define __restrict__ __restrict
+#define __restrict__ __restrict
 //#define __restrict__ __declspec(restrict)
-// problems with openMP
-#define __restrict__
+//#define __restrict__
 #endif
 
 
