@@ -26,17 +26,55 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <omp.h> // VC has to include this header to build the correct manifest to find vcom.dll or vcompd.dll
 #endif
 
+/* ************************************************************************** */
+/* How to allocate memory with 16byte alignment?                              */
+/* ************************************************************************** */
 
-// mm_malloc gives back aligned blocks
-#if !defined(__INTEL_COMPILER) && !defined(__OPENCC__)
-   // intel and amd compilers do not like this ..
-#include <malloc.h>
-#include <mm_malloc.h>
+// Windows: use _aligned_malloc
+#ifdef WIN32
+  #include <stdlib.h>
+  #include <malloc.h>
+  #if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
+    // MinGW 
+    #define MALLOC_16(target, size, alignment) {target =  (float*) __mingw_aligned_malloc(size, alignment);}
+    #define FREE_16(target)                    {__mingw_aligned_free(target);}
+  #else
+    // Microsoft
+    #define MALLOC_16(target, size, alignment) {target =  (float*) _aligned_malloc(size, alignment);}
+    #define FREE_16(target)                    {_aligned_free(target);}
+  #endif
+
+  // #if !defined(__INTEL_COMPILER) && !defined(__OPENCC__)
+  // intel and amd compilers do not like this ..
+  // #include <malloc.h>
+  // #include <mm_malloc.h>
+  // #endif
+  // #ifdef __OPENCC__
+  // #include <xmmintrin.h>
+  // #endif
+
+  // alternative: _mm_malloc 
+  //#define MALLOC_16(target, size, alignment) {target =  (float*) _mm_malloc(size, alignment);}
+  //#define FREE_16(target)                    {_mm_free(target);}
+
+#else
+  // linux, unix, MacOS:  use posix_memalign
+  #include <stdlib.h>
+  #include <malloc.h>
+  #if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
+  // use memalign, because test for working posix_memalign failed
+    #define MALLOC_16(target, size, alignment) {target =  (float*) memalign(alignment, size);}
+    #define FREE_16(target)                    {free(target);}
+  #else
+  // default: use posix_memalign
+    #define MALLOC_16(target, size, alignment) {if (posix_memalign( (void **) &(target), alignment, size) != 0) target=NULL;}
+    #define FREE_16(target)                    {free(target);}
+  #endif
 #endif
 
-#ifdef __OPENCC__
-#include <xmmintrin.h>
-#endif
+/* ************************************************************************** */
+
+
 
 // __restrict__ tell the compiler that two pointer will not point to the same location
 // if your compiler complains, just remove __restrict__
@@ -165,17 +203,17 @@ void processFramePP(int start, int amount) {
 
     // create arrays, aligned to 16 bytes
 
-    pos.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.mass = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    MALLOC_16( pos.x, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_16( pos.y, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_16( pos.z, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_16( pos.mass, sizeof(float)*(particles_max + 16), 16);
     //memset(pos.x, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.y, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.z, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.mass, 0, sizeof(float) * (particles_max + 16));
-    vel.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    vel.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    vel.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    MALLOC_16( vel.x, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_16( vel.y, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_16( vel.z, sizeof(float)*(particles_max + 16), 16);
     memset(vel.x, 0, sizeof(float) * (particles_max + 16));
     memset(vel.y, 0, sizeof(float) * (particles_max + 16));
     memset(vel.z, 0, sizeof(float) * (particles_max + 16));
@@ -205,13 +243,13 @@ void processFramePP(int start, int amount) {
 
 
     // clean up
-    _mm_free(pos.x);
-    _mm_free(pos.y);
-    _mm_free(pos.z);
-    _mm_free(pos.mass);
+    FREE_16(pos.x);
+    FREE_16(pos.y);
+    FREE_16(pos.z);
+    FREE_16(pos.mass);
 
-    _mm_free(vel.x);
-    _mm_free(vel.y);
-    _mm_free(vel.z);
+    FREE_16(vel.x);
+    FREE_16(vel.y);
+    FREE_16(vel.z);
 
 }

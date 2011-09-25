@@ -120,6 +120,15 @@ AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit floor ftime memset mkdir pow select sqrt strchr strdup strerror strstr])
 
+# check for functions to do aligned malloc
+AC_CHECK_HEADERS([intrin.h x86intrin.h xmmintrin.h malloc.h memory.h])
+AC_CHECK_FUNCS([memalign _mm_malloc _mm_free _aligned_malloc __mingw_aligned_malloc])
+# AC_CHECK_FUNCS([posix_memalign])
+AX_FUNC_POSIX_MEMALIGN
+if test "$ax_cv_func_posix_memalign_works" = "yes" ; then
+   AC_DEFINE([HAVE_WORKING_POSIX_MEMALIGN], [1], [use `posix_memalign' instead of memalign])
+fi
+
 
 # check for windres (windows ressource compiler)
 if test -z "$host_alias"; then
