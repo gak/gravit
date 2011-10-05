@@ -30,33 +30,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /* How to allocate memory with 16byte alignment?                              */
 /* ************************************************************************** */
 #ifdef WIN32
-  // Windows: use _aligned_malloc
-  #include <stdlib.h>
-  #include <malloc.h>
-  #if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
-    // MinGW 
-    #define MALLOC_16(target, size, alignment) {target =  (float*) __mingw_aligned_malloc(size, alignment);}
-    #define FREE_16(target)                    {__mingw_aligned_free(target);}
-  #else
-    // Microsoft
-    #define MALLOC_16(target, size, alignment) {target =  (float*) _aligned_malloc(size, alignment);}
-    #define FREE_16(target)                    {_aligned_free(target);}
-  #endif
+// Windows: use _aligned_malloc
+#include <stdlib.h>
+#include <malloc.h>
+#if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
+// MinGW
+#define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) __mingw_aligned_malloc(size, alignment);}
+#define FREE_ALIGNED(target)                    {__mingw_aligned_free(target);}
+#else
+// Microsoft
+#define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) _aligned_malloc(size, alignment);}
+#define FREE_ALIGNED(target)                    {_aligned_free(target);}
+#endif
 
 #else
-  // linux, unix, MacOS:  use (posix_)memalign
-  #include <stdlib.h>
-  #include <malloc.h>
-  //#if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
-  #if defined(HAVE_MEMALIGN)
-    // use memalign -- seems this is the best choice for most unix/linux versions
-    #define MALLOC_16(target, size, alignment) {target =  (float*) memalign(alignment, size);}
-    #define FREE_16(target)                    {free(target);}
-  #else
-    // all others use posix_memalign
-    #define MALLOC_16(target, size, alignment) {if (posix_memalign( (void **) &(target), alignment, size) != 0) target=NULL;}
-    #define FREE_16(target)                    {free(target);}
-  #endif
+// linux, unix, MacOS:  use (posix_)memalign
+#include <stdlib.h>
+#include <malloc.h>
+//#if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
+#if defined(HAVE_MEMALIGN)
+// use memalign -- seems this is the best choice for most unix/linux versions
+#define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) memalign(alignment, size);}
+#define FREE_ALIGNED(target)                    {free(target);}
+#else
+// all others use posix_memalign
+#define MALLOC_ALIGNED(target, size, alignment) {if (posix_memalign( (void **) &(target), alignment, size) != 0) target=NULL;}
+#define FREE_ALIGNED(target)                    {free(target);}
+#endif
 
 #endif
 /* ************************************************************************** */
@@ -76,40 +76,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
 typedef struct {
-  float * __restrict__ x;
-  float * __restrict__ y;
-  float * __restrict__ z;
-  float * __restrict__ mass;
+    float * __restrict__ x;
+    float * __restrict__ y;
+    float * __restrict__ z;
+    float * __restrict__ mass;
 } particle_vectors;
 
 typedef struct {
-  float * __restrict__ x;
-  float * __restrict__ y;
-  float * __restrict__ z;
+    float * __restrict__ x;
+    float * __restrict__ y;
+    float * __restrict__ z;
 } vel_vectors;
 
 
 
 
-  /*  Optimizations:
-      ===============
-      * before processing, copy particle data to vector-friendly arrays
-      * delay multiplication with G
-      * after processing, write back results
-  */
+/*  Optimizations:
+    ===============
+    * before processing, copy particle data to vector-friendly arrays
+    * delay multiplication with G
+    * after processing, write back results
+*/
 
 
 //#define MIN_STEP2 0.05
 
-static void do_processFramePP(particle_vectors pos, vel_vectors vel, 
+static void do_processFramePP(particle_vectors pos, vel_vectors vel,
                               int start, int amount) {
-     int i;
-     //int particles_max = state.particleCount;
+    int i;
+    //int particles_max = state.particleCount;
 
     // apply gravity to every specified velocity
-    #ifdef _OPENMP
-    #pragma omp parallel for schedule(dynamic, 256)
-    #endif
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 256)
+#endif
     for (i = start; i < amount; i++) {
         //VectorNew(p1_pos);
         float p1_pos_x;
@@ -118,39 +118,39 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
         float p1_mass;
 
         //VectorNew(p1_vel);
-	//VectorZero(p1_vel);
+        //VectorZero(p1_vel);
         float p1_vel_x = 0.0f;
         float p1_vel_y = 0.0f;
         float p1_vel_z = 0.0f;
 
         int j;
 
-	p1_pos_x = pos.x[i];
-	p1_pos_y = pos.y[i];
-	p1_pos_z = pos.z[i];
-	p1_mass   = pos.mass[i];
+        p1_pos_x = pos.x[i];
+        p1_pos_y = pos.y[i];
+        p1_pos_z = pos.z[i];
+        p1_mass   = pos.mass[i];
 
 
 #ifdef __INTEL_COMPILER
 #pragma vector aligned
 #endif
         for (j = 0; j < i; j++) {
-	    //VectorNew(dv);
-	    float dv_x;
-	    float dv_y;
-	    float dv_z;
-	    float inverseSquareDistance;
-	    float force;
+            //VectorNew(dv);
+            float dv_x;
+            float dv_y;
+            float dv_z;
+            float inverseSquareDistance;
+            float force;
 
             dv_x = p1_pos_x - pos.x[j];
             dv_y = p1_pos_y - pos.y[j];
             dv_z = p1_pos_z - pos.z[j];
 
             // get distance^2 between the two
-	    inverseSquareDistance  = dv_x * dv_x;
-	    inverseSquareDistance += dv_y * dv_y;
-	    inverseSquareDistance += dv_z * dv_z;
-	    //inverseSquareDistance +=  + MIN_STEP2;
+            inverseSquareDistance  = dv_x * dv_x;
+            inverseSquareDistance += dv_y * dv_y;
+            inverseSquareDistance += dv_z * dv_z;
+            //inverseSquareDistance +=  + MIN_STEP2;
 
             force = p1_mass * pos.mass[j] / inverseSquareDistance;
 
@@ -189,29 +189,28 @@ void processFramePP(int start, int amount) {
 
     // create arrays, aligned to 16 bytes
 
-    MALLOC_16( pos.x, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_16( pos.y, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_16( pos.z, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_16( pos.mass, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( pos.x, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( pos.y, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( pos.z, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( pos.mass, sizeof(float)*(particles_max + 16), 16);
     //memset(pos.x, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.y, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.z, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.mass, 0, sizeof(float) * (particles_max + 16));
-    MALLOC_16( vel.x, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_16( vel.y, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_16( vel.z, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( vel.x, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( vel.y, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( vel.z, sizeof(float)*(particles_max + 16), 16);
     memset(vel.x, 0, sizeof(float) * (particles_max + 16));
     memset(vel.y, 0, sizeof(float) * (particles_max + 16));
     memset(vel.z, 0, sizeof(float) * (particles_max + 16));
 
 
     // copy frame data to vector-friendly arrays
-    for (i=0; i<particles_max; i++)
-	{
-	  pos.x[i] = framebase[i].pos[0];
-	  pos.y[i] = framebase[i].pos[1];
-	  pos.z[i] = framebase[i].pos[2];
-	  pos.mass[i] = state.particleDetail[i].mass;
+    for (i=0; i<particles_max; i++) {
+        pos.x[i] = framebase[i].pos[0];
+        pos.y[i] = framebase[i].pos[1];
+        pos.z[i] = framebase[i].pos[2];
+        pos.mass[i] = state.particleDetail[i].mass;
     }
 
 
@@ -220,22 +219,21 @@ void processFramePP(int start, int amount) {
 
 
     // write back results
-    for (i=0; i<particles_max; i++)
-    {
-	  framebase[i].vel[0] += vel.x[i] * state.g;
-	  framebase[i].vel[1] += vel.y[i] * state.g;
-	  framebase[i].vel[2] += vel.z[i] * state.g;
+    for (i=0; i<particles_max; i++) {
+        framebase[i].vel[0] += vel.x[i] * state.g;
+        framebase[i].vel[1] += vel.y[i] * state.g;
+        framebase[i].vel[2] += vel.z[i] * state.g;
     }
 
 
     // clean up
-    FREE_16(pos.x);
-    FREE_16(pos.y);
-    FREE_16(pos.z);
-    FREE_16(pos.mass);
+    FREE_ALIGNED(pos.x);
+    FREE_ALIGNED(pos.y);
+    FREE_ALIGNED(pos.z);
+    FREE_ALIGNED(pos.mass);
 
-    FREE_16(vel.x);
-    FREE_16(vel.y);
-    FREE_16(vel.z);
+    FREE_ALIGNED(vel.x);
+    FREE_ALIGNED(vel.y);
+    FREE_ALIGNED(vel.z);
 
 }

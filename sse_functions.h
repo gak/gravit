@@ -17,18 +17,18 @@
 //#define __SSE__
 //#define __SSE2__
 //#endif
-#define ALWAYS_INLINE(ret_type) static __forceinline ret_type 
+#define ALWAYS_INLINE(ret_type) static __forceinline ret_type
 
 #else
-#define ALWAYS_INLINE(ret_type) static inline ret_type 
+#define ALWAYS_INLINE(ret_type) static inline ret_type
 #endif
 
 
 #else
 /* ******************************************************************* */
-// use gcc extensions for SSE 
+// use gcc extensions for SSE
 #if (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) > 40500
-    // x86intrin.h availeable since gcc 4.5.0
+// x86intrin.h availeable since gcc 4.5.0
 #include <malloc.h>
 #include <xmmintrin.h>
 #include <x86intrin.h>
@@ -49,8 +49,8 @@ typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  
 #define _aligned_malloc __mingw_aligned_malloc
 #endif
 
-#define ALIGNED __attribute__((aligned (16))) 
-#define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__, __artificial__)) 
+#define ALIGNED __attribute__((aligned (16)))
+#define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__, __artificial__))
 
 #endif
 
@@ -88,8 +88,8 @@ typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  
 #define V_SUB(a, b) ( (a) - (b))
 #define V_MUL(a, b) ( (a) * (b))
 #define V_DIV(a, b) ( (a) / (b))
-#define V_INCR(a, b) {a += (b);} 
-#define V_DECR(a, b) {a -= (b);} 
+#define V_INCR(a, b) {a += (b);}
+#define V_DECR(a, b) {a -= (b);}
 
 #else
 // use SSE macros .. somehow faster ...
@@ -97,15 +97,15 @@ typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  
 #define V_SUB(a, b) _mm_sub_ps((a), (b))
 #define V_MUL(a, b) _mm_mul_ps((a), (b))
 #define V_DIV(a, b) _mm_div_ps((a), (b))
-#define V_INCR(a, b) {a = _mm_add_ps( (a), (b));} 
-#define V_DECR(a, b) {a = _mm_sub_ps( (a), (b));} 
+#define V_INCR(a, b) {a = _mm_add_ps( (a), (b));}
+#define V_DECR(a, b) {a = _mm_sub_ps( (a), (b));}
 #endif
 
 
 /* ******************************************************************* */
 // aux. constants
-static const __v128 _half4 = _mm_init1_ps(.5f); 
-static const __v128 _three4= _mm_init1_ps(3.f); 
+static const __v128 _half4 = _mm_init1_ps(.5f);
+static const __v128 _three4= _mm_init1_ps(3.f);
 static const __v128 _two4  = _mm_init1_ps(2.f);
 
 
@@ -120,16 +120,15 @@ static const __v128 _two4  = _mm_init1_ps(2.f);
 #define newtonrapson_rsqrt4( v ) _mm_rsqrt_ps( v )
 
 #else
-ALWAYS_INLINE(__v128) newtonrapson_rsqrt4( const __v128 v ) 
-{
-  //  x = rsqrt_approx(v);
-  //  x' = 0.5 * x * (3 - v*x*x);
+ALWAYS_INLINE(__v128) newtonrapson_rsqrt4( const __v128 v ) {
+    //  x = rsqrt_approx(v);
+    //  x' = 0.5 * x * (3 - v*x*x);
 
-  __v128 approx = _mm_rsqrt_ps( v );
-  // one newton-rapson step to improve accuracy
-  return V_MUL( V_MUL(_half4, approx), 
-		               V_SUB(_three4, 
-				          V_MUL( V_MUL(v, approx), approx) ) );
+    __v128 approx = _mm_rsqrt_ps( v );
+    // one newton-rapson step to improve accuracy
+    return V_MUL( V_MUL(_half4, approx),
+                  V_SUB(_three4,
+                        V_MUL( V_MUL(v, approx), approx) ) );
 }
 #endif
 
@@ -145,14 +144,13 @@ ALWAYS_INLINE(__v128) newtonrapson_rsqrt4( const __v128 v )
 #define newtonrapson_rcp( v ) _mm_rcp_ps( v )
 
 #else
-ALWAYS_INLINE(__v128) newtonrapson_rcp(const __v128 v)
-{
-  //  x = reciprocal_approx(v);
-  //  x' = x * (2 - x * v); 
-  //   --> x' = 2x - x( x*v) = (x+x) - x (x*v)
+ALWAYS_INLINE(__v128) newtonrapson_rcp(const __v128 v) {
+    //  x = reciprocal_approx(v);
+    //  x' = x * (2 - x * v);
+    //   --> x' = 2x - x( x*v) = (x+x) - x (x*v)
 
-  __v128 r = _mm_rcp_ps(v);
-  return (V_SUB( V_ADD(r, r), V_MUL( r, V_MUL(r, v))));
+    __v128 r = _mm_rcp_ps(v);
+    return (V_SUB( V_ADD(r, r), V_MUL( r, V_MUL(r, v))));
 }
 #endif
 
@@ -163,14 +161,13 @@ ALWAYS_INLINE(__v128) newtonrapson_rcp(const __v128 v)
 /*                           ret = v[0] + v[1] + v[2] + v[3]           */
 /* ******************************************************************* */
 
-ALWAYS_INLINE(float) _vector4_sum(const __v128 v)
-{ 
-  __v128 a;
+ALWAYS_INLINE(float) _vector4_sum(const __v128 v) {
+    __v128 a;
 
-  a = _mm_shuffle_ps(v,v, _MM_SHUFFLE(0,3,0,1));                             // 1->0, 3->2; 
-  a = V_ADD(a, v);                                                           // 0+1, 1+0, 2+3, 3+2
-  return(_mm_cvtss_f32(V_ADD(a, _mm_shuffle_ps(a,a, _MM_SHUFFLE(0,0,0,2)))));// 2->0
-                                                                             // 0 = 1 + 0 + 3 + 2
+    a = _mm_shuffle_ps(v,v, _MM_SHUFFLE(0,3,0,1));                             // 1->0, 3->2;
+    a = V_ADD(a, v);                                                           // 0+1, 1+0, 2+3, 3+2
+    return(_mm_cvtss_f32(V_ADD(a, _mm_shuffle_ps(a,a, _MM_SHUFFLE(0,0,0,2)))));// 2->0
+    // 0 = 1 + 0 + 3 + 2
 }
 
 
