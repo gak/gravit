@@ -38,43 +38,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
 typedef struct {
-  float * __restrict__ x;
-  float * __restrict__ y;
-  float * __restrict__ z;
-  float * __restrict__ mass;
+    float * __restrict__ x;
+    float * __restrict__ y;
+    float * __restrict__ z;
+    float * __restrict__ mass;
 } particle_vectors;
 
 typedef struct {
-  float * __restrict__ x;
-  float * __restrict__ y;
-  float * __restrict__ z;
+    float * __restrict__ x;
+    float * __restrict__ y;
+    float * __restrict__ z;
 } vel_vectors;
 
 
 #include "sse_functions.h"
 
 
-  /*  Optimizations:
-      ===============
-      * before processing, copy particle data to vector-friendly arrays
-      * use SSE to process four particles at once
-      * delay multiplication with G
-      * after processing, write back results
-  */
+/*  Optimizations:
+    ===============
+    * before processing, copy particle data to vector-friendly arrays
+    * use SSE to process four particles at once
+    * delay multiplication with G
+    * after processing, write back results
+*/
 
 
 #define MIN_STEP2 0.05f
 static const __v128 vmin_step2 = _mm_init1_ps(MIN_STEP2);
 
-//static void __attribute__((hot)) 
-static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel, 
-                              int start, int amount) {
-     int i;
+//static void __attribute__((hot))
+static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
+                                  int start, int amount) {
+    int i;
 
     // apply gravity to every specified velocity
-    #ifdef _OPENMP
-    #pragma omp parallel for schedule(dynamic, 256)
-    #endif
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 256)
+#endif
     for (i = start; i < amount; i++) {
         __v128 p1_vpos_x ;
         __v128 p1_vpos_y ;
@@ -87,7 +87,7 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
 
         //VectorNew(p1_pos);
         //VectorNew(p1_vel);
-	//VectorZero(p1_vel);
+        //VectorZero(p1_vel);
 
         float p1_pos_x;
         float p1_pos_y;
@@ -100,34 +100,37 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
 
 
         int j;
-	int vector_limit;
-       	vector_limit = (i / VECT_SIZE) * VECT_SIZE;  // round down to value divisible by 4
+        int vector_limit;
+        vector_limit = (i / VECT_SIZE) * VECT_SIZE;  // round down to value divisible by 4
 
-	p1_vpos_x = _mm_set1_ps(pos.x[i]);
-	p1_vpos_y = _mm_set1_ps(pos.y[i]);
-	p1_vpos_z = _mm_set1_ps(pos.z[i]);
-	p1_vmass  = _mm_set1_ps(pos.mass[i]);
+        p1_vpos_x = _mm_set1_ps(pos.x[i]);
+        p1_vpos_y = _mm_set1_ps(pos.y[i]);
+        p1_vpos_z = _mm_set1_ps(pos.z[i]);
+        p1_vmass  = _mm_set1_ps(pos.mass[i]);
 
 
-	// SSE loop - four particles at once
+        // SSE loop - four particles at once
+#ifdef __INTEL_COMPILER
+#pragma vector aligned
+#endif
         for (j = 0; j < vector_limit; j += VECT_SIZE) {
-	    __v128 dv_vx ;
-	    __v128 dv_vy ;
-	    __v128 dv_vz ;
-	    __v128 vInvSqDist;
-	    __v128 vforce;
+            __v128 dv_vx ;
+            __v128 dv_vy ;
+            __v128 dv_vz ;
+            __v128 vInvSqDist;
+            __v128 vforce;
 
-	    dv_vx = V_SUB( p1_vpos_x, LOAD_V4(pos.x, j));
-	    dv_vy = V_SUB( p1_vpos_y, LOAD_V4(pos.y, j));
-	    dv_vz = V_SUB( p1_vpos_z, LOAD_V4(pos.z, j));
+            dv_vx = V_SUB( p1_vpos_x, LOAD_V4(pos.x, j));
+            dv_vy = V_SUB( p1_vpos_y, LOAD_V4(pos.y, j));
+            dv_vz = V_SUB( p1_vpos_z, LOAD_V4(pos.z, j));
 
             // get distance^2 between the two
-	    vInvSqDist  = V_MUL( dv_vx, dv_vx);
-	    V_INCR( vInvSqDist, V_MUL( dv_vy, dv_vy));
-	    V_INCR( vInvSqDist, V_MUL( dv_vz, dv_vz));
-	    V_INCR( vInvSqDist, vmin_step2);
+            vInvSqDist  = V_MUL( dv_vx, dv_vx);
+            V_INCR( vInvSqDist, V_MUL( dv_vy, dv_vy));
+            V_INCR( vInvSqDist, V_MUL( dv_vz, dv_vz));
+            V_INCR( vInvSqDist, vmin_step2);
 
-	    /* compute acceleration */
+            /* compute acceleration */
             vforce = V_MUL( V_MUL( p1_vmass, LOAD_V4(pos.mass, j)), newtonrapson_rcp(vInvSqDist));
 
             // sum of accelerations for p1
@@ -143,35 +146,35 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
         }
 
 
-	// cache p1 data
-	p1_pos_x = pos.x[i];
-	p1_pos_y = pos.y[i];
-	p1_pos_z = pos.z[i];
-	p1_mass   = pos.mass[i];
+        // cache p1 data
+        p1_pos_x = pos.x[i];
+        p1_pos_y = pos.y[i];
+        p1_pos_z = pos.z[i];
+        p1_mass   = pos.mass[i];
 
-	// copy vector results  to single floats
-	p1_vel_x = _vector4_sum(p1_vvel_x);
-	p1_vel_y = _vector4_sum(p1_vvel_y);
-	p1_vel_z = _vector4_sum(p1_vvel_z);
+        // copy vector results  to single floats
+        p1_vel_x = _vector4_sum(p1_vvel_x);
+        p1_vel_y = _vector4_sum(p1_vvel_y);
+        p1_vel_z = _vector4_sum(p1_vvel_z);
 
 
-	// do the remaining particles without SSE
+        // do the remaining particles without SSE
         for (j = vector_limit; j < i; j++) {
-	    VectorNew(dv);
-	    float inverseSquareDistance;
-	    float force;
+            VectorNew(dv);
+            float inverseSquareDistance;
+            float force;
 
             dv[0] = p1_pos_x - pos.x[j];
             dv[1] = p1_pos_y - pos.y[j];
             dv[2] = p1_pos_z - pos.z[j];
 
             // get distance^2 between the two
-	    inverseSquareDistance  = dv[0] * dv[0];
-	    inverseSquareDistance += dv[1] * dv[1];
-	    inverseSquareDistance += dv[2] * dv[2];
-	    inverseSquareDistance +=  + MIN_STEP2;
+            inverseSquareDistance  = dv[0] * dv[0];
+            inverseSquareDistance += dv[1] * dv[1];
+            inverseSquareDistance += dv[2] * dv[2];
+            inverseSquareDistance +=  + MIN_STEP2;
 
-	    /* compute acceleration */
+            /* compute acceleration */
             force = p1_mass * pos.mass[j] / inverseSquareDistance;
 
             // sum of accelerations for p1
@@ -223,12 +226,11 @@ void processFramePP_SSE(int start, int amount) {
 
 
     // copy frame data to vector-friendly arrays
-    for (i=0; i<particles_max; i++)
-	{
-	  pos.x[i] = framebase[i].pos[0];
-	  pos.y[i] = framebase[i].pos[1];
-	  pos.z[i] = framebase[i].pos[2];
-	  pos.mass[i] = state.particleDetail[i].mass;
+    for (i=0; i<particles_max; i++) {
+        pos.x[i] = framebase[i].pos[0];
+        pos.y[i] = framebase[i].pos[1];
+        pos.z[i] = framebase[i].pos[2];
+        pos.mass[i] = state.particleDetail[i].mass;
     }
 
 
@@ -237,11 +239,10 @@ void processFramePP_SSE(int start, int amount) {
 
 
     // write back results
-    for (i=0; i<particles_max; i++)
-    {
-	  framebase[i].vel[0] += vel.x[i] * state.g;
-	  framebase[i].vel[1] += vel.y[i] * state.g;
-	  framebase[i].vel[2] += vel.z[i] * state.g;
+    for (i=0; i<particles_max; i++) {
+        framebase[i].vel[0] += vel.x[i] * state.g;
+        framebase[i].vel[1] += vel.y[i] * state.g;
+        framebase[i].vel[2] += vel.z[i] * state.g;
     }
 
 
