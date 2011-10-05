@@ -29,9 +29,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /* ************************************************************************** */
 /* How to allocate memory with 16byte alignment?                              */
 /* ************************************************************************** */
-
-// Windows: use _aligned_malloc
 #ifdef WIN32
+  // Windows: use _aligned_malloc
   #include <stdlib.h>
   #include <malloc.h>
   #if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
@@ -44,35 +43,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #define FREE_16(target)                    {_aligned_free(target);}
   #endif
 
-  // #if !defined(__INTEL_COMPILER) && !defined(__OPENCC__)
-  // intel and amd compilers do not like this ..
-  // #include <malloc.h>
-  // #include <mm_malloc.h>
-  // #endif
-  // #ifdef __OPENCC__
-  // #include <xmmintrin.h>
-  // #endif
-
-  // alternative: _mm_malloc 
-  //#define MALLOC_16(target, size, alignment) {target =  (float*) _mm_malloc(size, alignment);}
-  //#define FREE_16(target)                    {_mm_free(target);}
-
 #else
   // linux, unix, MacOS:  use (posix_)memalign
   #include <stdlib.h>
   #include <malloc.h>
-  //  #if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
+  //#if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
   #if defined(HAVE_MEMALIGN)
-  // use memalign -- seems this is the best choice for most unix/linux versions
+    // use memalign -- seems this is the best choice for most unix/linux versions
     #define MALLOC_16(target, size, alignment) {target =  (float*) memalign(alignment, size);}
     #define FREE_16(target)                    {free(target);}
   #else
-  // all others use posix_memalign
+    // all others use posix_memalign
     #define MALLOC_16(target, size, alignment) {if (posix_memalign( (void **) &(target), alignment, size) != 0) target=NULL;}
     #define FREE_16(target)                    {free(target);}
   #endif
-#endif
 
+#endif
 /* ************************************************************************** */
 
 

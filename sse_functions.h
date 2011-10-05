@@ -27,8 +27,6 @@
 #else
 /* ******************************************************************* */
 // use gcc extensions for SSE 
-//#if !defined(__INTEL_COMPILER)
-   // INTEL and AMD compilers do not like this ..
 #if (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) > 40500
     // x86intrin.h availeable since gcc 4.5.0
 #include <malloc.h>
@@ -37,22 +35,19 @@
 #else
 #include <xmmintrin.h>
 #endif
+
+#if !defined(__INTEL_COMPILER)
 #include <mm_malloc.h>
+#endif
 #include <malloc.h>
 typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
 #define _mm_init1_ps(f) {f, f, f, f}
 
 #if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
+// workaround for buggy _mm_malloc in mingw
 #define _aligned_free __mingw_aligned_free
 #define _aligned_malloc __mingw_aligned_malloc
 #endif
-
-//#else
-// for intel compiler
-//#include <xmmintrin.h>
-//#define __v128 __m128
-//#define _mm_init1_ps(f) {f, f, f, f}
-//#endif
 
 #define ALIGNED __attribute__((aligned (16))) 
 #define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__, __artificial__)) 
