@@ -6,6 +6,12 @@
 # -------------
 # * nothing ;-)
 #
+# Changes (FrMo, Sept 2011):
+# -------------
+# * better linux support
+# * silent build
+# * try some compiler-specific optimization flags (gcc, intel icc, open64)
+#
 # Changes (FrMo, Aug 2011):
 # -------------
 # * minor updates needed for newer autoconf versions
@@ -31,23 +37,26 @@ AC_CANONICAL_HOST
 
 dnl Setup for automake
 AM_INIT_AUTOMAKE(gravit, 0.5.2)
+#Enable quiet compiles on automake 1.11.
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+# set default optimization flags
+# use "-Wall -O2 -g" if you want to debug
+: ${CFLAGS="-Wall -O3"}
 # Checks for programs.
 AC_PROG_CC
+AC_LANG_C
 AC_EXEEXT
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-
-AC_PATH_XTRA
-
-CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-LIBS="$LIBS $X_LIBS"
-
+AX_COMPILER_VENDOR
 
 # check for OpenMP support
-AX_OPENMP
+#AX_OPENMP
+AC_OPENMP
 AC_CHECK_HEADERS([omp.h],[
 	CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+	CPPFLAGS="$CPPFLAGS $OPENMP_CFLAGS"
 	LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
      ])
 
@@ -55,15 +64,36 @@ AC_CHECK_HEADERS([omp.h],[
 # if SSE is supported, HAVE_SSE will be set
 AX_EXT
 CFLAGS="$CFLAGS $SIMD_FLAGS"
-LDFLAGS="$LDFLAGS $SIMD_FLAGS"
+LDFLAGS="$SIMD_FLAGS $LDFLAGS"
+
+# try to add compiler-specific optimization flags
+if test x"$ax_cv_c_compiler_vendor" = x"intel"; then
+   #check for intel (icc) style flags
+   AX_CHECK_COMPILE_FLAG(-ipo, CFLAGS="$CFLAGS -O3 -ipo")
+   AX_CHECK_COMPILE_FLAG(-parallel, CFLAGS="$CFLAGS -parallel")
+   AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+   AX_CHECK_COMPILE_FLAG(-no-prec-div, CFLAGS="$CFLAGS -no-prec-div")
+   AX_CHECK_COMPILE_FLAG(-static-intel, CFLAGS="$CFLAGS -static-intel")
+   #only for intel core i3/i5/i7 and newer
+   #AX_CHECK_COMPILE_FLAG(-xSSE4.1, CFLAGS="$CFLAGS -xSSE4.1")
+   #AX_CHECK_COMPILE_FLAG(-xSSE4.2, CFLAGS="$CFLAGS -xSSE4.2")
+else
+   #check for gcc-style optimization flags
+   AX_CHECK_COMPILE_FLAG(-Ofast, CFLAGS="$CFLAGS -Ofast" LDFLAGS="$LDFLAGS -Ofast")
+   AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+   AX_CHECK_COMPILE_FLAG(-ffast-math, CFLAGS="$CFLAGS -ffast-math")
+   #only for intel corei3/5/7 and newer
+   #AX_CHECK_COMPILE_FLAG(-msse4, CFLAGS="$CFLAGS -msse4")
+   #AX_CHECK_COMPILE_FLAG(-msse4.1, CFLAGS="$CFLAGS -msse4.1")
+   #AX_CHECK_COMPILE_FLAG(-msse4.2, CFLAGS="$CFLAGS -msse4.2")
+fi
 
 
 # Checks for header files.
-AC_HEADER_DIRENT
 AC_HEADER_STDC
+AC_HEADER_DIRENT
 AC_HEADER_TIME
 AC_CHECK_HEADERS([stdlib.h string.h sys/time.h sys/timeb.h termios.h unistd.h])
-
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -73,6 +103,13 @@ AC_TYPE_SIZE_T
 AC_TYPE_MODE_T
 AC_TYPE_OFF_T
 
+dnl get X11 default libs
+AC_PATH_XTRA
+CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+LIBS="$X_PRE_LIBS $LIBS $X_LIBS $X_EXTRA_LIBS"
+
+#check if we need to link with -lm
+AC_CHECK_LIB([m], [pow])
 
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
@@ -82,6 +119,15 @@ AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit floor ftime memset mkdir pow select sqrt strchr strdup strerror strstr])
+
+# check for functions to do aligned malloc
+AC_CHECK_HEADERS([intrin.h x86intrin.h xmmintrin.h malloc.h memory.h])
+AC_CHECK_FUNCS([memalign _mm_malloc _mm_free _aligned_malloc __mingw_aligned_malloc])
+# AC_CHECK_FUNCS([posix_memalign])
+AX_FUNC_POSIX_MEMALIGN
+if test "$ax_cv_func_posix_memalign_works" = "yes" ; then
+   AC_DEFINE([HAVE_WORKING_POSIX_MEMALIGN], [1], [use `posix_memalign' instead of memalign])
+fi
 
 
 # check for windres (windows ressource compiler)
@@ -97,25 +143,35 @@ fi
 AC_SUBST(WINDRES)
 AM_CONDITIONAL(USE_ICON_RC, test x$use_icon_rc = xtrue)
 
+
 dnl Call in pkg-config explicitly, so we can safely put the first
 dnl PKG_CHECK_EXISTS inside an if
 PKG_PROG_PKG_CONFIG
-
 
 dnl Check for SDL
 SDL_VERSION=1.2.10
 AC_SUBST(SDL_VERSION)
 AM_PATH_SDL($SDL_VERSION, :, [AC_MSG_ERROR(SDL is required for Gravit)])
 CFLAGS="$CFLAGS $SDL_CFLAGS"
+CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
 # Checks for libraries.
 AC_CHECK_LIB([SDL_image], [IMG_Load], [], [AC_MSG_ERROR(SDL_image is required)])
 AC_CHECK_LIB([SDL_ttf], [TTF_Init], [], [AC_MSG_ERROR(SDL_ttf is required)])
 
-
+dnl Check for OpenGL - try pkg-config first
+PKG_CHECK_EXISTS([gl], [have_gl=yes], [have_gl=no])
+PKG_CHECK_EXISTS([glu], [have_glu=yes], [have_glu=no])
+if test x"$have_gl" = x"yes" -a  x"$have_glu" = x"yes" ; then
+   PKG_CHECK_MODULES(GL, [gl])
+   PKG_CHECK_MODULES(GLU, [glu])
+   #GLU requires GL, so it's enough to use GLU_CFLAGS and GLU_LIBS
+   CFLAGS="$CFLAGS $GLU_CFLAGS"
+   LIBS="$LIBS $GLU_LIBS"
+else
 dnl Check for OpenGL - borrowed from SDL_ttf
-case "$host" in
+   case "$host" in
     *-*-cygwin* | *-*-mingw*)
         MATHLIB=""
         SYS_GL_LIBS="-lopengl32 -lglu32"
@@ -148,25 +204,25 @@ case "$host" in
             SYS_GL_LIBS="-lGL -lGLU"
         fi
         ;;
-esac
-AC_MSG_CHECKING(for OpenGL support)
-have_opengl=no
-AC_TRY_COMPILE([
- #include "SDL_opengl.h"
-],[
- GLuint texture;
-],[
-have_opengl=yes
-])
-AC_MSG_RESULT($have_opengl)
-if test x$have_opengl = xyes; then
-    GL_LIBS="$SYS_GL_LIBS"
-else
-    GL_LIBS=""
-    AC_MSG_ERROR(GL is required)
+   esac
+   AC_MSG_CHECKING(for OpenGL support)
+   have_opengl=no
+   AC_TRY_COMPILE([
+    #include "SDL_opengl.h"
+   ],[
+    GLuint texture;
+   ],[
+   have_opengl=yes
+   ])
+   AC_MSG_RESULT($have_opengl)
+   if test x$have_opengl = xyes; then
+       GL_LIBS="$SYS_GL_LIBS"
+   else
+       GL_LIBS=""
+       AC_MSG_ERROR(GL is required)
+   fi
+   LIBS="$LIBS $SYS_GL_LIBS $MATHLIB"
 fi
-LIBS="$LIBS $SYS_GL_LIBS $MATHLIB"
-
 
 dnl Check for lua - borrowed from lighttpd
 AC_MSG_CHECKING(if lua support is requested)
