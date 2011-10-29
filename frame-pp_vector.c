@@ -182,7 +182,7 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 void processFramePP(int start, int amount) {
     particle_vectors pos;
     vel_vectors vel;
-    particle_t *framebase = state.particleHistory + state.particleCount*state.frame;
+    particle_t * __restrict__ framebase = state.particleHistory + state.particleCount*state.frame;
 
     int i;
     int particles_max;
