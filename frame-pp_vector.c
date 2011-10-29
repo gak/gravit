@@ -101,6 +101,7 @@ typedef struct {
 
 //#define MIN_STEP2 0.05
 
+HOT
 static void do_processFramePP(particle_vectors pos, vel_vectors vel,
                               int start, int amount) {
     int i;
@@ -132,6 +133,7 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 
 
 #ifdef __INTEL_COMPILER
+#pragma vector always
 #pragma vector aligned
 #endif
         for (j = 0; j < i; j++) {

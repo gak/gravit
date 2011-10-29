@@ -18,6 +18,7 @@
 //#define __SSE2__
 //#endif
 #define ALWAYS_INLINE(ret_type) static __forceinline ret_type
+#define ALIGNED __declspec(align(16))
 
 #else
 #define ALWAYS_INLINE(ret_type) static inline ret_type

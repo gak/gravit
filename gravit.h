@@ -29,6 +29,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "config.h"
 #endif
 
+
+// a few gcc-specific attributes
+#ifdef __GNUC__
+  #if __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
+    #define HOT __attribute__((hot))
+  #else
+    #define HOT
+  #endif
+
+  #define CONST_F __attribute__((const))
+  #define PURE_F  __attribute__((pure))
+#else
+  #define HOT
+  #define CONST_F
+  #define PURE_F
+#endif
+
+
 // normally /etc
 #ifndef SYSCONFDIR
 #define SYSCONFDIR "."
@@ -274,7 +292,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
 	if (view.recordingVideoRefreshTime) { \
-		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
+		if (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS()) { \
 			runInput(); \
 			runVideo(); \
 		} \
@@ -591,9 +609,10 @@ int commandLineRead(int argc, char *argv[]);
 
 // tool.c
 char * va( char *format, ... );
-int gfxPowerOfTwo(int input);
+CONST_F int gfxPowerOfTwo(int input);
 int LoadMemoryDump(char *fileName, unsigned char *d, size_t size);
 int SaveMemoryDump(char *FileName, unsigned char *d, size_t total);
+
 Uint32 getMS();
 void setTitle(char *state);
 int mymkdir(const char *path);
