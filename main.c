@@ -143,6 +143,8 @@ void viewInit() {
     view.stereoOSD = 0;
 
     cmdFps(NULL);
+    view.timed_frames=0;
+    view.totalRenderTime=0;
 
     memset(view.keys, 0, sizeof(view.keys));
 

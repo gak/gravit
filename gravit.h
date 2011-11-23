@@ -446,6 +446,10 @@ typedef struct view_s {
 
     Uint32 firstTimeStamp;
 
+    // timer for rendering
+    Uint32 totalRenderTime;
+    Uint32 timed_frames;
+
     int quit;
 
     Uint8 mouseButtons[2];	// 0 now, 1 last

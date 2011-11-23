@@ -138,6 +138,21 @@ void drawOSD() {
 
         }
 
+
+        // show renderer FPS average (if we have meaningful values)
+        if ((view.timed_frames > 1) && (view.totalRenderTime > SDL_TIMESLICE )) {
+            if (state.mode & SM_RECORD) {
+	      glColor4f(0,1,1,.5f); /*torquise*/ }
+              else { DUHC(); y += fontHeight; }
+
+	    DUH("avg renderer fps", va("%5.2f",
+                     (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ))
+	    DUH("avg renderer frame time", va("%4.1f ms",
+		     (float) view.totalRenderTime / (float) view.timed_frames ));
+	    DUHC();
+        }
+
+
         /*
         		big = state.particleCount*state.particleCount-state.particleCount;
         		DUH("total calcs", va("%-5i %3.2f%% (max: %i)", otGetNCalcs(), (float)otGetNCalcs()/big*100, state.particleCount*state.particleCount-state.particleCount));
@@ -158,7 +173,7 @@ void drawOSD() {
         DUHC();
         DUH("F1", "General Shortcut Keys");
         DUH("F2", "Visual Effects Keys");
-        DUH("` (above TAB)", "Use the Console");
+        DUH("` (above TAB) or 1", "Use the Console");
         DUH("ESC", "Exit Console/Help/Gravit");
 
     }
