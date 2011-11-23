@@ -560,6 +560,8 @@ void cmdRecord(char *arg) {
         conAdd(LHELP, "Press F5 to play your recording. Press F6 to stop recording.");
         state.mode |= SM_RECORD;
         setTitle(STRING_RECORD);
+        view.timed_frames=0;
+        view.totalRenderTime=0;
 
     }
 
