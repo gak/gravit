@@ -307,6 +307,8 @@ void runVideo() {
 
 // max. sleep time in milliseconds (33-> limit to 30fps when idle)
 #define SMALL_NAP    33
+// limit playback speed to 60 fps
+#define PLAY_MIN_TIME 16
 
 void run() {
 
@@ -382,6 +384,12 @@ void run() {
         if ((state.mode & (SM_RECORD|SM_PLAY) ) == 0) {
             ts_after =  getMS();
             if (ts_after < (ts_before + SMALL_NAP)) SDL_Delay( SMALL_NAP - (ts_after - ts_before));
+        }
+
+        /* pull the break on very fast video cards - 60fps playback is enough */
+        if ((state.mode & SM_PLAY ) == SM_PLAY) {
+            ts_after =  getMS();
+            if (ts_after < (ts_before + PLAY_MIN_TIME)) SDL_Delay(PLAY_MIN_TIME - (ts_after - ts_before));
         }
 
     }
