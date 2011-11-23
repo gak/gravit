@@ -39,8 +39,8 @@ void drawFontWordRA(float x, float y, char *word);
 void drawFontWordCA(float x, float y, char *word);
 float drawFontWord(float x, float y, char *word);
 int loadFonts();
-float getWordWidth(char *s);
-float getnWordWidth(char *s, int n);
+PURE_F float getWordWidth(char *s);
+PURE_F float getnWordWidth(char *s, int n);
 
 #endif
 

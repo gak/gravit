@@ -71,6 +71,10 @@ int initFrame() {
     state.memoryAllocated += FRAMEDETAILSIZE;
 
     memset(state.particleHistory, 0, FRAMESIZE);
+
+    view.timed_frames=0;
+    view.totalRenderTime=0;
+
     fpsInit();
 
     return 1;
@@ -139,6 +143,8 @@ void processFrame() {
 
     int i;
     particle_t *p;
+    Uint32 frameStart = 0;
+    Uint32 frameEnd = 0;
 
 //	processMomentum();
 
@@ -176,6 +182,8 @@ void processFrame() {
         }
 
     }
+
+    frameStart = getMS();
 
 #ifdef _OPENMP
     omp_set_num_threads(state.processFrameThreads);
@@ -229,6 +237,11 @@ void processFrame() {
     }
 
     state.totalFrames ++;
+
+    frameEnd = getMS();
+    view.totalRenderTime += frameEnd - frameStart;
+    view.timed_frames ++;
+
 
     if (state.frameCompression && (state.totalFrames % state.historyNFrame)) {
 

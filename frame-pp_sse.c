@@ -66,7 +66,7 @@ typedef struct {
 #define MIN_STEP2 0.05f
 static const __v128 vmin_step2 = _mm_init1_ps(MIN_STEP2);
 
-//static void __attribute__((hot))
+HOT
 static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
                                   int start, int amount) {
     int i;
