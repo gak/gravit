@@ -98,7 +98,10 @@ void drawOSD() {
             switch (view.recordStatus) {
             case 0:
             default:
-                DUH("status", "dormant");
+	        if (state.mode & SM_RECORD) {
+		    DUH("status", "rendering ...");
+                } else {
+                    DUH("status", "dormant"); }
                 break;
             case 1:
                 DUH("status", va("generating tree %.1f%%", (float)view.recordParticlesDone/state.particleCount*100));
