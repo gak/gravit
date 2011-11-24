@@ -13,12 +13,29 @@ function v(_x, _y, _z)
 	return t
 end
 
+local random_firstuse=1
+function seed_random()
+       local r_seed = os.clock() * 1000 + os.time() + math.random(0,32676)
+       -- improved seeding on some platforms, by throwing away the high part of time,
+       -- then reversing the digits so the least significant part makes the biggest change
+       -- see http://lua-users.org/wiki/MathLibraryTutorial
+       r_seed = tonumber(tostring( r_seed ):reverse():sub(1,8))
+       math.randomseed( r_seed )
+       random_firstuse=0
+end
+
 function randomfloat(min,max)
+        if random_firstuse == 1 then
+	   seed_random();
+        end
 	return math.random() * (max-min) + min
 end
 
 -- returns an integer between min and max inclusive
 function randomint(min,max)
+        if random_firstuse == 1 then
+	   seed_random();
+        end
 	return math.random(min,max)
 end
 

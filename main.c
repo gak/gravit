@@ -189,6 +189,7 @@ void stateInit() {
     state.processFrameThreads = 1;
 #endif
 
+    state.targetFrame = -1;
 }
 
 int init(int argc, char *argv[]) {

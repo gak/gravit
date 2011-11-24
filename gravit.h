@@ -384,6 +384,7 @@ typedef struct state_s {
     int frame;
     int totalFrames;
     int currentFrame;
+    int targetFrame;
     int historyFrames;
     int historyNFrame;
 
