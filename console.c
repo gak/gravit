@@ -397,7 +397,7 @@ void conAutoComplete() {
             }
 
             if (!strncmp(conCommand, c->cmd, lenString)) {
-                conAdd(LLOW, c->cmd);
+                conAdd(LNORM, c->cmd);
                 // this is the first command found, so lets save it as the most common word
                 if (!conCompWordsFoundCount) {
                     strcpy(conCompWord, c->cmd);
@@ -427,7 +427,7 @@ void conAutoComplete() {
     }
 
     if (!conCompWordsFoundCount) {
-        conAdd(LLOW, "No commands starting with %s", conCommand);
+        conAdd(LERR, "No commands starting with %s", conCommand);
         return;
     }
 
