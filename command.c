@@ -84,7 +84,8 @@ cmd_t cmd[] = {
 
 //	,{ "fps",						cmdFps,					&view.fps,					NULL,								NULL }
     ,{ "frameskip",					cmdFrameSkip,			NULL,						NULL,								NULL }
-    ,{ "frame",						NULL,					NULL,						&state.currentFrame,				NULL }
+//  ,{ "frame",						NULL,					NULL,						&state.currentFrame,				NULL }
+    ,{ "frame",						cmdFrame,			NULL,						NULL,				NULL }
 
     ,{ "tailskip",					cmdTailSkipCheck,		NULL,						&view.tailSkip,						NULL }
     ,{ "tailfaded",					NULL,					NULL,						&view.tailFaded,					NULL }
@@ -552,6 +553,7 @@ void cmdRecord(char *arg) {
         conAdd(LNORM, "Stopped Recording.");
         conAdd(LHELP, "Press F5 to play your recording. Press F6 to continue recording.");
         state.mode &= ~SM_RECORD;
+        //state.targetFrame = -1;
         setTitle(0);
 
     } else {
@@ -593,8 +595,35 @@ void cmdPlay(char *arg) {
         conAdd(LNORM, "Playing...");
         conAdd(LHELP, "Press F5 to stop playback. Press F6 to continue recording.");
         state.mode |= SM_PLAY;
+        //state.targetFrame = -1;
         setTitle(STRING_PLAY);
 
+    }
+
+}
+
+void cmdFrame(char *arg) {
+    int new_target_frame;
+
+    if ((arg) && (atoi(arg) >= 0)) {
+        new_target_frame=atoi(arg);
+    } else {
+        new_target_frame=state.currentFrame;
+    }
+
+
+    if ( new_target_frame <= state.frame ) {
+        // just set frame to display
+        state.currentFrame = new_target_frame;
+        conAdd(LNORM, "frame = %i", state.currentFrame);
+
+    } else {
+        // set target_frame
+        state.currentFrame = state.frame;
+        state.targetFrame = new_target_frame;
+        // change to record_mode
+	if ((state.mode & SM_RECORD) == 0) cmdRecord(NULL);
+        conAdd(LNORM, "current frame = %i, advancing to frame %i", state.currentFrame, state.targetFrame);
     }
 
 }

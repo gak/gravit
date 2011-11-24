@@ -41,6 +41,7 @@ int initFrame() {
     state.totalFrames = 0;
     state.historyNFrame = 1;
     state.currentFrame = 0;
+    state.targetFrame = -1;
     view.quit = 0;
 
     cleanMemory();
@@ -157,6 +158,7 @@ void processFrame() {
         if (state.frameCompression) {
 
             state.frame /= 2;
+            if (state.targetFrame >0) state.targetFrame /= 2;
             state.currentFrame = state.frame;
             state.historyNFrame *= 2;
             conAdd(LLOW, "historyNFrame: %i", state.historyNFrame);
@@ -177,6 +179,7 @@ void processFrame() {
 
         } else {
 
+            state.targetFrame= -1;
             return;
 
         }
@@ -260,6 +263,12 @@ void processFrame() {
     state.frame ++;
     state.currentFrame = state.frame;
 
+    if ((state.targetFrame >= 0) && (state.targetFrame <= state.frame) && (state.mode & SM_RECORD))
+    {
+      conAdd(LNORM, "target frame reached: %i", state.currentFrame);
+      cmdRecord(NULL);
+      state.targetFrame = -1;
+    }
 }
 
 #if 0
