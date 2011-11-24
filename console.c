@@ -58,11 +58,16 @@ void conAdd(int mode, char *f, ... ) {
     vsprintf (s, f, argptr);
     va_end (argptr);
 
+    printf("%s\n", s);
+
     if (strlen(s) >= CONSOLE_LENGTH-1)
         s[CONSOLE_LENGTH-1] = 0;
 
     if (mode > 3)
         mode = 0;
+
+    if (mode < LNORM) return;
+
 
     cpos++;
 
@@ -72,7 +77,6 @@ void conAdd(int mode, char *f, ... ) {
     strncpy(con[cpos].s, s, CONSOLE_LENGTH-1);
     memcpy(&con[cpos].c, &cols[mode], sizeof(con[cpos].c));
 
-    printf("%s\n", s);
 
 #if 0
     {
@@ -393,7 +397,7 @@ void conAutoComplete() {
             }
 
             if (!strncmp(conCommand, c->cmd, lenString)) {
-                conAdd(LLOW, c->cmd);
+                conAdd(LNORM, c->cmd);
                 // this is the first command found, so lets save it as the most common word
                 if (!conCompWordsFoundCount) {
                     strcpy(conCompWord, c->cmd);
@@ -423,7 +427,7 @@ void conAutoComplete() {
     }
 
     if (!conCompWordsFoundCount) {
-        conAdd(LLOW, "No commands starting with %s", conCommand);
+        conAdd(LERR, "No commands starting with %s", conCommand);
         return;
     }
 
