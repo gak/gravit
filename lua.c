@@ -138,13 +138,13 @@ int luag_load(lua_State *L) {
     
     char *s = (char*)lua_tostring(L, -1);
     char *f;
-    conAdd(1, s);
+    conAdd(LLOW, s);
     lua_pop(L, 1);
     
     s = va("spawn/%s", s);
     
     f = findFile(s);
-    conAdd(1, f);
+    conAdd(LLOW, f);
     
     luaExecute(findFile(f));
     
@@ -197,7 +197,7 @@ int luag_spawn(lua_State *L) {
 int luag_log(lua_State *L) {
 
     char *s = (char*)lua_tostring(L, -1);
-    conAdd(1, s);
+    conAdd(LNORM, s);
     lua_pop(L,1);
 
     return 0;
