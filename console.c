@@ -58,11 +58,16 @@ void conAdd(int mode, char *f, ... ) {
     vsprintf (s, f, argptr);
     va_end (argptr);
 
+    printf("%s\n", s);
+
     if (strlen(s) >= CONSOLE_LENGTH-1)
         s[CONSOLE_LENGTH-1] = 0;
 
     if (mode > 3)
         mode = 0;
+
+    if (mode < LNORM) return;
+
 
     cpos++;
 
@@ -72,7 +77,6 @@ void conAdd(int mode, char *f, ... ) {
     strncpy(con[cpos].s, s, CONSOLE_LENGTH-1);
     memcpy(&con[cpos].c, &cols[mode], sizeof(con[cpos].c));
 
-    printf("%s\n", s);
 
 #if 0
     {

@@ -232,7 +232,7 @@ int init(int argc, char *argv[]) {
 #endif
 
 #ifdef _OPENMP
-    conAdd(LLOW, "multi-threaded rendering: max threads = %d.    Found %d processors.", 
+    conAdd(LHELP, "multi-threaded rendering: max threads = %d.    Found %d processors.", 
                   state.processFrameThreads, omp_get_num_procs());
 #endif
 

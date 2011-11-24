@@ -512,7 +512,7 @@ restart:
 #endif
 
     state.currentlySpawning = 0;
-    conAdd(LHELP, "You have spawned some particles. Hit F6 to start recording the simulation!");
+    conAdd(LLOW, "You have spawned some particles. Hit F6 to start recording the simulation!");
 
     state.mode = 0;
 
