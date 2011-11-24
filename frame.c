@@ -179,7 +179,9 @@ void processFrame() {
 
         } else {
 
+	    // no more frames left - stop recording
             state.targetFrame= -1;
+            if (state.mode & SM_RECORD) cmdRecord(NULL);
             return;
 
         }
