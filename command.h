@@ -50,6 +50,7 @@ void cmdLoadFrameDump(char *arg);
 void cmdRecord(char *arg);
 void cmdStop(char *arg);
 void cmdStart(char *arg);
+void cmdFrame(char *arg);
 void cmdFps(char *arg);
 void cmdSpawn(char *arg);
 void cmdStatus(char *arg);
