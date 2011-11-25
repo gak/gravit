@@ -16,6 +16,17 @@ OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o
 
 # -------------------------------
 
+#generic optimization - OK for any newer proceser with SSE support
+GenericOpt= -msse -mfpmath=sse \
+	    -fomit-frame-pointer -momit-leaf-frame-pointer \
+	    -floop-optimize -funsafe-loop-optimizations -Wunsafe-loop-optimizations \
+	    -malign-stringops \
+	    -falign-functions=6 \
+	    -falign-loops=6 \
+	    -falign-jumps=6
+
+
+
 #optimize for Core2
 P4C2opt=-mtune=core2 -march=core2 \
 	-msse -msse2 -msse3 -mssse3 -mfpmath=sse \
@@ -78,8 +89,8 @@ INSTALL=cp
 #LD=gcc $(P4C2opt)
 
 # mingw gcc 4.4.5 has openMP support.
-CC=gcc -fopenmp $(P4C2opt)
-LD=gcc -fopenmp $(P4C2opt)
+CC=gcc -fopenmp $(GenericOpt)
+LD=gcc -fopenmp $(GenericOpt)
 
 
 # -------------------------------
@@ -102,7 +113,8 @@ gravitrc.o: gravit.rc
 	windres gravit.rc gravitrc.o
 
 .c.o:
-	$(CC) -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
+	@echo $<
+	@$(CC) -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
 
 
 final: $(OBJS)
