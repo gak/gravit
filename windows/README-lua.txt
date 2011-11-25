@@ -10,7 +10,7 @@ lib32: 32bit libraries and runtime dlls
 lib64: 64bit libraries and runtime dlls
 
 The source code is from the "LuaBinaries" project (see below), but
-compiled with VisualStudio 2008 (insted of VS 2005) for 32bit (x86)
+compiled with VisualStudio 2008 (instead of VS 2005) for 32bit (x86)
 and 64bit (x64) targets.
 
 You may need to install the VS 2008 SP1 redistributables (free from microsoft).
