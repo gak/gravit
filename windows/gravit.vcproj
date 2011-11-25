@@ -56,7 +56,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="../include;../include/SDL"
+				AdditionalIncludeDirectories="include;include/SDL;vc9_include;vc9_include/SDL"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				StringPooling="true"
 				SmallerTypeCheck="false"
@@ -73,7 +73,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -88,11 +88,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua51.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../lib"
+				AdditionalLibraryDirectories="lib32;vc9_lib32"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/gravit.pdb"
 				SubSystem="2"
@@ -164,14 +164,14 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="../include;../include/SDL"
+				AdditionalIncludeDirectories="include;include/SDL;vc9_include;vc9_include/SDL;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				StringPooling="true"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
-				EnableEnhancedInstructionSet="1"
+				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
 				RuntimeTypeInfo="false"
 				PrecompiledHeaderFile=".\Release/gravit.pch"
@@ -181,7 +181,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -196,11 +196,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua51.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../lib/x64"
+				AdditionalLibraryDirectories="lib64;vc9_lib64"
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/gravit.pdb"
 				SubSystem="2"
@@ -266,7 +266,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="../include;../include/SDL"
+				AdditionalIncludeDirectories="include;include/SDL;vc9_include;vc9_include/SDL"
 				PreprocessorDefinitions="WIN32;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -280,7 +280,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -296,11 +296,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua51.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit-debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../lib"
+				AdditionalLibraryDirectories="lib32;vc9_lib32"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/gravit-debug.pdb"
@@ -368,12 +368,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="../include;../include/SDL"
+				AdditionalIncludeDirectories="include;include/SDL;vc9_include;vc9_include/SDL"
 				PreprocessorDefinitions="WIN32;_CONSOLE;_CRT_SECURE_NO_WARNINGS;HAVE_LUA;HAVE_SSE;HAVE_PNG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				EnableEnhancedInstructionSet="1"
+				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
 				PrecompiledHeaderFile=".\Debug/gravit.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -382,7 +382,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -398,11 +398,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Lua.lib LuaLib.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Lua51.lib Gdi32.lib Advapi32.lib User32.lib msvcrt.lib SDL.lib SDLmain.lib SDL_ttf.lib libpng.lib zlib.lib opengl32.lib glu32.lib SDL_image.lib oldnames.lib"
 				OutputFile="gravit-debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../lib/x64"
+				AdditionalLibraryDirectories="lib64;vc9_lib64"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/gravit-debug.pdb"
@@ -445,7 +445,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="color.c"
+				RelativePath="..\color.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -481,7 +481,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="command.c"
+				RelativePath="..\command.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -517,7 +517,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="config.c"
+				RelativePath="..\config.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -553,7 +553,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="console.c"
+				RelativePath="..\console.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -589,7 +589,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="font.c"
+				RelativePath="..\font.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -625,7 +625,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="fps.c"
+				RelativePath="..\fps.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -661,7 +661,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="frame-ot.c"
+				RelativePath="..\frame-ot.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -697,51 +697,15 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\frame-pp.c"
+				RelativePath="..\frame-pp.c"
 				>
 			</File>
 			<File
-				RelativePath=".\frame-pp_sse.c"
+				RelativePath="..\frame-pp_sse.c"
 				>
 			</File>
 			<File
-				RelativePath="frame.c"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="gfx.c"
+				RelativePath="..\frame.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -777,7 +741,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="input.c"
+				RelativePath="..\gfx.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -813,7 +777,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="lua.c"
+				RelativePath="..\input.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -849,7 +813,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="main.c"
+				RelativePath="..\lua.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -885,7 +849,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="osd.c"
+				RelativePath="..\main.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -921,11 +885,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\png_save.c"
-				>
-			</File>
-			<File
-				RelativePath="spawn.c"
+				RelativePath="..\osd.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -961,7 +921,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="timer.c"
+				RelativePath="..\png_save.c"
+				>
+			</File>
+			<File
+				RelativePath="..\spawn.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -997,7 +961,43 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="tool.c"
+				RelativePath="..\timer.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\tool.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1038,15 +1038,19 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="command.h"
+				RelativePath="..\command.h"
 				>
 			</File>
 			<File
-				RelativePath="font.h"
+				RelativePath="..\font.h"
 				>
 			</File>
 			<File
-				RelativePath="gravit.h"
+				RelativePath="..\gravit.h"
+				>
+			</File>
+			<File
+				RelativePath="..\sse_functions.h"
 				>
 			</File>
 		</Filter>
@@ -1054,7 +1058,7 @@
 			Name="Resource"
 			>
 			<File
-				RelativePath="gravit.rc"
+				RelativePath="..\gravit.rc"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1091,7 +1095,7 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="gravit.ico"
+			RelativePath="..\data\gravit.ico"
 			>
 		</File>
 	</Files>
