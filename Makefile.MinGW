@@ -1,11 +1,13 @@
+# Makefile for MinGW gcc (32 or 64 bit) on windows
+#
 
 FINAL = gravit.exe
 
 ARCH=32
 #ARCH=64
 
-DESTDIR=bin32/
 
+DESTDIR=install$(ARCH)/
 
 # -------------------------------
 
@@ -45,15 +47,18 @@ X64opt= -mtune=corei7 -march=corei7 \
 
 # -------------------------------
 
+INCDIRS = -I./windows/include -I./windows/include/SDL   -I./windows/mingw_include$(ARCH)  -I./windows/mingw_include$(ARCH)/SDL
+LIBDIRS = -L./windows/lib$(ARCH) -L./windows/mingw_lib$(ARCH)
+
+
 CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
-	 -I../include$(ARCH)  -I../include$(ARCH)/SDL \
+	 $(INCDIRS) \
 	 -D_GNU_SOURCE=1 -Dmain=SDL_main \
 	 -O4 -ffast-math \
 	 -mwindows -DWIN32
 
-LDFLAGS = -L../lib$(ARCH)
-
-LDLIBS =  -lSDL_ttf -lSDL_image -llua -llualib \
+LDFLAGS = $(LIBDIRS)
+LDLIBS =  -lSDL_ttf -lSDL_image -llua51 \
 	  -lGLU32 -lopenGL32 \
 	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lwinmm -ldxguid \
 	  -lpthread
@@ -87,17 +92,21 @@ install: final
 dep:
 	@makedepend $(CFLAGS) *.c 2> /dev/null
 
-final: $(OBJS)
-	$(LD) $(LDFLAGS)  $(OBJS)  $(LDLIBS) -o $(FINAL)
-
 clean:
 	rm -f *.o $(FINAL)
+
+# -------------------------------
+
 
 gravitrc.o: gravit.rc
 	windres gravit.rc gravitrc.o
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
+
+
+final: $(OBJS)
+	$(LD) $(LDFLAGS)  $(OBJS)  $(LDLIBS) -o $(FINAL)
 
 
 # -------------------------------
