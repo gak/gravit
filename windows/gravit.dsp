@@ -91,71 +91,71 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\color.c
+SOURCE=..\color.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\command.c
+SOURCE=..\command.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\config.c
+SOURCE=..\config.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\console.c
+SOURCE=..\console.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\font.c
+SOURCE=..\font.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\fps.c
+SOURCE=..\fps.c
 # End Source File
 # Begin Source File
 
-SOURCE=".\frame-ot.c"
+SOURCE="..\frame-ot.c"
 # End Source File
 # Begin Source File
 
-SOURCE=".\frame-pp.c"
+SOURCE="..\frame-pp.c"
 # End Source File
 # Begin Source File
 
-SOURCE=.\frame.c
+SOURCE=..\frame.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\gfx.c
+SOURCE=..\gfx.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\input.c
+SOURCE=..\input.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\lua.c
+SOURCE=..\lua.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.c
+SOURCE=..\main.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\osd.c
+SOURCE=..\osd.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\spawn.c
+SOURCE=..\spawn.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\timer.c
+SOURCE=..\timer.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\tool.c
+SOURCE=..\tool.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -163,15 +163,15 @@ SOURCE=.\tool.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\command.h
+SOURCE=..\command.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\font.h
+SOURCE=..\font.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\gravit.h
+SOURCE=..\gravit.h
 # End Source File
 # End Group
 # Begin Group "Resource"
@@ -179,12 +179,12 @@ SOURCE=.\gravit.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\gravit.rc
+SOURCE=..\gravit.rc
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\gravit.ico
+SOURCE=..\data\gravit.ico
 # End Source File
 # End Target
 # End Project
