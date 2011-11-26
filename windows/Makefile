@@ -7,8 +7,15 @@
 #
 
 
-all:
-	$(MAKE) -C .. -f Makefile.MinGW
+all: show_options
+
+show_options:
+	@echo 
+	@echo make 32bit    to build using 32-bit libraries
+	@echo 
+	@echo make 64bit    to build using 64-bit libraries
+	@echo 
+	@exit 1
 
 
 32bit:
@@ -34,6 +41,7 @@ install64:
 
 
 
+.phony: show_options
 .phony: 32bit
 .phony: 64bit
 .phony: clean

@@ -40,7 +40,8 @@ project files availeable:
              have the required OpenMP header and libraries. 
 
 
-Copy all *.dll files from lib32 and vc9_lib32 next to gravit.exe 
+Your new gravit.exe is put in the main source directory.
+Make sure all *.dll files from lib32 and vc9_lib32 are next to gravit.exe.
 
 
 
