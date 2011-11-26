@@ -443,6 +443,11 @@ typedef struct view_s {
     // Set this to > 0 to refresh video every Nms while rendering
     Uint32 recordingVideoRefreshTime;
 
+    // minimum time that a single video frame stays on screen
+    // Can be used to reduce CPU usage. Warning: this also slows down recording mode!
+    // Any value < SDL_TIMESLICE (usually 10 ms) disables this "handbrake"
+    int minVideoRefreshTime;
+
     Uint32 firstTimeStamp;
 
     // timer for rendering

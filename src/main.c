@@ -103,6 +103,8 @@ void viewInit() {
     // 50ms by default (20fps)
     view.recordingVideoRefreshTime = 50;
 
+    view.minVideoRefreshTime = 0;
+
     view.drawAxis = 1;
     view.consoleMode = 0;
 
@@ -392,6 +394,12 @@ void run() {
         if ((state.mode & SM_PLAY ) == SM_PLAY) {
             ts_after =  getMS();
             if (ts_after < (ts_before + PLAY_MIN_TIME)) SDL_Delay(PLAY_MIN_TIME - (ts_after - ts_before));
+        }
+
+	/* if minVideoRefreshTime is set, hold the current frame a bit longer*/
+	if (view.minVideoRefreshTime >= SDL_TIMESLICE) {
+            ts_after =  getMS();
+            if (ts_after < (ts_before + view.minVideoRefreshTime)) SDL_Delay(view.minVideoRefreshTime - (ts_after - ts_before));
         }
 
     }

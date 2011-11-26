@@ -69,6 +69,7 @@ cmd_t cmd[] = {
     ,{ "status",					cmdStatus,				NULL,						NULL,								NULL }
 
     ,{ "recordingvideorefreshtime",	NULL,					NULL,						(int *)(&view.recordingVideoRefreshTime),	NULL }
+    ,{ "minvideoframetime",	        NULL,					NULL,						(int *)(&view.minVideoRefreshTime),	NULL }
 
     ,{ "screensaver",				NULL,					NULL,						&view.screenSaver,					NULL }
     ,{ "installscreensaver",		cmdInstallScreenSaver,	NULL,						NULL,								NULL }
