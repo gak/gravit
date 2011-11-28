@@ -39,6 +39,7 @@ Installation for UNIX
    2. You will need:
           * SDL, SDL_ttf. and SDL_image installed and working. (Try sdl-config --version)
           * lua is optional for scriptable spawn locations (recommended)
+          * libpng is optional for creating screenshots in PNG format (instead of BMP)
           * OpenGL (accelerated recommended) 
    3. Build gravit:
           * ./configure
