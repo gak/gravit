@@ -17,15 +17,17 @@ OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o
 # -------------------------------
 
 #generic optimization - OK for any newer proceser with SSE support
+# -mstackrealign is needed for Windows XP - otherwise gravit crashes
 GenericOpt= -msse -mfpmath=sse \
 	    -fomit-frame-pointer -momit-leaf-frame-pointer \
 	    -floop-optimize -funsafe-loop-optimizations -Wunsafe-loop-optimizations \
 	    -malign-stringops \
 	    -falign-functions=6 \
 	    -falign-loops=6 \
-	    -falign-jumps=6
-
-
+	    -falign-jumps=6 \
+	    -mpreferred-stack-boundary=6 \
+	    -minline-stringops-dynamically \
+	    -mstackrealign
 
 #optimize for Core2
 P4C2opt=-mtune=core2 -march=core2 \
@@ -35,12 +37,10 @@ P4C2opt=-mtune=core2 -march=core2 \
 	-malign-stringops \
 	-falign-functions=6 \
 	-falign-loops=6 \
-	-falign-jumps=6
-
-#	-mpreferred-stack-boundary=6 \
-#	-minline-stringops-dynamically \
-#	-mstackrealign
-
+	-falign-jumps=6 \
+	-mpreferred-stack-boundary=6 \
+	-minline-stringops-dynamically \
+	-mstackrealign
 
 #optimize for Corei3/5/7
 X64opt= -mtune=corei7 -march=corei7 \
