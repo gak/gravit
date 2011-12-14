@@ -1,8 +1,13 @@
 The files in this directory should help you build gravit on windows,
 using Visual Studio or gcc (MinGW).
 
+A set of pre-build libraries is contained in windows_libs.zip.
+
 If gravit.exe complains that msvcrt90.dll is missing, you need to install the 
-visual C runtime distributable (vcredist_2008SP1_x86.exe or vcredist_2008SP1_x64.exe).
+visual C runtime distributable (vcredist_x86.exe or vcredist_x64.exe).
+You can download them from microsoft:
+vcredist_x86 : http://www.microsoft.com/download/en/details.aspx?id=5582
+vcredist_x64 : http://www.microsoft.com/download/en/details.aspx?id=2092
 
 
 gcc (MinGW gcc 4.5.x or newer recommended)
@@ -24,7 +29,11 @@ Microsoft Visual Studio
 ========================
 If you have only little experience with the GNU compiler toolchain, you could try
 building gravit in Visual Studio. The code is a bit slower, but you can use a neat IDE.
-Debugging is easier with Visual Studio. There are free editions availeable from Microsoft.
+Debugging is easier with Visual Studio. 
+
+There are free editions availeable from Microsoft (i.e. "Visual C++ 2008 Express Edition with SP1") http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express
+(You may also need to dowenload and install the the Windows SDK and DirectX SDK)
+
 
 project files availeable:
 
@@ -47,6 +56,8 @@ Make sure all *.dll files from lib32 and vc9_lib32 are next to gravit.exe.
 
 pre-compiled libraries:
 ========================
+
+(unzip windows_libs.zip into this directory)
 
 As getting the "right" library for your compiler can be a real pain in the ass,
 I have collected some pre-compiled libraries and organized then into the following
