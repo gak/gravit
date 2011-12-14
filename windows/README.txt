@@ -31,8 +31,9 @@ If you have only little experience with the GNU compiler toolchain, you could tr
 building gravit in Visual Studio. The code is a bit slower, but you can use a neat IDE.
 Debugging is easier with Visual Studio. 
 
-There are free editions availeable from Microsoft (i.e. "Visual C++ 2008 Express Edition with SP1") http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express
-(You may also need to dowenload and install the the Windows SDK and DirectX SDK)
+There are free editions availeable from Microsoft (i.e. "Visual C++ 2008 Express Edition with SP1")
+http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express
+(You may also need to download and install the Windows SDK and DirectX SDK)
 
 
 project files availeable:
