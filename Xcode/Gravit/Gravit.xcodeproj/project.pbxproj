@@ -168,9 +168,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */,
 				2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */,
 				2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */,
-				2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */,
 				55A8C27912DD771600CFE55A /* AudioToolbox.framework in Frameworks */,
@@ -460,6 +460,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -482,6 +483,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

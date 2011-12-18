@@ -373,7 +373,6 @@ int processKeys() {
 void processMouse() {
 
     int x,y;
-    Uint16 wx,wy;
 
     view.mouseButtons[1] = view.mouseButtons[0];
     memcpy(view.lastMousePosition, view.currentMousePosition, sizeof(view.currentMousePosition));
@@ -389,11 +388,18 @@ void processMouse() {
 
     if (view.mouseButtons[0]) {
 
+        // Unfortunately, on OS X WarpMouse seems to act like the mouse isn't pressed anymore.
+        
+#ifndef __MACH__
+        
+        Uint16 wx,wy;
         wx = video.screenW / 2;
         wy = video.screenH / 2;
         SDL_WarpMouse(wx,wy);
         view.currentMousePosition[0] = wx;
         view.currentMousePosition[1] = wy;
+
+#endif
 
         // turn off cursor only after the 2nd warp mouse, otherwise showcursor does strange things.
         if (view.mouseButtons[1]) {
