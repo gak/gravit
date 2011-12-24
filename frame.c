@@ -95,11 +95,11 @@ void processFrameThread(int thread) {
     sliceSize = state.particleCount / state.processFrameThreads;
 
     sliceStart = sliceSize * thread;
-    //sliceEnd = sliceSize * thread + sliceSize - 1;
-    sliceEnd = sliceSize * thread + sliceSize;  // otherwise the particle loop (i=start; i<end;i++) misses one particle!
+    sliceEnd = sliceSize * thread + sliceSize;
 
     // make sure the last thread does not miss remaining particle
-    if (thread == (state.processFrameThreads -1)) sliceEnd=state.particleCount;
+    if (thread == (state.processFrameThreads - 1))
+        sliceEnd = state.particleCount;
 #endif
 
 

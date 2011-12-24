@@ -66,59 +66,60 @@ void processFramePP(int start, int amount) {
         VectorNew(p1_pos);
         VectorNew(p1_vel);
         float p1_mass;
-
+        
         particle_t *p1;
         particleDetail_t *pd1;
         int j;
-
+        
         p1 = state.particleHistory + state.particleCount*state.frame + i;
         pd1 = state.particleDetail + i;
-
-	p1_mass = pd1->mass;
-	VectorCopy(p1->pos, p1_pos);
-	VectorZero(p1_vel);
-
-        for (j = i+1; j < particles_max; j++) {
-	    VectorNew(dv);
-	    float inverseSquareDistance;
-	    float force;
-
-	    particle_t *p2;
-	    particleDetail_t *pd2;
-
+        
+        p1_mass = pd1->mass;
+        VectorCopy(p1->pos, p1_pos);
+        VectorZero(p1_vel);
+        
+        for (j = i + 1; j < particles_max; j++) {
+            
+            VectorNew(dv);
+            float inverseSquareDistance;
+            float force;
+            
+            particle_t *p2;
+            particleDetail_t *pd2;
+            
             p2 = state.particleHistory + state.particleCount*state.frame + j;
             pd2 = state.particleDetail + j;
-
+            
             dv[0] = p1_pos[0] - p2->pos[0];
             dv[1] = p1_pos[1] - p2->pos[1];
             dv[2] = p1_pos[2] - p2->pos[2];
-
+            
             // get distance^2 between the two
-	    inverseSquareDistance  = dv[0] * dv[0];
-	    inverseSquareDistance += dv[1] * dv[1];
-	    inverseSquareDistance += dv[2] * dv[2];
-	    //inverseSquareDistance +=  + MIN_STEP2;
-
+            inverseSquareDistance  = dv[0] * dv[0];
+            inverseSquareDistance += dv[1] * dv[1];
+            inverseSquareDistance += dv[2] * dv[2];
+            //inverseSquareDistance +=  + MIN_STEP2;
+            
             force = state.g * p1_mass * pd2->mass / inverseSquareDistance;
-
+            
             // sum of accelerations for p1
             p1_vel[0] += dv[0] * force;
             p1_vel[1] += dv[1] * force;
             p1_vel[2] += dv[2] * force;
-
+            
             // add acceleration for p2 (with negative sign, as the direction is inverted)
             p2->vel[0] += -dv[0] * force;
             p2->vel[1] += -dv[1] * force;
             p2->vel[2] += -dv[2] * force;
-
+            
         }
-
+        
         // write back buffered acceleration of p1
         p1->vel[0] += p1_vel[0];
         p1->vel[1] += p1_vel[1];
         p1->vel[2] += p1_vel[2];
-
+        
     }
-
+    
 }
 
