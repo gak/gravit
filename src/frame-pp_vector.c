@@ -30,33 +30,41 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /* How to allocate memory with 16byte alignment?                              */
 /* ************************************************************************** */
 #ifdef WIN32
-// Windows: use _aligned_malloc
-#include <stdlib.h>
-#include <malloc.h>
-#if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
-// MinGW
-#define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) __mingw_aligned_malloc(size, alignment);}
-#define FREE_ALIGNED(target)                    {__mingw_aligned_free(target);}
-#else
-// Microsoft
-#define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) _aligned_malloc(size, alignment);}
-#define FREE_ALIGNED(target)                    {_aligned_free(target);}
-#endif
+
+    // Windows: use _aligned_malloc
+    #include <stdlib.h>
+    #include <malloc.h>
+
+    #if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
+        // MinGW
+        #define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) __mingw_aligned_malloc(size, alignment);}
+        #define FREE_ALIGNED(target)                    {__mingw_aligned_free(target);}
+    #else
+        // Microsoft
+        #define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) _aligned_malloc(size, alignment);}
+        #define FREE_ALIGNED(target)                    {_aligned_free(target);}
+    #endif
 
 #else
-// linux, unix, MacOS:  use (posix_)memalign
-#include <stdlib.h>
-#include <malloc.h>
-//#if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
-#if defined(HAVE_MEMALIGN)
-// use memalign -- seems this is the best choice for most unix/linux versions
-#define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) memalign(alignment, size);}
-#define FREE_ALIGNED(target)                    {free(target);}
-#else
-// all others use posix_memalign
-#define MALLOC_ALIGNED(target, size, alignment) {if (posix_memalign( (void **) &(target), alignment, size) != 0) target=NULL;}
-#define FREE_ALIGNED(target)                    {free(target);}
-#endif
+
+    // linux, unix, MacOS:  use (posix_)memalign
+    #include <stdlib.h>
+    //#include <malloc.h>
+
+    //#if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
+    #if defined(HAVE_MEMALIGN)
+
+        // use memalign -- seems this is the best choice for most unix/linux versions
+        #define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) memalign(alignment, size);}
+        #define FREE_ALIGNED(target)                    {free(target);}
+
+    #else
+
+        // all others use posix_memalign
+        #define MALLOC_ALIGNED(target, size, alignment) {if (posix_memalign( (void **) &(target), alignment, size) != 0) target=NULL;}
+        #define FREE_ALIGNED(target)                    {free(target);}
+
+    #endif
 
 #endif
 /* ************************************************************************** */

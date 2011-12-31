@@ -38,28 +38,9 @@
 		2E13E1881210C8C700877F47 /* lzio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E13E1681210C8C700877F47 /* lzio.c */; };
 		2E13E1891210C8C700877F47 /* print.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E13E1691210C8C700877F47 /* print.c */; };
 		2E13E1A01210C97000877F47 /* ltablib.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E13E19F1210C97000877F47 /* ltablib.c */; };
-		2E8BCAB5120A22EB00F87C35 /* color.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCA9F120A22EB00F87C35 /* color.c */; };
-		2E8BCAB6120A22EB00F87C35 /* command.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA0120A22EB00F87C35 /* command.c */; };
-		2E8BCAB7120A22EB00F87C35 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA2120A22EB00F87C35 /* config.c */; };
-		2E8BCAB8120A22EB00F87C35 /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA3120A22EB00F87C35 /* console.c */; };
-		2E8BCAB9120A22EB00F87C35 /* font.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA4120A22EB00F87C35 /* font.c */; };
-		2E8BCABA120A22EB00F87C35 /* fps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA6120A22EB00F87C35 /* fps.c */; };
-		2E8BCABB120A22EB00F87C35 /* frame-ot.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA7120A22EB00F87C35 /* frame-ot.c */; };
-		2E8BCABC120A22EB00F87C35 /* frame-pp.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA8120A22EB00F87C35 /* frame-pp.c */; };
-		2E8BCABD120A22EB00F87C35 /* frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAA9120A22EB00F87C35 /* frame.c */; };
-		2E8BCABE120A22EB00F87C35 /* gfx.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAA120A22EB00F87C35 /* gfx.c */; };
-		2E8BCABF120A22EB00F87C35 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAC120A22EB00F87C35 /* input.c */; };
-		2E8BCAC0120A22EB00F87C35 /* lua.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAD120A22EB00F87C35 /* lua.c */; };
-		2E8BCAC1120A22EB00F87C35 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAE120A22EB00F87C35 /* main.c */; };
-		2E8BCAC2120A22EB00F87C35 /* osd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAAF120A22EB00F87C35 /* osd.c */; };
-		2E8BCAC3120A22EB00F87C35 /* spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB1120A22EB00F87C35 /* spawn.c */; };
-		2E8BCAC4120A22EB00F87C35 /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB2120A22EB00F87C35 /* texture.c */; };
-		2E8BCAC5120A22EB00F87C35 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB3120A22EB00F87C35 /* timer.c */; };
-		2E8BCAC6120A22EB00F87C35 /* tool.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCAB4120A22EB00F87C35 /* tool.c */; };
 		2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCB4C120A29E400F87C35 /* OpenGL.framework */; };
 		2E8BCBAC120A308A00F87C35 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCBAB120A308A00F87C35 /* SDLMain.m */; };
 		2E8BCCAF120A4F4C00F87C35 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCA7120A4F4C00F87C35 /* data */; };
-		2E8BCCB0120A4F4C00F87C35 /* gravit.cfg in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */; };
 		2E8BCCD4120A5FB600F87C35 /* gravit.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCD3120A5FB600F87C35 /* gravit.icns */; };
 		2EB21CB1120A972400419B4C /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
 		2EB21CB3120A972400419B4C /* SDL_ttf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
@@ -67,6 +48,27 @@
 		2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
 		2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
 		2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB4120A972400419B4C /* SDL.framework */; };
+		2ED8F09214AE842F007C6213 /* gravit.cfg in Resources */ = {isa = PBXBuildFile; fileRef = 2ED8F09014AE842F007C6213 /* gravit.cfg */; };
+		2ED8F09314AE842F007C6213 /* screensaver.cfg in Resources */ = {isa = PBXBuildFile; fileRef = 2ED8F09114AE842F007C6213 /* screensaver.cfg */; };
+		2ED8F0B014AE843E007C6213 /* color.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09514AE843E007C6213 /* color.c */; };
+		2ED8F0B114AE843E007C6213 /* command.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09614AE843E007C6213 /* command.c */; };
+		2ED8F0B214AE843E007C6213 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09814AE843E007C6213 /* config.c */; };
+		2ED8F0B314AE843E007C6213 /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09A14AE843E007C6213 /* console.c */; };
+		2ED8F0B414AE843E007C6213 /* font.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09B14AE843E007C6213 /* font.c */; };
+		2ED8F0B514AE843E007C6213 /* fps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09D14AE843E007C6213 /* fps.c */; };
+		2ED8F0B614AE843E007C6213 /* frame-ot.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09E14AE843E007C6213 /* frame-ot.c */; };
+		2ED8F0B914AE843E007C6213 /* frame-pp.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A114AE843E007C6213 /* frame-pp.c */; };
+		2ED8F0BA14AE843E007C6213 /* frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A214AE843E007C6213 /* frame.c */; };
+		2ED8F0BB14AE843E007C6213 /* gfx.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A314AE843E007C6213 /* gfx.c */; };
+		2ED8F0BC14AE843E007C6213 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A514AE843E007C6213 /* input.c */; };
+		2ED8F0BD14AE843E007C6213 /* lua.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A614AE843E007C6213 /* lua.c */; };
+		2ED8F0BE14AE843E007C6213 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A714AE843E007C6213 /* main.c */; };
+		2ED8F0BF14AE843E007C6213 /* osd.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A814AE843E007C6213 /* osd.c */; };
+		2ED8F0C014AE843E007C6213 /* png_save.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A914AE843E007C6213 /* png_save.c */; };
+		2ED8F0C114AE843E007C6213 /* spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0AB14AE843E007C6213 /* spawn.c */; };
+		2ED8F0C214AE843E007C6213 /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0AD14AE843E007C6213 /* texture.c */; };
+		2ED8F0C314AE843E007C6213 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0AE14AE843E007C6213 /* timer.c */; };
+		2ED8F0C414AE843E007C6213 /* tool.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0AF14AE843E007C6213 /* tool.c */; };
 		55A8C26412DD769E00CFE55A /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A8C25F12DD769E00CFE55A /* AudioStreamer.m */; };
 		55A8C27912DD771600CFE55A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A8C27812DD771600CFE55A /* AudioToolbox.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -125,37 +127,42 @@
 		2E13E1681210C8C700877F47 /* lzio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzio.c; path = External/lua/src/lzio.c; sourceTree = "<group>"; };
 		2E13E1691210C8C700877F47 /* print.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = print.c; path = External/lua/src/print.c; sourceTree = "<group>"; };
 		2E13E19F1210C97000877F47 /* ltablib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ltablib.c; path = External/lua/src/ltablib.c; sourceTree = "<group>"; };
-		2E8BCA9F120A22EB00F87C35 /* color.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = color.c; path = ../../color.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA0120A22EB00F87C35 /* command.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = command.c; path = ../../command.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA1120A22EB00F87C35 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = command.h; path = ../../command.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAA2120A22EB00F87C35 /* config.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = config.c; path = ../../config.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA3120A22EB00F87C35 /* console.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = console.c; path = ../../console.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA4120A22EB00F87C35 /* font.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = font.c; path = ../../font.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA5120A22EB00F87C35 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = font.h; path = ../../font.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAA6120A22EB00F87C35 /* fps.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = fps.c; path = ../../fps.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAA7120A22EB00F87C35 /* frame-ot.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = "frame-ot.c"; path = "../../frame-ot.c"; sourceTree = SOURCE_ROOT; };
-		2E8BCAA8120A22EB00F87C35 /* frame-pp.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = "frame-pp.c"; path = "../../frame-pp.c"; sourceTree = SOURCE_ROOT; };
-		2E8BCAA9120A22EB00F87C35 /* frame.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = frame.c; path = ../../frame.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAA120A22EB00F87C35 /* gfx.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = gfx.c; path = ../../gfx.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAB120A22EB00F87C35 /* gravit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gravit.h; path = ../../gravit.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAAC120A22EB00F87C35 /* input.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = input.c; path = ../../input.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAD120A22EB00F87C35 /* lua.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = lua.c; path = ../../lua.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAE120A22EB00F87C35 /* main.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = main.c; path = ../../main.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAAF120A22EB00F87C35 /* osd.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = osd.c; path = ../../osd.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAB0120A22EB00F87C35 /* sdlk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sdlk.h; path = ../../sdlk.h; sourceTree = SOURCE_ROOT; };
-		2E8BCAB1120A22EB00F87C35 /* spawn.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = spawn.c; path = ../../spawn.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAB2120A22EB00F87C35 /* texture.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = texture.c; path = ../../texture.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAB3120A22EB00F87C35 /* timer.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = timer.c; path = ../../timer.c; sourceTree = SOURCE_ROOT; };
-		2E8BCAB4120A22EB00F87C35 /* tool.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = tool.c; path = ../../tool.c; sourceTree = SOURCE_ROOT; };
 		2E8BCB4C120A29E400F87C35 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		2E8BCBAA120A308A00F87C35 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		2E8BCBAB120A308A00F87C35 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		2E8BCCA7120A4F4C00F87C35 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../data; sourceTree = SOURCE_ROOT; };
-		2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gravit.cfg; path = ../../gravit.cfg; sourceTree = SOURCE_ROOT; };
 		2E8BCCD3120A5FB600F87C35 /* gravit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = gravit.icns; sourceTree = "<group>"; };
 		2EB21CB0120A972400419B4C /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
 		2EB21CB2120A972400419B4C /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
 		2EB21CB4120A972400419B4C /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
+		2ED8F09014AE842F007C6213 /* gravit.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gravit.cfg; sourceTree = "<group>"; };
+		2ED8F09114AE842F007C6213 /* screensaver.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = screensaver.cfg; sourceTree = "<group>"; };
+		2ED8F09414AE843E007C6213 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
+		2ED8F09514AE843E007C6213 /* color.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = color.c; sourceTree = "<group>"; };
+		2ED8F09614AE843E007C6213 /* command.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = command.c; sourceTree = "<group>"; };
+		2ED8F09714AE843E007C6213 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = command.h; sourceTree = "<group>"; };
+		2ED8F09814AE843E007C6213 /* config.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = config.c; sourceTree = "<group>"; };
+		2ED8F09914AE843E007C6213 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		2ED8F09A14AE843E007C6213 /* console.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = console.c; sourceTree = "<group>"; };
+		2ED8F09B14AE843E007C6213 /* font.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = font.c; sourceTree = "<group>"; };
+		2ED8F09C14AE843E007C6213 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = font.h; sourceTree = "<group>"; };
+		2ED8F09D14AE843E007C6213 /* fps.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = fps.c; sourceTree = "<group>"; };
+		2ED8F09E14AE843E007C6213 /* frame-ot.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = "frame-ot.c"; sourceTree = "<group>"; };
+		2ED8F0A114AE843E007C6213 /* frame-pp.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = "frame-pp.c"; sourceTree = "<group>"; };
+		2ED8F0A214AE843E007C6213 /* frame.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = frame.c; sourceTree = "<group>"; };
+		2ED8F0A314AE843E007C6213 /* gfx.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = gfx.c; sourceTree = "<group>"; };
+		2ED8F0A414AE843E007C6213 /* gravit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gravit.h; sourceTree = "<group>"; };
+		2ED8F0A514AE843E007C6213 /* input.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = input.c; sourceTree = "<group>"; };
+		2ED8F0A614AE843E007C6213 /* lua.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = lua.c; sourceTree = "<group>"; };
+		2ED8F0A714AE843E007C6213 /* main.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = main.c; sourceTree = "<group>"; };
+		2ED8F0A814AE843E007C6213 /* osd.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = osd.c; sourceTree = "<group>"; };
+		2ED8F0A914AE843E007C6213 /* png_save.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = png_save.c; sourceTree = "<group>"; };
+		2ED8F0AA14AE843E007C6213 /* sdlk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sdlk.h; sourceTree = "<group>"; };
+		2ED8F0AB14AE843E007C6213 /* spawn.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = spawn.c; sourceTree = "<group>"; };
+		2ED8F0AC14AE843E007C6213 /* sse_functions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sse_functions.h; sourceTree = "<group>"; };
+		2ED8F0AD14AE843E007C6213 /* texture.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = texture.c; sourceTree = "<group>"; };
+		2ED8F0AE14AE843E007C6213 /* timer.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = timer.c; sourceTree = "<group>"; };
+		2ED8F0AF14AE843E007C6213 /* tool.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = tool.c; sourceTree = "<group>"; };
 		55A8C25F12DD769E00CFE55A /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioStreamer.m; path = ../../AudioStreamer.m; sourceTree = SOURCE_ROOT; };
 		55A8C26012DD769E00CFE55A /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioStreamer.h; path = ../../AudioStreamer.h; sourceTree = SOURCE_ROOT; };
 		55A8C27812DD771600CFE55A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -217,7 +224,7 @@
 				2E8BCCA7120A4F4C00F87C35 /* data */,
 				2E13E0A61210C31900877F47 /* spawn */,
 				2E13E1481210C88C00877F47 /* External */,
-				2E8BCCAE120A4F4C00F87C35 /* gravit.cfg */,
+				2ED8F08F14AE83FE007C6213 /* Config */,
 				2E8BCA9E120A22C800F87C35 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -306,30 +313,45 @@
 		2E8BCA9E120A22C800F87C35 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				2E8BCA9F120A22EB00F87C35 /* color.c */,
-				2E8BCAA0120A22EB00F87C35 /* command.c */,
-				2E8BCAA1120A22EB00F87C35 /* command.h */,
-				2E8BCAA2120A22EB00F87C35 /* config.c */,
-				2E8BCAA3120A22EB00F87C35 /* console.c */,
-				2E8BCAA4120A22EB00F87C35 /* font.c */,
-				2E8BCAA5120A22EB00F87C35 /* font.h */,
-				2E8BCAA6120A22EB00F87C35 /* fps.c */,
-				2E8BCAA7120A22EB00F87C35 /* frame-ot.c */,
-				2E8BCAA8120A22EB00F87C35 /* frame-pp.c */,
-				2E8BCAA9120A22EB00F87C35 /* frame.c */,
-				2E8BCAAA120A22EB00F87C35 /* gfx.c */,
-				2E8BCAAB120A22EB00F87C35 /* gravit.h */,
-				2E8BCAAC120A22EB00F87C35 /* input.c */,
-				2E8BCAAD120A22EB00F87C35 /* lua.c */,
-				2E8BCAAE120A22EB00F87C35 /* main.c */,
-				2E8BCAAF120A22EB00F87C35 /* osd.c */,
-				2E8BCAB0120A22EB00F87C35 /* sdlk.h */,
-				2E8BCAB1120A22EB00F87C35 /* spawn.c */,
-				2E8BCAB2120A22EB00F87C35 /* texture.c */,
-				2E8BCAB3120A22EB00F87C35 /* timer.c */,
-				2E8BCAB4120A22EB00F87C35 /* tool.c */,
+				2ED8F09414AE843E007C6213 /* AudioStreamer.h */,
+				2ED8F09514AE843E007C6213 /* color.c */,
+				2ED8F09614AE843E007C6213 /* command.c */,
+				2ED8F09714AE843E007C6213 /* command.h */,
+				2ED8F09814AE843E007C6213 /* config.c */,
+				2ED8F09914AE843E007C6213 /* config.h */,
+				2ED8F09A14AE843E007C6213 /* console.c */,
+				2ED8F09B14AE843E007C6213 /* font.c */,
+				2ED8F09C14AE843E007C6213 /* font.h */,
+				2ED8F09D14AE843E007C6213 /* fps.c */,
+				2ED8F09E14AE843E007C6213 /* frame-ot.c */,
+				2ED8F0A114AE843E007C6213 /* frame-pp.c */,
+				2ED8F0A214AE843E007C6213 /* frame.c */,
+				2ED8F0A314AE843E007C6213 /* gfx.c */,
+				2ED8F0A414AE843E007C6213 /* gravit.h */,
+				2ED8F0A514AE843E007C6213 /* input.c */,
+				2ED8F0A614AE843E007C6213 /* lua.c */,
+				2ED8F0A714AE843E007C6213 /* main.c */,
+				2ED8F0A814AE843E007C6213 /* osd.c */,
+				2ED8F0A914AE843E007C6213 /* png_save.c */,
+				2ED8F0AA14AE843E007C6213 /* sdlk.h */,
+				2ED8F0AB14AE843E007C6213 /* spawn.c */,
+				2ED8F0AC14AE843E007C6213 /* sse_functions.h */,
+				2ED8F0AD14AE843E007C6213 /* texture.c */,
+				2ED8F0AE14AE843E007C6213 /* timer.c */,
+				2ED8F0AF14AE843E007C6213 /* tool.c */,
 			);
 			name = Sources;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+		2ED8F08F14AE83FE007C6213 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				2ED8F09014AE842F007C6213 /* gravit.cfg */,
+				2ED8F09114AE842F007C6213 /* screensaver.cfg */,
+			);
+			name = Config;
+			path = ../../cfg;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -387,9 +409,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E8BCCAF120A4F4C00F87C35 /* data in Resources */,
-				2E8BCCB0120A4F4C00F87C35 /* gravit.cfg in Resources */,
 				2E8BCCD4120A5FB600F87C35 /* gravit.icns in Resources */,
 				2E13E0B41210C31900877F47 /* spawn in Resources */,
+				2ED8F09214AE842F007C6213 /* gravit.cfg in Resources */,
+				2ED8F09314AE842F007C6213 /* screensaver.cfg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,24 +423,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E8BCAB5120A22EB00F87C35 /* color.c in Sources */,
-				2E8BCAB6120A22EB00F87C35 /* command.c in Sources */,
-				2E8BCAB7120A22EB00F87C35 /* config.c in Sources */,
-				2E8BCAB8120A22EB00F87C35 /* console.c in Sources */,
-				2E8BCAB9120A22EB00F87C35 /* font.c in Sources */,
-				2E8BCABA120A22EB00F87C35 /* fps.c in Sources */,
-				2E8BCABB120A22EB00F87C35 /* frame-ot.c in Sources */,
-				2E8BCABC120A22EB00F87C35 /* frame-pp.c in Sources */,
-				2E8BCABD120A22EB00F87C35 /* frame.c in Sources */,
-				2E8BCABE120A22EB00F87C35 /* gfx.c in Sources */,
-				2E8BCABF120A22EB00F87C35 /* input.c in Sources */,
-				2E8BCAC0120A22EB00F87C35 /* lua.c in Sources */,
-				2E8BCAC1120A22EB00F87C35 /* main.c in Sources */,
-				2E8BCAC2120A22EB00F87C35 /* osd.c in Sources */,
-				2E8BCAC3120A22EB00F87C35 /* spawn.c in Sources */,
-				2E8BCAC4120A22EB00F87C35 /* texture.c in Sources */,
-				2E8BCAC5120A22EB00F87C35 /* timer.c in Sources */,
-				2E8BCAC6120A22EB00F87C35 /* tool.c in Sources */,
 				2E8BCBAC120A308A00F87C35 /* SDLMain.m in Sources */,
 				2E13E16B1210C8C700877F47 /* lapi.c in Sources */,
 				2E13E16C1210C8C700877F47 /* lauxlib.c in Sources */,
@@ -450,6 +455,25 @@
 				2E13E1891210C8C700877F47 /* print.c in Sources */,
 				2E13E1A01210C97000877F47 /* ltablib.c in Sources */,
 				55A8C26412DD769E00CFE55A /* AudioStreamer.m in Sources */,
+				2ED8F0B014AE843E007C6213 /* color.c in Sources */,
+				2ED8F0B114AE843E007C6213 /* command.c in Sources */,
+				2ED8F0B214AE843E007C6213 /* config.c in Sources */,
+				2ED8F0B314AE843E007C6213 /* console.c in Sources */,
+				2ED8F0B414AE843E007C6213 /* font.c in Sources */,
+				2ED8F0B514AE843E007C6213 /* fps.c in Sources */,
+				2ED8F0B614AE843E007C6213 /* frame-ot.c in Sources */,
+				2ED8F0B914AE843E007C6213 /* frame-pp.c in Sources */,
+				2ED8F0BA14AE843E007C6213 /* frame.c in Sources */,
+				2ED8F0BB14AE843E007C6213 /* gfx.c in Sources */,
+				2ED8F0BC14AE843E007C6213 /* input.c in Sources */,
+				2ED8F0BD14AE843E007C6213 /* lua.c in Sources */,
+				2ED8F0BE14AE843E007C6213 /* main.c in Sources */,
+				2ED8F0BF14AE843E007C6213 /* osd.c in Sources */,
+				2ED8F0C014AE843E007C6213 /* png_save.c in Sources */,
+				2ED8F0C114AE843E007C6213 /* spawn.c in Sources */,
+				2ED8F0C214AE843E007C6213 /* texture.c in Sources */,
+				2ED8F0C314AE843E007C6213 /* timer.c in Sources */,
+				2ED8F0C414AE843E007C6213 /* tool.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
