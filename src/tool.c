@@ -276,13 +276,7 @@ int mymkdir(const char *path) {
 #else
     {
 
-        DIR *d;
-        d = opendir(path);
-        if (!d) {
-            mkpath(path, 0755);
-        } else {
-            closedir(d);
-        }
+        mkpath(path, 0755);
 
     }
 #endif
