@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.6.0"
+#define GRAVIT_VERSION "Gravit 0.5.0"
 #define GRAVIT_COPYRIGHT "Copyright 2003-2012 Gravit Development Team"
 
 #ifdef HAVE_CONFIG_H
