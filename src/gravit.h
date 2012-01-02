@@ -70,7 +70,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #else
 #   ifdef __MACH__
 #       define SCREENSHOT_PATH va("%s/Library/Application Support/com.slowchop.gravit/screenshots", getenv("HOME"))
-#       define SAVE_PATH va("%s/Library/com.slowchop.gravit/Application Support/save", getenv("HOME"))
+#       define SAVE_PATH va("%s/Library/Application Support/com.slowchop.gravit/save", getenv("HOME"))
 #   else
 #       define SCREENSHOT_PATH va("%s/.gravit/screenshots", getenv("HOME"))
 #       define SAVE_PATH va("%s/.gravit/save", getenv("HOME"))
