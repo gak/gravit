@@ -28,7 +28,7 @@ int configRead(char *filename, int ignoreMissing) {
 
     if (!filename || filename[0] == 0) {
         if (ignoreMissing) return 1;
-        conAdd(LERR, "Could not open script");
+        conAdd(LERR, "Can't open NULL script");
         return 0;
     }
 
