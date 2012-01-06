@@ -83,84 +83,85 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifdef WIN32
 
-#define WIN32SCREENSAVER
+    #define WIN32SCREENSAVER
 
-#include <windows.h>
-#include <conio.h>
-#include <stdio.h>
+    #include <windows.h>
+    #include <conio.h>
+    #include <stdio.h>
 
-#ifdef WIN32SCREENSAVER
+    #ifdef WIN32SCREENSAVER
 
-#include <scrnsave.h>
-#include <SDL_syswm.h>
+        #include <scrnsave.h>
+        #include <SDL_syswm.h>
 
-#if defined(USE_PTHREAD) && !defined(_OPENMP)
-    #include <unistd.h>
-    #include <sys/timeb.h>
-    #include <pthread.h>
-#endif
-#endif
+        #if defined(USE_PTHREAD) && !defined(_OPENMP)
+            #include <unistd.h>
+            #include <sys/timeb.h>
+            #include <pthread.h>
+        #endif
 
-#include <vfw.h>
+    #endif
 
-#define REGISTRY_KEY "Software\\Gravit"
-#define REGISTRY_NAME_PATH "path"
+    #include <vfw.h>
 
-// stupid hack to fix linking errors with isspace
-#undef isspace
-#define isspace(x) (x == 32)
+    #define REGISTRY_KEY "Software\\Gravit"
+    #define REGISTRY_NAME_PATH "path"
 
-#ifndef __GNUC__
-// stop conversion from 'double ' to 'float ', possible loss of data
-#pragma warning ( disable : 4244 )
-#endif
+    // stupid hack to fix linking errors with isspace
+    #undef isspace
+    #define isspace(x) (x == 32)
+
+    #ifndef __GNUC__
+        // stop conversion from 'double ' to 'float ', possible loss of data
+        #pragma warning ( disable : 4244 )
+    #endif
 
 #else
 
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <termios.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/timeb.h>
-#include <pthread.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include "dirent.h"
+    #include <stdarg.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #include <errno.h>
+    #include <termios.h>
+    #include <sys/time.h>
+    #include <sys/types.h>
+    #include <unistd.h>
+    #include <sys/timeb.h>
+    #include <pthread.h>
+    #include <dirent.h>
+    #include <sys/stat.h>
+    #include "dirent.h"
 
-// used for the opengl extensions
-#ifndef APIENTRY
-#define APIENTRY
-#endif
+    // used for the opengl extensions
+    #ifndef APIENTRY
+        #define APIENTRY
+    #endif
 
 #endif
 
 #if __MACH__
 
-#include <Foundation/Foundation.h>
+    #include <Foundation/Foundation.h>
 
 #endif
 
 #ifndef NO_GUI
 
-// this removes the header requirement for glext.h in gl.h
-#define GL_GLEXT_LEGACY
+    // this removes the header requirement for glext.h in gl.h
+    #define GL_GLEXT_LEGACY
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_opengl.h>
-#include <SDL_image.h>
+    #include <SDL.h>
+    #include <SDL_ttf.h>
+    #include <SDL_opengl.h>
+    #include <SDL_image.h>
 
-#define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
-#define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
+    #define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
+    #define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
 
 #else
 
-// sdlkeys mappings
-#include "sdlk.h"
+    // sdlkeys mappings
+    #include "sdlk.h"
 
 #endif
 
@@ -172,13 +173,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <ctype.h>
 
 #ifdef HAVE_LUA
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
+    #include <lua.h>
+    #include <lauxlib.h>
+    #include <lualib.h>
 #endif
 
 #ifndef MAX_PATH
-#define MAX_PATH 260
+    #define MAX_PATH 260
 #endif
 
 #define FILE_CHUNK_SIZE (1024*1024)
@@ -229,22 +230,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   c += tmp * tmp;\
 }
 
-
 #define distance(a,b,c) { float d; distance2(a,b,d); c = (float)sqrt((double)d); }
 
 #ifndef Uint32
-#define Uint32 unsigned int
+    #define Uint32 unsigned int
 #endif
 
 #ifndef Uint8
-#define Uint8 unsigned char
+    #define Uint8 unsigned char
 #endif
 
 #ifdef WIN32
-#include <malloc.h>
-#include <memory.h>
+    #include <malloc.h>
+    #include <memory.h>
 #endif
-
 
 #define CONSOLE_HISTORY 10
 #define CONSOLE_LENGTH 255
@@ -268,82 +267,82 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // this define is to render video in the middle of a recording
 #define doVideoUpdate() \
-	if (view.recordingVideoRefreshTime) { \
-		if (!(state.mode & SM_RECORD) ) return; \
-		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
-			runInput(); \
-			runVideo(); \
-			if (!(state.mode & SM_RECORD)) return; \
-		} \
-	}
+    if (view.recordingVideoRefreshTime) { \
+        if (!(state.mode & SM_RECORD) ) return; \
+        if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
+            runInput(); \
+            runVideo(); \
+            if (!(state.mode & SM_RECORD)) return; \
+        } \
+    }
 
 // this define is to render video in the middle of a recording
 // without aborting (needed for OMP)
 #define doVideoUpdate2() \
-	if (view.recordingVideoRefreshTime) { \
-		if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
-			runInput(); \
-			runVideo(); \
-		} \
-	}
+    if (view.recordingVideoRefreshTime) { \
+        if (view.lastVideoFrame + view.recordingVideoRefreshTime < getMS()) { \
+            runInput(); \
+            runVideo(); \
+        } \
+    }
 
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
-	if (view.recordingVideoRefreshTime) { \
-		if (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS()) { \
-			runInput(); \
-			runVideo(); \
-		} \
-		if (view.quit) return 0; \
-	}
+    if (view.recordingVideoRefreshTime) { \
+        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS()) { \
+            runInput(); \
+            runVideo(); \
+        } \
+        if (view.quit) return 0; \
+    }
 
 #include "command.h"
 
 #ifndef NO_GUI
-#include "font.h"
+    #include "font.h"
 #endif
 
 #ifndef NO_GUI
 
-// function pointers for gl extensions
-typedef void (APIENTRY *FPglPointParameterfARB)(GLenum, GLfloat);
-typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, GLfloat*);
+    // function pointers for gl extensions
+    typedef void (APIENTRY *FPglPointParameterfARB)(GLenum, GLfloat);
+    typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, GLfloat*);
 
-extern FPglPointParameterfARB glPointParameterfARB_ptr;
-extern FPglPointParameterfvARB glPointParameterfvARB_ptr;
+    extern FPglPointParameterfARB glPointParameterfARB_ptr;
+    extern FPglPointParameterfvARB glPointParameterfvARB_ptr;
 
-// gl defines
-#define GL_POINT_SIZE_MIN_ARB 0x8126
-#define GL_POINT_SIZE_MAX_ARB 0x8127
-#define GL_POINT_FADE_THRESHOLD_SIZE_ARB 0x8128
-#define GL_POINT_DISTANCE_ATTENUATION_ARB 0x8129
+    // gl defines
+    #define GL_POINT_SIZE_MIN_ARB 0x8126
+    #define GL_POINT_SIZE_MAX_ARB 0x8127
+    #define GL_POINT_FADE_THRESHOLD_SIZE_ARB 0x8128
+    #define GL_POINT_DISTANCE_ATTENUATION_ARB 0x8129
 
-#define GL_POINT_SPRITE_ARB 0x8861
-#define GL_COORD_REPLACE_ARB 0x8862
+    #define GL_POINT_SPRITE_ARB 0x8861
+    #define GL_COORD_REPLACE_ARB 0x8862
 
-typedef struct conf_s {
+    typedef struct conf_s {
 
-    int screenBPP;
-    int screenW;
-    int screenH;
-    int screenFS;
-    int screenAA;
-    int flags;
+        int screenBPP;
+        int screenW;
+        int screenH;
+        int screenFS;
+        int screenAA;
+        int flags;
 
-    int screenWtoApply;
-    int screenHtoApply;
+        int screenWtoApply;
+        int screenHtoApply;
 
-    int supportPointSprite;
-    int supportPointParameters;
+        int supportPointSprite;
+        int supportPointParameters;
 
-    char fontFile[MAX_FONT_LENGTH];
-    int fontSize;
+        char fontFile[MAX_FONT_LENGTH];
+        int fontSize;
 
-    SDL_VideoInfo* gfxInfo;
+        SDL_VideoInfo* gfxInfo;
 
-    int sdlStarted;
+        int sdlStarted;
 
-} video_t;
+    } video_t;
 
 #endif
 
@@ -376,7 +375,7 @@ typedef struct state_s {
     particle_t *particleHistory;
     particleDetail_t *particleDetail;
 
-    int memoryAvailable;	// MB
+    int memoryAvailable;    // MB
 
     int particleCount;
     int frame;
@@ -401,8 +400,8 @@ typedef struct state_s {
 
     size_t memoryAllocated;
 
-    int lastSave;	// last frame saved
-    int autoSave;	// auto save every n frames. 0 for off.
+    int lastSave;    // last frame saved
+    int autoSave;    // auto save every n frames. 0 for off.
     char *fileName; // if null dont autosave or incsave.
 
     int currentlySpawning;
@@ -410,7 +409,7 @@ typedef struct state_s {
 
     int dontExecuteDefaultScript;
 
-    int autoRecord;	// will start recording after spawning
+    int autoRecord;    // will start recording after spawning
     int autoRecordNext; // is a value to do a cmdRecord in the main loop, it goes to 0 after doing this
 
 #ifdef HAVE_LUA
@@ -426,7 +425,7 @@ typedef struct saveInfo_s {
     int totalFrames;
     int frame;
     int historyNFrame;
-//	float g;
+//    float g;
 
 } saveInfo_t;
 
@@ -451,7 +450,7 @@ typedef struct view_s {
 
     int quit;
 
-    Uint8 mouseButtons[2];	// 0 now, 1 last
+    Uint8 mouseButtons[2];    // 0 now, 1 last
     int currentMousePosition[2];
     int lastMousePosition[2];
     int showCursor;
@@ -460,13 +459,13 @@ typedef struct view_s {
     float zoom;
     int zoomFitAuto;
 
-    int maxVertices;	// 0 for infinite, otherwise tailskip will double when hit
+    int maxVertices;    // 0 for infinite, otherwise tailskip will double when hit
 
 #ifndef NO_GUI
     int keys[SDLK_LAST];
 #endif
 
-    VectorNew(pos);	// todo, position of camera
+    VectorNew(pos);    // todo, position of camera
     VectorNew(face);
 
     VectorNew(autoRotate);
@@ -499,20 +498,20 @@ typedef struct view_s {
 
     int blendMode;
 
-    int screenshotIndex;	// the next available screenshot file (eg screenshot/gravit00001.bmp)
-    int screenshotLoop;	// will do a screenshot every frame
+    int screenshotIndex;    // the next available screenshot file (eg screenshot/gravit00001.bmp)
+    int screenshotLoop;    // will do a screenshot every frame
 
-    int particleColourMode;	// 0 for colour based on mass, 1 for colour based on velocity
-    int particleRenderMode;	// 0 for standard GL_POINT, 1 for GL_ARB_point_sprite
+    int particleColourMode;    // 0 for colour based on mass, 1 for colour based on velocity
+    int particleRenderMode;    // 0 for standard GL_POINT, 1 for GL_ARB_point_sprite
 
     // in particleRenderMode 1, you can render a texture onto the point
     // this doesnt work in some implementations...
     int particleRenderTexture;
 
-    float particleSizeMin;	// can be anything 0 or higher
-    float particleSizeMax;	// -1 for the maximum supported. if its bigger then supported, it will simply use the supported value.
+    float particleSizeMin;    // can be anything 0 or higher
+    float particleSizeMax;    // -1 for the maximum supported. if its bigger then supported, it will simply use the supported value.
 
-    float *colourSpectrum;		// determines what colour to draw a particle with
+    float *colourSpectrum;        // determines what colour to draw a particle with
     int colourSpectrumSteps;
 
     int stereoMode;
@@ -527,7 +526,7 @@ typedef struct view_s {
     char popupTextMessage[255];
     Uint32 popupTextStart;
     Uint32 popupTextLength;
-    float popupTextFadeTime;	// ms
+    float popupTextFadeTime;    // ms
 
     int autoCenter;
 

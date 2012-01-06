@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 int luaInit() {
 
     luaFree();
-
-    state.lua = lua_open();
+    
+    state.lua = luaL_newstate();
     if (!state.lua) {
         conAdd(LERR, "Error loading LUA");
         return 0;
