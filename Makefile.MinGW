@@ -9,7 +9,7 @@ DESTDIR=bin32/
 
 # -------------------------------
 
-OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o lua.o png_save.o gravitrc.o
+OBJS = src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-pp_sse.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o
 
 
 # -------------------------------
@@ -47,13 +47,15 @@ X64opt= -mtune=corei7 -march=corei7 \
 
 CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
 	 -I../include$(ARCH)  -I../include$(ARCH)/SDL \
+     -I/usr/local/include \
+     -I/usr/local/include/SDL \
 	 -D_GNU_SOURCE=1 -Dmain=SDL_main \
 	 -O4 -ffast-math \
 	 -mwindows -DWIN32
 
-LDFLAGS = -L../lib$(ARCH)
+LDFLAGS = -L../lib$(ARCH) -L/usr/local/lib
 
-LDLIBS =  -lSDL_ttf -lSDL_image -llua -llualib \
+LDLIBS =  -lSDL_ttf -lSDL_image -llua \
 	  -lGLU32 -lopenGL32 \
 	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lwinmm -ldxguid \
 	  -lpthread
@@ -91,13 +93,13 @@ final: $(OBJS)
 	$(LD) $(LDFLAGS)  $(OBJS)  $(LDLIBS) -o $(FINAL)
 
 clean:
-	rm -f *.o $(FINAL)
+	rm -f src/*.o $(FINAL)
 
 gravitrc.o: gravit.rc
 	windres gravit.rc gravitrc.o
 
-.c.o:
-	$(CC) -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
+src/%.o: src/%.c
+	$(CC) -c $(CFLAGS) $(subst ,, src/$*.c) -o src/$*.o
 
 
 # -------------------------------
