@@ -142,7 +142,6 @@
 		2ED8F09614AE843E007C6213 /* command.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = command.c; sourceTree = "<group>"; };
 		2ED8F09714AE843E007C6213 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = command.h; sourceTree = "<group>"; };
 		2ED8F09814AE843E007C6213 /* config.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = config.c; sourceTree = "<group>"; };
-		2ED8F09914AE843E007C6213 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		2ED8F09A14AE843E007C6213 /* console.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = console.c; sourceTree = "<group>"; };
 		2ED8F09B14AE843E007C6213 /* font.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = font.c; sourceTree = "<group>"; };
 		2ED8F09C14AE843E007C6213 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = font.h; sourceTree = "<group>"; };
@@ -318,7 +317,6 @@
 				2ED8F09614AE843E007C6213 /* command.c */,
 				2ED8F09714AE843E007C6213 /* command.h */,
 				2ED8F09814AE843E007C6213 /* config.c */,
-				2ED8F09914AE843E007C6213 /* config.h */,
 				2ED8F09A14AE843E007C6213 /* console.c */,
 				2ED8F09B14AE843E007C6213 /* font.c */,
 				2ED8F09C14AE843E007C6213 /* font.h */,
