@@ -39,13 +39,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\..\SDL\include;$(ProjectDir)\..\..\lua-5.2_Win32_vc10_lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\lua-5.2_Win32_vc10_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\..\..\SDL\include;$(ProjectDir)\..\..\lua\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\..\SDL\include;$(ProjectDir)\..\..\lua-5.2_Win32_vc10_lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\lua-5.2_Win32_vc10_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\..\..\SDL\include;$(ProjectDir)\..\..\lua\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
