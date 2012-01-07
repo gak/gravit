@@ -10,7 +10,7 @@ misc_DATA =$(shell echo data/*)
 spawn_DATA =$(shell echo spawn/*)
 
 bin_PROGRAMS=gravit
-gravit_SOURCES=color.c command.c command.h config.c console.c font.c font.h fps.c frame-ot.c frame-pp.c frame-pp_sse.c frame.c gfx.c gravit.h input.c main.c osd.c sdlk.h spawn.c texture.c timer.c tool.c png_save.c
+gravit_SOURCES=src/color.c src/command.c src/command.h src/config.c src/console.c src/font.c src/font.h src/fps.c src/frame-ot.c src/frame-pp.c src/frame-pp_sse.c src/frame.c src/gfx.c src/gravit.h src/input.c src/main.c src/osd.c src/sdlk.h src/spawn.c src/texture.c src/timer.c src/tool.c src/png_save.c
 EXTRA_DIST=README COPYING gravit.cfg demo.cfg screensaver.cfg ChangeLog Makefile.old $(misc_DATA) $(spawn_DATA)
 sysconf_DATA = gravit.cfg screensaver.cfg
 
