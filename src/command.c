@@ -44,8 +44,10 @@ cmd_t cmd[] = {
     ,{ "unhelpful",					cmdUnhelpful,			NULL,						NULL,								NULL }
 
     ,{ "memoryavailable",			NULL,					NULL,						&state.memoryAvailable,				NULL }
+    ,{ "memorypercentage",			NULL,					&state.memoryPercentage,	NULL,								NULL }
 
 #ifndef NO_GUI
+
     ,{ "videorestart",				cmdVideoRestart,		NULL,						NULL,								NULL }
 
     ,{ "videowidth",				NULL,					NULL,						&video.screenWtoApply,				NULL }
@@ -392,6 +394,7 @@ void cmdSpawn(char *arg) {
 #ifdef HAVE_LUA
     char *scriptFile;
 #endif
+    size_t memoryAvailable;
 
     if (arg)
         scriptName = arg;
@@ -412,7 +415,10 @@ cmdSpawnRestartSpawning:
     state.mode = 0;
 
     state.particleCount = state.particlesToSpawn;
-    state.historyFrames = (unsigned int)(((size_t)state.memoryAvailable * 1024 * 1024) / (size_t)FRAMESIZE);
+
+    memoryAvailable = getMemoryAvailable();
+
+    state.historyFrames = (unsigned int)(((size_t)memoryAvailable * 1024 * 1024) / (size_t)FRAMESIZE);
 
     if (!initFrame()) {
         conAdd(LERR, "Could not init frame");

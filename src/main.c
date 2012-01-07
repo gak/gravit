@@ -34,7 +34,8 @@ view_t view;
 
 void loadDefaults() {
 
-    state.memoryAvailable = 128;
+    state.memoryAvailable = 0;
+    state.memoryPercentage = 50;
 
 #ifndef NO_GUI
 

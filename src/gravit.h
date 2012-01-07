@@ -376,6 +376,7 @@ typedef struct state_s {
     particleDetail_t *particleDetail;
 
     int memoryAvailable;    // MB
+    int memoryPercentage;   // Detect memory available and use a percentage of it
 
     int particleCount;
     int frame;
@@ -626,6 +627,7 @@ void freeFileName();
 char *findFile(char *file); // finds a file in gravit's search path
 int fileExists(char *file); // sees if a file is openable
 int checkHomePath();
+size_t getMemoryAvailable();
 
 // png_save.c
 extern int png_save_surface(char *filename, SDL_Surface *surf);

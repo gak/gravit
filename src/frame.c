@@ -47,7 +47,7 @@ int initFrame() {
     cleanMemory();
 
 //	conAdd(LERR, "Allocating %u bytes", FRAMESIZE * state.historyFrames);
-    state.particleHistory = calloc(FRAMESIZE, state.historyFrames);
+    state.particleHistory = (particle_t *)calloc(FRAMESIZE, state.historyFrames);
 
     if (!state.particleHistory) {
 

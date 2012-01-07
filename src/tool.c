@@ -426,3 +426,30 @@ int checkHomePath() {
 
 }
 
+size_t getMemoryAvailable() {
+    size_t realMemory;
+#ifdef WIN32
+    MEMORYSTATUSEX status;
+#endif
+
+    if (state.memoryAvailable > 0)
+        return state.memoryAvailable;
+
+    // This a bit awkward. Let's just pretend there is a value here.
+    if (state.memoryPercentage == 0) {
+        conAdd(LERR, "memoryAvailable and memoryPercentage are both 0. I'm just going to set memoryPercentage for you.");
+        state.memoryPercentage = 50;
+    }
+    
+// From http://stackoverflow.com/questions/2513505/how-to-get-available-memory-c-g
+#ifdef WIN32
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatusEx(&status);
+    realMemory = status.ullTotalPhys;
+#else
+    // XXX: Untested
+    realMemory = sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
+#endif
+
+    return state.memoryPercentage / 100. * realMemory / 1024 / 1024;
+}
