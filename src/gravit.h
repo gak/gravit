@@ -377,7 +377,7 @@ typedef struct state_s {
     particleDetail_t *particleDetail;
 
     int memoryAvailable;    // MB
-    int memoryPercentage;   // Detect memory available and use a percentage of it
+    float memoryPercentage;   // Detect memory available and use a percentage of it
 
     int particleCount;
     int frame;

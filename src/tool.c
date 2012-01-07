@@ -449,10 +449,9 @@ size_t getMemory() {
     u_int namelen = sizeof(mib) / sizeof(mib[0]);
     uint64_t size;
     size_t len = sizeof(size);
-    if (!sysctl(mib, namelen, &size, &len, NULL, 0) < 0) {
-        return size;
-    }
-    return 0;
+    sysctl(mib, namelen, &size, &len, NULL, 0);
+    realMemory = size;
+    return realMemory;
     
 #else
     return sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
@@ -464,6 +463,7 @@ size_t getMemory() {
 
 size_t getMemoryAvailable() {
     size_t realMemory;
+    size_t ret;
     
     if (state.memoryAvailable > 0)
         return state.memoryAvailable;
@@ -475,6 +475,12 @@ size_t getMemoryAvailable() {
     }
     
     realMemory = getMemory();
+    // We've detected 0 memory here, bad news. We have to assume something
+    if (realMemory == 0) {
+        realMemory = 128;
+    }
+    ret = state.memoryPercentage / 100. * realMemory / 1024 / 1024;
+    conAdd(LLOW, "memoryDetected: %z returning %z", realMemory, ret);
 
-    return state.memoryPercentage / 100. * realMemory / 1024 / 1024;
+    return ret;
 }
