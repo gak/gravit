@@ -20,7 +20,7 @@
 # * Fixed LUA detection      (LUA >= 5.1 does not need lualib)
 # * Fix GL and GLU detection (other lib names required on Win32) - borrowed from SDL_ttf
 # * support for new features (-DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD)
-#   - Detect OpenMP support and add -fopenmp to CFLAGS and LDFLAGS 
+#   - Detect OpenMP support and add -fopenmp to CFLAGS and LDFLAGS
 #   - Detect SSE support    and define -DHAVE_SSE
 #   - Detect libPNG         and define -DHAVE_PNG
 #
@@ -28,15 +28,15 @@
 
 
 AC_PREREQ(2.59)
-AC_INIT(gravit, 0.5.2, gravit@slowchop.com)
-AC_CONFIG_SRCDIR([config.c])
-AC_CONFIG_HEADER(config.h)
+AC_INIT(gravit, 0.5.0, gravit@slowchop.com)
+AC_CONFIG_SRCDIR([src/config.c])
+AC_CONFIG_HEADER(src/config.h)
 
 dnl Detect the canonical build and host environments
 AC_CANONICAL_HOST
 
 dnl Setup for automake
-AM_INIT_AUTOMAKE(gravit, 0.5.2)
+AM_INIT_AUTOMAKE(gravit, 0.5.0)
 #Enable quiet compiles on automake 1.11.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
@@ -63,7 +63,7 @@ AC_CHECK_HEADERS([omp.h],[
 # check for supported SIMD extensions (gcc specific)
 # if SSE is supported, HAVE_SSE will be set
 AX_EXT
-CFLAGS="$CFLAGS $SIMD_FLAGS"
+CFLAGS="$CFLAGS $SIMD_FLAGS -I/usr/local/include"
 LDFLAGS="$SIMD_FLAGS $LDFLAGS"
 
 # try to add compiler-specific optimization flags
@@ -126,7 +126,7 @@ AC_CHECK_FUNCS([memalign _mm_malloc _mm_free _aligned_malloc __mingw_aligned_mal
 # AC_CHECK_FUNCS([posix_memalign])
 AX_FUNC_POSIX_MEMALIGN
 if test "$ax_cv_func_posix_memalign_works" = "yes" ; then
-   AC_DEFINE([HAVE_WORKING_POSIX_MEMALIGN], [1], [use `posix_memalign' instead of memalign])
+   AC_DEFINE([HAVE_WORKING_POSIX_MEMALIGN], [1], [use 'posix_memalign' instead of memalign])
 fi
 
 
@@ -289,13 +289,6 @@ if test "$WITH_LUA" != "no"; then
        ])
      ])
    fi
-   # do we need lualib ?
-   AC_CHECK_LIB(lualib, luaopen_base, [
-     AC_CHECK_HEADERS([lualib.h],[
-       LUA_LIBS="$LUA_LIBS -llualib"
-       AC_DEFINE([NEED_LUALIB], [1], [liblualib])
-     ])
-   ], [], [$LUA_LIBS])
  fi
 
  if test x"$LUA_LIBS" = x; then
