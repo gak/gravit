@@ -455,7 +455,7 @@ void drawFrame() {
             glVertex2d(screen[0]-size, screen[1]+size);
             glEnd();
 
-            view.vertices+=4;
+            view.vertices += 4;
 
         }
 
@@ -706,12 +706,19 @@ void translateToCenter() {
 }
 
 void drawAgar() {
+
+    if (AG_TIMEOUTS_QUEUED())
+		AG_ProcessTimeouts(AG_GetTicks());
+    
     AG_Window *win;    
     AG_FOREACH_WINDOW(win, agDriverSw) {
         AG_ObjectLock(win);
         AG_WindowDraw(win);
         AG_ObjectUnlock(win);
     }
+    
+    // Agar leaves glTexEnvf env mode to GL_REPLACE :(
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 void drawAll() {
@@ -719,7 +726,7 @@ void drawAll() {
     int bits;
     VectorNew(rotateIncrement);
 
-    glClearColor(0,0,0,0);
+    glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     view.vertices = 0;

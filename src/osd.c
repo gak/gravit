@@ -60,7 +60,6 @@ void drawOSD() {
             DUH("simulation name", "-");
         }
 
-
         DUH("particles", va("%i", state.particleCount));
         DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
         DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
@@ -245,28 +244,39 @@ void drawOSD() {
 
 }
 
+// Handlers
+
+void osdHandleQuit(AG_Event *event) {
+    cmdQuit(0);
+}
+
 void osdHandleRespawn(AG_Event *event) {
     cmdSpawn(0);
+    osdUpdate();
 }
 
 void osdHandleRecord(AG_Event *event) {
     cmdRecord(0);
+    osdUpdate();
 }
 
 void osdHandlePlay(AG_Event *event) {
     cmdPlay(0);
+    osdUpdate();
 }
 
 void osdHandlePrev(AG_Event *event) {
     if (state.currentFrame > 0)
         state.currentFrame--;
     cmdStop(0);
+    osdUpdate();
 }
 
 void osdHandleNext(AG_Event *event) {
     if (state.currentFrame < state.totalFrames - 1)
         state.currentFrame++;
     cmdStop(0);
+    osdUpdate();
 }
 
 void osdHandleFirst(AG_Event *event) {
@@ -274,14 +284,15 @@ void osdHandleFirst(AG_Event *event) {
     if (state.mode & SM_RECORD) {
         cmdStop(0);
     }
+    osdUpdate();
 }
 void osdHandleLast(AG_Event *event) {
     state.currentFrame = state.totalFrames - 1;
     cmdStop(0);
+    osdUpdate();
 }
 
 // Styling
-
 
 void osdCheckbox(void *cbox, int state, int size) {
     
@@ -322,18 +333,31 @@ AG_Window *osdNewWindow(const char *title) {
 }
 
 void osdInitPlaybackWindow() {
-    view.playbackWindow = osdNewWindow("Controls");
+    
+    view.playbackWindow = osdNewWindow("Quick Controls");
     AG_Box *box = AG_BoxNewHoriz(view.playbackWindow, AG_BOX_EXPAND);
+    
+    // The labels for Record and Pause are the "longest legnth" versions of the
+    // state of the button, so that no button resizing is necessary.
+    
     AG_ButtonNewFn(box, 0, "Respawn", osdHandleRespawn, 0);
-    AG_SpacerNew(box, AG_SEPARATOR_HORIZ);
-    AG_ButtonNewFn(box, 0, "Record", osdHandleRecord, 0);
+    
+    AG_SpacerNewVert(box);
+    
+    view.recordButton = AG_ButtonNewFn(box, 0, "Record", osdHandleRecord, 0);
     AG_ButtonNewFn(box, 0, "<<", osdHandleFirst, 0);
-    AG_ButtonNewFn(box, 0, "<", osdHandlePrev, 0);
-    AG_ButtonNewFn(box, 0, "Play", osdHandlePlay, 0);
-    AG_ButtonNewFn(box, 0, ">", osdHandleNext, 0);
+    AG_ButtonNewFn(box, AG_BUTTON_REPEAT, "<", osdHandlePrev, 0);
+    view.playButton = AG_ButtonNewFn(box, 0, "Pause", osdHandlePlay, 0);
+    AG_ButtonNewFn(box, AG_BUTTON_REPEAT, ">", osdHandleNext, 0);
     AG_ButtonNewFn(box, 0, ">>", osdHandleLast, 0);
+    
+    AG_SpacerNewVert(box);
+    
+    AG_ButtonNewFn(box, 0, "Quit", osdHandleQuit, 0);
+    
     AG_WindowSetPosition(view.playbackWindow, AG_WINDOW_TR, 0);
     AG_WindowShow(view.playbackWindow);
+    osdUpdate();
 }
 
 void osdInitIntroWindow() {
@@ -346,9 +370,25 @@ void osdInitIntroWindow() {
     AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.");
     AG_WidgetSetSize(text, 200, 100);
     
-    AG_Checkbox *showAgain = AG_CheckboxNew(vBox, AG_CHECKBOX_SET, "Show this window on startup");
+    // AG_Checkbox *showAgain = AG_CheckboxNew(vBox, AG_CHECKBOX_SET, "Show this window on startup");
     
     AG_WindowShow(w);
+}
+
+void osdUpdate() {
+    
+    if (state.mode & SM_PLAY) {
+        AG_ButtonTextS(view.playButton, "Pause");
+    } else {
+        AG_ButtonTextS(view.playButton, "Play");
+    }
+    
+    if (state.mode & SM_RECORD) {
+        AG_ButtonTextS(view.recordButton, "Pause");
+    } else {
+        AG_ButtonTextS(view.recordButton, "Record");
+    }
+    
 }
 
 void osdInitDefaultWindows() {

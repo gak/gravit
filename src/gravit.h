@@ -543,6 +543,8 @@ typedef struct view_s {
     
     AG_Window *playbackWindow;
     AG_Style osdStyle;
+    AG_Button *playButton;
+    AG_Button *recordButton;
 
 } view_t;
 
@@ -668,6 +670,7 @@ void conAutoComplete();
 // osd.c
 void drawOSD();
 void osdInitDefaultWindows();
+void osdUpdate();
 
 // input.c
 int processKeys();
