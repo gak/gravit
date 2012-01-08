@@ -279,14 +279,37 @@ void osdHandleLast(AG_Event *event) {
     cmdStop(0);
 }
 
+// Styling
+
+
+void osdCheckbox(void *cbox, int state, int size) {
+    
+    AG_Rect r = AG_RECT(0, 0, size, size);    
+    AG_DrawBox(cbox, r, 1, agColors[CHECKBOX_COLOR]);
+
+    if (state) {
+
+        float a = 3;
+        r.x += a; r.y += a; r.w -= a * 2; r.h -= a * 2;
+        AG_DrawBox(cbox, r, 1, AG_ColorRGB(255, 255, 255));
+        
+    }
+}
+
 void osdInitStyle()
 {
-	view.osdStyle = agStyleDefault;
     AG_ColorsSetRGBA(WINDOW_BG_COLOR, 0, 0, 0, 200);
     AG_ColorsSetRGBA(TITLEBAR_FOCUSED_COLOR, 0, 128, 171, 250);
     AG_ColorsSetRGBA(TITLEBAR_UNFOCUSED_COLOR, 0, 128, 171, 200);
-    AG_ColorsSetRGBA(BUTTON_COLOR, 0, 64, 85, 255);
+    AG_ColorsSetRGBA(BUTTON_COLOR, 0, 64, 85, 255);    
+    
+	view.osdStyle = agStyleDefault;
+    view.osdStyle.CheckboxButton = osdCheckbox;
+    AG_SetStyle(agDriverSw, &view.osdStyle);
+    
 }
+
+// Helpers
 
 AG_Window *osdNewWindow(const char *title) {
     AG_Window *w = AG_WindowNew(AG_WINDOW_NOMAXIMIZE | AG_WINDOW_NOMINIMIZE | AG_WINDOW_NORESIZE);
@@ -312,10 +335,25 @@ void osdInitPlaybackWindow() {
     AG_WindowShow(view.playbackWindow);
 }
 
+void osdInitIntroWindow() {
+    AG_Window *w = osdNewWindow("Welcome to Gravit!");
+    
+    AG_Box *vBox = AG_BoxNewVert(w, 0);
+    AG_BoxSetSpacing(vBox, 10);
+    
+    AG_Label *text = AG_LabelNew(vBox, 0, 0);
+    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.");
+    AG_WidgetSetSize(text, 200, 100);
+    
+    AG_Checkbox *showAgain = AG_CheckboxNew(vBox, AG_CHECKBOX_SET, "Show this window on startup");
+    
+    AG_WindowShow(w);
+}
+
 void osdInitDefaultWindows() {
 
     osdInitStyle();
-//    AG_TextMsg(AG_MSG_INFO, "Welcome to Gravit!");
+    osdInitIntroWindow();
     osdInitPlaybackWindow();
     
 }
