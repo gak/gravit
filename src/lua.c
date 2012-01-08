@@ -141,12 +141,8 @@ int luag_load(lua_State *L) {
     conAdd(LLOW, s);
     lua_pop(L, 1);
     
-    s = va("spawn/%s", s);
-    
-    f = findFile(s);
-    conAdd(LLOW, f);
-    
-    luaExecute(findFile(f));
+    s = va("spawn/%s", s);    
+    luaExecute(findFile(s));
     
     return 0;
     

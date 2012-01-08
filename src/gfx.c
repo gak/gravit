@@ -94,10 +94,12 @@ int gfxSetResolution() {
 
     }
 
-    video.flags = SDL_OPENGL | SDL_RESIZABLE;
+    video.flags = SDL_OPENGL;
 
     if (video.screenFS)
         video.flags |= SDL_FULLSCREEN;
+    else
+        video.flags |= SDL_RESIZABLE;
     
     videoInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
     

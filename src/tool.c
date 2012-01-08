@@ -371,7 +371,6 @@ char *findFile(char *file) {
     char *tmp;
 
     // first assume no path, so someone could load "/tmp/script" or "currentdirectory.cfg"
-    conAdd(LLOW, "Finding: %s", file);
     if (fileExists(file))
         return file;
 
@@ -479,8 +478,5 @@ size_t getMemoryAvailable() {
     if (realMemory == 0) {
         realMemory = 128;
     }
-    ret = state.memoryPercentage / 100. * realMemory / 1024 / 1024;
-    conAdd(LLOW, "memoryDetected: %z returning %z", realMemory, ret);
-
-    return ret;
+    return state.memoryPercentage / 100. * realMemory / 1024 / 1024;
 }

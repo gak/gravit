@@ -519,7 +519,7 @@ restart:
 #endif
 
     state.currentlySpawning = 0;
-    conAdd(LLOW, "You have spawned some particles. Hit F6 to start recording the simulation!");
+    conAdd(LLOW, "You have spawned some particles.");
 
     state.mode = 0;
 
@@ -558,7 +558,6 @@ void cmdRecord(char *arg) {
     if (state.mode & SM_RECORD) {
 
         conAdd(LNORM, "Stopped Recording.");
-        conAdd(LHELP, "Press F5 to play your recording. Press F6 to continue recording.");
         state.mode &= ~SM_RECORD;
         //state.targetFrame = -1;
         setTitle(0);
@@ -566,7 +565,6 @@ void cmdRecord(char *arg) {
     } else {
 
         conAdd(LNORM, "Recording...");
-        conAdd(LHELP, "Press F5 to play your recording. Press F6 to stop recording.");
         state.mode |= SM_RECORD;
         setTitle(STRING_RECORD);
         view.timed_frames=0;

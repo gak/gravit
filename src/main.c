@@ -40,10 +40,10 @@ void loadDefaults() {
 #ifndef NO_GUI
 
     video.sdlStarted = 0;
-    video.screenWtoApply = 800;
-    video.screenHtoApply = 600;
-    video.screenBPP = 32;
-    video.screenFS = 0;
+    video.screenWtoApply = 0;
+    video.screenHtoApply = 0;
+    video.screenBPP = 0;
+    video.screenFS = 1;
     video.screenAA = 0;
 
     strcpy(video.fontFile, "Vera.ttf");
