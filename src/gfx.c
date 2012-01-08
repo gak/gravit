@@ -120,7 +120,7 @@ int gfxSetResolution() {
 
     if (!loadParticleTexture())
         return 3;
-    
+
     return 0;
 }
 
@@ -217,6 +217,11 @@ gfxInitRetry:
     SDL_EnableUNICODE(SDL_ENABLE);
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
+    AG_InitCore("Gravit", 0);
+    AG_InitGraphics("sdlgl");
+    
+    AG_TextMsg(AG_MSG_INFO, "Welcome to Gravit!");
+    
     return 1;
 
 }
@@ -775,21 +780,16 @@ void drawAll() {
         drawPopupText();
     }
 
-    // just a test...
-    // otDrawField();
+    {
+        AG_Window *win;
+        
+        AG_FOREACH_WINDOW(win, agDriverSw) {
+            AG_ObjectLock(win);
+            AG_WindowDraw(win);
+            AG_ObjectUnlock(win);
+        }
 
-//	if (view.drawAxis)
-//		drawAxis();
-
-//	if (view.drawOSD) {
-
-//		drawOSD();
-//		if (view.drawColourScheme) drawRGB();
-
-//	}
-
-//	conDraw();
-
+    }
 
     if (view.screenshotLoop)
         cmdScreenshot(NULL);

@@ -48,6 +48,15 @@
 		2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
 		2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
 		2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB4120A972400419B4C /* SDL.framework */; };
+		2EC6739D14B91C6600BF0E10 /* libag_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739714B91C6600BF0E10 /* libag_core.a */; };
+		2EC6739E14B91C6600BF0E10 /* libag_dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739814B91C6600BF0E10 /* libag_dev.a */; };
+		2EC6739F14B91C6600BF0E10 /* libag_gui.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739914B91C6600BF0E10 /* libag_gui.a */; };
+		2EC673A014B91C6600BF0E10 /* libag_math.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739A14B91C6600BF0E10 /* libag_math.a */; };
+		2EC673A114B91C6600BF0E10 /* libag_rg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739B14B91C6600BF0E10 /* libag_rg.a */; };
+		2EC673A214B91C6600BF0E10 /* libag_vg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739C14B91C6600BF0E10 /* libag_vg.a */; };
+		2EC673A514B91C8100BF0E10 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC673A414B91C8100BF0E10 /* libpng.dylib */; };
+		2EC673A714B91E2600BF0E10 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC673A614B91E2600BF0E10 /* libfreetype.a */; };
+		2EC673A914B91E3C00BF0E10 /* libjpeg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC673A814B91E3C00BF0E10 /* libjpeg.dylib */; };
 		2ED8F09214AE842F007C6213 /* gravit.cfg in Resources */ = {isa = PBXBuildFile; fileRef = 2ED8F09014AE842F007C6213 /* gravit.cfg */; };
 		2ED8F09314AE842F007C6213 /* screensaver.cfg in Resources */ = {isa = PBXBuildFile; fileRef = 2ED8F09114AE842F007C6213 /* screensaver.cfg */; };
 		2ED8F0B014AE843E007C6213 /* color.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09514AE843E007C6213 /* color.c */; };
@@ -135,6 +144,15 @@
 		2EB21CB0120A972400419B4C /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
 		2EB21CB2120A972400419B4C /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
 		2EB21CB4120A972400419B4C /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
+		2EC6739714B91C6600BF0E10 /* libag_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_core.a; path = ../../../../../../../usr/local/lib/libag_core.a; sourceTree = "<group>"; };
+		2EC6739814B91C6600BF0E10 /* libag_dev.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_dev.a; path = ../../../../../../../usr/local/lib/libag_dev.a; sourceTree = "<group>"; };
+		2EC6739914B91C6600BF0E10 /* libag_gui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_gui.a; path = ../../../../../../../usr/local/lib/libag_gui.a; sourceTree = "<group>"; };
+		2EC6739A14B91C6600BF0E10 /* libag_math.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_math.a; path = ../../../../../../../usr/local/lib/libag_math.a; sourceTree = "<group>"; };
+		2EC6739B14B91C6600BF0E10 /* libag_rg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_rg.a; path = ../../../../../../../usr/local/lib/libag_rg.a; sourceTree = "<group>"; };
+		2EC6739C14B91C6600BF0E10 /* libag_vg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_vg.a; path = ../../../../../../../usr/local/lib/libag_vg.a; sourceTree = "<group>"; };
+		2EC673A414B91C8100BF0E10 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = usr/local/lib/libpng.dylib; sourceTree = SDKROOT; };
+		2EC673A614B91E2600BF0E10 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../../../../../usr/local/lib/libfreetype.a; sourceTree = "<group>"; };
+		2EC673A814B91E3C00BF0E10 /* libjpeg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.dylib; path = usr/local/lib/libjpeg.dylib; sourceTree = SDKROOT; };
 		2ED8F09014AE842F007C6213 /* gravit.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gravit.cfg; sourceTree = "<group>"; };
 		2ED8F09114AE842F007C6213 /* screensaver.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = screensaver.cfg; sourceTree = "<group>"; };
 		2ED8F09414AE843E007C6213 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
@@ -174,6 +192,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EC673A914B91E3C00BF0E10 /* libjpeg.dylib in Frameworks */,
+				2EC673A714B91E2600BF0E10 /* libfreetype.a in Frameworks */,
+				2EC673A514B91C8100BF0E10 /* libpng.dylib in Frameworks */,
+				2EC6739D14B91C6600BF0E10 /* libag_core.a in Frameworks */,
+				2EC6739E14B91C6600BF0E10 /* libag_dev.a in Frameworks */,
+				2EC6739F14B91C6600BF0E10 /* libag_gui.a in Frameworks */,
+				2EC673A014B91C6600BF0E10 /* libag_math.a in Frameworks */,
+				2EC673A114B91C6600BF0E10 /* libag_rg.a in Frameworks */,
+				2EC673A214B91C6600BF0E10 /* libag_vg.a in Frameworks */,
 				2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */,
 				2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */,
 				2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */,
@@ -220,6 +247,15 @@
 		29B97314FDCFA39411CA2CEA /* Gravit */ = {
 			isa = PBXGroup;
 			children = (
+				2EC673A814B91E3C00BF0E10 /* libjpeg.dylib */,
+				2EC673A614B91E2600BF0E10 /* libfreetype.a */,
+				2EC673A414B91C8100BF0E10 /* libpng.dylib */,
+				2EC6739714B91C6600BF0E10 /* libag_core.a */,
+				2EC6739814B91C6600BF0E10 /* libag_dev.a */,
+				2EC6739914B91C6600BF0E10 /* libag_gui.a */,
+				2EC6739A14B91C6600BF0E10 /* libag_math.a */,
+				2EC6739B14B91C6600BF0E10 /* libag_rg.a */,
+				2EC6739C14B91C6600BF0E10 /* libag_vg.a */,
 				2E8BCCA7120A4F4C00F87C35 /* data */,
 				2E13E0A61210C31900877F47 /* spawn */,
 				2E13E1481210C88C00877F47 /* External */,
@@ -489,6 +525,13 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Gravit_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/agar,
+					External/lua/include,
+					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL.framework/Headers,
+					/Library/Frameworks/SDL_ttf.framework/Headers,
+				);
 				INFOPLIST_FILE = "Gravit-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
@@ -510,6 +553,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Gravit_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/agar,
+					External/lua/include,
+					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL.framework/Headers,
+					/Library/Frameworks/SDL_ttf.framework/Headers,
+				);
 				INFOPLIST_FILE = "Gravit-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
