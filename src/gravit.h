@@ -540,6 +540,9 @@ typedef struct view_s {
     float popupTextFadeTime;    // ms
 
     int autoCenter;
+    
+    AG_Window *playbackWindow;
+    AG_Style osdStyle;
 
 } view_t;
 
@@ -664,6 +667,7 @@ void conAutoComplete();
 
 // osd.c
 void drawOSD();
+void osdInitDefaultWindows();
 
 // input.c
 int processKeys();

@@ -367,12 +367,10 @@ void cmdStop(char *arg) {
     if (isSpawning())
         return;
 
-    conAdd(LNORM, "Stopped...");
     state.mode &= ~SM_PLAY;
     state.mode &= ~SM_RECORD;
 
     setTitle(0);
-
 }
 
 void cmdSpawnCancel(void) {
@@ -569,8 +567,8 @@ void cmdRecord(char *arg) {
         conAdd(LHELP, "Press F5 to play your recording. Press F6 to stop recording.");
         state.mode |= SM_RECORD;
         setTitle(STRING_RECORD);
-        view.timed_frames=0;
-        view.totalRenderTime=0;
+        view.timed_frames = 0;
+        view.totalRenderTime = 0;
 
     }
 
@@ -612,12 +610,11 @@ void cmdPlay(char *arg) {
 void cmdFrame(char *arg) {
     int new_target_frame;
 
-    if ((arg) && (atoi(arg) >= 0)) {
-        new_target_frame=atoi(arg);
+    if (arg && atoi(arg) >= 0) {
+        new_target_frame = atoi(arg);
     } else {
-        new_target_frame=state.currentFrame;
+        new_target_frame = state.currentFrame;
     }
-
 
     if ( new_target_frame <= state.frame ) {
         // just set frame to display

@@ -244,4 +244,80 @@ void drawOSD() {
 
 }
 
+void osdHandleRespawn(AG_Event *event) {
+    cmdSpawn(0);
+}
+
+void osdHandleRecord(AG_Event *event) {
+    cmdRecord(0);
+}
+
+void osdHandlePlay(AG_Event *event) {
+    cmdPlay(0);
+}
+
+void osdHandlePrev(AG_Event *event) {
+    if (state.currentFrame > 0)
+        state.currentFrame--;
+    cmdStop(0);
+}
+
+void osdHandleNext(AG_Event *event) {
+    if (state.currentFrame < state.totalFrames - 1)
+        state.currentFrame++;
+    cmdStop(0);
+}
+
+void osdHandleFirst(AG_Event *event) {
+    state.currentFrame = 0;
+    if (state.mode & SM_RECORD) {
+        cmdStop(0);
+    }
+}
+void osdHandleLast(AG_Event *event) {
+    state.currentFrame = state.totalFrames - 1;
+    cmdStop(0);
+}
+
+void osdInitStyle()
+{
+	view.osdStyle = agStyleDefault;
+    AG_ColorsSetRGBA(WINDOW_BG_COLOR, 0, 0, 0, 200);
+    AG_ColorsSetRGBA(TITLEBAR_FOCUSED_COLOR, 0, 128, 171, 250);
+    AG_ColorsSetRGBA(TITLEBAR_UNFOCUSED_COLOR, 0, 128, 171, 200);
+    AG_ColorsSetRGBA(BUTTON_COLOR, 0, 64, 85, 255);
+}
+
+AG_Window *osdNewWindow(const char *title) {
+    AG_Window *w = AG_WindowNew(AG_WINDOW_NOMAXIMIZE | AG_WINDOW_NOMINIMIZE | AG_WINDOW_NORESIZE);
+    AG_WindowSetCaptionS(w, title);
+    AG_WindowSetPadding(w, 8, 8, 8, 8);
+    AG_WindowSetSideBorders(w, 1);
+    AG_WindowSetBottomBorder(w, 1);
+    return w;
+}
+
+void osdInitPlaybackWindow() {
+    view.playbackWindow = osdNewWindow("Controls");
+    AG_Box *box = AG_BoxNewHoriz(view.playbackWindow, AG_BOX_EXPAND);
+    AG_ButtonNewFn(box, 0, "Respawn", osdHandleRespawn, 0);
+    AG_SpacerNew(box, AG_SEPARATOR_HORIZ);
+    AG_ButtonNewFn(box, 0, "Record", osdHandleRecord, 0);
+    AG_ButtonNewFn(box, 0, "<<", osdHandleFirst, 0);
+    AG_ButtonNewFn(box, 0, "<", osdHandlePrev, 0);
+    AG_ButtonNewFn(box, 0, "Play", osdHandlePlay, 0);
+    AG_ButtonNewFn(box, 0, ">", osdHandleNext, 0);
+    AG_ButtonNewFn(box, 0, ">>", osdHandleLast, 0);
+    AG_WindowSetPosition(view.playbackWindow, AG_WINDOW_TR, 0);
+    AG_WindowShow(view.playbackWindow);
+}
+
+void osdInitDefaultWindows() {
+
+    osdInitStyle();
+//    AG_TextMsg(AG_MSG_INFO, "Welcome to Gravit!");
+    osdInitPlaybackWindow();
+    
+}
+
 #endif

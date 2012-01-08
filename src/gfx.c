@@ -220,7 +220,7 @@ gfxInitRetry:
     AG_InitCore("Gravit", 0);
     AG_InitGraphics("sdlgl");
     
-    AG_TextMsg(AG_MSG_INFO, "Welcome to Gravit!");
+    osdInitDefaultWindows();
     
     return 1;
 
@@ -705,9 +705,17 @@ void translateToCenter() {
 
 }
 
+void drawAgar() {
+    AG_Window *win;    
+    AG_FOREACH_WINDOW(win, agDriverSw) {
+        AG_ObjectLock(win);
+        AG_WindowDraw(win);
+        AG_ObjectUnlock(win);
+    }
+}
+
 void drawAll() {
 
-//	int i;
     int bits;
     VectorNew(rotateIncrement);
 
@@ -766,7 +774,7 @@ void drawAll() {
     }
 
     if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
-        view.tailSkip*=2;
+        view.tailSkip *= 2;
         conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
     }
 
@@ -779,23 +787,13 @@ void drawAll() {
         conDraw();
         drawPopupText();
     }
-
-    {
-        AG_Window *win;
-        
-        AG_FOREACH_WINDOW(win, agDriverSw) {
-            AG_ObjectLock(win);
-            AG_WindowDraw(win);
-            AG_ObjectUnlock(win);
-        }
-
-    }
+    
+    drawAgar();
 
     if (view.screenshotLoop)
         cmdScreenshot(NULL);
 
     SDL_GL_SwapBuffers();
-
 }
 
 void drawCube() {
