@@ -606,7 +606,7 @@ void drawRGB() {
     float margin = 5;
     float i;
     float sx = (float)video.screenW - width - margin;
-    float sy = margin;
+    float sy = 70 + margin;
     float wx = width;
     float wy = 200;
     float c[4];
@@ -619,7 +619,7 @@ void drawRGB() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // positive
-    for (i = 0; i < 1; i+=step) {
+    for (i = 0; i < 1; i += step) {
 
         colourFromNormal(c, i);
 

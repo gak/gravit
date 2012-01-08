@@ -136,14 +136,14 @@ void drawOSD() {
             y = drawFontWord(x, y, "AUTO SCREENSHOT");
 
         }
-
-
+        
+        
         // show renderer FPS average (if we have meaningful values)
         if ((view.timed_frames > 1) && (view.totalRenderTime > SDL_TIMESLICE )) {
             if (state.mode & SM_RECORD) {
-	      glColor4f(0,1,1,.5f); /*torquise*/ }
-              else { DUHC(); y += fontHeight; }
-
+                glColor4f(0,1,1,.5f); /*torquise*/ }
+            else { DUHC(); y += fontHeight; }
+            
         /*
         // XXX: This might be too many stats. I'll implement this in the ajax windowing screens.
 	    DUH("avg renderer fps", va("%5.2f",
