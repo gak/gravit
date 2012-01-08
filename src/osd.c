@@ -41,13 +41,6 @@ void drawOSD() {
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // Top middle
-    glColor4f(1,1,1,1);
-    y = 10;
-    drawFontWordCA(video.screenW / 2, y, "Hit SPACE to start a new simulation");
-    drawFontWordCA(video.screenW / 2, y += fontHeight, "Hold down a mouse button and move it around to change your orientation.");
-    drawFontWordCA(video.screenW / 2, y += fontHeight, "Use the scroll wheel, or the A and Z keys to zoom in and out.");
-    
     // Right
     DUHC();
     drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
@@ -83,7 +76,11 @@ void drawOSD() {
         DUH("recorded frames", va("%i", state.frame));
         DUH("max frames", va("%i", state.historyFrames));
         DUH("particle vertices", va("%i", view.vertices));
+        
+#if NBODY_METHOD == METHOD_OT
         DUH("tree nodes allocated", va("%i", view.recordNodes));
+#endif
+        
         DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 
         if (state.mode & SM_RECORD) {
@@ -148,10 +145,14 @@ void drawOSD() {
 	      glColor4f(0,1,1,.5f); /*torquise*/ }
               else { DUHC(); y += fontHeight; }
 
+        /*
+        // XXX: This might be too many stats. I'll implement this in the ajax windowing screens.
 	    DUH("avg renderer fps", va("%5.2f",
                      (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ))
 	    DUH("avg renderer frame time", va("%4.1f ms",
 		     (float) view.totalRenderTime / (float) view.timed_frames ));
+        */
+            
 	    DUHC();
         }
 

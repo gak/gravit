@@ -239,15 +239,6 @@ int init(int argc, char *argv[]) {
                   state.processFrameThreads, omp_get_num_procs());
 #endif
 
-    conAdd(LNORM, "Welcome to Gravit!");
-
-#ifndef NO_GUI
-
-    conAdd(LHELP, "Quick Start: Hit SPACE to start a new simulation!");
-    conAdd(LHELP, "Hold down a mouse button and move it around. Use A and Z keys, or the scroll wheel to zoom in and out.");
-
-#endif
-
     return 0;
 
 }
