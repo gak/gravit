@@ -1,6 +1,16 @@
+
+# Xcode / OS X
+
 .DS_Store
-gravit
 *.o
 *.pbxuser
 *.perspectivev3
 Xcode/Gravit/build
+
+# Visual Studio
+
+*.dll
+*.suo
+*.sdf
+*.opensdf
+

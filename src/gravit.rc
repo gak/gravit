@@ -1,0 +1,6 @@
+IDI_ICON1               ICON    DISCARDABLE     "data/gravit.ico"
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    1             "Gravit"
+END

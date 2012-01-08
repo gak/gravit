@@ -1,59 +1,21 @@
-Gravit Version 0.5.1
+Gravit Version 0.5.0
 
     http://gravit.slowchop.com/
     gravit@slowchop.com
 
 Overview
 
-    Gravit is a multi-platform gravity simulator. It's released under the GNU General Public License which makes it free. It uses Newtonian physics using the Barnes-Hut N-body algorithm. Although the main goal of Gravit is to be as accurate as possible, it also creates beautiful looking gravity patterns. There may be bugs that I'm not aware of. I would appreciate your feedback and any problems you've had to face!
+    Gravit is a free, visually stunning gravity simulator, where you can spend endless time experimenting with various configurations of simulated universes.
 
-Configuration
+More information
 
-    Once you have installed Gravit (see below) you should configure it to make it work as well as possible on your system. To do this, open up gravit.cfg in your favorite text editor and follow the instructions. By default the configuration is set to use 256MB of RAM, and only run in windowed mode at 800x600x32.
+    Please see the Gravit documentation online for the latest information:
 
-Documentation
-
-    The documentation is a work in progress at:
-
-    * http://gravit.slowchop.com/docs/ 
-
-Troubleshooting
-
-    * If you have any problems check the gravit.cfg file, it has lots of information about possible problems.
-    * Read the documentation on the web site, I keep it up to date with known problems.
-    * Otherwise send me an e-mail describing the problem along with video card, cpu, o/s, etc.. 
-
-Installation for Windows
-
-   1. Run the installer
-   2. At the end of the installer:
-          * Ask you to modify gravit.cfg. Do it, and read through it... especially if you have problems or want the coolest effects!
-          * The installer will prompt you to install the screensaver. This will popup the screensaver dialog when it installs it.
-          * Ask you to run Gravit. This will run Gravit with default settings. 
-   3. Once Gravit is installed, you will have some handy short cuts in your Program Group in your Start Menu. 
-
-Installation for UNIX
-
-   1. Extract the tarball somewhere as you already have:
-          * tar xzvf gravit-0.4.2.tar.gz 
-   2. You will need:
-          * SDL, SDL_ttf. and SDL_image installed and working. (Try sdl-config --version)
-          * lua is optional for scriptable spawn locations (recommended)
-          * libpng is optional for creating screenshots in PNG format (instead of BMP)
-          * OpenGL (accelerated recommended) 
-   3. Build gravit:
-          * ./configure
-          * make
-          * make install 
-   4. Open up gravit.cfg and change it to your liking.
-   5. Run gravit 
-
-Author
-
-    * Gerald Kaszuba (gravit@slowchop.com) 
+    * http://gravit.slowchop.com/WikiHome/
 
 Contributors
 
+    * Gerald Kaszuba (gravit@slowchop.com)
     * Alec Thomas (alec@swapoff.org)
     * Martin White (renwald@slowchop.com)
     * James Stewart (yattah@bigpond.com)

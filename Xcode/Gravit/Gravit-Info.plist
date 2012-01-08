@@ -22,15 +22,15 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>0.5.0</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>© Gerald Kaszuba 2004-2011</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.education</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>© Gerald Kaszuba 2004-2011</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.education</string>
 </dict>
 </plist>

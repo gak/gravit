@@ -6,12 +6,11 @@ FINAL = gravit.exe
 ARCH=32
 #ARCH=64
 
-
 DESTDIR=install$(ARCH)/
 
 # -------------------------------
 
-OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o lua.o png_save.o gravitrc.o
+OBJS = src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-pp_sse.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o src/gravitrc.o
 
 
 # -------------------------------
@@ -28,6 +27,13 @@ GenericOpt= -msse -mfpmath=sse \
 	    -mpreferred-stack-boundary=6 \
 	    -minline-stringops-dynamically \
 	    -mstackrealign
+
+GenericOpt64= -msse \
+	      -fomit-frame-pointer -momit-leaf-frame-pointer \
+	      -floop-optimize -funsafe-loop-optimizations -Wunsafe-loop-optimizations \
+	      -malign-stringops \
+	      -minline-stringops-dynamically \
+	      -mstackrealign
 
 #optimize for Core2
 P4C2opt=-mtune=core2 -march=core2 \
@@ -58,9 +64,8 @@ X64opt= -mtune=corei7 -march=corei7 \
 
 # -------------------------------
 
-INCDIRS = -I./windows/include -I./windows/include/SDL   -I./windows/mingw_include$(ARCH)  -I./windows/mingw_include$(ARCH)/SDL
-LIBDIRS = -L./windows/lib$(ARCH) -L./windows/mingw_lib$(ARCH)
-
+INCDIRS = -I./MinGW/include$(ARCH)  -I./MinGW/include$(ARCH)/SDL -I./MinGW/include -I./MinGW/include/SDL -I/usr/local/include -I/usr/local/include/SDL
+LIBDIRS = -L./MinGW/lib$(ARCH) -L./MinGW/lib -L/usr/local/lib
 
 CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
 	 $(INCDIRS) \
@@ -76,6 +81,16 @@ LDLIBS =  -lSDL_ttf -lSDL_image -llua51 \
 
 INSTALL=cp
 
+# mingw gcc 4.4.5 has openMP support.
+ifeq ($(ARCH),64)
+	CC=gcc -fopenmp $(GenericOpt64)
+	LD=gcc -fopenmp $(GenericOpt64)
+else
+	CC=gcc -fopenmp $(GenericOpt)
+	LD=gcc -fopenmp $(GenericOpt)
+endif
+
+
 # if you have gcc >= 4.6.0
 #CC=gcc -flto=2 -Ofast $(P4C2opt)
 #LD=gcc -flto=2 -Ofast $(P4C2opt) $(CFLAGS)
@@ -83,14 +98,9 @@ INSTALL=cp
 #CC=gcc -fopenmp -Ofast $(X64opt)
 #LD=gcc -fopenmp -Ofast $(X64opt)
 
-
 #for gcc < 4.6.0
-#CC=gcc $(P4C2opt)
-#LD=gcc $(P4C2opt)
-
-# mingw gcc 4.4.5 has openMP support.
-CC=gcc -fopenmp $(GenericOpt)
-LD=gcc -fopenmp $(GenericOpt)
+#CC=gcc -fopenmp $(P4C2opt)
+#LD=gcc -fopenmp $(P4C2opt)
 
 
 # -------------------------------
@@ -103,22 +113,19 @@ install: final
 dep:
 	@makedepend $(CFLAGS) *.c 2> /dev/null
 
-clean:
-	rm -f *.o $(FINAL)
-
-# -------------------------------
-
-
-gravitrc.o: gravit.rc
-	windres gravit.rc gravitrc.o
-
-.c.o:
-	@echo $<
-	@$(CC) -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
-
-
 final: $(OBJS)
+	@echo building $(FINAL)  ' ('$(ARCH)bit')'
 	$(LD) $(LDFLAGS)  $(OBJS)  $(LDLIBS) -o $(FINAL)
+
+clean:
+	rm -f src/*.o $(FINAL)
+
+src/gravitrc.o: src/gravit.rc
+	windres src/gravit.rc src/gravitrc.o
+
+src/%.o: src/%.c
+	@echo $<
+	@$(CC) -c $(CFLAGS) $(subst ,, src/$*.c) -o src/$*.o
 
 
 # -------------------------------
