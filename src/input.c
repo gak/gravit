@@ -40,6 +40,23 @@ int processKeys() {
             return 1;
         }
 
+        {
+            AG_DriverEvent ev;
+            int x;
+            int y;
+            AG_SDL_TranslateEvent(agDriverSw, &event, &ev);
+            if (ev.type == AG_DRIVER_MOUSE_BUTTON_DOWN) {
+                x = ev.data.button.x;
+                y = ev.data.button.y;
+                if (AG_WindowFocusAtPos(agDriverSw, x, y)) {
+                    AG_ProcessEvent(0, &ev);
+                    return 0;
+                }
+            } else {
+                AG_ProcessEvent(0, &ev);
+            }
+        }
+        
         if (event.type == SDL_MOUSEBUTTONDOWN) {
 
             if (view.screenSaver) {
@@ -53,6 +70,16 @@ int processKeys() {
             if (event.button.button == SDL_BUTTON_WHEELUP)
                 view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
 
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                view.mouseButtons[0] = 1;
+            }
+            
+        }
+        
+        if (event.type == SDL_MOUSEBUTTONUP) {
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                view.mouseButtons[0] = 0;
+            }
         }
 
         if (event.type == SDL_KEYUP) {
@@ -374,9 +401,8 @@ void processMouse() {
 
     int x,y;
 
-    view.mouseButtons[1] = view.mouseButtons[0];
     memcpy(view.lastMousePosition, view.currentMousePosition, sizeof(view.currentMousePosition));
-    view.mouseButtons[0] = SDL_GetMouseState(&view.currentMousePosition[0], &view.currentMousePosition[1]);
+    SDL_GetMouseState(&view.currentMousePosition[0], &view.currentMousePosition[1]);
     x = view.currentMousePosition[0] - view.lastMousePosition[0];
     y = view.currentMousePosition[1] - view.lastMousePosition[1];
 
@@ -414,7 +440,8 @@ void processMouse() {
         SDL_ShowCursor(view.showCursor);
 
     }
-
+    
+    view.mouseButtons[1] = view.mouseButtons[0];
 }
 
 #else

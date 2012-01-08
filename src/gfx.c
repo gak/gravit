@@ -122,7 +122,7 @@ int gfxSetResolution() {
 
     if (!loadParticleTexture())
         return 3;
-    
+
     return 0;
 }
 
@@ -219,6 +219,11 @@ gfxInitRetry:
     SDL_EnableUNICODE(SDL_ENABLE);
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
+    AG_InitCore("Gravit", 0);
+    AG_InitGraphics("sdlgl");
+    
+    osdInitDefaultWindows();
+    
     return 1;
 
 }
@@ -452,7 +457,7 @@ void drawFrame() {
             glVertex2d(screen[0]-size, screen[1]+size);
             glEnd();
 
-            view.vertices+=4;
+            view.vertices += 4;
 
         }
 
@@ -603,7 +608,7 @@ void drawRGB() {
     float margin = 5;
     float i;
     float sx = (float)video.screenW - width - margin;
-    float sy = margin;
+    float sy = 70 + margin;
     float wx = width;
     float wy = 200;
     float c[4];
@@ -616,7 +621,7 @@ void drawRGB() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // positive
-    for (i = 0; i < 1; i+=step) {
+    for (i = 0; i < 1; i += step) {
 
         colourFromNormal(c, i);
 
@@ -702,13 +707,28 @@ void translateToCenter() {
 
 }
 
+void drawAgar() {
+
+    if (AG_TIMEOUTS_QUEUED())
+		AG_ProcessTimeouts(AG_GetTicks());
+    
+    AG_Window *win;    
+    AG_FOREACH_WINDOW(win, agDriverSw) {
+        AG_ObjectLock(win);
+        AG_WindowDraw(win);
+        AG_ObjectUnlock(win);
+    }
+    
+    // Agar leaves glTexEnvf env mode to GL_REPLACE :(
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+}
+
 void drawAll() {
 
-//	int i;
     int bits;
     VectorNew(rotateIncrement);
 
-    glClearColor(0,0,0,0);
+    glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     view.vertices = 0;
@@ -763,7 +783,7 @@ void drawAll() {
     }
 
     if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
-        view.tailSkip*=2;
+        view.tailSkip *= 2;
         conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
     }
 
@@ -776,28 +796,13 @@ void drawAll() {
         conDraw();
         drawPopupText();
     }
-
-    // just a test...
-    // otDrawField();
-
-//	if (view.drawAxis)
-//		drawAxis();
-
-//	if (view.drawOSD) {
-
-//		drawOSD();
-//		if (view.drawColourScheme) drawRGB();
-
-//	}
-
-//	conDraw();
-
+    
+    drawAgar();
 
     if (view.screenshotLoop)
         cmdScreenshot(NULL);
 
     SDL_GL_SwapBuffers();
-
 }
 
 void drawCube() {

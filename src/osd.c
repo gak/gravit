@@ -41,13 +41,6 @@ void drawOSD() {
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // Top middle
-    glColor4f(1,1,1,1);
-    y = 10;
-    drawFontWordCA(video.screenW / 2, y, "Hit SPACE to start a new simulation");
-    drawFontWordCA(video.screenW / 2, y += fontHeight, "Hold down a mouse button and move it around to change your orientation.");
-    drawFontWordCA(video.screenW / 2, y += fontHeight, "Use the scroll wheel, or the A and Z keys to zoom in and out.");
-    
     // Right
     DUHC();
     drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
@@ -67,7 +60,6 @@ void drawOSD() {
             DUH("simulation name", "-");
         }
 
-
         DUH("particles", va("%i", state.particleCount));
         DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
         DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
@@ -83,7 +75,11 @@ void drawOSD() {
         DUH("recorded frames", va("%i", state.frame));
         DUH("max frames", va("%i", state.historyFrames));
         DUH("particle vertices", va("%i", view.vertices));
+        
+#if NBODY_METHOD == METHOD_OT
         DUH("tree nodes allocated", va("%i", view.recordNodes));
+#endif
+        
         DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
 
         if (state.mode & SM_RECORD) {
@@ -140,18 +136,22 @@ void drawOSD() {
             y = drawFontWord(x, y, "AUTO SCREENSHOT");
 
         }
-
-
+        
+        
         // show renderer FPS average (if we have meaningful values)
         if ((view.timed_frames > 1) && (view.totalRenderTime > SDL_TIMESLICE )) {
             if (state.mode & SM_RECORD) {
-	      glColor4f(0,1,1,.5f); /*torquise*/ }
-              else { DUHC(); y += fontHeight; }
-
+                glColor4f(0,1,1,.5f); /*torquise*/ }
+            else { DUHC(); y += fontHeight; }
+            
+        /*
+        // XXX: This might be too many stats. I'll implement this in the ajax windowing screens.
 	    DUH("avg renderer fps", va("%5.2f",
                      (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ))
 	    DUH("avg renderer frame time", va("%4.1f ms",
 		     (float) view.totalRenderTime / (float) view.timed_frames ));
+        */
+            
 	    DUHC();
         }
 
@@ -242,6 +242,161 @@ void drawOSD() {
 
     }
 
+}
+
+// Handlers
+
+void osdHandleQuit(AG_Event *event) {
+    cmdQuit(0);
+}
+
+void osdHandleRespawn(AG_Event *event) {
+    cmdSpawn(0);
+    osdUpdate();
+}
+
+void osdHandleRecord(AG_Event *event) {
+    cmdRecord(0);
+    osdUpdate();
+}
+
+void osdHandlePlay(AG_Event *event) {
+    cmdPlay(0);
+    osdUpdate();
+}
+
+void osdHandlePrev(AG_Event *event) {
+    if (state.currentFrame > 0)
+        state.currentFrame--;
+    cmdStop(0);
+    osdUpdate();
+}
+
+void osdHandleNext(AG_Event *event) {
+    if (state.currentFrame < state.totalFrames - 1)
+        state.currentFrame++;
+    cmdStop(0);
+    osdUpdate();
+}
+
+void osdHandleFirst(AG_Event *event) {
+    state.currentFrame = 0;
+    if (state.mode & SM_RECORD) {
+        cmdStop(0);
+    }
+    osdUpdate();
+}
+void osdHandleLast(AG_Event *event) {
+    state.currentFrame = state.totalFrames - 1;
+    cmdStop(0);
+    osdUpdate();
+}
+
+// Styling
+
+void osdCheckbox(void *cbox, int state, int size) {
+    
+    AG_Rect r = AG_RECT(0, 0, size, size);    
+    AG_DrawBox(cbox, r, 1, agColors[CHECKBOX_COLOR]);
+
+    if (state) {
+
+        float a = 3;
+        r.x += a; r.y += a; r.w -= a * 2; r.h -= a * 2;
+        AG_DrawBox(cbox, r, 1, AG_ColorRGB(255, 255, 255));
+        
+    }
+}
+
+void osdInitStyle()
+{
+    AG_ColorsSetRGBA(WINDOW_BG_COLOR, 0, 0, 0, 200);
+    AG_ColorsSetRGBA(TITLEBAR_FOCUSED_COLOR, 0, 128, 171, 250);
+    AG_ColorsSetRGBA(TITLEBAR_UNFOCUSED_COLOR, 0, 128, 171, 200);
+    AG_ColorsSetRGBA(BUTTON_COLOR, 0, 64, 85, 255);    
+    
+	view.osdStyle = agStyleDefault;
+    view.osdStyle.CheckboxButton = osdCheckbox;
+    AG_SetStyle(agDriverSw, &view.osdStyle);
+    
+}
+
+// Helpers
+
+AG_Window *osdNewWindow(const char *title) {
+    AG_Window *w = AG_WindowNew(AG_WINDOW_NOMAXIMIZE | AG_WINDOW_NOMINIMIZE | AG_WINDOW_NORESIZE);
+    AG_WindowSetCaptionS(w, title);
+    AG_WindowSetPadding(w, 8, 8, 8, 8);
+    AG_WindowSetSideBorders(w, 1);
+    AG_WindowSetBottomBorder(w, 1);
+    return w;
+}
+
+void osdInitPlaybackWindow() {
+    
+    view.playbackWindow = osdNewWindow("Quick Controls");
+    AG_Box *box = AG_BoxNewHoriz(view.playbackWindow, AG_BOX_EXPAND);
+    
+    // The labels for Record and Pause are the "longest legnth" versions of the
+    // state of the button, so that no button resizing is necessary.
+    
+    AG_ButtonNewFn(box, 0, "Respawn", osdHandleRespawn, 0);
+    
+    AG_SpacerNewVert(box);
+    
+    view.recordButton = AG_ButtonNewFn(box, 0, "Record", osdHandleRecord, 0);
+    AG_ButtonNewFn(box, 0, "<<", osdHandleFirst, 0);
+    AG_ButtonNewFn(box, AG_BUTTON_REPEAT, "<", osdHandlePrev, 0);
+    view.playButton = AG_ButtonNewFn(box, 0, "Pause", osdHandlePlay, 0);
+    AG_ButtonNewFn(box, AG_BUTTON_REPEAT, ">", osdHandleNext, 0);
+    AG_ButtonNewFn(box, 0, ">>", osdHandleLast, 0);
+    
+    AG_SpacerNewVert(box);
+    
+    AG_ButtonNewFn(box, 0, "Quit", osdHandleQuit, 0);
+    
+    AG_WindowSetPosition(view.playbackWindow, AG_WINDOW_TR, 0);
+    AG_WindowShow(view.playbackWindow);
+    osdUpdate();
+}
+
+void osdInitIntroWindow() {
+    AG_Window *w = osdNewWindow("Welcome to Gravit!");
+    
+    AG_Box *vBox = AG_BoxNewVert(w, 0);
+    AG_BoxSetSpacing(vBox, 10);
+    
+    AG_Label *text = AG_LabelNew(vBox, 0, 0);
+    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.");
+    AG_WidgetSetSize(text, 200, 100);
+    
+    // AG_Checkbox *showAgain = AG_CheckboxNew(vBox, AG_CHECKBOX_SET, "Show this window on startup");
+    
+    AG_WindowShow(w);
+}
+
+void osdUpdate() {
+    
+    if (state.mode & SM_PLAY) {
+        AG_ButtonTextS(view.playButton, "Pause");
+    } else {
+        AG_ButtonTextS(view.playButton, "Play");
+    }
+    
+    if (state.mode & SM_RECORD) {
+        AG_ButtonTextS(view.recordButton, "Pause");
+    } else {
+        AG_ButtonTextS(view.recordButton, "Record");
+    }
+    
+}
+
+void osdInitDefaultWindows() {
+
+    osdInitStyle();
+    osdInitIntroWindow();
+    osdInitPlaybackWindow();
+    
 }
 
 #endif
