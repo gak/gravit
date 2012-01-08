@@ -1,18 +1,39 @@
+# Makefile for MinGW gcc (32 or 64 bit) on windows
+#
 
 FINAL = gravit.exe
 
 ARCH=32
 #ARCH=64
 
-DESTDIR=bin32/
+DESTDIR=install$(ARCH)/
+
+# -------------------------------
+
+OBJS = src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-pp_sse.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o src/gravitrc.o
 
 
 # -------------------------------
 
-OBJS = src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-pp_sse.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o
+#generic optimization - OK for any newer proceser with SSE support
+# -mstackrealign is needed for Windows XP - otherwise gravit crashes
+GenericOpt= -msse -mfpmath=sse \
+	    -fomit-frame-pointer -momit-leaf-frame-pointer \
+	    -floop-optimize -funsafe-loop-optimizations -Wunsafe-loop-optimizations \
+	    -malign-stringops \
+	    -falign-functions=6 \
+	    -falign-loops=6 \
+	    -falign-jumps=6 \
+	    -mpreferred-stack-boundary=6 \
+	    -minline-stringops-dynamically \
+	    -mstackrealign
 
-
-# -------------------------------
+GenericOpt64= -msse \
+	      -fomit-frame-pointer -momit-leaf-frame-pointer \
+	      -floop-optimize -funsafe-loop-optimizations -Wunsafe-loop-optimizations \
+	      -malign-stringops \
+	      -minline-stringops-dynamically \
+	      -mstackrealign
 
 #optimize for Core2
 P4C2opt=-mtune=core2 -march=core2 \
@@ -22,12 +43,10 @@ P4C2opt=-mtune=core2 -march=core2 \
 	-malign-stringops \
 	-falign-functions=6 \
 	-falign-loops=6 \
-	-falign-jumps=6
-
-#	-mpreferred-stack-boundary=6 \
-#	-minline-stringops-dynamically \
-#	-mstackrealign
-
+	-falign-jumps=6 \
+	-mpreferred-stack-boundary=6 \
+	-minline-stringops-dynamically \
+	-mstackrealign
 
 #optimize for Corei3/5/7
 X64opt= -mtune=corei7 -march=corei7 \
@@ -45,22 +64,32 @@ X64opt= -mtune=corei7 -march=corei7 \
 
 # -------------------------------
 
+INCDIRS = -I./MinGW/include$(ARCH)  -I./MinGW/include$(ARCH)/SDL -I./MinGW/include -I./MinGW/include/SDL -I/usr/local/include -I/usr/local/include/SDL
+LIBDIRS = -L./MinGW/lib$(ARCH) -L./MinGW/lib -L/usr/local/lib
+
 CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
-	 -I../include$(ARCH)  -I../include$(ARCH)/SDL \
-     -I/usr/local/include \
-     -I/usr/local/include/SDL \
+	 $(INCDIRS) \
 	 -D_GNU_SOURCE=1 -Dmain=SDL_main \
 	 -O4 -ffast-math \
 	 -mwindows -DWIN32
 
-LDFLAGS = -L../lib$(ARCH) -L/usr/local/lib
-
-LDLIBS =  -lSDL_ttf -lSDL_image -llua \
+LDFLAGS = $(LIBDIRS)
+LDLIBS =  -lSDL_ttf -lSDL_image -llua51 \
 	  -lGLU32 -lopenGL32 \
 	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lwinmm -ldxguid \
 	  -lpthread
 
 INSTALL=cp
+
+# mingw gcc 4.4.5 has openMP support.
+ifeq ($(ARCH),64)
+	CC=gcc -fopenmp $(GenericOpt64)
+	LD=gcc -fopenmp $(GenericOpt64)
+else
+	CC=gcc -fopenmp $(GenericOpt)
+	LD=gcc -fopenmp $(GenericOpt)
+endif
+
 
 # if you have gcc >= 4.6.0
 #CC=gcc -flto=2 -Ofast $(P4C2opt)
@@ -69,14 +98,9 @@ INSTALL=cp
 #CC=gcc -fopenmp -Ofast $(X64opt)
 #LD=gcc -fopenmp -Ofast $(X64opt)
 
-
 #for gcc < 4.6.0
-#CC=gcc $(P4C2opt)
-#LD=gcc $(P4C2opt)
-
-# mingw gcc 4.4.5 has openMP support.
-CC=gcc -fopenmp $(P4C2opt)
-LD=gcc -fopenmp $(P4C2opt)
+#CC=gcc -fopenmp $(P4C2opt)
+#LD=gcc -fopenmp $(P4C2opt)
 
 
 # -------------------------------
@@ -90,16 +114,18 @@ dep:
 	@makedepend $(CFLAGS) *.c 2> /dev/null
 
 final: $(OBJS)
+	@echo building $(FINAL)  ' ('$(ARCH)bit')'
 	$(LD) $(LDFLAGS)  $(OBJS)  $(LDLIBS) -o $(FINAL)
 
 clean:
 	rm -f src/*.o $(FINAL)
 
-gravitrc.o: gravit.rc
-	windres gravit.rc gravitrc.o
+src/gravitrc.o: src/gravit.rc
+	windres src/gravit.rc src/gravitrc.o
 
 src/%.o: src/%.c
-	$(CC) -c $(CFLAGS) $(subst ,, src/$*.c) -o src/$*.o
+	@echo $<
+	@$(CC) -c $(CFLAGS) $(subst ,, src/$*.c) -o src/$*.o
 
 
 # -------------------------------
