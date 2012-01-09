@@ -23,7 +23,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
+// TODO: Move to view struct
 GLuint particleTextureID;
+GLuint skyBoxTextureID;
 
 void drawFrameSet2D() {
 
@@ -43,42 +45,18 @@ void drawFrameSet3D() {
     glLoadIdentity();
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
-    gluPerspective(45.0f,1,0,10000.0f);
+    gluPerspective(45.0f, 1, 0, 10000.0f);
 
 }
 
 int loadParticleTexture() {
+    particleTextureID = loadTexture(MISCDIR "/particle.png");
+    return particleTextureID;
+}
 
-    SDL_Surface *particleSurface;
-
-    char *particlePath = findFile(MISCDIR "/particle.png");
-    
-    if (!particlePath) {
-        conAdd(LERR, "Could not find particle graphic");
-        return 0;
-    }
-
-    particleSurface = IMG_Load(particlePath);
-
-    glGenTextures(1, &particleTextureID);
-    glCheck();
-
-    glBindTexture(GL_TEXTURE_2D, particleTextureID);
-    glCheck();
-
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, particleSurface->w, particleSurface->h, GL_RGBA, GL_UNSIGNED_BYTE, particleSurface->pixels);
-    glCheck();
-
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-    glCheck();
-
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glCheck();
-
-    SDL_FreeSurface(particleSurface);
-
-    return 1;
-
+int loadSkyBoxTexture(char *fileName) {
+    skyBoxTextureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName));
+    return skyBoxTextureID;
 }
 
 int gfxSetResolution() {
@@ -123,6 +101,8 @@ int gfxSetResolution() {
     if (!loadParticleTexture())
         return 3;
 
+    loadSkyBoxTexture("simple.png");
+    
     return 0;
 }
 
@@ -723,14 +703,105 @@ void drawAgar() {
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
+void setupCamera(bool shouldTranslate, int bits) {
+    
+    glViewport(video.screenW / bits * view.stereoModeCurrentBit, 0, video.screenW / bits, video.screenH);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, 100000.0f);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+        
+    if (shouldTranslate)
+        glTranslatef(0, 0, -view.zoom);
+    
+    glRotatef((float)view.rot[0], 1, 0, 0);
+    if (view.stereoMode) {
+        glRotatef((float)view.rot[1] + (view.stereoModeCurrentBit - .5) * view.stereoSeparation, 0, 1, 0);
+    } else {
+        glRotatef((float)view.rot[1], 0, 1, 0);
+    }
+    glRotatef((float)view.rot[2], 0, 0, 1);
+
+}
+
+void drawSkyBox(int bits) {
+
+    setupCamera(false, bits);
+    
+    glPushAttrib(GL_ENABLE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_CULL_FACE);
+    
+    // Just in case we set all vertices to white.
+    glColor4f(1, 1, 1, 1);
+    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    
+    // Render the front quad
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
+    glTexCoord2f(1, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
+    glTexCoord2f(1, 1); glVertex3f( -0.5f,  0.5f, -0.5f );
+    glTexCoord2f(0, 1); glVertex3f(  0.5f,  0.5f, -0.5f );
+    glEnd();
+
+    // Render the left quad
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex3f(  0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
+    glTexCoord2f(1, 1); glVertex3f(  0.5f,  0.5f, -0.5f );
+    glTexCoord2f(0, 1); glVertex3f(  0.5f,  0.5f,  0.5f );
+    glEnd();
+    
+    // Render the back quad
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 1); glVertex3f(  0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 1); glVertex3f( -0.5f,  0.5f,  0.5f );
+    glEnd();    
+
+    // Render the right quad
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
+    glTexCoord2f(1, 0); glVertex3f( -0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 1); glVertex3f( -0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 1); glVertex3f( -0.5f,  0.5f, -0.5f );
+    glEnd();
+    
+    // Render the top quad
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 1); glVertex3f( -0.5f,  0.5f, -0.5f );
+    glTexCoord2f(0, 0); glVertex3f( -0.5f,  0.5f,  0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f,  0.5f,  0.5f );
+    glTexCoord2f(1, 1); glVertex3f(  0.5f,  0.5f, -0.5f );
+    glEnd();
+    
+    // Render the bottom quad
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
+    glTexCoord2f(0, 1); glVertex3f( -0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
+    glEnd();
+    
+    glPopAttrib();
+    
+}
+
 void drawAll() {
 
     int bits;
+    
     VectorNew(rotateIncrement);
+    VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
+    VectorAdd(rotateIncrement, view.rot, view.rot);
 
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
     view.vertices = 0;
 
     if (view.stereoMode)
@@ -740,27 +811,9 @@ void drawAll() {
 
     for (view.stereoModeCurrentBit = 0; view.stereoModeCurrentBit < bits; view.stereoModeCurrentBit++) {
 
-        glViewport(video.screenW/bits*view.stereoModeCurrentBit, 0, video.screenW/bits, video.screenH);
+        drawSkyBox(bits);
 
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(45,(GLfloat)video.screenW/bits/(GLfloat)video.screenH,0.1f,10000000.0f);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
-        VectorAdd(rotateIncrement, view.rot, view.rot);
-
-        glTranslatef(0, 0, -view.zoom);
-
-        glRotatef((float)view.rot[0], 1, 0, 0);
-        if (view.stereoMode) {
-            glRotatef((float)view.rot[1] + (view.stereoModeCurrentBit-.5) * view.stereoSeparation, 0, 1, 0);
-        } else {
-            glRotatef((float)view.rot[1], 0, 1, 0);
-        }
-        glRotatef((float)view.rot[2], 0, 0, 1);
+        setupCamera(true, bits);
 
         if (view.autoCenter)
             translateToCenter();
@@ -770,7 +823,7 @@ void drawAll() {
             otDrawTree();
 
         drawFrame();
-
+    
         if (view.stereoOSD == 1) {
             if (view.drawOSD) {
                 drawOSD();
@@ -779,15 +832,17 @@ void drawAll() {
             conDraw();
             drawPopupText();
         }
-
+        
+        
     }
-
+        
     if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
         view.tailSkip *= 2;
         conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
     }
 
     glViewport(0, 0, video.screenW, video.screenH);
+    
     if (view.stereoOSD == 0) {
         if (view.drawOSD) {
             drawOSD();

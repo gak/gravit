@@ -2,49 +2,40 @@
 
 GLuint texID;
 
-int loadTexture() {
+GLuint loadTexture(char *fileName) {
 
-    SDL_Surface		*tmp = NULL;
-    SDL_Surface		*tmp2 = NULL;
-
-    tmp = SDL_LoadBMP("texture.bmp");
-
-    if (!tmp) {
-        conAdd(LNORM, "Failed loading texture");
+    GLuint textureId;
+    SDL_Surface *surface;
+    
+    char *path = findFile(fileName);
+    
+    if (!path) {
+        conAdd(LERR, "Could not find %s", fileName);
         return 0;
     }
-
-    tmp2 = SDL_CreateRGBSurface(SDL_SWSURFACE, 16, 16, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-
-    if (!tmp2) {
-        SDL_FreeSurface(tmp);
+    
+    surface = IMG_Load(path);
+    if (!surface) {
+        conAdd(LERR, "Could not load %s", path);
         return 0;
     }
-
-    if (SDL_BlitSurface(tmp, NULL, tmp2, NULL)) {
-        SDL_FreeSurface(tmp);
-        SDL_FreeSurface(tmp2);
-    }
-
-    glGenTextures(1, &texID);
+    
+    glGenTextures(1, &textureId);
     glCheck();
-
-    glBindTexture(GL_TEXTURE_2D, texID);
+    
+    glBindTexture(GL_TEXTURE_2D, textureId);
     glCheck();
-
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, 16, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp2->pixels);
+    
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, surface->w, surface->h, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
     glCheck();
-
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glCheck();
-
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glCheck();
+    
+    SDL_FreeSurface(surface);
 
-    SDL_FreeSurface(tmp);
-    SDL_FreeSurface(tmp2);
-
-    return 1;
-
+    return textureId;
 }
 

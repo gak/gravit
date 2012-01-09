@@ -137,7 +137,6 @@ void luag_TableToVector(lua_State *L, float *v) {
 int luag_load(lua_State *L) {
     
     char *s = (char*)lua_tostring(L, -1);
-    char *f;
     conAdd(LLOW, s);
     lua_pop(L, 1);
     

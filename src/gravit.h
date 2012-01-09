@@ -676,6 +676,9 @@ void osdUpdate();
 int processKeys();
 void processMouse();
 
+// texture.c
+GLuint loadTexture(char *fileName);
+
 // gfx.c
 void drawAll();
 void drawFrame();

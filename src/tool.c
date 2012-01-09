@@ -462,7 +462,6 @@ size_t getMemory() {
 
 size_t getMemoryAvailable() {
     size_t realMemory;
-    size_t ret;
     
     if (state.memoryAvailable > 0)
         return state.memoryAvailable;
