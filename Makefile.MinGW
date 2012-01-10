@@ -76,7 +76,7 @@ CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
 LDFLAGS = $(LIBDIRS)
 LDLIBS =  -lSDL_ttf -lSDL_image -llua51 \
 	  -lGLU32 -lopenGL32 \
-	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lwinmm -ldxguid \
+	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lscrnsave -lwinmm -ldxguid \
 	  -lpthread
 
 INSTALL=cp
