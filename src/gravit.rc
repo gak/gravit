@@ -1,4 +1,4 @@
-IDI_ICON1               ICON    DISCARDABLE     "data/gravit.ico"
+IDI_ICON1               ICON    DISCARDABLE     "../data/gravit.ico"
 
 STRINGTABLE DISCARDABLE 
 BEGIN
