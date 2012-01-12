@@ -35,6 +35,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #endif
 #endif
 
+#ifdef __MACH__
+    #include <stdio.h>
+    #include <stdint.h>
+    #include <sys/types.h>
+    #include <sys/sysctl.h>
+#endif
+
 
 #define shitzta 4
 
@@ -426,12 +433,38 @@ int checkHomePath() {
 
 }
 
-size_t getMemoryAvailable() {
+size_t getMemory() {
+
+    // From http://stackoverflow.com/questions/2513505/how-to-get-available-memory-c-g
     size_t realMemory;
+    
 #ifdef WIN32
     MEMORYSTATUSEX status;
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatusEx(&status);
+    return status.ullTotalPhys;
+#else
+#ifdef __MACH__
+    int mib[2] = { CTL_HW, HW_MEMSIZE };
+    u_int namelen = sizeof(mib) / sizeof(mib[0]);
+    uint64_t size;
+    size_t len = sizeof(size);
+    sysctl(mib, namelen, &size, &len, NULL, 0);
+    realMemory = size;
+    return realMemory;
+    
+#else
+    return sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
+    
 #endif
+#endif
+    
+}
 
+size_t getMemoryAvailable() {
+    size_t realMemory;
+    size_t ret;
+    
     if (state.memoryAvailable > 0)
         return state.memoryAvailable;
 
@@ -441,15 +474,13 @@ size_t getMemoryAvailable() {
         state.memoryPercentage = 50;
     }
     
-// From http://stackoverflow.com/questions/2513505/how-to-get-available-memory-c-g
-#ifdef WIN32
-    status.dwLength = sizeof(status);
-    GlobalMemoryStatusEx(&status);
-    realMemory = status.ullTotalPhys;
-#else
-    // XXX: Untested
-    realMemory = sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
-#endif
+    realMemory = getMemory();
+    // We've detected 0 memory here, bad news. We have to assume something
+    if (realMemory == 0) {
+        realMemory = 128;
+    }
+    ret = state.memoryPercentage / 100. * realMemory / 1024 / 1024;
+    conAdd(LLOW, "memoryDetected: %z returning %z", realMemory, ret);
 
-    return state.memoryPercentage / 100. * realMemory / 1024 / 1024;
+    return ret;
 }

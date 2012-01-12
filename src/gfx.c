@@ -29,7 +29,7 @@ void drawFrameSet2D() {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0f,video.screenW,video.screenH,0,-1.0f,1.0f);
+    glOrtho(0.0f, video.screenW, video.screenH, 0, -1.0f, 1.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -106,7 +106,8 @@ int gfxSetResolution() {
         video.screenH = videoInfo->current_h;
     }
     
-    if (!SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags )) {
+    video.sdlScreen = SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags );
+    if (!video.sdlScreen) {
         conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError());
         return 1;
     }
@@ -119,9 +120,8 @@ int gfxSetResolution() {
 
     if (!loadParticleTexture())
         return 3;
-
+    
     return 0;
-
 }
 
 int gfxInit() {
