@@ -49,26 +49,32 @@ int initFrame() {
 //	conAdd(LERR, "Allocating %u bytes", FRAMESIZE * state.historyFrames);
     state.particleHistory = (particle_t *)calloc(FRAMESIZE, state.historyFrames);
 
-    if (!state.particleHistory) {
+    while (!state.particleHistory) {
 
-        conAdd(LNORM, "Could not allocate %lu bytes of memory for particleHistory", (unsigned long)(FRAMESIZE * state.historyFrames));
-        return 0;
-
+        conAdd(LLOW, "Could not allocate %lu bytes of memory for %ld frames of particleHistory", (unsigned long)(FRAMESIZE * state.historyFrames), state.historyFrames);
+        if (state.historyFrames < 10) {
+            conAdd(LERR, "Could not allocate for particleHistory - giving up.");
+            //return 0;
+            cmdQuit(1);
+        }
+        // reduce framesize by 20%, and try again
+        state.historyFrames = (state.historyFrames / 10) * 8;
+        state.particleHistory = (particle_t *)calloc(FRAMESIZE, state.historyFrames);
     }
-
-    state.memoryAllocated += FRAMESIZE * state.historyFrames;
 
 //	conAdd(LERR, "Allocating %u bytes", FRAMEDETAILSIZE);
     state.particleDetail = calloc(sizeof(particleDetail_t),state.particleCount);
     if (!state.particleDetail) {
 
-        conAdd(LNORM, "Could not allocate %ld bytes of memory for particleDetail", (unsigned long)FRAMEDETAILSIZE);
+        conAdd(LERR, "Could not allocate %lu bytes of memory for particleDetail", (unsigned long)(FRAMEDETAILSIZE));
         free(state.particleHistory);
         state.memoryAllocated = 0;
-        return 0;
+        //return 0;
+        cmdQuit(1);
 
     }
 
+    state.memoryAllocated += FRAMESIZE * state.historyFrames;
     state.memoryAllocated += FRAMEDETAILSIZE;
 
     memset(state.particleHistory, 0, FRAMESIZE);
