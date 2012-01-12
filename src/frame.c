@@ -55,7 +55,7 @@ int initFrame() {
         if (state.historyFrames < 10) {
             conAdd(LERR, "Could not allocate for particleHistory - giving up.");
             //return 0;
-            cmdQuit(1);
+            cmdQuit(NULL);
         }
         // reduce framesize by 20%, and try again
         state.historyFrames = (state.historyFrames / 10) * 8;
@@ -70,7 +70,7 @@ int initFrame() {
         free(state.particleHistory);
         state.memoryAllocated = 0;
         //return 0;
-        cmdQuit(1);
+        cmdQuit(NULL);
 
     }
 
