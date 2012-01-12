@@ -7,8 +7,6 @@
 /* ******************************************************************* */
 // no GCC
 #include <xmmintrin.h>
-#define __v128 __m128
-#define _mm_init1_ps(f) {f, f, f, f}
 
 #ifdef _MSC_VER
 // microsoft specific
@@ -20,8 +18,14 @@
 #define ALWAYS_INLINE(ret_type) static __forceinline ret_type
 #define ALIGNED __declspec(align(16))
 
+#define __v128 ALIGNED __m128
+#define _mm_init1_ps(f) {f, f, f, f}
+//#define _mm_set_ps1(f) {f, f, f, f}
+
 #else
 #define ALWAYS_INLINE(ret_type) static inline ret_type
+#define __v128 __m128
+#define _mm_init1_ps(f) {f, f, f, f}
 #endif
 
 
