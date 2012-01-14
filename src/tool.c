@@ -480,7 +480,7 @@ size_t getMemoryAvailable() {
         realMemory = 128;
     }
     ret = state.memoryPercentage / 100. * realMemory / 1024 / 1024;
-    conAdd(LLOW, "memoryDetected: %z returning %z", realMemory, ret);
+    conAdd(LLOW, "memoryDetected: %lu MB, returning %lu MB", (unsigned long) (realMemory>>20), (unsigned long)ret);
 
     return ret;
 }
