@@ -57,8 +57,8 @@ int initFrame() {
             //return 0;
             cmdQuit(NULL);
         }
-        // reduce framesize by 20%, and try again
-        state.historyFrames = (state.historyFrames / 10) * 8;
+        // reduce requested size by 10%, and try again
+        state.historyFrames = (state.historyFrames / 10) * 9;
         state.particleHistory = (particle_t *)calloc(FRAMESIZE, state.historyFrames);
     }
 
