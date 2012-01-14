@@ -10,7 +10,7 @@ DESTDIR=install$(ARCH)/
 
 # -------------------------------
 
-OBJS = src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-pp_sse.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o src/gravitrc.o
+OBJS = src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-pp_sse.o src/frame-ot.o src/gfx.o src/texture.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o src/gravitrc.o
 
 
 # -------------------------------
@@ -74,7 +74,8 @@ CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
 	 -mwindows -DWIN32
 
 LDFLAGS = $(LIBDIRS)
-LDLIBS =  -lSDL_ttf -lSDL_image -llua51 \
+LDLIBS = -lag_gui -lag_core \
+	  -lSDL_ttf -lSDL_image -lfreetype -llua51 \
 	  -lGLU32 -lopenGL32 \
 	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lscrnsave -lwinmm -ldxguid \
 	  -lpthread
