@@ -95,13 +95,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
         #include <scrnsave.h>
         #include <SDL_syswm.h>
 
-        #if defined(USE_PTHREAD) && !defined(_OPENMP)
-            #include <unistd.h>
-            #include <sys/timeb.h>
-            #include <pthread.h>
-        #endif
-
     #endif
+    #if defined(USE_PTHREAD) && !defined(_OPENMP)
+        #include <unistd.h>
+        #include <sys/timeb.h>
+        #include <pthread.h>
+    #endif
+
 
     #include <vfw.h>
 
@@ -290,7 +290,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
     if (view.recordingVideoRefreshTime) { \
-        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS()) { \
+        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*4) < getMS()) { \
             runInput(); \
             runVideo(); \
         } \
@@ -378,7 +378,7 @@ typedef struct state_s {
     particleDetail_t *particleDetail;
 
     int memoryAvailable;    // MB
-    float memoryPercentage;   // Detect memory available and use a percentage of it
+    int memoryPercentage;   // Detect memory available and use a percentage of it
 
     int particleCount;
     int frame;
