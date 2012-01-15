@@ -333,9 +333,9 @@ AG_Window *osdNewWindow(const char *title) {
 }
 
 void osdInitPlaybackWindow() {
-    
+    AG_Box *box;
     view.playbackWindow = osdNewWindow("Quick Controls");
-    AG_Box *box = AG_BoxNewHoriz(view.playbackWindow, AG_BOX_EXPAND);
+    box = AG_BoxNewHoriz(view.playbackWindow, AG_BOX_EXPAND);
     
     // The labels for Record and Pause are the "longest legnth" versions of the
     // state of the button, so that no button resizing is necessary.
@@ -364,9 +364,10 @@ void osdInitIntroWindow() {
     AG_Window *w = osdNewWindow("Welcome to Gravit!");
     
     AG_Box *vBox = AG_BoxNewVert(w, 0);
+    AG_Label *text;
     AG_BoxSetSpacing(vBox, 10);
     
-    AG_Label *text = AG_LabelNew(vBox, 0, 0);
+    text = AG_LabelNew(vBox, 0, 0);
     AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.");
     AG_WidgetSetSize(text, 200, 100);
     

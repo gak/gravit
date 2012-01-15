@@ -708,11 +708,11 @@ void translateToCenter() {
 }
 
 void drawAgar() {
+    AG_Window *win;
 
     if (AG_TIMEOUTS_QUEUED())
 		AG_ProcessTimeouts(AG_GetTicks());
     
-    AG_Window *win;    
     AG_FOREACH_WINDOW(win, agDriverSw) {
         AG_ObjectLock(win);
         AG_WindowDraw(win);
