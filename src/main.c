@@ -40,6 +40,7 @@ void loadDefaults() {
 #ifndef NO_GUI
 
     video.sdlStarted = 0;
+    video.agarStarted = 0;
     video.screenWtoApply = 0;
     video.screenHtoApply = 0;
     video.screenBPP = 0;
