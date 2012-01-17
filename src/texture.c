@@ -2,9 +2,11 @@
 
 GLuint texID;
 
-GLuint loadTexture(char *fileName) {
+GLuint loadTexture(char *fileName, int is_skybox) {
 
     GLuint textureId;
+    GLenum colortype;
+
     SDL_Surface *surface;
     
     char *path = findFile(fileName);
@@ -20,20 +22,35 @@ GLuint loadTexture(char *fileName) {
         return 0;
     }
     
+    // get Type : RGB or RGBA
+    if (surface->format->Amask)
+        colortype=GL_RGBA;
+    else
+        colortype=GL_RGB;
+
     glGenTextures(1, &textureId);
     glCheck();
     
     glBindTexture(GL_TEXTURE_2D, textureId);
     glCheck();
     
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, surface->w, surface->h, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-    glCheck();
+    if (is_skybox) {
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        glCheck();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glCheck();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glCheck();
+    }
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glCheck();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glCheck();
     
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, surface->w, surface->h, colortype, GL_UNSIGNED_BYTE, surface->pixels);
+    glCheck();
+
     SDL_FreeSurface(surface);
 
     return textureId;

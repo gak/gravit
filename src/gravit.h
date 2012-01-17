@@ -677,7 +677,7 @@ int processKeys();
 void processMouse();
 
 // texture.c
-GLuint loadTexture(char *fileName);
+GLuint loadTexture(char *fileName, int is_skybox);
 
 // gfx.c
 void drawAll();

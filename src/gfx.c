@@ -49,13 +49,13 @@ void drawFrameSet3D() {
 
 }
 
-int loadParticleTexture() {
-    particleTextureID = loadTexture(MISCDIR "/particle.png");
+GLuint loadParticleTexture() {
+    particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), FALSE);
     return particleTextureID;
 }
 
-int loadSkyBoxTexture(char *fileName) {
-    skyBoxTextureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName));
+GLuint loadSkyBoxTexture(char *fileName) {
+    skyBoxTextureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName), TRUE);
     return skyBoxTextureID;
 }
 
@@ -703,7 +703,7 @@ void drawAgar() {
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-void setupCamera(bool shouldTranslate, int bits) {
+void setupCamera(int shouldTranslate, int bits) {
     
     glViewport(video.screenW / bits * view.stereoModeCurrentBit, 0, video.screenW / bits, video.screenH);
     
@@ -729,17 +729,27 @@ void setupCamera(bool shouldTranslate, int bits) {
 
 void drawSkyBox(int bits) {
 
-    setupCamera(false, bits);
+    // Store the current matrix
+    glPushMatrix();
+    // Reset and transform the matrix.
+    glLoadIdentity();
+
+    setupCamera(FALSE, bits);
     
     glPushAttrib(GL_ENABLE_BIT);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_CULL_FACE);
     
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+
     // Just in case we set all vertices to white.
     glColor4f(1, 1, 1, 1);
-    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+
     
     // Render the front quad
+    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
     glTexCoord2f(1, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
@@ -748,6 +758,7 @@ void drawSkyBox(int bits) {
     glEnd();
 
     // Render the left quad
+    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex3f(  0.5f, -0.5f,  0.5f );
     glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
@@ -756,6 +767,7 @@ void drawSkyBox(int bits) {
     glEnd();
     
     // Render the back quad
+    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f,  0.5f );
     glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f,  0.5f );
@@ -764,6 +776,7 @@ void drawSkyBox(int bits) {
     glEnd();    
 
     // Render the right quad
+    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
     glTexCoord2f(1, 0); glVertex3f( -0.5f, -0.5f,  0.5f );
@@ -772,6 +785,7 @@ void drawSkyBox(int bits) {
     glEnd();
     
     // Render the top quad
+    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 1); glVertex3f( -0.5f,  0.5f, -0.5f );
     glTexCoord2f(0, 0); glVertex3f( -0.5f,  0.5f,  0.5f );
@@ -780,6 +794,7 @@ void drawSkyBox(int bits) {
     glEnd();
     
     // Render the bottom quad
+    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
     glTexCoord2f(0, 1); glVertex3f( -0.5f, -0.5f,  0.5f );
@@ -788,7 +803,7 @@ void drawSkyBox(int bits) {
     glEnd();
     
     glPopAttrib();
-    
+    glPopMatrix();
 }
 
 void drawAll() {
@@ -813,7 +828,7 @@ void drawAll() {
 
         drawSkyBox(bits);
 
-        setupCamera(true, bits);
+        setupCamera(TRUE, bits);
 
         if (view.autoCenter)
             translateToCenter();
