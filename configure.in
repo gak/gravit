@@ -64,7 +64,7 @@ AC_CHECK_HEADERS([omp.h],[
 # if SSE is supported, HAVE_SSE will be set
 AX_EXT
 CFLAGS="$CFLAGS $SIMD_FLAGS -I/usr/local/include"
-LDFLAGS="$SIMD_FLAGS $LDFLAGS"
+LDFLAGS="$SIMD_FLAGS $LDFLAGS -L/usr/local/lib"
 
 # try to add compiler-specific optimization flags
 if test x"$ax_cv_c_compiler_vendor" = x"intel"; then
