@@ -227,13 +227,13 @@ gfxInitRetry:
     SDL_EnableUNICODE(SDL_ENABLE);
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
-    AG_InitCore("Gravit", 0);
+    AG_InitCore("gravit", 0);
     //AG_InitGraphics("sdlgl");
     if (AG_InitVideoSDL(video.sdlScreen, AG_VIDEO_OVERLAY | AG_VIDEO_OPENGL_OR_SDL) == -1)
         conAdd(LERR, "agar error while initializing main window: %s", AG_GetError() );
 
     video.agarStarted = 1;
-    
+
     osdInitDefaultWindows();
     
     return 1;
