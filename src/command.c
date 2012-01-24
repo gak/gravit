@@ -44,7 +44,7 @@ cmd_t cmd[] = {
     ,{ "unhelpful",					cmdUnhelpful,			NULL,						NULL,								NULL }
 
     ,{ "memoryavailable",			NULL,					NULL,						&state.memoryAvailable,				NULL }
-    ,{ "memorypercentage",			NULL,					&state.memoryPercentage,	NULL,								NULL }
+    ,{ "memorypercentage",			NULL,					NULL,						&state.memoryPercentage,      			NULL }
 
 #ifndef NO_GUI
 

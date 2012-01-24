@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "gravit.h"
+#include "agar/gui/surface.h"
 
 #ifndef NO_GUI
 
@@ -103,6 +104,13 @@ int gfxSetResolution() {
 
     loadSkyBoxTexture("simple.png");
     
+    // not sure if we need to re-attach to new surface
+    //if (video.agarStarted == 1) {
+    //    if (AG_SetVideoSurfaceSDL(video.sdlScreen) == -1) {
+    //        ( conAdd(LERR, "agar error while attaching to resized window: %s", AG_GetError() );
+    //    }
+    //}
+
     return 0;
 }
 
@@ -199,9 +207,13 @@ gfxInitRetry:
     SDL_EnableUNICODE(SDL_ENABLE);
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
-    AG_InitCore("Gravit", 0);
-    AG_InitGraphics("sdlgl");
-    
+    AG_InitCore("gravit", 0);
+    //AG_InitGraphics("sdlgl");
+    if (AG_InitVideoSDL(video.sdlScreen, AG_VIDEO_OVERLAY | AG_VIDEO_OPENGL_OR_SDL) == -1)
+        conAdd(LERR, "agar error while initializing main window: %s", AG_GetError() );
+
+    video.agarStarted = 1;
+
     osdInitDefaultWindows();
     
     return 1;
@@ -688,11 +700,11 @@ void translateToCenter() {
 }
 
 void drawAgar() {
+    AG_Window *win;
 
     if (AG_TIMEOUTS_QUEUED())
 		AG_ProcessTimeouts(AG_GetTicks());
     
-    AG_Window *win;    
     AG_FOREACH_WINDOW(win, agDriverSw) {
         AG_ObjectLock(win);
         AG_WindowDraw(win);

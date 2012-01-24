@@ -40,6 +40,7 @@ void loadDefaults() {
 #ifndef NO_GUI
 
     video.sdlStarted = 0;
+    video.agarStarted = 0;
     video.screenWtoApply = 0;
     video.screenHtoApply = 0;
     video.screenBPP = 0;
@@ -518,7 +519,7 @@ LRESULT WINAPI ScreenSaverProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 BOOL WINAPI ScreenSaverConfigureDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    return TRUE;
+    return FALSE;
 
 }
 

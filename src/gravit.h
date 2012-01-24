@@ -95,13 +95,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
         #include <scrnsave.h>
         #include <SDL_syswm.h>
 
-        #if defined(USE_PTHREAD) && !defined(_OPENMP)
-            #include <unistd.h>
-            #include <sys/timeb.h>
-            #include <pthread.h>
-        #endif
-
     #endif
+    #if defined(USE_PTHREAD) && !defined(_OPENMP)
+        #include <unistd.h>
+        #include <sys/timeb.h>
+        #include <pthread.h>
+    #endif
+
 
     #include <vfw.h>
 
@@ -161,6 +161,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     #define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
     #define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
+    #define agarCheck() { char *aer = AG_GetError(); if (aer) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); } }
 
 #else
 
@@ -293,7 +294,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
     if (view.recordingVideoRefreshTime) { \
-        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS()) { \
+        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*4) < getMS()) { \
             runInput(); \
             runVideo(); \
         } \
@@ -346,6 +347,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
         SDL_Surface *sdlScreen;
 
         int sdlStarted;
+        int agarStarted;
 
     } video_t;
 
@@ -381,7 +383,7 @@ typedef struct state_s {
     particleDetail_t *particleDetail;
 
     int memoryAvailable;    // MB
-    float memoryPercentage;   // Detect memory available and use a percentage of it
+    int memoryPercentage;   // Detect memory available and use a percentage of it
 
     int particleCount;
     int frame;
