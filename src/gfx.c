@@ -741,20 +741,12 @@ void setupCamera(int shouldTranslate, int bits) {
 
 void drawSkyBox(int bits) {
 
-    // Store the current matrix
-    glPushMatrix();
-    // Reset and transform the matrix.
-    glLoadIdentity();
-
     setupCamera(FALSE, bits);
     
     glPushAttrib(GL_ENABLE_BIT);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_CULL_FACE);
-    
-    glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
-    glDisable(GL_BLEND);
 
     // Just in case we set all vertices to white.
     glColor4f(1, 1, 1, 1);
@@ -813,9 +805,8 @@ void drawSkyBox(int bits) {
     glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
     glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
     glEnd();
-    
+
     glPopAttrib();
-    glPopMatrix();
 }
 
 void drawAll() {
