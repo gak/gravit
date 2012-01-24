@@ -721,7 +721,7 @@ void setupCamera(int shouldTranslate, int bits) {
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, 100000.0f);
+    gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom*2.0f, 100000.0f));
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
