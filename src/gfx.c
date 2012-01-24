@@ -57,6 +57,11 @@ GLuint loadParticleTexture() {
 
 GLuint loadSkyBoxTexture(char *fileName) {
     skyBoxTextureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName), TRUE);
+
+    // catch error
+    if ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID))
+       view.drawSky = 0;
+
     return skyBoxTextureID;
 }
 
@@ -721,8 +726,19 @@ void setupCamera(int shouldTranslate, int bits) {
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom*2.0f, 100000.0f));
-    
+
+    if (!view.stereoMode) {
+        // narrow field of view when zooming in  (looks good with skybox :)
+        // the effect is similar to zooming in with a telescope.
+        // the formula below makes sure the field is logarithmicially adjusted between 15 and 55 degrees.
+        float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log2(fmin(view.zoom, 96000.0)) / log2(96000.0f)));
+
+        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom*2.0f, 100000.0f));
+    } else {
+        // if stereo mode, do not adjust field of view
+        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom*2.0f, 100000.0f));
+    }
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
         
@@ -740,6 +756,16 @@ void setupCamera(int shouldTranslate, int bits) {
 }
 
 void drawSkyBox(int bits) {
+    // fade skybox when zooming in
+    // (alpha blending with black background)
+    float fade = 0.15 + 0.85 * (sqrt(fmin(view.zoom, 24000.0f) / 24000.0f));
+
+    // check for valid texture before drawing the box
+    if ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID)) {
+        view.drawSky = 0;
+        conAdd(LERR, "invalid Sky texture - drawSky disabled");
+        return;
+    }
 
     setupCamera(FALSE, bits);
     
@@ -749,7 +775,7 @@ void drawSkyBox(int bits) {
     glDisable(GL_LIGHTING);
 
     // Just in case we set all vertices to white.
-    glColor4f(1, 1, 1, 1);
+    glColor4f(1, 1, 1, fade);
 
     
     // Render the front quad
@@ -829,7 +855,8 @@ void drawAll() {
 
     for (view.stereoModeCurrentBit = 0; view.stereoModeCurrentBit < bits; view.stereoModeCurrentBit++) {
 
-        drawSkyBox(bits);
+        if (view.drawSky)
+             drawSkyBox(bits);
 
         setupCamera(TRUE, bits);
 

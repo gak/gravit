@@ -18,6 +18,7 @@ GLuint loadTexture(char *fileName, int isSkybox) {
     
     surface = IMG_Load(path);
     if (!surface) {
+        sdlCheck();
         conAdd(LERR, "Could not load %s", path);
         return 0;
     }

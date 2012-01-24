@@ -100,6 +100,7 @@ cmd_t cmd[] = {
     ,{ "drawtree",					NULL,					NULL,						&view.drawTree,						NULL }
     ,{ "drawosd",					NULL,					NULL,						&view.drawOSD,						NULL }
     ,{ "drawcolourscheme",			NULL,					NULL,						&view.drawColourScheme,				NULL }
+    ,{ "drawsky",			        NULL,					NULL,						&view.drawSky,				NULL }
 
     ,{ "particlecount",				NULL,					NULL,						&state.particlesToSpawn,			NULL }
 
