@@ -2,7 +2,7 @@
 
 GLuint texID;
 
-GLuint loadTexture(char *fileName, int is_skybox) {
+GLuint loadTexture(char *fileName, int isSkybox) {
 
     GLuint textureId;
     GLenum colortype;
@@ -34,7 +34,7 @@ GLuint loadTexture(char *fileName, int is_skybox) {
     glBindTexture(GL_TEXTURE_2D, textureId);
     glCheck();
     
-    if (is_skybox) {
+    if (isSkybox) {
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
         glCheck();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
