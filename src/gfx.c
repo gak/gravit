@@ -20,6 +20,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "gravit.h"
+
+// microsoft specific workarounds for missing C99 standard functions
+#ifdef _MSC_VER
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+#include <math.h>
+#define fmax max
+#define fmin min
+#endif
+#endif
+
 #include "agar/gui/surface.h"
 
 #ifndef NO_GUI
@@ -731,7 +741,7 @@ void setupCamera(int shouldTranslate, int bits) {
         // narrow field of view when zooming in  (looks good with skybox :)
         // the effect is similar to zooming in with a telescope.
         // the formula below makes sure the field is logarithmicially adjusted between 15 and 55 degrees.
-        float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log2(fmin(view.zoom, 96000.0)) / log2(96000.0f)));
+        float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log(fmin(view.zoom, 96000.0)) / log(96000.0f)));
 
         gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom*2.0f, 100000.0f));
     } else {
