@@ -226,7 +226,7 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
     SDLKey c = 0;
 
     // get keyboard character (ignoring all non-ASCII and "composed" keys)
-    if (((keySym & 0x7F) > 0) && (keySym < 0x80)) {
+    if ( ((keySym & 0x7F) > 0) && (keySym < 0x80) ) {
         // international keyboard mappings and modifiers
         // are only applied to unicode; use it if we can.
         if ((unicode > 0) && ((unicode & 0xFF80) == 0) && (unicode != SDLK_CARET)) {
