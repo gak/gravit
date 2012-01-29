@@ -53,7 +53,9 @@ int processKeys() {
                     return 0;
                 }
             } else {
-                AG_ProcessEvent(0, &ev);
+                // if console is open, do not forward keyboard events to agar
+	         if ( ! (view.consoleMode && ((event.type == SDL_KEYUP)||(event.type == SDL_KEYDOWN))) )
+                    AG_ProcessEvent(0, &ev);
             }
         }
         
