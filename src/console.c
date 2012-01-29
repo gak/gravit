@@ -230,7 +230,7 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
         // international keyboard mappings and modifiers
         // are only applied to unicode; use it if we can.
         if ((unicode > 0) && ((unicode & 0xFF80) == 0) && (unicode != SDLK_CARET)) {
-	    c = unicode & 0x7F;
+            c = unicode & 0x7F;
         } else {
             c = keySym  & 0x7F;
         }
