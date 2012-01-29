@@ -68,7 +68,7 @@ int processKeys() {
             view.keys[event.key.keysym.sym] = 1;
 
             if (view.consoleMode) {
-                conInput(event.key.keysym.sym);
+                conInput(event.key.keysym.sym, event.key.keysym.mod, event.key.keysym.unicode);
                 return 0;
             }
 
