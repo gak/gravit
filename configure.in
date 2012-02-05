@@ -62,7 +62,7 @@ AC_CHECK_HEADERS([omp.h],[
 
 # check for supported SIMD extensions (gcc specific)
 # if SSE is supported, HAVE_SSE will be set
-AX_EXT
+AX_EXT_SSE
 CFLAGS="$CFLAGS $SIMD_FLAGS -I/usr/local/include"
 LDFLAGS="$SIMD_FLAGS $LDFLAGS -L/usr/local/lib"
 
