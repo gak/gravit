@@ -409,7 +409,7 @@ void drawFrame() {
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        if (view.stereoMode) {
+        if (view.stereoMode == 1) {
             if (view.stereoModeCurrentBit == 0) {
                 glOrtho(0.0,video.screenW/2,0,video.screenH,-1.0,1.0);
             } else {
@@ -765,6 +765,95 @@ void setupCamera(int shouldTranslate, int bits) {
 
 }
 
+
+void setupStereoCamera(int shouldTranslate) {
+    // set up stereo-view camera for red-cyan anaglyph glasses
+    //
+    // instead of gluPerspective, we use an asymetric frustrum
+    // see     : http://quiescentspark.blogspot.com/2011/05/rendering-3d-anaglyph-in-opengl.html
+    // see also: http://paulbourke.net/texture_colour/anaglyph/
+
+    float top, bottom, left, right;
+    float a, b, c;
+
+    //const int bits = 2;
+    const float nearClip = 10;
+    const float farClip = fmax(view.zoom*2.0f, 100000.0f);
+    const float aspectRatio = (GLfloat)video.screenW / (GLfloat)video.screenH;
+    const float distConvergence = view.zoom * 0.95;
+
+    // telescope-zoom
+    //const float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log(fmin(view.zoom, 96000.0)) / log(96000.0f)));
+    //const float eyeDistance = view.stereoSeparation * fieldOfView;
+    // static view
+    const float fieldOfView = 45.0;
+    const float eyeDistance = view.stereoSeparation*45.0;
+
+
+    // compute asymetric perspective frustrum
+
+    top = nearClip * tan( (fieldOfView*PI/180.0)/2.0);
+    bottom = -top;
+
+    a = aspectRatio * tan( (fieldOfView*PI/180.0)/2.0) * distConvergence;
+    b = a - eyeDistance/2.0;
+    c = a + eyeDistance/2.0;
+
+    if (view.stereoModeCurrentBit == 0) {
+        left = -b * nearClip/distConvergence;
+        right=  c * nearClip/distConvergence;
+    } else {
+        left = -c * nearClip/distConvergence;
+        right=  b * nearClip/distConvergence;
+    }
+
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, video.screenW, video.screenH);
+
+    // Set the Projection Matrix
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glFrustum(left, right, bottom, top, nearClip, farClip);
+    //gluPerspective(fieldOfView, aspectRatio, nearClip, farClip);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // translate to left or right eye
+    if (view.stereoModeCurrentBit == 0)
+         glTranslatef( eyeDistance/2.0, 0.0f, 0.0f);
+    else
+         glTranslatef(-eyeDistance/2.0, 0.0f, 0.0f);
+    // glRotatef((float)(view.stereoModeCurrentBit - .5) * view.stereoSeparation * -0.2 , 0, 1, 0);
+
+
+    if (shouldTranslate)
+        glTranslatef(0, 0, -view.zoom);
+
+    glRotatef((float)view.rot[0], 1, 0, 0);
+    glRotatef((float)view.rot[1], 0, 1, 0);
+    glRotatef((float)view.rot[2], 0, 0, 1);
+
+
+    // set filter for anaglyph colors, and
+    // render into different color bits
+    if (view.stereoModeCurrentBit == 0)
+      // red
+      glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+    else
+      // cyan
+      glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+    // XXX
+    // XXX
+    // may need to adjust color scheme:
+    // - either change to black & white
+    // - or set to avoid red / blue (depending on currentBit)
+}
+
+
 void drawSkyBox(int bits) {
     // fade skybox when zooming in
     // (alpha blending with black background)
@@ -777,7 +866,12 @@ void drawSkyBox(int bits) {
         return;
     }
 
-    setupCamera(FALSE, bits);
+    if (view.stereoMode > 1) {
+        setupStereoCamera(FALSE);
+        //fade = 1.0;
+    } else {
+        setupCamera(FALSE, bits);
+    }
     
     glPushAttrib(GL_ENABLE_BIT);
     glEnable(GL_TEXTURE_2D);
@@ -858,7 +952,7 @@ void drawAll() {
     
     view.vertices = 0;
 
-    if (view.stereoMode)
+    if (view.stereoMode > 0)
         bits = 2;
     else
         bits = 1;
@@ -868,7 +962,14 @@ void drawAll() {
         if (view.drawSky)
              drawSkyBox(bits);
 
-        setupCamera(TRUE, bits);
+
+        if (view.stereoMode > 1) {
+	    // red-cyan anaglyph
+            setupStereoCamera(TRUE);
+	} else {
+	    // normal view or side-by-side
+	    setupCamera(TRUE, bits);
+	}
 
         if (view.autoCenter)
             translateToCenter();
@@ -890,6 +991,8 @@ void drawAll() {
         
         
     }
+    // reset color mask
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         
     if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
         view.tailSkip *= 2;
