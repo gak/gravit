@@ -503,6 +503,7 @@ typedef struct view_s {
 
     int drawOSD;
     int drawColourScheme;
+    int drawSky;
 
     float fps;
     int vertices;
@@ -677,6 +678,9 @@ void osdUpdate();
 // input.c
 int processKeys();
 void processMouse();
+
+// texture.c
+GLuint loadTexture(char *fileName, int isSkybox);
 
 // gfx.c
 void drawAll();

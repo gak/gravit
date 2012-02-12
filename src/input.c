@@ -337,6 +337,12 @@ int processKeys() {
                 conAdd(LLOW, "drawOSD set to %i", view.drawOSD);
                 break;
 
+            case SDLK_p:
+                view.drawSky = (!view.drawSky) ? 1 : 0;
+                conAdd(LLOW, "drawSky set to %i", view.drawSky);
+                break;
+
+
             case SDLK_q:
                 if (hasCtrlOrCmdModifier()) {
                     cmdQuit(NULL);  // OS X cmd-q

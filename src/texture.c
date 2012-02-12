@@ -2,49 +2,58 @@
 
 GLuint texID;
 
-int loadTexture() {
+GLuint loadTexture(char *fileName, int isSkybox) {
 
-    SDL_Surface		*tmp = NULL;
-    SDL_Surface		*tmp2 = NULL;
+    GLuint textureId;
+    GLenum colortype;
 
-    tmp = SDL_LoadBMP("texture.bmp");
-
-    if (!tmp) {
-        conAdd(LNORM, "Failed loading texture");
+    SDL_Surface *surface;
+    
+    char *path = findFile(fileName);
+    
+    if (!path) {
+        conAdd(LERR, "Could not find %s", fileName);
         return 0;
     }
-
-    tmp2 = SDL_CreateRGBSurface(SDL_SWSURFACE, 16, 16, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-
-    if (!tmp2) {
-        SDL_FreeSurface(tmp);
+    
+    surface = IMG_Load(path);
+    if (!surface) {
+        sdlCheck();
+        conAdd(LERR, "Could not load %s", path);
         return 0;
     }
+    
+    // get Type : RGB or RGBA
+    if (surface->format->Amask)
+        colortype=GL_RGBA;
+    else
+        colortype=GL_RGB;
 
-    if (SDL_BlitSurface(tmp, NULL, tmp2, NULL)) {
-        SDL_FreeSurface(tmp);
-        SDL_FreeSurface(tmp2);
+    glGenTextures(1, &textureId);
+    glCheck();
+    
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glCheck();
+    
+    if (isSkybox) {
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        glCheck();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glCheck();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glCheck();
     }
-
-    glGenTextures(1, &texID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glCheck();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glCheck();
+    
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, surface->w, surface->h, colortype, GL_UNSIGNED_BYTE, surface->pixels);
     glCheck();
 
-    glBindTexture(GL_TEXTURE_2D, texID);
-    glCheck();
+    SDL_FreeSurface(surface);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, 16, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp2->pixels);
-    glCheck();
-
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glCheck();
-
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glCheck();
-
-    SDL_FreeSurface(tmp);
-    SDL_FreeSurface(tmp2);
-
-    return 1;
-
+    return textureId;
 }
 

@@ -208,6 +208,7 @@ void drawOSD() {
         DUHC();
         DUH("T", "display current oct tree");
         DUH("O", "toggles drawing text");
+        DUH("P", "toggles drawing Sky background");
         DUH("F9", "take one screenshot");
         DUH("F10", "take a screenshot every frame (CAREFUL!)");
 

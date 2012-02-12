@@ -59,6 +59,7 @@ void conAdd(int mode, char *f, ... ) {
     va_end (argptr);
 
     printf("%s\n", s);
+    fflush(stdout);
 
     if (strlen(s) >= CONSOLE_LENGTH-1)
         s[CONSOLE_LENGTH-1] = 0;
