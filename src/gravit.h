@@ -661,7 +661,7 @@ extern con_t con[CONSOLE_HISTORY];
 void conAdd(int mode, char *f, ... );
 void conInit();
 void conDraw();
-void conInput(SDLKey c);
+void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode);
 void conTypedHistoryAdd(char *s);
 void conTypedHistoryChange(int i);
 void conFree();
