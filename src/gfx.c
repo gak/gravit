@@ -768,7 +768,7 @@ void setupCamera(int shouldTranslate, int bits) {
 void drawSkyBox(int bits) {
     // fade skybox when zooming in
     // (alpha blending with black background)
-    float fade = 0.15 + 0.85 * (sqrt(fmin(view.zoom, 24000.0f) / 24000.0f));
+    float fade = 0.15 + 0.85 * (sqrt(fmin(view.zoom, 48000.0f) / 48000.0f));
 
     // check for valid texture before drawing the box
     if ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID)) {
