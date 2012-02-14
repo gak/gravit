@@ -185,6 +185,7 @@ int processKeys() {
                         cmdStereoWarning(0);
                     }
                     conAdd(LNORM, "stereoMode set to %i", view.stereoMode);
+                    setColours();
                 }
                 break;
 
