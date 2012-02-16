@@ -430,6 +430,7 @@ void drawFrame() {
             double size;
             VectorNew(moo);
             float *pos;
+            int success;
             pos = moo;
 
             pd = state.particleDetail + i;
@@ -441,13 +442,13 @@ void drawFrame() {
                 pos = p->pos;
             }
 
-            gluProject(
+            success = gluProject(
                 pos[0],pos[1],pos[2],
                 matModelView, matProject, viewport,
                 &screen[0], &screen[1], &screen[2]
             );
 
-            if (screen[2] > 1)
+            if ((success != GL_TRUE) || (screen[2] > 1))
                 continue;
 
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
@@ -777,7 +778,7 @@ void setupStereoCamera(int shouldTranslate) {
     float a, b, c;
 
     //const int bits = 2;
-    const float nearClip = 10;
+    const float nearClip = 0.01f;
     const float farClip = fmax(view.zoom*2.0f, 100000.0f);
     const float aspectRatio = (GLfloat)video.screenW / (GLfloat)video.screenH;
     const float distConvergence = view.zoom * 0.95;
@@ -845,12 +846,6 @@ void setupStereoCamera(int shouldTranslate) {
     else
       // cyan
       glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-    // XXX
-    // XXX
-    // may need to adjust color scheme:
-    // - either change to black & white
-    // - or set to avoid red / blue (depending on currentBit)
 }
 
 
