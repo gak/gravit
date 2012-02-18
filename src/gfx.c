@@ -61,12 +61,12 @@ void drawFrameSet3D() {
 }
 
 GLuint loadParticleTexture() {
-    particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), FALSE);
+    particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
     return particleTextureID;
 }
 
 GLuint loadSkyBoxTexture(char *fileName) {
-    skyBoxTextureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName), TRUE);
+    skyBoxTextureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName), GL_TRUE);
 
     // catch error
     if ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID))
@@ -862,10 +862,10 @@ void drawSkyBox(int bits) {
     }
 
     if (view.stereoMode > 1) {
-        setupStereoCamera(FALSE);
+        setupStereoCamera(GL_FALSE);
         //fade = 1.0;
     } else {
-        setupCamera(FALSE, bits);
+        setupCamera(GL_FALSE, bits);
     }
     
     glPushAttrib(GL_ENABLE_BIT);
@@ -960,10 +960,10 @@ void drawAll() {
 
         if (view.stereoMode > 1) {
 	    // red-cyan anaglyph
-            setupStereoCamera(TRUE);
+            setupStereoCamera(GL_TRUE);
 	} else {
 	    // normal view or side-by-side
-	    setupCamera(TRUE, bits);
+	    setupCamera(GL_TRUE, bits);
 	}
 
         if (view.autoCenter)
