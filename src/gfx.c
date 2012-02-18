@@ -719,6 +719,9 @@ void drawAgar() {
 
     if (AG_TIMEOUTS_QUEUED())
 		AG_ProcessTimeouts(AG_GetTicks());
+
+    AG_LockVFS(&agDrivers);
+    AG_BeginRendering(agDriverSw);
     
     AG_FOREACH_WINDOW(win, agDriverSw) {
         AG_ObjectLock(win);
@@ -726,6 +729,9 @@ void drawAgar() {
         AG_ObjectUnlock(win);
     }
     
+    AG_EndRendering(agDriverSw);
+    AG_UnlockVFS(&agDrivers);
+
     // Agar leaves glTexEnvf env mode to GL_REPLACE :(
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
