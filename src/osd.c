@@ -365,14 +365,16 @@ void osdInitIntroWindow() {
     AG_Window *w = osdNewWindow("Welcome to Gravit!");
     
     AG_Box *vBox = AG_BoxNewVert(w, 0);
+    AG_Box *hBox = AG_BoxNewHoriz(w, AG_BOX_HFILL|AG_BOX_HOMOGENOUS);
     AG_Label *text;
     AG_BoxSetSpacing(vBox, 10);
     
     text = AG_LabelNew(vBox, 0, 0);
-    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.");
+    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.\n");
     AG_WidgetSetSize(text, 200, 100);
     
     // AG_Checkbox *showAgain = AG_CheckboxNew(vBox, AG_CHECKBOX_SET, "Show this window on startup");
+    AG_ButtonNewFn(hBox, 0, "  OK  ", AG_WindowCloseGenEv, "%p", w);
     
     AG_WindowShow(w);
 }
