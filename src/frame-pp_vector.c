@@ -53,6 +53,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     //#if defined(HAVE_MEMALIGN) && !defined(HAVE_WORKING_POSIX_MEMALIGN)
     #if defined(HAVE_MEMALIGN)
+        #include <malloc.h>
 
         // use memalign -- seems this is the best choice for most unix/linux versions
         #define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) memalign(alignment, size);}
