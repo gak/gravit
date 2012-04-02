@@ -175,14 +175,17 @@ int processKeys() {
                 if (hasCtrlOrCmdModifier())
                     cmdSaveFrameDump(NULL);
                 // toggle stereo mode
+                // mode 1 : side-by-side
+                // mode 2 : anaglyph, offaxis frustum
                 else {
-                    if (view.stereoMode)
+                    if (view.stereoMode > 1)
                         view.stereoMode = 0;
                     else {
-                        view.stereoMode = 1;
+                        view.stereoMode ++;
                         cmdStereoWarning(0);
                     }
                     conAdd(LNORM, "stereoMode set to %i", view.stereoMode);
+                    setColours();
                 }
                 break;
 

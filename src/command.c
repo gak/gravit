@@ -1077,7 +1077,7 @@ void cmdChangeDir(char *arg) {
 
 void cmdStereoWarning(char *arg) {
 
-    if (view.stereoMode) {
+    if (view.stereoMode == 1) {
         conAdd(LHELP, "You have selected stereoscopic mode. The stereoseparation value is how many degrees between your eyes there are. ");
         conAdd(LHELP, "Use a negative value for parallel viewing and positive for cross-eyed viewing. Recommended are less then 5 degrees.");
     }
