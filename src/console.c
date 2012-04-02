@@ -223,21 +223,21 @@ void conFree() {
 
 void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
 
-    SDLKey c = 0;
+    SDLKey c = SDLK_UNKNOWN;
 
     // get keyboard character (ignoring all non-ASCII and "composed" keys)
     if ( ((keySym & 0x7F) > 0) && (keySym < 0x80) ) {
         // international keyboard mappings and modifiers
         // are only applied to unicode; use it if we can.
         if ((unicode > 0) && ((unicode & 0xFF80) == 0) && (unicode != SDLK_CARET)) {
-            c = unicode & 0x7F;
+	    c = (SDLKey) (unicode & 0x7F);
         } else {
-            c = keySym  & 0x7F;
+	    c = (SDLKey) (keySym  & 0x7F);
         }
     }
     // ignore CARET character
     if (c == SDLK_CARET)
-        c = 0;
+        c = SDLK_UNKNOWN;
 
     if (c >= 32 && c < 127) {
 
