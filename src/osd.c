@@ -365,7 +365,7 @@ void osdInitIntroWindow() {
     AG_Window *w = osdNewWindow("Welcome to Gravit!");
     
     AG_Box *vBox = AG_BoxNewVert(w, 0);
-    AG_Box *hBox = AG_BoxNewHoriz(w, AG_BOX_HOMOGENOUS);
+    AG_Box *hBox = AG_BoxNewHoriz(w, 0);
     AG_Label *text;
     AG_BoxSetSpacing(vBox, 10);
     
