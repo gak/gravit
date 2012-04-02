@@ -221,11 +221,27 @@ void conFree() {
 
 }
 
-void conInput(SDLKey c) {
+void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
+
+    SDLKey c = 0;
+
+    // get keyboard character (ignoring all non-ASCII and "composed" keys)
+    if ( ((keySym & 0x7F) > 0) && (keySym < 0x80) ) {
+        // international keyboard mappings and modifiers
+        // are only applied to unicode; use it if we can.
+        if ((unicode > 0) && ((unicode & 0xFF80) == 0) && (unicode != SDLK_CARET)) {
+            c = unicode & 0x7F;
+        } else {
+            c = keySym  & 0x7F;
+        }
+    }
+    // ignore CARET character
+    if (c == SDLK_CARET)
+        c = 0;
 
     if (c >= 32 && c < 127) {
 
-        if (c == SDLK_SPACE && conCommandPos == 0)
+        if (keySym == SDLK_SPACE && conCommandPos == 0)
             return;
 
         if (conCommandPos < CONSOLE_LENGTH) {
@@ -234,7 +250,7 @@ void conInput(SDLKey c) {
             for (i = strlen(conCommand); i > conCommandPos-1; i--)
                 conCommand[i+1]=conCommand[i];
 
-            conCommand[conCommandPos] = c;
+            conCommand[conCommandPos] = (char) c;
             conCommandPos++;
             conCompWord[0] = 0;
 
@@ -243,7 +259,7 @@ void conInput(SDLKey c) {
 
     }
 
-    if (c == SDLK_BACKSPACE || c == SDLK_DELETE) {
+    if (keySym == SDLK_BACKSPACE || keySym == SDLK_DELETE) {
 
         if (conCommandPos > 0) {
 
@@ -256,7 +272,7 @@ void conInput(SDLKey c) {
 
     }
 
-    if (c == SDLK_RETURN || c == 10) {
+    if (keySym == SDLK_RETURN || keySym == 10) {
 
         printf("\n\r");
 
@@ -280,7 +296,7 @@ void conInput(SDLKey c) {
 
     }
 
-    if (c == SDLK_BACKQUOTE || c == SDLK_ESCAPE) {
+    if (keySym == SDLK_BACKQUOTE || keySym == SDLK_ESCAPE) {
 
         view.consoleMode = 0;
         conCommandPos = 0;
@@ -290,36 +306,36 @@ void conInput(SDLKey c) {
 
     }
 
-    if (c == SDLK_TAB) {
+    if (keySym == SDLK_TAB) {
         conAutoComplete();
         return;
     }
 
-    if (c == SDLK_UP) {
+    if (keySym == SDLK_UP) {
         conTypedHistoryChange(-1);
         return;
     }
 
-    if (c == SDLK_DOWN) {
+    if (keySym == SDLK_DOWN) {
         conTypedHistoryChange(1);
         return;
     }
 
-    if (c == SDLK_LEFT) {
+    if (keySym == SDLK_LEFT) {
         if (conCommandPos > 0) {
             conCommandPos--;
         }
         return;
     }
 
-    if (c == SDLK_RIGHT) {
+    if (keySym == SDLK_RIGHT) {
         if (conCommandPos < (signed)strlen(conCommand)) {
             conCommandPos++;
         }
         return;
     }
 
-    conAdd(LLOW, "unknown key: %u", c);
+    conAdd(LLOW, "unknown key: %u", keySym);
 
 }
 
