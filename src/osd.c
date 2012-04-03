@@ -41,6 +41,17 @@ void drawOSD() {
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glBindTexture(GL_TEXTURE_2D, 0);
 
+#ifdef WITHOUT_AGAR
+    // Top middle
+    y = 10;
+    glColor4f(1,1,1,1);
+    drawFontWordCA(video.screenW / 2, y, "Hit SPACE to start a new simulation");
+    drawFontWordCA(video.screenW / 2, y += fontHeight, "Hold down a mouse button and move it around to change your orientation.");
+    drawFontWordCA(video.screenW / 2, y += fontHeight, "Use the scroll wheel, or the A and Z keys to zoom in and out.");
+    glColor4f(1,1,1,.5f);
+    drawFontWordCA(video.screenW / 2, y += fontHeight, "press F1 for keyboard commands help.");
+#endif
+
     // Right
     DUHC();
     drawFontWordRA((float)video.screenW - 10, (float)video.screenH - 10 - fontHeight * 1.0f, "press F1 for help");
@@ -144,10 +155,13 @@ void drawOSD() {
                 glColor4f(0,1,1,.5f); /*torquise*/ }
             else { DUHC(); y += fontHeight; }
             
-        /*
+
         // XXX: This might be too many stats. I'll implement this in the ajax windowing screens.
+#ifdef WITHOUT_AGAR
 	    DUH("avg renderer fps", va("%5.2f",
                      (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ))
+#endif
+	/*
 	    DUH("avg renderer frame time", va("%4.1f ms",
 		     (float) view.totalRenderTime / (float) view.timed_frames ));
         */
@@ -245,6 +259,7 @@ void drawOSD() {
 
 }
 
+#ifndef WITHOUT_AGAR
 // Handlers
 
 void osdHandleQuit(AG_Event *event) {
@@ -402,5 +417,7 @@ void osdInitDefaultWindows() {
     osdInitPlaybackWindow();
     
 }
+
+#endif
 
 #endif

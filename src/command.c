@@ -371,6 +371,10 @@ void cmdStop(char *arg) {
     state.mode &= ~SM_PLAY;
     state.mode &= ~SM_RECORD;
 
+#ifdef WITHOUT_AGAR
+    conAdd(LNORM, "Stopped...");
+#endif
+
     setTitle(0);
 }
 

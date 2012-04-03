@@ -40,6 +40,7 @@ int processKeys() {
             return 1;
         }
 
+#ifndef WITHOUT_AGAR
         {
             AG_DriverEvent ev;
             int x;
@@ -58,6 +59,7 @@ int processKeys() {
                     AG_ProcessEvent(0, &ev);
             }
         }
+#endif
         
         if (event.type == SDL_MOUSEBUTTONDOWN) {
 
@@ -72,8 +74,10 @@ int processKeys() {
             if (event.button.button == SDL_BUTTON_WHEELUP)
                 view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
 
+#ifndef WITHOUT_AGAR
+           // code introduced together with agar
             if (event.button.button == SDL_BUTTON_LEFT) {
-                view.mouseButtons[0] = 1;
+                view.mouseButtons[0] = SDL_BUTTON(1);
             }
             
         }
@@ -82,6 +86,7 @@ int processKeys() {
             if (event.button.button == SDL_BUTTON_LEFT) {
                 view.mouseButtons[0] = 0;
             }
+#endif
         }
 
         if (event.type == SDL_KEYUP) {
@@ -412,8 +417,16 @@ void processMouse() {
 
     int x,y;
 
+#ifdef WITHOUT_AGAR
+    // old code
+    view.mouseButtons[1] = view.mouseButtons[0];
+    memcpy(view.lastMousePosition, view.currentMousePosition, sizeof(view.currentMousePosition));
+    view.mouseButtons[0] = SDL_GetMouseState(&view.currentMousePosition[0], &view.currentMousePosition[1]);
+#else
+    // newer code introduced together with agar
     memcpy(view.lastMousePosition, view.currentMousePosition, sizeof(view.currentMousePosition));
     SDL_GetMouseState(&view.currentMousePosition[0], &view.currentMousePosition[1]);
+#endif
     x = view.currentMousePosition[0] - view.lastMousePosition[0];
     y = view.currentMousePosition[1] - view.lastMousePosition[1];
 
@@ -423,7 +436,7 @@ void processMouse() {
         return;
     }
 
-    if (view.mouseButtons[0]) {
+    if (view.mouseButtons[0] & SDL_BUTTON(1) ) {
 
         // Unfortunately, on OS X WarpMouse seems to act like the mouse isn't pressed anymore.
         
@@ -439,7 +452,7 @@ void processMouse() {
 #endif
 
         // turn off cursor only after the 2nd warp mouse, otherwise showcursor does strange things.
-        if (view.mouseButtons[1]) {
+        if (view.mouseButtons[1] & SDL_BUTTON(1) ) {
             SDL_ShowCursor(0);
         }
 
@@ -451,8 +464,11 @@ void processMouse() {
         SDL_ShowCursor(view.showCursor);
 
     }
+#ifndef WITHOUT_AGAR
     
+    // code introduced together with agar
     view.mouseButtons[1] = view.mouseButtons[0];
+#endif
 }
 
 #else

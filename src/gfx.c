@@ -30,7 +30,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 #endif
 
+#ifndef WITHOUT_AGAR
 #include "agar/gui/surface.h"
+#endif
 
 #ifndef NO_GUI
 
@@ -214,6 +216,7 @@ gfxInitRetry:
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
     glDisable(GL_DEPTH_TEST);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     checkPointParameters();
     checkPointSprite();
@@ -222,6 +225,7 @@ gfxInitRetry:
     SDL_EnableUNICODE(SDL_ENABLE);
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
+#ifndef WITHOUT_AGAR
     AG_InitCore("gravit", 0);
     //AG_InitGraphics("sdlgl");
     if (AG_InitVideoSDL(video.sdlScreen, AG_VIDEO_OVERLAY | AG_VIDEO_OPENGL_OR_SDL) == -1)
@@ -230,6 +234,7 @@ gfxInitRetry:
     video.agarStarted = 1;
 
     osdInitDefaultWindows();
+#endif
     
     return 1;
 
@@ -616,7 +621,11 @@ void drawRGB() {
     float margin = 5;
     float i;
     float sx = (float)video.screenW - width - margin;
+#ifndef WITHOUT_AGAR
     float sy = 70 + margin;
+#else
+    float sy = margin;
+#endif
     float wx = width;
     float wy = 200;
     float c[4];
@@ -715,6 +724,7 @@ void translateToCenter() {
 
 }
 
+#ifndef WITHOUT_AGAR
 void drawAgar() {
     AG_Window *win;
 
@@ -736,6 +746,7 @@ void drawAgar() {
     // Agar leaves glTexEnvf env mode to GL_REPLACE :(
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
+#endif
 
 void setupCamera(int shouldTranslate, int bits) {
     
@@ -1011,7 +1022,11 @@ void drawAll() {
         drawPopupText();
     }
     
+#ifndef WITHOUT_AGAR
     drawAgar();
+#else
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+#endif
 
     if (view.screenshotLoop)
         cmdScreenshot(NULL);

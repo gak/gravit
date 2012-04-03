@@ -44,7 +44,11 @@ void loadDefaults() {
     video.screenWtoApply = 0;
     video.screenHtoApply = 0;
     video.screenBPP = 0;
+#ifdef WITHOUT_AGAR
+    video.screenFS = 0;
+#else
     video.screenFS = 1;
+#endif
     video.screenAA = 0;
 
     strcpy(video.fontFile, "Vera.ttf");
@@ -239,6 +243,10 @@ int init(int argc, char *argv[]) {
 #ifdef _OPENMP
     conAdd(LHELP, "multi-threaded rendering: max threads = %d.    Found %d processors.", 
                   state.processFrameThreads, omp_get_num_procs());
+#endif
+
+#ifdef WITHOUT_AGAR
+    conAdd(LHELP, "Welcome to Gravit!");
 #endif
 
     return 0;

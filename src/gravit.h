@@ -156,12 +156,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #include <SDL_opengl.h>
     #include <SDL_image.h>
 
+#ifndef WITHOUT_AGAR
     #include <agar/core.h>
     #include <agar/gui.h>
+#endif
 
     #define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
     #define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
-    #define agarCheck() { char *aer = AG_GetError(); if (aer) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); } }
+#ifndef WITHOUT_AGAR
+    #define agarCheck() { const char *aer = AG_GetError(); if (aer) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); } }
+#endif
 
 #else
 
@@ -544,10 +548,12 @@ typedef struct view_s {
 
     int autoCenter;
     
+#ifndef WITHOUT_AGAR
     AG_Window *playbackWindow;
     AG_Style osdStyle;
     AG_Button *playButton;
     AG_Button *recordButton;
+#endif
 
 } view_t;
 
