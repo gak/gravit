@@ -28,8 +28,14 @@ gravit_LDADD += $(LUA_LIBS)
 endif
 
 #AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" -O3 -Wall $(LUA_CFLAGS)
-AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" $(LUA_CFLAGS) $(shell agar-config --cflags)
-LIBS += $(shell agar-config --libs) -Wl,-rpath=/usr/local/lib
+
+if AGAR
+AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" $(LUA_CFLAGS)
+LIBS += -Wl,-rpath=/usr/local/lib
+else
+AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" $(LUA_CFLAGS) -DWITHOUT_AGAR
+endif
+
 
 # Rule to build windows resources
 #%.o : %.rc
