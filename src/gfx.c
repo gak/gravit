@@ -40,6 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 GLuint particleTextureID;
 GLuint skyBoxTextureID;
 
+void checkDriverBlacklist();
+
+
 void drawFrameSet2D() {
 
     glMatrixMode(GL_PROJECTION);
@@ -220,6 +223,8 @@ gfxInitRetry:
 
     checkPointParameters();
     checkPointSprite();
+
+    checkDriverBlacklist();
 
     SDL_ShowCursor(view.showCursor);
     SDL_EnableUNICODE(SDL_ENABLE);
@@ -1111,6 +1116,61 @@ void checkPointSprite() {
     video.supportPointSprite = 1;
 
 }
+
+
+void checkDriverBlacklist() {
+    char *glVendor;     // the company responsible for this OpenGL implementation 
+    char *glRenderer;   // particular driver configuration (i.e. hardware platform)
+    // The strings GL_VENDOR and GL_RENDERER together uniquely specify a platform
+
+    char *glVersion;    // OpenGL version number. Vendor specific information may follow the number.
+    char *extList;      // list of supported OpenGL extensions
+
+    glVendor   = (char *)glGetString(GL_VENDOR);
+    glRenderer = (char *)glGetString(GL_RENDERER);
+    glVersion  = (char *)glGetString(GL_VERSION);
+    extList    = (char *)glGetString(GL_EXTENSIONS);
+
+    conAdd(LNORM, "OpenGL video driver: vendor=%s; renderer=%s; version=%s", glVendor, glRenderer, glVersion);
+
+    /*
+     * Hardware/Driver-specific workarounds
+     */
+
+    // Intel Graphics Media Accelerator (GMA) - usually part of mobile core i5/i7 CPUs
+    if ((strcmp(glVendor, "Intel") == 0)
+        && (  (strcmp(glRenderer, "Intel(R) HD Graphics") == 0)
+            ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0))
+       ) {
+       if (strstr(glVersion, " Build 8.15.10.") != NULL) {
+          // driver 15.10. causes problems with particlerendermode 1 (GL_ARB_point_sprite)
+          // (first observed in Version "2.1.0 - Build 8.15.10.2509" on Windows 7, 64bit)
+          // effect: particles properly drawn, but OSD and text in windows is not visible any more
+
+	  if (view.particleRenderMode == 1) {
+              conAdd(LERR,  "Sorry, Your video card driver is blacklisted for particleRenderMode 1.");
+              conAdd(LERR, "This means you can't have really pretty looking particles.");
+              conAdd(LNORM, "Setting particleRenderMode to 2");
+              view.particleRenderMode = 2;
+	  }
+          video.supportPointSprite = 0;
+       }
+    }
+
+    // software OpenGL driver, Microsoft Windows
+    if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
+       // awfully SLOW. -> prefer particleRenderMode 0
+       if (view.particleRenderMode == 1) {
+           conAdd(LHELP,  "Sorry, Your software driver is blacklisted for particleRenderMode 1.");
+           conAdd(LHELP, "It's too slow for really pretty looking particles.");
+           conAdd(LNORM, "Setting particleRenderMode to 0");
+           view.particleRenderMode = 0;
+       }
+       // ToDo: add more tweak to achieve higher framerates ...
+    }
+
+}
+
 
 void drawPopupText() {
 
