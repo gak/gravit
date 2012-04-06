@@ -6,7 +6,7 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppID={{A1415808-331E-47D8-8FD3-0BB62A5B76BF}
-AppName=Gravit (32bit edition)
+AppName=Gravit (32bit)
 AppVersion=0.5.0
 AppVerName=Gravit 0.5.0
 AppPublisher=Gravit Development Team
@@ -45,6 +45,8 @@ Source: ".\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: ".\32bit\*.DLL"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\files\spawn\*"; DestDir: "{app}\spawn"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+; include Microsoft VC 2008 SP1 Redistributable Package for x86
+Source: .\vc_redist\vcredist_x86.exe; DestDir: {tmp}; Permissions: everyone-full; Flags: ignoreversion overwritereadonly;
 
 [INI]
 Filename: "{app}\gravit.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://gravit.slowchop.com"
@@ -61,6 +63,9 @@ Name: "{userdesktop}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}";
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}"; Tasks: quicklaunchicon
 
 [Run]
+; install vcredist_x86.exe
+Filename: {tmp}\vcredist_x86.exe; Parameters: "/q:a /c:""vcredist_x86.exe /q:a /c:""""msiexec /i vcredist.msi /qn"""" """; StatusMsg: "Installing MS Visual C++ 2008 SP1 Redistributable Package (x86) ..."; Flags: waituntilterminated;
+; post-install tasks
 Filename: "{win}\notepad.exe"; Parameters: "{app}\gravit.cfg"; Description: "Modify gravit.cfg (Recommended)"; Flags: nowait postinstall skipifsilent
 Filename: "{app}\gravit.exe"; Description: "Install Gravit Screensaver"; Parameters: "installscreensaver quit"; Flags: nowait postinstall skipifsilent
 Filename: "{app}\gravit.exe"; Description: "{cm:LaunchProgram,Gravit}"; Flags: nowait postinstall skipifsilent
