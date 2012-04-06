@@ -15,6 +15,9 @@ show_options:
 	@echo 
 	@echo make 64bit    to build using 64-bit libraries
 	@echo 
+	@echo make install32 or make install64
+	@echo "             to prepare for building the setup program"
+	@echo 
 	@exit 1
 
 
@@ -30,8 +33,8 @@ clean:
 
 
 
-install:
-	$(MAKE) -C .. -f Makefile.MinGW install
+#install:
+#	$(MAKE) -C .. -f Makefile.MinGW install
 
 install32:
 	$(MAKE) -C .. -f Makefile.MinGW ARCH=32 install

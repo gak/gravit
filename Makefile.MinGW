@@ -6,7 +6,8 @@ FINAL = gravit.exe
 ARCH=32
 #ARCH=64
 
-DESTDIR=install$(ARCH)/
+DESTDIR=dist/windowsinstaller/$(ARCH)bit
+NOARCH=dist/windowsinstaller/files
 
 # -------------------------------
 
@@ -79,7 +80,7 @@ LDLIBS =  -lSDL_ttf -lSDL_image -llua51 \
 	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lscrnsave -lwinmm -ldxguid \
 	  -lpthread
 
-INSTALL=cp
+INSTALL=cp -av 
 
 # mingw gcc 4.4.5 has openMP support.
 ifeq ($(ARCH),64)
@@ -107,8 +108,36 @@ endif
 
 all: final
 
+
+# a little shell magic to find out where gcc.exe lives
+# (needed later to find libgomp and (p)thread dll's)
+GCCPATH:=$(shell dirname `which gcc.exe`)
+
+# prepare for creating setup program
 install: final
-	$(INSTALL) gravit.exe $(DESTDIR)
+	@echo ""
+	@mkdir -p $(DESTDIR)
+	@mkdir -p $(NOARCH)
+	@rm -rf $(NOARCH)/spawn
+	@rm -rf $(NOARCH)/data
+	@echo ""
+	@$(INSTALL) $(FINAL) $(DESTDIR)
+	@$(INSTALL) ./COPYING $(NOARCH)/COPYING
+	@$(INSTALL) ./README $(NOARCH)/README.txt
+	@$(INSTALL) ./cfg/*.cfg $(NOARCH)
+	@$(INSTALL) ./demo.cfg  $(NOARCH)
+	@$(INSTALL) ./data/gravit.ico $(NOARCH)/gravit.ico
+	@$(INSTALL) ./data  $(NOARCH)
+	@$(INSTALL) ./spawn  $(NOARCH)
+	@echo ""
+	@-$(INSTALL) $(GCCPATH)/libgomp*.dll  $(DESTDIR)
+	@-$(INSTALL) $(GCCPATH)/*thread*.dll  $(DESTDIR)
+	@$(INSTALL) ./MinGW/lib$(ARCH)/*.dll $(DESTDIR)
+	@echo ""
+	@echo "installation files copied into " $(DESTDIR) "and " $(NOARCH)
+	@echo "you may now run InnoSetup to create setup-gravit-0.5.0-"$(ARCH)"bit".exe
+	@echo ""
+
 
 dep:
 	@makedepend $(CFLAGS) *.c 2> /dev/null
