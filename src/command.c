@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "AudioStreamer.h"
 #endif
 
+
 cmd_t cmd[] = {
 
 //	   cmd							func					varf,						vari
@@ -125,6 +126,7 @@ cmd_t cmd[] = {
 
     ,{ "framecompression",			NULL,					NULL,						&state.frameCompression,			NULL }
 
+    ,{ "echo",					NULL,					NULL,						&view.useStdout,					NULL }
     ,{ "verbose",					NULL,					NULL,						&view.verboseMode,					NULL }
 
     ,{ "processors",				NULL,					NULL,						&state.processFrameThreads,			NULL }

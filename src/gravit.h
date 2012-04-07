@@ -503,6 +503,7 @@ typedef struct view_s {
     int vertices;
 
     int verboseMode;
+    int useStdout;         // 1 to copy console output to stdout
 
     int blendMode;
 

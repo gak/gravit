@@ -81,6 +81,7 @@ void cleanMemory() {
 void viewInit() {
 
 #ifndef NO_GUI
+    view.useStdout = 0;
 
     view.rot[0] = view.rot[1] = view.rot[2] = 0;
     view.zoom = 10000;
@@ -164,6 +165,8 @@ void viewInit() {
 
     view.maxVertices = 100000;
 
+#else
+    view.useStdout = 1;
 #endif
 
 
