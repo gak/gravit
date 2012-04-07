@@ -129,6 +129,7 @@ install: final
 	@$(INSTALL) ./data/gravit.ico $(NOARCH)/gravit.ico
 	@$(INSTALL) ./data  $(NOARCH)
 	@$(INSTALL) ./spawn  $(NOARCH)
+	@touch $(NOARCH)/stdout.txt $(NOARCH)/stderr.txt
 	@echo ""
 	@-$(INSTALL) $(GCCPATH)/libgomp*.dll  $(DESTDIR)
 	@-$(INSTALL) $(GCCPATH)/*thread*.dll  $(DESTDIR)

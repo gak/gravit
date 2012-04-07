@@ -46,14 +46,20 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: ".\64bit\gravit.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\files\*.cfg"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\files\*.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-modify
 Source: ".\files\COPYING"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: ".\64bit\*.DLL"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\files\spawn\*"; DestDir: "{app}\spawn"; Flags: ignoreversion
+Source: ".\files\stderr.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
+Source: ".\files\stdout.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 ; include Microsoft VC 2008 SP1 Redistributable Package for x64
-Source: .\vc_redist\vcredist_x64.exe; DestDir: {tmp}; Permissions: everyone-full; Flags: ignoreversion overwritereadonly;
+Source: ".\vc_redist\vcredist_x64.exe"; DestDir: "{tmp}"; Flags: ignoreversion overwritereadonly; Permissions: everyone-full
+
+[Dirs]
+Name: "{app}\save"; Flags: setntfscompression; Permissions: users-modify; 
+Name: "{app}\screenshots"; Permissions: users-modify; 
 
 [INI]
 Filename: "{app}\gravit.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://gravit.slowchop.com"
