@@ -887,7 +887,11 @@ void cmdRunScript(char *arg) {
     sz = strtok(arg, " ");
     if (!sz) return;
     opt = strtok(NULL, " ");
+#ifdef WIN32
+    configRead(findFile(va("%s/%s", CONFIG_PATH, sz)), (opt && !strcmp(opt, "ignoremissing")));
+#else
     configRead(findFile(sz), (opt && !strcmp(opt, "ignoremissing")));
+#endif
 
 }
 

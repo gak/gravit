@@ -46,11 +46,11 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: ".\64bit\gravit.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\files\*.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-modify
+Source: ".\files\cfg\*.cfg"; DestDir: "{app}\cfg"; Flags: ignoreversion; Permissions: users-modify
 Source: ".\files\COPYING"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: ".\64bit\*.DLL"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\files\spawn\*"; DestDir: "{app}\spawn"; Flags: ignoreversion
+Source: ".\files\spawn\*"; DestDir: "{app}\spawn"; Flags: ignoreversion; Permissions: users-modify
 Source: ".\files\stderr.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
 Source: ".\files\stdout.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
@@ -58,6 +58,8 @@ Source: ".\files\stdout.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesn
 Source: ".\vc_redist\vcredist_x64.exe"; DestDir: "{tmp}"; Flags: ignoreversion overwritereadonly; Permissions: everyone-full
 
 [Dirs]
+Name: "{app}\cfg"; Permissions: users-modify; 
+Name: "{app}\spawn"; Permissions: users-modify; 
 Name: "{app}\save"; Flags: setntfscompression; Permissions: users-modify; 
 Name: "{app}\screenshots"; Permissions: users-modify; 
 
@@ -68,8 +70,8 @@ Filename: "{app}\gravit.url"; Section: "InternetShortcut"; Key: "URL"; String: "
 Name: "{group}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}";
 Name: "{group}\Gravit (Compatible Mode)"; Filename: "{app}\gravit.exe"; Parameters: """particlerendermode 0"""; WorkingDir: "{app}";
 Name: "{group}\Install Gravit Screen Saver"; Filename: "{app}\gravit.exe"; Parameters: "installscreensaver quit"; WorkingDir: "{app}";
-Name: "{group}\Configure\Customise Gravit (gravit.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\gravit.cfg";
-Name: "{group}\Configure\Customise Screen Saver (screensaver.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\screensaver.cfg";
+Name: "{group}\Configure\Customise Gravit (gravit.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\gravit.cfg";
+Name: "{group}\Configure\Customise Screen Saver (screensaver.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\screensaver.cfg";
 Name: "{group}\Visit Gravit on the Internet"; Filename: "{app}\gravit.url"
 Name: "{group}\{cm:UninstallProgram,Gravit}"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}"; Tasks: desktopicon
@@ -79,7 +81,7 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gravit"; Filename:
 ; install vcredist_x64.exe
 Filename: {tmp}\vcredist_x64.exe; Parameters: "/q:a /c:""vcredist_x64.exe /q:a /c:""""msiexec /i vcredist.msi /qn"""" """; StatusMsg: "Installing MS Visual C++ 2008 SP1 Redistributable Package (x64) ..."; Flags: waituntilterminated;
 ; post-install tasks
-Filename: "{win}\notepad.exe"; Parameters: "{app}\gravit.cfg"; Description: "Modify gravit.cfg (Recommended)"; Flags: nowait postinstall skipifsilent
+Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\gravit.cfg"; Description: "Modify gravit.cfg (Recommended)"; Flags: nowait postinstall skipifsilent
 Filename: "{app}\gravit.exe"; Description: "Install Gravit Screensaver"; Parameters: "installscreensaver quit"; Flags: nowait postinstall skipifsilent
 Filename: "{app}\gravit.exe"; Description: "{cm:LaunchProgram,Gravit}"; Flags: nowait postinstall skipifsilent
 

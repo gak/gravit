@@ -118,14 +118,15 @@ install: final
 	@echo ""
 	@mkdir -p $(DESTDIR)
 	@mkdir -p $(NOARCH)
+	@mkdir -p $(NOARCH)/cfg
 	@rm -rf $(NOARCH)/spawn
 	@rm -rf $(NOARCH)/data
 	@echo ""
 	@$(INSTALL) $(FINAL) $(DESTDIR)
 	@$(INSTALL) ./COPYING $(NOARCH)/COPYING
 	@$(INSTALL) ./README $(NOARCH)/README.txt
-	@$(INSTALL) ./cfg/*.cfg $(NOARCH)
-	@$(INSTALL) ./demo.cfg  $(NOARCH)
+	@$(INSTALL) ./cfg/*.cfg $(NOARCH)/cfg
+	@-$(INSTALL) ./demo.cfg  $(NOARCH)/cfg
 	@$(INSTALL) ./data/gravit.ico $(NOARCH)/gravit.ico
 	@$(INSTALL) ./data  $(NOARCH)
 	@$(INSTALL) ./spawn  $(NOARCH)
