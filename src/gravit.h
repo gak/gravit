@@ -68,7 +68,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #   define SCREENSHOT_PATH "screenshots"
 #   define SAVE_PATH "save"
 #else
-#   define CONFIG_PATH DATA_DIR
+#   define CONFIG_PATH "."
 #   define CONFIG_FILE "gravit.cfg"
 #   define SCREENSAVER_FILE "screensaver.cfg"
 #   ifdef __MACH__

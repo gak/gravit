@@ -64,7 +64,7 @@ void conAdd(int mode, char *f, ... ) {
 	fflush(stdout);
     }
 #else
-    if ((mode == LERR) || (view.useStdout != 0) {
+    if ((mode == LERR) || (view.useStdout != 0)) {
         printf("%s\n", s);
 	fflush(stdout);
     }
