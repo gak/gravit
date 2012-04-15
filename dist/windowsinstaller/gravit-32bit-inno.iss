@@ -65,6 +65,12 @@ Root: HKLM; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
 Root: HKCU; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
+; register application path
+Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueName: ""; ValueData: "{app}\gravit.exe"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey
+; register screensaver dll search path
+Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueName: ""; ValueData: "{sys}\gravit.scr"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey
 
 [Icons]
 Name: "{group}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}";
