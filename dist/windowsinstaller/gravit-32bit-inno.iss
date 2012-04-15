@@ -8,7 +8,7 @@
 AppID={{A1415808-331E-47D8-8FD3-0BB62A5B76BF}
 AppName=Gravit (32bit)
 AppVersion=0.5.0
-AppVerName=Gravit 0.5.0
+AppVerName=Gravit 0.5.0 (32bit)
 AppPublisher=Gravit Development Team
 AppPublisherURL=http://gravit.slowchop.com/
 AppSupportURL=http://gravit.slowchop.com/
@@ -58,6 +58,13 @@ Name: "{app}\screenshots"; Permissions: users-modify;
 
 [INI]
 Filename: "{app}\gravit.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://gravit.slowchop.com"
+
+[Registry]
+; register software setting for gravit
+Root: HKLM; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
+Root: HKLM; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
+Root: HKCU; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
 
 [Icons]
 Name: "{group}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}";
