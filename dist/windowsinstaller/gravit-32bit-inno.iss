@@ -33,16 +33,22 @@ SourceDir=.\
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[Components]
+Name: "gravit"; Description: "Gravit"; Types: full compact custom; Flags: fixed
+Name: "screensaver"; Description: "Gravit Screensaver"; Types: full custom
+
 [Tasks]
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
 Source: ".\32bit\gravit.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\32bit\gravit.exe"; DestDir: "{sys}"; DestName: "gravit.scr"; Flags: ignoreversion; Components: screensaver
 Source: ".\files\cfg\*.cfg"; DestDir: "{app}\cfg"; Flags: ignoreversion; Permissions: users-modify
 Source: ".\files\COPYING"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: ".\32bit\*.DLL"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\32bit\*.DLL"; DestDir: "{sys}"; Flags: sharedfile; Components: screensaver
 Source: ".\files\spawn\*"; DestDir: "{app}\spawn"; Flags: ignoreversion ; Permissions: users-modify
 Source: ".\files\stderr.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
 Source: ".\files\stdout.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
@@ -61,23 +67,23 @@ Filename: "{app}\gravit.url"; Section: "InternetShortcut"; Key: "URL"; String: "
 
 [Registry]
 ; register software setting for gravit
-Root: HKLM; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
-Root: HKCU; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: "HKLM"; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
+Root: "HKLM"; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: "HKCU"; Subkey: "Software\Gravit"; Flags: uninsdeletekeyifempty
+Root: "HKCU"; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; ValueData: "{app}"; Flags: uninsdeletekey
 ; register application path
-Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueName: ""; ValueData: "{app}\gravit.exe"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueData: "{app}\gravit.exe"; Flags: uninsdeletekey
+Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey
 ; register screensaver dll search path
-Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueName: ""; ValueData: "{sys}\gravit.scr"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueData: "{sys}\gravit.scr"; Flags: uninsdeletekey; Components: screensaver
+Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey; Components: screensaver
 
 [Icons]
 Name: "{group}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}";
 Name: "{group}\Gravit (Compatible Mode)"; Filename: "{app}\gravit.exe"; Parameters: """particlerendermode 0"""; WorkingDir: "{app}";
-Name: "{group}\Install Gravit Screen Saver"; Filename: "{app}\gravit.exe"; Parameters: "installscreensaver quit"; WorkingDir: "{app}";
+Name: "{group}\Activate Gravit Screen Saver"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}"; Parameters: "installscreensaver quit"; Components: screensaver
 Name: "{group}\Configure\Customise Gravit (gravit.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\gravit.cfg";
-Name: "{group}\Configure\Customise Screen Saver (screensaver.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\screensaver.cfg";
+Name: "{group}\Configure\Customise Screen Saver (screensaver.cfg)"; Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\screensaver.cfg"; Components: screensaver
 Name: "{group}\Visit Gravit on the Internet"; Filename: "{app}\gravit.url"
 Name: "{group}\{cm:UninstallProgram,Gravit}"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\Gravit"; Filename: "{app}\gravit.exe"; WorkingDir: "{app}"; Tasks: desktopicon
@@ -88,7 +94,7 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gravit"; Filename:
 Filename: {tmp}\vcredist_x86.exe; Parameters: "/q:a /c:""vcredist_x86.exe /q:a /c:""""msiexec /i vcredist.msi /qn"""" """; StatusMsg: "Installing MS Visual C++ 2008 SP1 Redistributable Package (x86) ..."; Flags: waituntilterminated;
 ; post-install tasks
 Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\gravit.cfg"; Description: "Modify gravit.cfg (Recommended)"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\gravit.exe"; Description: "Install Gravit Screensaver"; Parameters: "installscreensaver quit"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\gravit.exe"; Description: "Activate Gravit Screensaver"; Parameters: "installscreensaver quit"; Flags: nowait postinstall skipifsilent; Components: screensaver
 Filename: "{app}\gravit.exe"; Description: "{cm:LaunchProgram,Gravit}"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
