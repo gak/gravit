@@ -238,7 +238,8 @@ gfxInitRetry:
 
     video.agarStarted = 1;
 
-    osdInitDefaultWindows();
+    if (!view.screenSaver)
+        osdInitDefaultWindows();
 #endif
     
     return 1;
@@ -636,6 +637,9 @@ void drawRGB() {
     float c[4];
     float step = .01f;
 
+    if (view.screenSaver)
+        sy = margin;
+
     drawFrameSet2D();
 
     glEnable(GL_BLEND);
@@ -735,6 +739,10 @@ void drawAgar() {
 
     if (AG_TIMEOUTS_QUEUED())
 		AG_ProcessTimeouts(AG_GetTicks());
+
+    // do not draw windows in screensaver mode
+    if (view.screenSaver)
+        return;
 
     AG_LockVFS(&agDrivers);
     AG_BeginRendering(agDriverSw);
