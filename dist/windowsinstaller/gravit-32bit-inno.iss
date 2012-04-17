@@ -94,8 +94,8 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gravit"; Filename:
 Filename: {tmp}\vcredist_x86.exe; Parameters: "/q:a /c:""vcredist_x86.exe /q:a /c:""""msiexec /i vcredist.msi /qn"""" """; StatusMsg: "Installing MS Visual C++ 2008 SP1 Redistributable Package (x86) ..."; Flags: waituntilterminated;
 ; post-install tasks
 Filename: "{win}\notepad.exe"; Parameters: "{app}\cfg\gravit.cfg"; Description: "Modify gravit.cfg (Recommended)"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\gravit.exe"; Description: "Activate Gravit Screensaver"; Parameters: "installscreensaver quit"; Flags: nowait postinstall skipifsilent; Components: screensaver
-Filename: "{app}\gravit.exe"; Description: "{cm:LaunchProgram,Gravit}"; Flags: nowait postinstall skipifsilent
+;Filename: "{app}\gravit.exe"; Parameters: "installscreensaver quit"; Flags: nowait postinstall skipifsilent; Description: "Activate Gravit Screensaver"; Components: screensaver
+Filename: "{app}\gravit.exe"; Flags: nowait postinstall unchecked skipifsilent; Description: "{cm:LaunchProgram,Gravit}"
 
 [UninstallDelete]
 Type: files; Name: "{app}\gravit.url"
