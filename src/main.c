@@ -244,6 +244,12 @@ int init(int argc, char *argv[]) {
 
     conAdd(LNORM, "Welcome to Gravit!");
 
+#ifndef NO_STDIO_REDIRECT
+    // say hi (and keep stdout.txt alive on windows...)
+    if(!view.useStdout && !view.screenSaver)
+      printf("Welcome to %s.\n", GRAVIT_VERSION);
+#endif
+
 #ifndef NO_GUI
 
     conAdd(LHELP, "Quick Start: Hit SPACE to start a new simulation!");
