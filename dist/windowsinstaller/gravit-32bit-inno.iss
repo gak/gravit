@@ -43,12 +43,12 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: ".\32bit\gravit.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\32bit\gravit.exe"; DestDir: "{sys}"; DestName: "gravit.scr"; Flags: ignoreversion; Components: screensaver
+Source: ".\32bit\gravit.exe"; DestDir: "{syswow64}"; DestName: "gravit.scr"; Flags: ignoreversion; Components: screensaver
 Source: ".\files\cfg\*.cfg"; DestDir: "{app}\cfg"; Flags: ignoreversion; Permissions: users-modify
 Source: ".\files\COPYING"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion
 Source: ".\32bit\*.DLL"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\32bit\*.DLL"; DestDir: "{sys}"; Flags: sharedfile; Components: screensaver
+Source: ".\32bit\*.DLL"; DestDir: "{syswow64}"; Flags: sharedfile; Components: screensaver
 Source: ".\files\spawn\*"; DestDir: "{app}\spawn"; Flags: ignoreversion ; Permissions: users-modify
 Source: ".\files\stderr.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
 Source: ".\files\stdout.txt"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist; Permissions: users-modify
@@ -75,7 +75,7 @@ Root: "HKCU"; Subkey: "Software\Gravit"; ValueType: string; ValueName: "path"; V
 Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueData: "{app}\gravit.exe"; Flags: uninsdeletekey
 Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey
 ; register screensaver dll search path
-Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueData: "{sys}\gravit.scr"; Flags: uninsdeletekey; Components: screensaver
+Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueData: "{syswow64}\gravit.scr"; Flags: uninsdeletekey; Components: screensaver
 Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\gravit.scr"; ValueType: string; ValueName: "Path"; ValueData: "{app}"; Flags: uninsdeletekey; Components: screensaver
 
 [Icons]
