@@ -81,7 +81,11 @@ void luaHandleError() {
 
 int luaExecute(char *f) {
 
-    int ret = luaL_loadfile(state.lua, f);
+    int ret = 0;
+
+    if (f==NULL) f = "";
+
+    ret = luaL_loadfile(state.lua, f);
     
     if (ret == LUA_ERRSYNTAX) {
         luaHandleError();

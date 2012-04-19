@@ -439,7 +439,7 @@ cmdSpawnRestartSpawning:
     lua_pushnumber(state.lua, state.particleCount);
     lua_setglobal(state.lua, "spawnparticles");
 
-    scriptFile = va(SPAWNDIR "/%s.gravitspawn", scriptName);
+    scriptFile = va("%s/%s.gravitspawn", SPAWNDIR, scriptName);
 
     luaExecute(findFile(scriptFile));
     lua_getglobal(state.lua, "describe");
