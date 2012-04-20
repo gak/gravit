@@ -984,7 +984,7 @@ void drawAll() {
 
     for (view.stereoModeCurrentBit = 0; view.stereoModeCurrentBit < bits; view.stereoModeCurrentBit++) {
 
-        if (view.drawSky)
+        if ((view.drawSky) && (view.stereoMode < 2))
              drawSkyBox(bits);
 
 
