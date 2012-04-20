@@ -1090,9 +1090,12 @@ void cmdChangeDir(char *arg) {
 void cmdStereoWarning(char *arg) {
 
     if (view.stereoMode == 1) {
-        conAdd(LHELP, "You have selected stereoscopic mode. The stereoseparation value is how many degrees between your eyes there are. ");
+        conAdd(LHELP, "You have selected freeview stereoscopic mode. The stereoseparation value is how many degrees between your eyes there are. ");
         conAdd(LHELP, "Use a negative value for parallel viewing and positive for cross-eyed viewing. Recommended are less then 5 degrees.");
     }
+
+    if (view.stereoMode == 2)
+        conAdd(LHELP, "You have selected anaglyph stereoscopic mode. Use your red-cyan glasses for 3D viewing.");
 
     if (view.stereoMode)
         conAdd(LERR, "WARNING: Stereo mode may damage your eyes or other things. Use with caution.");

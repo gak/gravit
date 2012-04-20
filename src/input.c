@@ -189,7 +189,16 @@ int processKeys() {
                         view.stereoMode ++;
                         cmdStereoWarning(0);
                     }
-                    conAdd(LNORM, "stereoMode set to %i", view.stereoMode);
+
+                    if (view.stereoMode ==2 ) {
+                        conAdd(LNORM, "stereoMode set to %i (red-cyan 3D glasses)", view.stereoMode);
+		    } else {
+                        if (view.stereoMode ==1)
+                           conAdd(LNORM, "stereoMode set to %i (freeview 3D)", view.stereoMode);
+			else
+                           conAdd(LNORM, "stereoMode set to %i", view.stereoMode);
+		    }
+
                     setColours();
                 }
                 break;
