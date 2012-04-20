@@ -882,11 +882,17 @@ void cmdRunScript(char *arg) {
 
     char *sz;
     char *opt;
+    char *script;
     sz = strtok(arg, " ");
     if (!sz) return;
     opt = strtok(NULL, " ");
-    configRead(findFile(sz), (opt && !strcmp(opt, "ignoremissing")));
-
+    script=findFile(sz);
+    if ((script != NULL) && (strlen(script)>0)) {
+        configRead(script, (opt && !strcmp(opt, "ignoremissing")));
+    } else {
+        if (!opt || strcmp(opt, "ignoremissing"))
+	    conAdd(LERR, "Could not open script: %s", (sz==NULL ? "(null)" : sz));
+    }
 }
 
 void cmdTailSkipCheck(char *arg) {
@@ -967,6 +973,8 @@ void cmdScreenshot(char *arg) {
     SDL_FreeSurface(sdlSurfNormal);
 
 #endif
+    if (!view.screenshotLoop)
+        conAdd(LHELP, "screenshot saved to %s", fileName);
 
 }
 

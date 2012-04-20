@@ -172,7 +172,10 @@ int SaveMemoryDump(char *fileName, unsigned char *d, size_t total) {
 
     fclose(fp);
 
-    conAdd(LLOW, "written %lu bytes to %s", (unsigned long)written, fileName);
+    if (((unsigned long)(written >>20)) > 5)
+        conAdd(LHELP, "written %lu MB to %s", (unsigned long)(written >>20), fileName);
+    else
+        conAdd(LLOW, "written %lu bytes to %s", (unsigned long)written, fileName);
 
     return 1;
 
