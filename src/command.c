@@ -1342,17 +1342,39 @@ void cmdZoomFit(char *arg) {
     int i;
 
     for (i = 0; i < state.particleCount; i++) {
+        VectorNew(pos);
 
         p = getParticleCurrentFrame(i);
+        VectorSub(p->pos, view.lastCenter, pos);
+        pos[0] = fabs(pos[0]);
+        pos[1] = fabs(pos[1]);
+        pos[2] = fabs(pos[2]);
 
-        if (fabs(p->pos[0]) > d) d = fabs(p->pos[0]);
-        if (fabs(p->pos[1]) > d) d = fabs(p->pos[1]);
-        if (fabs(p->pos[2]) > d) d = fabs(p->pos[2]);
+        if (pos[0] > d) d = pos[0];
+        if (pos[1] > d) d = pos[1];
+        if (pos[2] > d) d = pos[2];
 
     }
 
-    if (d > 0)
-        view.zoom = d * 5;
+    // adjust zoom
+    if (d > 0) {
+        if ((view.zoomFitAuto < 2) || (state.totalFrames < 2)) {
+            // normal zoomfit
+            view.zoom = d * 5;
+        } else {
+            float new_zoom = d * 2.5;
+            // smooth zoomfit
+            // zoom out if required change > 30%
+	    if ((new_zoom >= view.zoom) && (fabs(new_zoom / view.zoom) > 1.3)) {
+		view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+	    } else {
+                // zoom in if required change > 30%
+	        if (fabs(view.zoom / new_zoom) > 1.3)
+                    view.zoom = view.zoom - (view.zoom - new_zoom) / 60;
+	    }
+	}
+    }
+
 
 }
 

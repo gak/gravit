@@ -96,6 +96,7 @@ void viewInit() {
     view.pos[2] -= 30;
 
     VectorZero(view.autoRotate);
+    VectorZero(view.lastCenter);
 
     view.tailWidth = 1.0f;
     view.tailLength = 32;
@@ -381,7 +382,7 @@ void run() {
 
         setColours();
         if (view.zoomFitAuto == 2)
-            cmdZoomFit(0);
+            cmdZoomFit(NULL);
 
         runVideo();
 

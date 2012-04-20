@@ -730,7 +730,7 @@ void translateToCenter() {
 
     VectorDivide(pos, state.particleCount, pos);
     glTranslatef(-pos[0], -pos[1], -pos[2]);
-
+    VectorCopy(pos, view.lastCenter);
 }
 
 #ifndef WITHOUT_AGAR

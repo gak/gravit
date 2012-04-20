@@ -474,6 +474,7 @@ typedef struct view_s {
 
     VectorNew(rot);
     float zoom;
+    VectorNew(lastCenter); //center of view; set by translateToCenter()
     int zoomFitAuto;
 
     int maxVertices;    // 0 for infinite, otherwise tailskip will double when hit
