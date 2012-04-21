@@ -37,8 +37,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef NO_GUI
 
 // TODO: Move to view struct
-GLuint particleTextureID;
-GLuint skyBoxTextureID;
+static GLuint particleTextureID = 0;
+static GLuint skyBoxTextureID = 0;
+static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
+
+static int lastSkyBox = -1;    // the last skybox loaded
+static int simpleSkyBox = 0;   // if 1, use single skyBoxTextureID
+
+// toDo: auto-detect list of availeable skyboxes
+static const char *skyboxes[] = { "simple.png", "purplenebula/", NULL};
 
 void checkDriverBlacklist();
 
@@ -70,15 +77,52 @@ GLuint loadParticleTexture() {
     return particleTextureID;
 }
 
-GLuint loadSkyBoxTexture(char *fileName) {
-    skyBoxTextureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName), GL_TRUE);
+GLuint loadSkyBoxTexture(char *fileName, GLuint *textureID) {
+    // free previously bound texture
+    if ((*textureID != 0) && glIsTexture(*textureID)) {
+        glDeleteTextures(1, textureID);
+    }
+
+    *textureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName), GL_TRUE);
 
     // catch error
-    if ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID))
-       view.drawSky = 0;
+    if ((*textureID == 0) || !glIsTexture(*textureID)) {
+        view.drawSky ++;
+        if(view.drawSky > SKYBOX_LAST) view.drawSky = 0;
+    }
 
-    return skyBoxTextureID;
+    return *textureID;
 }
+
+
+// load skybox according to view.drawSky
+void loadSkyBox() {
+    int i;
+    char *skyFile;
+
+    if ((view.drawSky == 0) || (view.drawSky > SKYBOX_LAST))
+        return;
+
+    lastSkyBox = view.drawSky;
+    skyFile = (char *) skyboxes[view.drawSky -1];
+
+    if (skyFile[strlen(skyFile) -1] == '/') {
+        // if the filename ends with "/", we assume it's a directory
+        // use individual texture for each surface
+        simpleSkyBox = 0;
+        loadSkyBoxTexture(va("%s%s", skyFile, "front.png"), skyBoxTextureIDs);
+        loadSkyBoxTexture(va("%s%s", skyFile, "left.png"),  skyBoxTextureIDs + 1 );
+        loadSkyBoxTexture(va("%s%s", skyFile, "back.png"),  skyBoxTextureIDs + 2 );
+        loadSkyBoxTexture(va("%s%s", skyFile, "right.png"), skyBoxTextureIDs + 3 );
+        loadSkyBoxTexture(va("%s%s", skyFile, "top.png"),   skyBoxTextureIDs + 4 );
+        loadSkyBoxTexture(va("%s%s", skyFile, "bottom.png"),skyBoxTextureIDs + 5 );
+    } else {
+        // use one texture for all box surfaces
+        simpleSkyBox = 1;
+        loadSkyBoxTexture(skyFile, &skyBoxTextureID);
+    }
+}
+
 
 int gfxSetResolution() {
     SDL_VideoInfo* videoInfo;
@@ -122,7 +166,7 @@ int gfxSetResolution() {
     if (!loadParticleTexture())
         return 3;
 
-    loadSkyBoxTexture("simple.png");
+    loadSkyBox();
     
     // not sure if we need to re-attach to new surface
     //if (video.agarStarted == 1) {
@@ -885,9 +929,11 @@ void drawSkyBox(int bits) {
     float fade = 0.15 + 0.85 * (sqrt(fmin(view.zoom, 48000.0f) / 48000.0f));
 
     // check for valid texture before drawing the box
-    if ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID)) {
-        view.drawSky = 0;
-        conAdd(LERR, "invalid Sky texture - drawSky disabled");
+    if (  ((simpleSkyBox == 0) && ((skyBoxTextureIDs[0] == 0) || !glIsTexture(skyBoxTextureIDs[0])))
+        ||((simpleSkyBox == 1) && ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID)))) {
+        conAdd(LERR, "invalid Sky texture #%d", view.drawSky);
+        view.drawSky ++;
+        if(view.drawSky > SKYBOX_LAST) view.drawSky = 0;
         return;
     }
 
@@ -906,9 +952,11 @@ void drawSkyBox(int bits) {
     // Just in case we set all vertices to white.
     glColor4f(1, 1, 1, fade);
 
+    // single texture --> bind now
+    if (simpleSkyBox == 1) glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
     
     // Render the front quad
-    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[0]);
     glBegin(GL_QUADS);
     glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f, -0.5f );
     glTexCoord2f(1, 0); glVertex3f(  0.5f,  0.5f, -0.5f );
@@ -917,7 +965,7 @@ void drawSkyBox(int bits) {
     glEnd();
 
     // Render the left quad
-    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[1]);
     glBegin(GL_QUADS);
     glTexCoord2f(1, 0); glVertex3f( -0.5f,  0.5f, -0.5f );
     glTexCoord2f(0, 0); glVertex3f( -0.5f,  0.5f,  0.5f );
@@ -926,7 +974,7 @@ void drawSkyBox(int bits) {
     glEnd();
     
     // Render the back quad
-    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[2]);
     glBegin(GL_QUADS);
     glTexCoord2f(1, 1); glVertex3f( -0.5f, -0.5f,  0.5f );
     glTexCoord2f(1, 0); glVertex3f( -0.5f,  0.5f,  0.5f );
@@ -935,7 +983,7 @@ void drawSkyBox(int bits) {
     glEnd();    
 
     // Render the right quad
-    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[3]);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 1); glVertex3f(  0.5f, -0.5f, -0.5f );
     glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
@@ -944,7 +992,7 @@ void drawSkyBox(int bits) {
     glEnd();
     
     // Render the top quad
-    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[4]);
     glBegin(GL_QUADS);
     glTexCoord2f(1, 1); glVertex3f(  0.5f,  0.5f, -0.5f );
     glTexCoord2f(1, 0); glVertex3f(  0.5f,  0.5f,  0.5f );
@@ -953,13 +1001,15 @@ void drawSkyBox(int bits) {
     glEnd();
     
     // Render the bottom quad
-    glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[5]);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
     glTexCoord2f(0, 1); glVertex3f( -0.5f, -0.5f,  0.5f );
     glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
     glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
     glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     glPopAttrib();
 }
@@ -984,8 +1034,12 @@ void drawAll() {
 
     for (view.stereoModeCurrentBit = 0; view.stereoModeCurrentBit < bits; view.stereoModeCurrentBit++) {
 
-        if ((view.drawSky) && (view.stereoMode < 2))
+        if ((view.drawSky > 0 ) && (view.stereoMode < 2)) {
+             // load skybox textures if necessary
+             if (lastSkyBox != view.drawSky)
+                 loadSkyBox();
              drawSkyBox(bits);
+        }
 
 
         if (view.stereoMode > 1) {

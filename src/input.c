@@ -355,7 +355,8 @@ int processKeys() {
                 break;
 
             case SDLK_p:
-                view.drawSky = (!view.drawSky) ? 1 : 0;
+                view.drawSky ++;
+                if(view.drawSky > SKYBOX_LAST) view.drawSky = 0;
                 conAdd(LLOW, "drawSky set to %i", view.drawSky);
                 break;
 

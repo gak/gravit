@@ -699,6 +699,9 @@ int gfxSetResolution();
 void checkPointParameters();
 void checkPointSprite();
 void drawPopupText();
+void loadSkyBox(void);
+// toDo: auto-detect list of availeable skyboxes
+#define SKYBOX_LAST 2
 
 // color.c
 void setColours();
