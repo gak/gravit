@@ -81,7 +81,11 @@ void luaHandleError() {
 
 int luaExecute(char *f) {
 
-    int ret = luaL_loadfile(state.lua, f);
+    int ret = 0;
+
+    if (f==NULL) f = "";
+
+    ret = luaL_loadfile(state.lua, f);
     
     if (ret == LUA_ERRSYNTAX) {
         luaHandleError();
@@ -140,7 +144,8 @@ int luag_load(lua_State *L) {
     conAdd(LLOW, s);
     lua_pop(L, 1);
     
-    s = va("spawn/%s", s);    
+    //s = va("spawn/%s", s);
+    s = va("%s/%s", SPAWNDIR, s);
     luaExecute(findFile(s));
     
     return 0;

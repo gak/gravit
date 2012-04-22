@@ -58,8 +58,17 @@ void conAdd(int mode, char *f, ... ) {
     vsprintf (s, f, argptr);
     va_end (argptr);
 
-    printf("%s\n", s);
-    fflush(stdout);
+#ifdef WIN32
+    if (view.useStdout != 0) {
+        printf("%s\n", s);
+	fflush(stdout);
+    }
+#else
+    if ((mode == LERR) || (view.useStdout != 0)) {
+        printf("%s\n", s);
+	fflush(stdout);
+    }
+#endif
 
     if (strlen(s) >= CONSOLE_LENGTH-1)
         s[CONSOLE_LENGTH-1] = 0;
@@ -207,6 +216,7 @@ void conInit() {
     memset(conCompWordsFoundPtrs, 0, sizeof(conCompWordsFoundPtrs));
     conCompWordsFoundIndex = 0;
 
+    view.useStdout = 0;
 }
 
 void conFree() {
@@ -275,7 +285,9 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
 
     if (keySym == SDLK_RETURN || keySym == 10) {
 
-        printf("\n\r");
+        if (view.useStdout != 0) {
+            printf("\n\r");
+        }
 
         if (conCommandPos == 0) {
             view.consoleMode = 0;

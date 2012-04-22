@@ -68,7 +68,11 @@ int loadFonts() {
 
         if (!fontSurface) {
 
+#ifdef WIN32
+            MessageBox(NULL, TTF_GetError(), "gravit: font engine error", MB_OK);
+#else
             printf("%s\n", TTF_GetError());
+#endif
             TTF_CloseFont(font);
             return 0;
 

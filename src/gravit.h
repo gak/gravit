@@ -58,16 +58,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define DATA_DIR ""
 #endif
 
-#define CONFIG_FILE "gravit.cfg"
-#define SCREENSAVER_FILE "screensaver.cfg"
-
 #define SPAWNDIR DATA_DIR "spawn"
 #define MISCDIR DATA_DIR "data"
 
 #ifdef WIN32
+#   define CONFIG_PATH "cfg"
+#   define CONFIG_FILE "cfg/gravit.cfg"
+#   define SCREENSAVER_FILE "cfg/screensaver.cfg"
 #   define SCREENSHOT_PATH "screenshots"
 #   define SAVE_PATH "save"
 #else
+#   define CONFIG_PATH "."
+#   define CONFIG_FILE "gravit.cfg"
+#   define SCREENSAVER_FILE "screensaver.cfg"
 #   ifdef __MACH__
 #       define SCREENSHOT_PATH va("%s/Library/Application Support/com.slowchop.gravit/screenshots", getenv("HOME"))
 #       define SAVE_PATH va("%s/Library/Application Support/com.slowchop.gravit/save", getenv("HOME"))
@@ -514,6 +517,7 @@ typedef struct view_s {
     int vertices;
 
     int verboseMode;
+    int useStdout;         // 1 to copy console output to stdout
 
     int blendMode;
 

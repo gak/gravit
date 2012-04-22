@@ -86,6 +86,7 @@ void cleanMemory() {
 void viewInit() {
 
 #ifndef NO_GUI
+    view.useStdout = 0;
 
     view.rot[0] = view.rot[1] = view.rot[2] = 0;
     view.zoom = 10000;
@@ -171,6 +172,8 @@ void viewInit() {
 
     view.maxVertices = 100000;
 
+#else
+    view.useStdout = 1;
 #endif
 
 
@@ -246,8 +249,21 @@ int init(int argc, char *argv[]) {
                   state.processFrameThreads, omp_get_num_procs());
 #endif
 
+#ifndef NO_STDIO_REDIRECT
+    // say hi (and keep stdout.txt alive on windows...)
+    if(!view.useStdout && !view.screenSaver)
+      printf("Welcome to %s.\n", GRAVIT_VERSION);
+#endif
+
 #ifdef WITHOUT_AGAR
     conAdd(LHELP, "Welcome to Gravit!");
+
+#ifndef NO_GUI
+
+    conAdd(LHELP, "Quick Start: Hit SPACE to start a new simulation!");
+    conAdd(LHELP, "Hold down a mouse button and move it around. Use A and Z keys, or the scroll wheel to zoom in and out.");
+
+#endif
 #endif
 
     return 0;
