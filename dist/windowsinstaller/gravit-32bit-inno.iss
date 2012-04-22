@@ -46,7 +46,7 @@ Source: ".\32bit\gravit.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\32bit\gravit.exe"; DestDir: "{syswow64}"; DestName: "gravit.scr"; Flags: ignoreversion; Components: screensaver
 Source: ".\files\cfg\*.cfg"; DestDir: "{app}\cfg"; Flags: ignoreversion; Permissions: users-modify
 Source: ".\files\COPYING"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion
+Source: ".\files\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs
 Source: ".\32bit\*.DLL"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\32bit\*.DLL"; DestDir: "{syswow64}"; Flags: sharedfile; Components: screensaver
 Source: ".\files\spawn\*"; DestDir: "{app}\spawn"; Flags: ignoreversion ; Permissions: users-modify
