@@ -92,7 +92,18 @@ int loadFonts() {
         if (fonts[i].h > fonts[i].w)
             fonts[i].w = fonts[i].h;
 
-        tmp = SDL_CreateRGBSurface(SDL_SWSURFACE, fonts[i].w, fonts[i].h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+        tmp = SDL_CreateRGBSurface(SDL_SWSURFACE, fonts[i].w, fonts[i].h, 32,
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN /* OpenGL RGBA masks depend on byteorder */
+			0x000000FF,
+			0x0000FF00,
+			0x00FF0000,
+			0xFF000000);
+#else
+			0xFF000000,
+			0x00FF0000,
+			0x0000FF00,
+			0x000000FF);
+#endif
 
         if (!tmp) {
 
