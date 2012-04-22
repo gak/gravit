@@ -121,6 +121,8 @@ void loadSkyBox() {
         simpleSkyBox = 1;
         loadSkyBoxTexture(skyFile, &skyBoxTextureID);
     }
+    // glTexEnvf env mode is sometimes reset to GL_REPLACE :(
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 
