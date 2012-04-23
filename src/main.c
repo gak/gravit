@@ -81,6 +81,7 @@ void cleanMemory() {
 void viewInit() {
 
 #ifndef NO_GUI
+    view.useStdout = 0;
 
     view.rot[0] = view.rot[1] = view.rot[2] = 0;
     view.zoom = 10000;
@@ -164,6 +165,8 @@ void viewInit() {
 
     view.maxVertices = 100000;
 
+#else
+    view.useStdout = 1;
 #endif
 
 
@@ -240,6 +243,12 @@ int init(int argc, char *argv[]) {
 #endif
 
     conAdd(LNORM, "Welcome to Gravit!");
+
+#ifndef NO_STDIO_REDIRECT
+    // say hi (and keep stdout.txt alive on windows...)
+    if(!view.useStdout && !view.screenSaver)
+      printf("Welcome to %s.\n", GRAVIT_VERSION);
+#endif
 
 #ifndef NO_GUI
 

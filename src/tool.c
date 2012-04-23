@@ -303,7 +303,7 @@ void freeFileName() {
 
 void setFileName(char *name) {
 
-    char buf[255];
+    char buf[256];
 
     strncpy(buf, name, 255);
 
@@ -317,13 +317,23 @@ void setFileName(char *name) {
 char *getRegistryString(char *variable) {
 #ifdef WIN32
 
-    static char buf[MAX_PATH];
+    static char buf[MAX_PATH+1];
     DWORD len = MAX_PATH;
 
     HKEY hkResult;
     RegCreateKeyEx(HKEY_CURRENT_USER, REGISTRY_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkResult, NULL);
     RegQueryValueEx(hkResult, variable, 0, NULL, (unsigned char *)buf, &len);
     RegCloseKey(hkResult);
+
+    // try HKLM if thy key was not found in HKCU
+    if (!buf || strlen(buf) == 0) {
+        LONG returnValue = RegOpenKeyEx(HKEY_LOCAL_MACHINE, REGISTRY_KEY, 0, KEY_READ , &hkResult);
+        if (returnValue == ERROR_SUCCESS) {
+	    RegQueryValueEx(hkResult, variable, 0, NULL, (unsigned char *)buf, &len);
+        }
+        RegCloseKey(hkResult);
+    }
+
     return buf;
 
 #endif

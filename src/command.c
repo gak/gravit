@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "AudioStreamer.h"
 #endif
 
+
 cmd_t cmd[] = {
 
 //	   cmd							func					varf,						vari
@@ -125,6 +126,7 @@ cmd_t cmd[] = {
 
     ,{ "framecompression",			NULL,					NULL,						&state.frameCompression,			NULL }
 
+    ,{ "echo",					NULL,					NULL,						&view.useStdout,					NULL }
     ,{ "verbose",					NULL,					NULL,						&view.verboseMode,					NULL }
 
     ,{ "processors",				NULL,					NULL,						&state.processFrameThreads,			NULL }
@@ -437,7 +439,7 @@ cmdSpawnRestartSpawning:
     lua_pushnumber(state.lua, state.particleCount);
     lua_setglobal(state.lua, "spawnparticles");
 
-    scriptFile = va(SPAWNDIR "/%s.gravitspawn", scriptName);
+    scriptFile = va("%s/%s.gravitspawn", SPAWNDIR, scriptName);
 
     luaExecute(findFile(scriptFile));
     lua_getglobal(state.lua, "describe");
@@ -885,7 +887,11 @@ void cmdRunScript(char *arg) {
     sz = strtok(arg, " ");
     if (!sz) return;
     opt = strtok(NULL, " ");
+#ifdef WIN32
+    configRead(findFile(va("%s/%s", CONFIG_PATH, sz)), (opt && !strcmp(opt, "ignoremissing")));
+#else
     configRead(findFile(sz), (opt && !strcmp(opt, "ignoremissing")));
+#endif
 
 }
 
