@@ -129,6 +129,7 @@ void viewInit() {
     view.drawOSD = 1;
     view.drawColourScheme = 1;
     view.drawSky = 1;
+    view.drawSkyRandom = 1;
 
     view.blendMode = 1;
 

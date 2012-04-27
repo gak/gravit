@@ -512,6 +512,7 @@ typedef struct view_s {
     int drawOSD;
     int drawColourScheme;
     int drawSky;
+    int drawSkyRandom;
 
     float fps;
     int vertices;

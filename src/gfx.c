@@ -97,34 +97,32 @@ GLuint loadSkyBoxTexture(char *fileName, GLuint *textureID) {
 
 // load skybox according to view.drawSky
 void loadSkyBox() {
-    int i;
-    char *skyFile;
 
-    if ((view.drawSky == 0) || (view.drawSky > SKYBOX_LAST))
+    char *skyFile;
+    int sky = view.drawSky;
+    
+    if (sky == 0 || sky > SKYBOX_LAST)
         return;
 
-    lastSkyBox = view.drawSky;
-    skyFile = (char *) skyboxes[view.drawSky -1];
-
-    if (skyFile[strlen(skyFile) -1] == '/') {
+    lastSkyBox = sky;
+    skyFile = (char *) skyboxes[sky - 1];
+    
+    if (skyFile[strlen(skyFile) - 1] == '/') {
         // if the filename ends with "/", we assume it's a directory
         // use individual texture for each surface
         simpleSkyBox = 0;
         loadSkyBoxTexture(va("%s%s", skyFile, "front.png"), skyBoxTextureIDs);
-        loadSkyBoxTexture(va("%s%s", skyFile, "left.png"),  skyBoxTextureIDs + 1 );
-        loadSkyBoxTexture(va("%s%s", skyFile, "back.png"),  skyBoxTextureIDs + 2 );
-        loadSkyBoxTexture(va("%s%s", skyFile, "right.png"), skyBoxTextureIDs + 3 );
-        loadSkyBoxTexture(va("%s%s", skyFile, "top.png"),   skyBoxTextureIDs + 4 );
-        loadSkyBoxTexture(va("%s%s", skyFile, "bottom.png"),skyBoxTextureIDs + 5 );
-    } else {
+        loadSkyBoxTexture(va("%s%s", skyFile, "left.png"),  skyBoxTextureIDs + 1);
+        loadSkyBoxTexture(va("%s%s", skyFile, "back.png"),  skyBoxTextureIDs + 2);
+        loadSkyBoxTexture(va("%s%s", skyFile, "right.png"), skyBoxTextureIDs + 3);
+        loadSkyBoxTexture(va("%s%s", skyFile, "top.png"),   skyBoxTextureIDs + 4);
+        loadSkyBoxTexture(va("%s%s", skyFile, "bottom.png"),skyBoxTextureIDs + 5);
+    } else {        
         // use one texture for all box surfaces
         simpleSkyBox = 1;
         loadSkyBoxTexture(skyFile, &skyBoxTextureID);
     }
-    // glTexEnvf env mode is sometimes reset to GL_REPLACE :(
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
-
 
 int gfxSetResolution() {
     SDL_VideoInfo* videoInfo;
@@ -331,19 +329,19 @@ void drawFrame() {
         break;
     case 1:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         break;
     case 2:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         break;
     case 3:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE );
+        glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
         break;
     case 4:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA );
+        glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA);
         break;
 
     }
@@ -820,10 +818,10 @@ void setupCamera(int shouldTranslate, int bits) {
         // the formula below makes sure the field is logarithmicially adjusted between 15 and 55 degrees.
         float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log(fmin(view.zoom, 96000.0)) / log(96000.0f)));
 
-        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom*2.0f, 100000.0f));
+        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
     } else {
         // if stereo mode, do not adjust field of view
-        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom*2.0f, 100000.0f));
+        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
     }
 
     glMatrixMode(GL_MODELVIEW);
@@ -1036,7 +1034,7 @@ void drawAll() {
 
     for (view.stereoModeCurrentBit = 0; view.stereoModeCurrentBit < bits; view.stereoModeCurrentBit++) {
 
-        if ((view.drawSky > 0 ) && (view.stereoMode < 2)) {
+        if ((view.drawSky > 0) && (view.stereoMode < 2)) {
              // load skybox textures if necessary
              if (lastSkyBox != view.drawSky)
                  loadSkyBox();

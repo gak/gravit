@@ -31,7 +31,9 @@ void otBranchNode(node_t *n);
 
 static node_t *r = NULL;
 
+#ifdef _OPENMP
 static int master_thread_id = 0;
+#endif
 
 void otGetBoundingBox(float *otMin, float *otMax) {
 

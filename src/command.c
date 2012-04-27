@@ -102,6 +102,7 @@ cmd_t cmd[] = {
     ,{ "drawosd",					NULL,					NULL,						&view.drawOSD,						NULL }
     ,{ "drawcolourscheme",			NULL,					NULL,						&view.drawColourScheme,				NULL }
     ,{ "drawsky",			        NULL,					NULL,						&view.drawSky,				NULL }
+    ,{ "drawskyrandom",		        NULL,					NULL,						&view.drawSkyRandom,				NULL }
 
     ,{ "particlecount",				NULL,					NULL,						&state.particlesToSpawn,			NULL }
 
@@ -471,10 +472,9 @@ cmdSpawnRestartSpawning:
     }
 
     // make sure no two particles are in the same spot
-    {
+    int needrestart = 0;
+    while (needrestart) {
         int i,j;
-        int needrestart;
-restart:
         needrestart = 0;
         for (i = 0; i < state.particleCount; i++) {
             for (j = 0; j < state.particleCount; j++) {
@@ -513,10 +513,6 @@ restart:
 
             }
         }
-
-        if (needrestart) {
-            goto restart;
-        }
     }
 
 #ifndef NO_GUI
@@ -530,6 +526,10 @@ restart:
 
     if (state.autoRecord) {
         state.autoRecordNext = 1;
+    }
+    
+    if (view.drawSkyRandom) {
+        view.drawSky = rand() % SKYBOX_LAST + 1;
     }
 
     if (view.zoomFitAuto) {
