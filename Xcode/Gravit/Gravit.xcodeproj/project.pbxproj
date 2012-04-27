@@ -181,7 +181,6 @@
 		2ED8F0AE14AE843E007C6213 /* timer.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = timer.c; sourceTree = "<group>"; };
 		2ED8F0AF14AE843E007C6213 /* tool.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = tool.c; sourceTree = "<group>"; };
 		55A8C25F12DD769E00CFE55A /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioStreamer.m; path = ../../AudioStreamer.m; sourceTree = SOURCE_ROOT; };
-		55A8C26012DD769E00CFE55A /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioStreamer.h; path = ../../AudioStreamer.h; sourceTree = SOURCE_ROOT; };
 		55A8C27812DD771600CFE55A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Gravit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Gravit-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Gravit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gravit.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -263,8 +262,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				55A8C26012DD769E00CFE55A /* AudioStreamer.h */,
-				55A8C25F12DD769E00CFE55A /* AudioStreamer.m */,
 				256AC3F00F4B6AF500CF3369 /* Gravit_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -349,6 +346,7 @@
 			isa = PBXGroup;
 			children = (
 				2ED8F09414AE843E007C6213 /* AudioStreamer.h */,
+				55A8C25F12DD769E00CFE55A /* AudioStreamer.m */,
 				2ED8F09514AE843E007C6213 /* color.c */,
 				2ED8F09614AE843E007C6213 /* command.c */,
 				2ED8F09714AE843E007C6213 /* command.h */,
