@@ -24,17 +24,17 @@ GLuint loadTexture(char *fileName, int isSkybox) {
     }
     
     // get Type : RGB or RGBA
-    if (surface->format->Amask)
-        colortype=GL_RGBA;
+    if (surface->format->BytesPerPixel)
+        colortype = GL_RGBA;
     else
-        colortype=GL_RGB;
+        colortype = GL_RGB;
 
     glGenTextures(1, &textureId);
     glCheck();
     
     glBindTexture(GL_TEXTURE_2D, textureId);
     glCheck();
-    
+
     if (isSkybox) {
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
         glCheck();
@@ -49,7 +49,7 @@ GLuint loadTexture(char *fileName, int isSkybox) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glCheck();
     
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, surface->w, surface->h, colortype, GL_UNSIGNED_BYTE, surface->pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, colortype, surface->w, surface->h, colortype, GL_UNSIGNED_BYTE, surface->pixels);
     glCheck();
 
     SDL_FreeSurface(surface);
