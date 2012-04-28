@@ -1,8 +1,11 @@
 FINAL = gravit
-OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o lua.o png_save.o
+OBJS = 	src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o src/texture.o
 
-CFLAGS = -g -O2 -Wall `sdl-config --cflags` `lua-config --include` -Wall -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG
-LDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs` -llualib50 `lua-config --libs` -lpng
+#CFLAGS = -g -O2 -Wall `sdl-config --cflags` `agar-config --cflags` -Wall -DWITH_LUA -DHAVE_LUA -DHAVE_PNG -I/usr/include/lua5.1
+CFLAGS = -g -O2 -Wall `sdl-config --cflags` -Wall -DWITH_LUA -DHAVE_LUA -DHAVE_PNG -DWITHOUT_AGAR -I/usr/include/lua5.1
+
+#LDFLAGS = -L/usr/X11R6/lib -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs` `agar-config --libs` -lpng -llua5.1
+LDFLAGS = -L/usr/X11R6/lib -L/usr/i386-linux-gnu -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs` -lpng -llua5.1
 INSTALL=/bin/install
 
 all: final
@@ -12,14 +15,14 @@ install: final
 	$(INSTALL) -m 755 gravit $(DESTDIR)usr/bin
 
 dep:
-	@makedepend $(CFLAGS) *.c 2> /dev/null
+	@makedepend $(CFLAGS) src/*.c 2> /dev/null
 
 final: $(OBJS)
-	gcc $(LDFLAGS) $(OBJS) -o $(FINAL)
+	gcc $(OBJS) $(LDFLAGS) -o $(FINAL)
 
 clean:
-	rm -f *.o $(FINAL)
+	rm -f src/*.o $(FINAL)
 
-.c.o:
-	gcc -c $(CFLAGS) $(subst ,, $*.c) -o $*.o
+src/%o: src/%c
+	gcc -c $(CFLAGS) $(subst ,, src/$*c) -o src/$*o
 
