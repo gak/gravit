@@ -44,7 +44,9 @@
 #if !defined(__INTEL_COMPILER)
 #include <mm_malloc.h>
 #endif
+#ifndef __MACH__
 #include <malloc.h>
+#endif
 typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
 #define _mm_init1_ps(f) {f, f, f, f}
 
