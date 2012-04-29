@@ -44,11 +44,7 @@
 		2E8BCBAC120A308A00F87C35 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCBAB120A308A00F87C35 /* SDLMain.m */; };
 		2E8BCCAF120A4F4C00F87C35 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCA7120A4F4C00F87C35 /* data */; };
 		2E8BCCD4120A5FB600F87C35 /* gravit.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCD3120A5FB600F87C35 /* gravit.icns */; };
-		2EB21CB1120A972400419B4C /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
-		2EB21CB3120A972400419B4C /* SDL_ttf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
 		2EB21CB5120A972400419B4C /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2EB21CB4120A972400419B4C /* SDL.framework */; };
-		2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB0120A972400419B4C /* SDL_image.framework */; };
-		2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB2120A972400419B4C /* SDL_ttf.framework */; };
 		2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EB21CB4120A972400419B4C /* SDL.framework */; };
 		2EC6739D14B91C6600BF0E10 /* libag_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739714B91C6600BF0E10 /* libag_core.a */; };
 		2EC6739E14B91C6600BF0E10 /* libag_dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC6739814B91C6600BF0E10 /* libag_dev.a */; };
@@ -79,6 +75,8 @@
 		2ED8F0C214AE843E007C6213 /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0AD14AE843E007C6213 /* texture.c */; };
 		2ED8F0C314AE843E007C6213 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0AE14AE843E007C6213 /* timer.c */; };
 		2ED8F0C414AE843E007C6213 /* tool.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0AF14AE843E007C6213 /* tool.c */; };
+		2EFD857A154D0DFF00E750BE /* SDLimage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EFD8578154D0DFF00E750BE /* SDLimage.framework */; };
+		2EFD857B154D0DFF00E750BE /* SDLttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EFD8579154D0DFF00E750BE /* SDLttf.framework */; };
 		55A8C26412DD769E00CFE55A /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A8C25F12DD769E00CFE55A /* AudioStreamer.m */; };
 		55A8C27912DD771600CFE55A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A8C27812DD771600CFE55A /* AudioToolbox.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -91,8 +89,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2EB21CB1120A972400419B4C /* SDL_image.framework in CopyFiles */,
-				2EB21CB3120A972400419B4C /* SDL_ttf.framework in CopyFiles */,
 				2EB21CB5120A972400419B4C /* SDL.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -144,8 +140,6 @@
 		2E8BCBAB120A308A00F87C35 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		2E8BCCA7120A4F4C00F87C35 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../data; sourceTree = SOURCE_ROOT; };
 		2E8BCCD3120A5FB600F87C35 /* gravit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = gravit.icns; sourceTree = "<group>"; };
-		2EB21CB0120A972400419B4C /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
-		2EB21CB2120A972400419B4C /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = Library/Frameworks/SDL_ttf.framework; sourceTree = SDKROOT; };
 		2EB21CB4120A972400419B4C /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		2EC6739714B91C6600BF0E10 /* libag_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_core.a; path = /usr/local/lib/libag_core.a; sourceTree = "<absolute>"; };
 		2EC6739814B91C6600BF0E10 /* libag_dev.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libag_dev.a; path = /usr/local/lib/libag_dev.a; sourceTree = "<absolute>"; };
@@ -182,6 +176,8 @@
 		2ED8F0AD14AE843E007C6213 /* texture.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = texture.c; sourceTree = "<group>"; };
 		2ED8F0AE14AE843E007C6213 /* timer.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = timer.c; sourceTree = "<group>"; };
 		2ED8F0AF14AE843E007C6213 /* tool.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = tool.c; sourceTree = "<group>"; };
+		2EFD8578154D0DFF00E750BE /* SDLimage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDLimage.framework; path = Library/Frameworks/SDLimage.framework; sourceTree = SDKROOT; };
+		2EFD8579154D0DFF00E750BE /* SDLttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDLttf.framework; path = Library/Frameworks/SDLttf.framework; sourceTree = SDKROOT; };
 		55A8C25F12DD769E00CFE55A /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioStreamer.m; path = ../../AudioStreamer.m; sourceTree = SOURCE_ROOT; };
 		55A8C27812DD771600CFE55A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Gravit-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Gravit-Info.plist"; sourceTree = "<group>"; };
@@ -193,6 +189,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EFD857A154D0DFF00E750BE /* SDLimage.framework in Frameworks */,
+				2EFD857B154D0DFF00E750BE /* SDLttf.framework in Frameworks */,
 				2EC673A914B91E3C00BF0E10 /* libjpeg.dylib in Frameworks */,
 				2EC673A714B91E2600BF0E10 /* libfreetype.a in Frameworks */,
 				2EC673A514B91C8100BF0E10 /* libpng.dylib in Frameworks */,
@@ -203,8 +201,6 @@
 				2EC673A114B91C6600BF0E10 /* libag_rg.a in Frameworks */,
 				2EC673A214B91C6600BF0E10 /* libag_vg.a in Frameworks */,
 				2EB21D04120A985B00419B4C /* SDL.framework in Frameworks */,
-				2EB21D02120A985B00419B4C /* SDL_image.framework in Frameworks */,
-				2EB21D03120A985B00419B4C /* SDL_ttf.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */,
 				55A8C27912DD771600CFE55A /* AudioToolbox.framework in Frameworks */,
@@ -219,8 +215,6 @@
 			children = (
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				2E8BCB4C120A29E400F87C35 /* OpenGL.framework */,
-				2EB21CB0120A972400419B4C /* SDL_image.framework */,
-				2EB21CB2120A972400419B4C /* SDL_ttf.framework */,
 				2EB21CB4120A972400419B4C /* SDL.framework */,
 			);
 			name = "Linked Frameworks";
@@ -248,6 +242,8 @@
 		29B97314FDCFA39411CA2CEA /* Gravit */ = {
 			isa = PBXGroup;
 			children = (
+				2EFD8578154D0DFF00E750BE /* SDLimage.framework */,
+				2EFD8579154D0DFF00E750BE /* SDLttf.framework */,
 				2E8BCCA7120A4F4C00F87C35 /* data */,
 				2E13E0A61210C31900877F47 /* spawn */,
 				2E13E1481210C88C00877F47 /* External */,
@@ -520,7 +516,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -535,7 +530,7 @@
 					/Library/Frameworks/SDL_ttf.framework/Headers,
 				);
 				INFOPLIST_FILE = "Gravit-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
+				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/External\"",
@@ -543,6 +538,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = Gravit;
+				SKIP_INSTALL = NO;
 			};
 			name = Debug;
 		};
@@ -550,7 +546,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -563,7 +558,7 @@
 					/Library/Frameworks/SDL_ttf.framework/Headers,
 				);
 				INFOPLIST_FILE = "Gravit-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
+				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/External\"",
@@ -571,6 +566,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = Gravit;
+				SKIP_INSTALL = NO;
 			};
 			name = Release;
 		};
@@ -578,7 +574,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Gerald Kaszuba";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -600,6 +596,7 @@
 				OTHER_CFLAGS = "";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
@@ -608,7 +605,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Gerald Kaszuba";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -630,6 +627,7 @@
 				OTHER_CFLAGS = "";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 				VALID_ARCHS = x86_64;
 			};
 			name = Release;
