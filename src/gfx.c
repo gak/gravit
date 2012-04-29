@@ -122,6 +122,8 @@ void loadSkyBox() {
         simpleSkyBox = 1;
         loadSkyBoxTexture(skyFile, &skyBoxTextureID);
     }
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 int gfxSetResolution() {
