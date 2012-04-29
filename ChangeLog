@@ -2,6 +2,34 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.5.0 2012/06/10
+    * First release in 7 years!
+    * New Logo (#57)
+    * Massive performance improvements, OpenMP, SSE (Frank Möhle #4 #7 #9 #10 #13 #14 #22)
+    * User interface widgets with Agar (#1 #31 #41)
+    * Skybox rendering, currently only 2 skyboxes (#2 #39)
+    * International keyboard support fixed (Frank Möhle #11)
+    * Support for Lua 5.1 (Frank Möhle #16)
+    * Streaming music (OS X only, David Turnbull #5)
+    * Screenshot to PNG (Frank Möhle #13)
+    * Detect number of processors when using OpenMP (Frank Möhle #4 #10)
+    * General operating and build system improvements and compatibility:
+        o Build systems improved/overhauled: MinGW, VC++, Xcode, autoconf (Frank Möhle #7, #8, #29, #46)
+        o Better compatibility with Debian, Ubuntu, OS X, Windows XP, Windows 7 (32/64bit) (#29)
+        o Tested and runs on a Raspberry Pi :)
+    * Windows Installer improvements: (Frank Möhle #52)
+        o 32bit and 64bit Windows installers
+        o Includes Visual C++ Redistributable Package
+        o Optional component for installing the screensaver instead of a checkbox in the last step (#17)
+    * Fix for crash when memoryavailable is more than 2GB (Frank Möhle #15 #19)
+    * Limit frame rate to 60fps (Frank Möhle #25)
+    * Seed the random number generator in Lua on startup (Frank Möhle #26)
+    * Record until frame N by referencing a frame that doesn't exist yet with the "frame" command (Frank Möhle #26)
+    * Infinite loop bug when running "framecompression 0" (Frank Möhle #26)
+    * Reduce consolve verbosity (Frank Möhle #28)
+    * Detect memory available and automatically use a percentage of it (50% by default, #40)
+    * Many other subtle features, speed improvements, bug fixes, etc.
+
 0.4.2 2005/06/10
 
     * Console tab completion
@@ -12,7 +40,7 @@ Gravit ChangeLog
     * Added stereoosd to make the osd shown in stereo (but stretched for now)
     * When drawosd is 0, the console and console log will be displayed when you activate the console
     * Fixed a bug with the octree (and others) sometimes not being drawn
-    * Fixed colour scheme bug with one colour 
+    * Fixed colour scheme bug with one colour
 
 0.4.1 2005/06/08
 
@@ -29,7 +57,7 @@ Gravit ChangeLog
     * Added negative mass colour key and the colour key is thinner
     * Added "zoomfitauto 2" to autofit every frame ("zoomfitauto 1" is still default)
     * Added original Makefile (Makefile.old) to source distribution
-    * Increased initial velocities in many-galaxy.spawnparticles 
+    * Increased initial velocities in many-galaxy.spawnparticles
 
 0.4.0 2005/05/31
 
@@ -39,12 +67,12 @@ Gravit ChangeLog
           o spawn by itself will execute default.gravitspawn which picks a random script
           o Added spawn scripts: one-galaxy, binary-galaxy, many-galaxy, dust, snake, loop
           o binary-galaxy and many-galaxy will randomly spawn elliptical and spiral galaxies
-          o Spiral galaxies now spawn on arbitrary angles 
+          o Spiral galaxies now spawn on arbitrary angles
     * frameskip accepts negative values to play back in slow motion
           o the negative number represents how many video frames display each recorded frame
-          o particles are interpolated between frames 
+          o particles are interpolated between frames
     * Gravit now uses autoconf and automake (Thanks Alec Thomas)
-          o It now stores data and config files in configured places (/usr/local/bin,/usr/local/share/gravit,/etc) 
+          o It now stores data and config files in configured places (/usr/local/bin,/usr/local/share/gravit,/etc)
     * Supports multiple users for UNIX builds
     * Removed gravit-x.x.x-win32.zip package
     * Renamed gravit-x.x.x-src.tgz package to gravit-x.x.x.tar.gz
@@ -55,7 +83,7 @@ Gravit ChangeLog
     * When two particles spawned in the same location gravit crashes on the first frame. Particles now get checked and moved on spawn.
     * When the GL_ARB_point_parameters and GL_ARB_point_sprite extensions don't work, default to particlemode 2 instead of 0
     * saveauto stopped saving after it reached max frames -- fixed
-    * "Can't load custom.cfg" warning gone -- if it's not there it's ignored using "ignoremissing" 
+    * "Can't load custom.cfg" warning gone -- if it's not there it's ignored using "ignoremissing"
 
 0.3.2 2005/04/15
 
@@ -69,7 +97,7 @@ Gravit ChangeLog
     * console typed history, pressing up and down will scroll through your typed history
     * console left and right keys will move the cursor around
     * help console messages are now blue
-    * "G" set message is gone 
+    * "G" set message is gone
 
 0.3.1 2005/04/13
 
@@ -90,7 +118,7 @@ Gravit ChangeLog
     * Added popuptext command, not useful (yet!) :)
     * Added autocenter command to automatically go to the 'middle' of the simulation (it's on by default)
     * Simulation name is cleared when spawning a new simulation
-    * /CP was meant to be /C for screensaver code 
+    * /CP was meant to be /C for screensaver code
 
 0.3.0 2005/04/11
 
@@ -101,7 +129,7 @@ Gravit ChangeLog
           o You need the SDL libraries in your Windows System directory for the screensaver to work (the Windows Installer does this for you)
           o The Gravit makes use of the Windows registry to help the screensaver know where it is installed. It is saved on a per-user basis.
           o Modify screensaver.cfg to customise your screen saver.
-          o You can hit the space bar during the screen saver to use Gravit. 
+          o You can hit the space bar during the screen saver to use Gravit.
     * Added stereo/stereoseparation commands! (Careful, these make your eyes hurt)
           o This draws two versions of the simulation on the left and right side of the screen.
           o Have a read of http://www.angelfire.com/ca/erker/freeview.html to work out what your eyes can do... then,
@@ -111,10 +139,10 @@ Gravit ChangeLog
                 + try to use the cross view method (have stereoseparation positive, 500 works good for me)
                 + turn off the on-screen display (drawosd 0)
                 + be as zoomed in as possible
-                + try all the effects! 
+                + try all the effects!
     * g command added, for changing G in the F=G*m1*m2/d^2 calculation.
           o The value you get out of setting g is "10 ^ -g". Default is 5 (0.00001). The screensaver uses 4 (0.0001).
-          o The lower the number the less accurate the simulation is, but each particle moves quicker per frame. 
+          o The lower the number the less accurate the simulation is, but each particle moves quicker per frame.
     * Added saveauto command to automatically save every n frames. Set it to 0 to turn it off.
     * autorotate command added, for automatically rotating the camera. It was implemented primarily for the screensaver.
     * Added zoom command. This is the variable you change when you zoom in and out.
@@ -124,7 +152,7 @@ Gravit ChangeLog
     * Fixed mouse input oddness
     * Mouse isn't stuck inside your window anymore
     * Fixed bug in recordingvideorefreshtime. When set to 0 it would the screen as fast as possible (instead of once every finished recorded frame).
-    * Few spellings of the old name 'Graviton' fixed 
+    * Few spellings of the old name 'Graviton' fixed
 
 0.2.2 2005/04/09
 
@@ -133,18 +161,18 @@ Gravit ChangeLog
           o name doesn't require an extension - they're made for you in the save directory.
           o if you don't specify simulation name, it will use the last name you used in a load or save command (if you have used one)
           o control-s is a shortcut to save to the simulation
-          o the current simulation name is displayed on the top of the screen 
+          o the current simulation name is displayed on the top of the screen
     * Better (?) mouse controls. You need to hold down a mouse button to rotate the view. This seems to be useful in non-fullscreen mode.
     * Mousewheel up/down zooms in/out
     * Added command-line parsing
           o --help/--version self expanatory
           o --execute to execute a command
-          o --noscript to not run gravit.cfg on startup 
+          o --noscript to not run gravit.cfg on startup
     * Colour scheme bar is thinner
     * Colour scheme bar can be turned off with "drawcolourscheme 0"
     * Gravit now quits when the user hits the X in their WM
     * Less alloc debug messages
-    * Compiling a console only binary works again (using -DNO_GUI) 
+    * Compiling a console only binary works again (using -DNO_GUI)
 
 0.2.1 2005/04/08
 
@@ -152,13 +180,13 @@ Gravit ChangeLog
           o This makes your FPS smoother during a recording.
           o Also allows you to restart the spawn process while spawning lots of particles.
           o With a lot of particles, you can see the octtree being generated!!
-          o See gravit.cfg for more details... 
+          o See gravit.cfg for more details...
     * Added colourschemenew and colourschemeadd commands to allow you to customise the colour scheme
     * Recording is now about twice as fast due to an inefficient distance calculation. (Thanks to Michael Vanslembrouck for pointing that out)
     * Window Title now tells the status of your recording. For example "17/2532 (skip:16)" means 17 frames recorded our of a 2532 maximum with a record skip of 16.
     * spawning galaxy sizes fixed
     * grativ.cfg sets videobpp to 32 now, instead of 16.
-    * Windows zip's have renamed files to ChangeLog.txt and README.txt 
+    * Windows zip's have renamed files to ChangeLog.txt and README.txt
 
 0.2 2005/04/07
 
@@ -172,16 +200,16 @@ Gravit ChangeLog
           o It will fall back to the original GL_POINT renderer if your card does not support them. It will also tell you that it has done this.
           o Added particle.png
                 + To modify it, save it as a transparent 24bit png.
-                + If you modify it and it looks cool send it my way! 
+                + If you modify it and it looks cool send it my way!
     * Added particlerendermode command (0=original 1=sprites) ( \ Key )
     * Added particlesizemin ( Keys: - = ) and particlesizemax ( Keys: [ ] ) commands to change the size of your particles.
-          o When you're in particlerendermode 0 only particlesizemin applies 
+          o When you're in particlerendermode 0 only particlesizemin applies
     * Added drawtree command which displays the last generated Oct Tree (T key)
           o There are three modes: 0 off, 1 lines, 2 boxes
-          o leaf nodes are highlighted 
+          o leaf nodes are highlighted
     * Added screenshot and screenshotloop commands, they are also bound to F9 and F10. They create (many) BMP files.
           o This will make a screenshots directory for you.
-          o Careful! F10 takes a screenshot every frame! 
+          o Careful! F10 takes a screenshot every frame!
     * Added a new colour mode: Acceleration!
     * Colour modes can be changed with the / key.
     * Console can now be escaped by pressing escape, backtick (`) and hitting enter on an empty command
@@ -196,7 +224,7 @@ Gravit ChangeLog
     * tailskip variable caused an infinitle loop when set to 0 (fixed)
     * Many Makefile changes
     * Added an icon!
-    * Thanks to Alec Thomas for Linux testing and code fixes! 
+    * Thanks to Alec Thomas for Linux testing and code fixes!
 
 0.1 2005/04/04
 
