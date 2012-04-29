@@ -3,6 +3,7 @@ Gravit ChangeLog
     http://gravit.slowchop.com/
 
 0.5.0 2012/06/10
+
     * First release in 7 years!
     * New Logo (#57)
     * Massive performance improvements, OpenMP, SSE (Frank Möhle #4 #7 #9 #10 #13 #14 #22)
