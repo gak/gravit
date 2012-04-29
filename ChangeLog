@@ -26,7 +26,7 @@ Gravit ChangeLog
     * Seed the random number generator in Lua on startup (Frank Möhle #26)
     * Record until frame N by referencing a frame that doesn't exist yet with the "frame" command (Frank Möhle #26)
     * Infinite loop bug when running "framecompression 0" (Frank Möhle #26)
-    * Reduce consolve verbosity (Frank Möhle #28)
+    * Reduce console verbosity (Frank Möhle #28)
     * Detect memory available and automatically use a percentage of it (50% by default, #40)
     * Many other subtle features, speed improvements, bug fixes, etc.
 
