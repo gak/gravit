@@ -157,10 +157,8 @@ void drawOSD() {
             
 
         // XXX: This might be too many stats. I'll implement this in the ajax windowing screens.
-#ifdef WITHOUT_AGAR
 	    DUH("avg renderer fps", va("%5.2f",
                      (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ))
-#endif
 	/*
 	    DUH("avg renderer frame time", va("%4.1f ms",
 		     (float) view.totalRenderTime / (float) view.timed_frames ));
