@@ -24,10 +24,14 @@ GLuint loadTexture(char *fileName, int isSkybox) {
     }
     
     // get Type : RGB or RGBA
-    if (surface->format->BytesPerPixel)
+    if (surface->format->BytesPerPixel == 4)
         colortype = GL_RGBA;
-    else
+    else if (surface->format->BytesPerPixel == 3)
         colortype = GL_RGB;
+    else {
+        conAdd(LERR, "Unknown BBP: %i for %s", surface->format->BytesPerPixel, path);
+        return 0;
+    }
 
     glGenTextures(1, &textureId);
     glCheck();
