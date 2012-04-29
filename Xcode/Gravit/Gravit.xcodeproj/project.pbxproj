@@ -38,6 +38,8 @@
 		2E13E1881210C8C700877F47 /* lzio.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E13E1681210C8C700877F47 /* lzio.c */; };
 		2E13E1891210C8C700877F47 /* print.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E13E1691210C8C700877F47 /* print.c */; };
 		2E13E1A01210C97000877F47 /* ltablib.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E13E19F1210C97000877F47 /* ltablib.c */; };
+		2E7059DD154CD4C5008AD181 /* frame-pp_sse.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E7059DB154CD4C4008AD181 /* frame-pp_sse.c */; };
+		2E7059DE154CD4C5008AD181 /* frame-pp_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E7059DC154CD4C5008AD181 /* frame-pp_vector.c */; };
 		2E8BCB4D120A29E400F87C35 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8BCB4C120A29E400F87C35 /* OpenGL.framework */; };
 		2E8BCBAC120A308A00F87C35 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8BCBAB120A308A00F87C35 /* SDLMain.m */; };
 		2E8BCCAF120A4F4C00F87C35 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 2E8BCCA7120A4F4C00F87C35 /* data */; };
@@ -66,7 +68,6 @@
 		2ED8F0B414AE843E007C6213 /* font.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09B14AE843E007C6213 /* font.c */; };
 		2ED8F0B514AE843E007C6213 /* fps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09D14AE843E007C6213 /* fps.c */; };
 		2ED8F0B614AE843E007C6213 /* frame-ot.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F09E14AE843E007C6213 /* frame-ot.c */; };
-		2ED8F0B914AE843E007C6213 /* frame-pp.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A114AE843E007C6213 /* frame-pp.c */; };
 		2ED8F0BA14AE843E007C6213 /* frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A214AE843E007C6213 /* frame.c */; };
 		2ED8F0BB14AE843E007C6213 /* gfx.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A314AE843E007C6213 /* gfx.c */; };
 		2ED8F0BC14AE843E007C6213 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8F0A514AE843E007C6213 /* input.c */; };
@@ -136,6 +137,8 @@
 		2E13E1681210C8C700877F47 /* lzio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzio.c; path = External/lua/src/lzio.c; sourceTree = "<group>"; };
 		2E13E1691210C8C700877F47 /* print.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = print.c; path = External/lua/src/print.c; sourceTree = "<group>"; };
 		2E13E19F1210C97000877F47 /* ltablib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ltablib.c; path = External/lua/src/ltablib.c; sourceTree = "<group>"; };
+		2E7059DB154CD4C4008AD181 /* frame-pp_sse.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = "frame-pp_sse.c"; sourceTree = "<group>"; };
+		2E7059DC154CD4C5008AD181 /* frame-pp_vector.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = "frame-pp_vector.c"; sourceTree = "<group>"; };
 		2E8BCB4C120A29E400F87C35 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		2E8BCBAA120A308A00F87C35 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		2E8BCBAB120A308A00F87C35 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
@@ -165,7 +168,6 @@
 		2ED8F09C14AE843E007C6213 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = font.h; sourceTree = "<group>"; };
 		2ED8F09D14AE843E007C6213 /* fps.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = fps.c; sourceTree = "<group>"; };
 		2ED8F09E14AE843E007C6213 /* frame-ot.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = "frame-ot.c"; sourceTree = "<group>"; };
-		2ED8F0A114AE843E007C6213 /* frame-pp.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = "frame-pp.c"; sourceTree = "<group>"; };
 		2ED8F0A214AE843E007C6213 /* frame.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = frame.c; sourceTree = "<group>"; };
 		2ED8F0A314AE843E007C6213 /* gfx.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = gfx.c; sourceTree = "<group>"; };
 		2ED8F0A414AE843E007C6213 /* gravit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gravit.h; sourceTree = "<group>"; };
@@ -345,6 +347,8 @@
 		2E8BCA9E120A22C800F87C35 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				2E7059DB154CD4C4008AD181 /* frame-pp_sse.c */,
+				2E7059DC154CD4C5008AD181 /* frame-pp_vector.c */,
 				2ED8F09414AE843E007C6213 /* AudioStreamer.h */,
 				55A8C25F12DD769E00CFE55A /* AudioStreamer.m */,
 				2ED8F09514AE843E007C6213 /* color.c */,
@@ -356,7 +360,6 @@
 				2ED8F09C14AE843E007C6213 /* font.h */,
 				2ED8F09D14AE843E007C6213 /* fps.c */,
 				2ED8F09E14AE843E007C6213 /* frame-ot.c */,
-				2ED8F0A114AE843E007C6213 /* frame-pp.c */,
 				2ED8F0A214AE843E007C6213 /* frame.c */,
 				2ED8F0A314AE843E007C6213 /* gfx.c */,
 				2ED8F0A414AE843E007C6213 /* gravit.h */,
@@ -494,7 +497,6 @@
 				2ED8F0B414AE843E007C6213 /* font.c in Sources */,
 				2ED8F0B514AE843E007C6213 /* fps.c in Sources */,
 				2ED8F0B614AE843E007C6213 /* frame-ot.c in Sources */,
-				2ED8F0B914AE843E007C6213 /* frame-pp.c in Sources */,
 				2ED8F0BA14AE843E007C6213 /* frame.c in Sources */,
 				2ED8F0BB14AE843E007C6213 /* gfx.c in Sources */,
 				2ED8F0BC14AE843E007C6213 /* input.c in Sources */,
@@ -506,6 +508,8 @@
 				2ED8F0C214AE843E007C6213 /* texture.c in Sources */,
 				2ED8F0C314AE843E007C6213 /* timer.c in Sources */,
 				2ED8F0C414AE843E007C6213 /* tool.c in Sources */,
+				2E7059DD154CD4C5008AD181 /* frame-pp_sse.c in Sources */,
+				2E7059DE154CD4C5008AD181 /* frame-pp_vector.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -573,7 +577,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -588,17 +592,18 @@
 					/Library/Frameworks/SDL_ttf.framework/Headers,
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-DHAVE_SSE";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -613,9 +618,11 @@
 					/Library/Frameworks/SDL_ttf.framework/Headers,
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-DHAVE_SSE";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
