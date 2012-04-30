@@ -7,12 +7,15 @@ Gravit ChangeLog
     * First release in 7 years!
     * New Logo (#57)
     * Massive performance improvements, OpenMP, SSE (Frank Möhle #4 #7 #9 #10 #13 #14 #22)
+    * Free CPU when idle - helps to keep your laptops cool (Frank Möhle)
     * User interface widgets with Agar (#1 #31 #41)
     * Skybox rendering, currently only 2 skyboxes (#2 #39)
     * International keyboard support fixed (Frank Möhle #11)
     * Support for Lua 5.1 (Frank Möhle #16)
     * Streaming music (OS X only, David Turnbull #5)
     * Screenshot to PNG (Frank Möhle #13)
+    * Added stereomode 2 for red-cyan anaglyph glasses (Frank Möhle)
+    * Smooth auto-zoom when using zoomfitauto 2 (Frank Möhle)
     * Detect number of processors when using OpenMP (Frank Möhle #4 #10)
     * General operating and build system improvements and compatibility:
         o Build systems improved/overhauled: MinGW, VC++, Xcode, autoconf (Frank Möhle #7, #8, #29, #46)
