@@ -122,8 +122,6 @@ void loadSkyBox() {
         simpleSkyBox = 1;
         loadSkyBoxTexture(skyFile, &skyBoxTextureID);
     }
-
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 int gfxSetResolution() {
@@ -266,6 +264,7 @@ gfxInitRetry:
     glEnable(GL_LINE_SMOOTH);
     glDisable(GL_DEPTH_TEST);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glCheck();
 
     checkPointParameters();
     checkPointSprite();
@@ -787,21 +786,19 @@ void drawAgar() {
 		AG_ProcessTimeouts(AG_GetTicks());
 
     // do not draw windows in screensaver mode
-    if (view.screenSaver)
-        return;
-
-    AG_LockVFS(&agDrivers);
-    AG_BeginRendering(agDriverSw);
+    if (!view.screenSaver)
+    {
+        AG_LockVFS(&agDrivers);
+        AG_BeginRendering(agDriverSw);
+        AG_FOREACH_WINDOW(win, agDriverSw) {
+            AG_ObjectLock(win);
+            AG_WindowDraw(win);
+            AG_ObjectUnlock(win);
+        }
     
-    AG_FOREACH_WINDOW(win, agDriverSw) {
-        AG_ObjectLock(win);
-        AG_WindowDraw(win);
-        AG_ObjectUnlock(win);
+        AG_EndRendering(agDriverSw);
+        AG_UnlockVFS(&agDrivers);
     }
-    
-    AG_EndRendering(agDriverSw);
-    AG_UnlockVFS(&agDrivers);
-
     // Agar leaves glTexEnvf env mode to GL_REPLACE :(
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
@@ -951,6 +948,8 @@ void drawSkyBox(int bits) {
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
 
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
     // Just in case we set all vertices to white.
     glColor4f(1, 1, 1, fade);
 
@@ -1010,6 +1009,8 @@ void drawSkyBox(int bits) {
     glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
     glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
     glEnd();
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
