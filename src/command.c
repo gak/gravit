@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "AudioStreamer.h"
 #endif
 
+
 cmd_t cmd[] = {
 
 //	   cmd							func					varf,						vari
@@ -100,6 +101,8 @@ cmd_t cmd[] = {
     ,{ "drawtree",					NULL,					NULL,						&view.drawTree,						NULL }
     ,{ "drawosd",					NULL,					NULL,						&view.drawOSD,						NULL }
     ,{ "drawcolourscheme",			NULL,					NULL,						&view.drawColourScheme,				NULL }
+    ,{ "drawsky",			        NULL,					NULL,						&view.drawSky,				NULL }
+    ,{ "drawskyrandom",		        NULL,					NULL,						&view.drawSkyRandom,				NULL }
 
     ,{ "particlecount",				NULL,					NULL,						&state.particlesToSpawn,			NULL }
 
@@ -125,6 +128,7 @@ cmd_t cmd[] = {
 
     ,{ "framecompression",			NULL,					NULL,						&state.frameCompression,			NULL }
 
+    ,{ "echo",					NULL,					NULL,						&view.useStdout,					NULL }
     ,{ "verbose",					NULL,					NULL,						&view.verboseMode,					NULL }
 
     ,{ "processors",				NULL,					NULL,						&state.processFrameThreads,			NULL }
@@ -367,12 +371,14 @@ void cmdStop(char *arg) {
     if (isSpawning())
         return;
 
-    conAdd(LNORM, "Stopped...");
     state.mode &= ~SM_PLAY;
     state.mode &= ~SM_RECORD;
 
-    setTitle(0);
+#ifdef WITHOUT_AGAR
+    conAdd(LNORM, "Stopped...");
+#endif
 
+    setTitle(0);
 }
 
 void cmdSpawnCancel(void) {
@@ -437,7 +443,7 @@ cmdSpawnRestartSpawning:
     lua_pushnumber(state.lua, state.particleCount);
     lua_setglobal(state.lua, "spawnparticles");
 
-    scriptFile = va(SPAWNDIR "/%s.gravitspawn", scriptName);
+    scriptFile = va("%s/%s.gravitspawn", SPAWNDIR, scriptName);
 
     luaExecute(findFile(scriptFile));
     lua_getglobal(state.lua, "describe");
@@ -466,10 +472,9 @@ cmdSpawnRestartSpawning:
     }
 
     // make sure no two particles are in the same spot
-    {
+    int needrestart = 0;
+    while (needrestart) {
         int i,j;
-        int needrestart;
-restart:
         needrestart = 0;
         for (i = 0; i < state.particleCount; i++) {
             for (j = 0; j < state.particleCount; j++) {
@@ -508,10 +513,6 @@ restart:
 
             }
         }
-
-        if (needrestart) {
-            goto restart;
-        }
     }
 
 #ifndef NO_GUI
@@ -519,12 +520,16 @@ restart:
 #endif
 
     state.currentlySpawning = 0;
-    conAdd(LLOW, "You have spawned some particles. Hit F6 to start recording the simulation!");
+    conAdd(LLOW, "You have spawned some particles.");
 
     state.mode = 0;
 
     if (state.autoRecord) {
         state.autoRecordNext = 1;
+    }
+    
+    if (view.drawSkyRandom) {
+        view.drawSky = rand() % SKYBOX_LAST + 1;
     }
 
     if (view.zoomFitAuto) {
@@ -558,7 +563,6 @@ void cmdRecord(char *arg) {
     if (state.mode & SM_RECORD) {
 
         conAdd(LNORM, "Stopped Recording.");
-        conAdd(LHELP, "Press F5 to play your recording. Press F6 to continue recording.");
         state.mode &= ~SM_RECORD;
         //state.targetFrame = -1;
         setTitle(0);
@@ -566,11 +570,10 @@ void cmdRecord(char *arg) {
     } else {
 
         conAdd(LNORM, "Recording...");
-        conAdd(LHELP, "Press F5 to play your recording. Press F6 to stop recording.");
         state.mode |= SM_RECORD;
         setTitle(STRING_RECORD);
-        view.timed_frames=0;
-        view.totalRenderTime=0;
+        view.timed_frames = 0;
+        view.totalRenderTime = 0;
 
     }
 
@@ -612,12 +615,11 @@ void cmdPlay(char *arg) {
 void cmdFrame(char *arg) {
     int new_target_frame;
 
-    if ((arg) && (atoi(arg) >= 0)) {
-        new_target_frame=atoi(arg);
+    if (arg && atoi(arg) >= 0) {
+        new_target_frame = atoi(arg);
     } else {
-        new_target_frame=state.currentFrame;
+        new_target_frame = state.currentFrame;
     }
-
 
     if ( new_target_frame <= state.frame ) {
         // just set frame to display
@@ -882,10 +884,21 @@ void cmdRunScript(char *arg) {
 
     char *sz;
     char *opt;
+    char *script;
     sz = strtok(arg, " ");
     if (!sz) return;
     opt = strtok(NULL, " ");
-    configRead(findFile(sz), (opt && !strcmp(opt, "ignoremissing")));
+#ifdef WIN32
+    script=findFile(va("%s/%s", CONFIG_PATH, sz));
+#else
+    script=findFile(sz);
+#endif
+    if ((script != NULL) && (strlen(script)>0)) {
+        configRead(script, (opt && !strcmp(opt, "ignoremissing")));
+    } else {
+        if (!opt || strcmp(opt, "ignoremissing"))
+	    conAdd(LERR, "Could not open script: %s", (sz==NULL ? "(null)" : sz));
+    }
 
 }
 
@@ -967,6 +980,8 @@ void cmdScreenshot(char *arg) {
     SDL_FreeSurface(sdlSurfNormal);
 
 #endif
+    if (!view.screenshotLoop)
+        conAdd(LHELP, "screenshot saved to %s", fileName);
 
 }
 
@@ -1081,10 +1096,13 @@ void cmdChangeDir(char *arg) {
 
 void cmdStereoWarning(char *arg) {
 
-    if (view.stereoMode) {
-        conAdd(LHELP, "You have selected stereoscopic mode. The stereoseparation value is how many degrees between your eyes there are. ");
+    if (view.stereoMode == 1) {
+        conAdd(LHELP, "You have selected freeview stereoscopic mode. The stereoseparation value is how many degrees between your eyes there are. ");
         conAdd(LHELP, "Use a negative value for parallel viewing and positive for cross-eyed viewing. Recommended are less then 5 degrees.");
     }
+
+    if (view.stereoMode == 2)
+        conAdd(LHELP, "You have selected anaglyph stereoscopic mode. Use your red-cyan glasses for 3D viewing.");
 
     if (view.stereoMode)
         conAdd(LERR, "WARNING: Stereo mode may damage your eyes or other things. Use with caution.");
@@ -1334,17 +1352,39 @@ void cmdZoomFit(char *arg) {
     int i;
 
     for (i = 0; i < state.particleCount; i++) {
+        VectorNew(pos);
 
         p = getParticleCurrentFrame(i);
+        VectorSub(p->pos, view.lastCenter, pos);
+        pos[0] = fabs(pos[0]);
+        pos[1] = fabs(pos[1]);
+        pos[2] = fabs(pos[2]);
 
-        if (fabs(p->pos[0]) > d) d = fabs(p->pos[0]);
-        if (fabs(p->pos[1]) > d) d = fabs(p->pos[1]);
-        if (fabs(p->pos[2]) > d) d = fabs(p->pos[2]);
+        if (pos[0] > d) d = pos[0];
+        if (pos[1] > d) d = pos[1];
+        if (pos[2] > d) d = pos[2];
 
     }
 
-    if (d > 0)
-        view.zoom = d * 5;
+    // adjust zoom
+    if (d > 0) {
+        if ((view.zoomFitAuto < 2) || (state.totalFrames < 2)) {
+            // normal zoomfit
+            view.zoom = d * 5;
+        } else {
+            float new_zoom = d * 2.5;
+            // smooth zoomfit
+            // zoom out if required change > 30%
+	    if ((new_zoom >= view.zoom) && (fabs(new_zoom / view.zoom) > 1.3)) {
+		view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+	    } else {
+                // zoom in if required change > 30%
+	        if (fabs(view.zoom / new_zoom) > 1.3)
+                    view.zoom = view.zoom - (view.zoom - new_zoom) / 60;
+	    }
+	}
+    }
+
 
 }
 

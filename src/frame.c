@@ -84,6 +84,8 @@ int initFrame() {
 
     fpsInit();
 
+    VectorZero(view.lastCenter);
+
     return 1;
 
 }

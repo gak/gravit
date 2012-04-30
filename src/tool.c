@@ -172,7 +172,10 @@ int SaveMemoryDump(char *fileName, unsigned char *d, size_t total) {
 
     fclose(fp);
 
-    conAdd(LLOW, "written %lu bytes to %s", (unsigned long)written, fileName);
+    if (((unsigned long)(written >>20)) > 5)
+        conAdd(LHELP, "written %lu MB to %s", (unsigned long)(written >>20), fileName);
+    else
+        conAdd(LLOW, "written %lu bytes to %s", (unsigned long)written, fileName);
 
     return 1;
 
@@ -303,7 +306,7 @@ void freeFileName() {
 
 void setFileName(char *name) {
 
-    char buf[255];
+    char buf[256];
 
     strncpy(buf, name, 255);
 
@@ -317,13 +320,23 @@ void setFileName(char *name) {
 char *getRegistryString(char *variable) {
 #ifdef WIN32
 
-    static char buf[MAX_PATH];
+    static char buf[MAX_PATH+1];
     DWORD len = MAX_PATH;
 
     HKEY hkResult;
     RegCreateKeyEx(HKEY_CURRENT_USER, REGISTRY_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkResult, NULL);
     RegQueryValueEx(hkResult, variable, 0, NULL, (unsigned char *)buf, &len);
     RegCloseKey(hkResult);
+
+    // try HKLM if thy key was not found in HKCU
+    if (!buf || strlen(buf) == 0) {
+        LONG returnValue = RegOpenKeyEx(HKEY_LOCAL_MACHINE, REGISTRY_KEY, 0, KEY_READ , &hkResult);
+        if (returnValue == ERROR_SUCCESS) {
+	    RegQueryValueEx(hkResult, variable, 0, NULL, (unsigned char *)buf, &len);
+        }
+        RegCloseKey(hkResult);
+    }
+
     return buf;
 
 #endif
@@ -371,7 +384,6 @@ char *findFile(char *file) {
     char *tmp;
 
     // first assume no path, so someone could load "/tmp/script" or "currentdirectory.cfg"
-    conAdd(LLOW, "Finding: %s", file);
     if (fileExists(file))
         return file;
 
@@ -463,7 +475,6 @@ size_t getMemory() {
 
 size_t getMemoryAvailable() {
     size_t realMemory;
-    size_t ret;
     
     if (state.memoryAvailable > 0)
         return state.memoryAvailable;
@@ -479,8 +490,5 @@ size_t getMemoryAvailable() {
     if (realMemory == 0) {
         realMemory = 128;
     }
-    ret = state.memoryPercentage / 100. * realMemory / 1024 / 1024;
-    conAdd(LLOW, "memoryDetected: %lu MB, returning %lu MB", (unsigned long) (realMemory>>20), (unsigned long)ret);
-
-    return ret;
+    return state.memoryPercentage / 100. * realMemory / 1024 / 1024;
 }

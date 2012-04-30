@@ -368,6 +368,10 @@ void colourFromNormal(float *c, float n) {
 
     }
 
+    if (view.stereoMode == 2) {
+	  // reduce to "half-color": red = 0,299*red + 0,587*green + 0,114*blue
+	  c[0] = 0.299*c[0] + 0.587*c[1] + 0.144*c[2];
+    }
 }
 
 #endif

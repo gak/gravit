@@ -1,0 +1,26 @@
+FINAL = gravit
+OBJS = 	src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o src/texture.o
+
+CFLAGS = -g -O2 -Wall `sdl-config --cflags` -Wall -DWITH_LUA -DHAVE_LUA -DHAVE_PNG -I/usr/include/lua5.1 `agar-config --cflags`
+
+LDFLAGS = -L/usr/X11R6/lib -L/usr/i386-linux-gnu -lGL -lGLU -lSDL_ttf -lSDL_image `sdl-config --libs` -lpng -llua5.1 `agar-config --libs`
+INSTALL=/bin/install
+
+all: final
+
+install: final
+	$(INSTALL) -d $(DESTDIR)usr/bin
+	$(INSTALL) -m 755 gravit $(DESTDIR)usr/bin
+
+dep:
+	@makedepend $(CFLAGS) src/*.c 2> /dev/null
+
+final: $(OBJS)
+	gcc $(OBJS) $(LDFLAGS) -o $(FINAL)
+
+clean:
+	rm -f src/*.o $(FINAL)
+
+src/%o: src/%c
+	gcc -c $(CFLAGS) $(subst ,, src/$*c) -o src/$*o
+

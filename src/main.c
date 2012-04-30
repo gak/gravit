@@ -40,10 +40,15 @@ void loadDefaults() {
 #ifndef NO_GUI
 
     video.sdlStarted = 0;
-    video.screenWtoApply = 800;
-    video.screenHtoApply = 600;
-    video.screenBPP = 32;
+    video.agarStarted = 0;
+    video.screenWtoApply = 0;
+    video.screenHtoApply = 0;
+    video.screenBPP = 0;
+#ifdef WITHOUT_AGAR
     video.screenFS = 0;
+#else
+    video.screenFS = 1;
+#endif
     video.screenAA = 0;
 
     strcpy(video.fontFile, "Vera.ttf");
@@ -81,6 +86,7 @@ void cleanMemory() {
 void viewInit() {
 
 #ifndef NO_GUI
+    view.useStdout = 0;
 
     view.rot[0] = view.rot[1] = view.rot[2] = 0;
     view.zoom = 10000;
@@ -91,6 +97,7 @@ void viewInit() {
     view.pos[2] -= 30;
 
     VectorZero(view.autoRotate);
+    VectorZero(view.lastCenter);
 
     view.tailWidth = 1.0f;
     view.tailLength = 32;
@@ -121,6 +128,8 @@ void viewInit() {
 
     view.drawOSD = 1;
     view.drawColourScheme = 1;
+    view.drawSky = 1;
+    view.drawSkyRandom = 1;
 
     view.blendMode = 1;
 
@@ -164,6 +173,8 @@ void viewInit() {
 
     view.maxVertices = 100000;
 
+#else
+    view.useStdout = 1;
 #endif
 
 
@@ -239,13 +250,21 @@ int init(int argc, char *argv[]) {
                   state.processFrameThreads, omp_get_num_procs());
 #endif
 
-    conAdd(LNORM, "Welcome to Gravit!");
+#ifndef NO_STDIO_REDIRECT
+    // say hi (and keep stdout.txt alive on windows...)
+    if(!view.useStdout && !view.screenSaver)
+      printf("Welcome to %s.\n", GRAVIT_VERSION);
+#endif
+
+#ifdef WITHOUT_AGAR
+    conAdd(LHELP, "Welcome to Gravit!");
 
 #ifndef NO_GUI
 
     conAdd(LHELP, "Quick Start: Hit SPACE to start a new simulation!");
     conAdd(LHELP, "Hold down a mouse button and move it around. Use A and Z keys, or the scroll wheel to zoom in and out.");
 
+#endif
 #endif
 
     return 0;
@@ -380,7 +399,7 @@ void run() {
 
         setColours();
         if (view.zoomFitAuto == 2)
-            cmdZoomFit(0);
+            cmdZoomFit(NULL);
 
         runVideo();
 

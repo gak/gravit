@@ -21,9 +21,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
+// microsoft specific workarounds for missing C99 standard functions
+#ifdef _MSC_VER
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+#include <math.h>
+#define fmax max
+#define fmin min
+#endif
+#endif
+
+#ifndef WITHOUT_AGAR
+#include "agar/gui/surface.h"
+#endif
+
 #ifndef NO_GUI
 
-GLuint particleTextureID;
+// TODO: Move to view struct
+static GLuint particleTextureID = 0;
+static GLuint skyBoxTextureID = 0;
+static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
+
+static int lastSkyBox = -1;    // the last skybox loaded
+static int simpleSkyBox = 0;   // if 1, use single skyBoxTextureID
+
+// toDo: auto-detect list of availeable skyboxes
+static const char *skyboxes[] = { "simple.png", "purplenebula/", NULL};
+
+void checkDriverBlacklist();
+
 
 void drawFrameSet2D() {
 
@@ -43,42 +68,60 @@ void drawFrameSet3D() {
     glLoadIdentity();
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
-    gluPerspective(45.0f,1,0,10000.0f);
+    gluPerspective(45.0f, 1, 0, 10000.0f);
 
 }
 
-int loadParticleTexture() {
+GLuint loadParticleTexture() {
+    particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
+    return particleTextureID;
+}
 
-    SDL_Surface *particleSurface;
-
-    char *particlePath = findFile(MISCDIR "/particle.png");
-    
-    if (!particlePath) {
-        conAdd(LERR, "Could not find particle graphic");
-        return 0;
+GLuint loadSkyBoxTexture(char *fileName, GLuint *textureID) {
+    // free previously bound texture
+    if ((*textureID != 0) && glIsTexture(*textureID)) {
+        glDeleteTextures(1, textureID);
     }
 
-    particleSurface = IMG_Load(particlePath);
+    *textureID = loadTexture(va("%s/skybox/%s", MISCDIR, fileName), GL_TRUE);
 
-    glGenTextures(1, &particleTextureID);
-    glCheck();
+    // catch error
+    if ((*textureID == 0) || !glIsTexture(*textureID)) {
+        view.drawSky ++;
+        if(view.drawSky > SKYBOX_LAST) view.drawSky = 0;
+    }
 
-    glBindTexture(GL_TEXTURE_2D, particleTextureID);
-    glCheck();
+    return *textureID;
+}
 
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, particleSurface->w, particleSurface->h, GL_RGBA, GL_UNSIGNED_BYTE, particleSurface->pixels);
-    glCheck();
 
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-    glCheck();
+// load skybox according to view.drawSky
+void loadSkyBox() {
 
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glCheck();
+    char *skyFile;
+    int sky = view.drawSky;
+    
+    if (sky == 0 || sky > SKYBOX_LAST)
+        return;
 
-    SDL_FreeSurface(particleSurface);
-
-    return 1;
-
+    lastSkyBox = sky;
+    skyFile = (char *) skyboxes[sky - 1];
+    
+    if (skyFile[strlen(skyFile) - 1] == '/') {
+        // if the filename ends with "/", we assume it's a directory
+        // use individual texture for each surface
+        simpleSkyBox = 0;
+        loadSkyBoxTexture(va("%s%s", skyFile, "front.png"), skyBoxTextureIDs);
+        loadSkyBoxTexture(va("%s%s", skyFile, "left.png"),  skyBoxTextureIDs + 1);
+        loadSkyBoxTexture(va("%s%s", skyFile, "back.png"),  skyBoxTextureIDs + 2);
+        loadSkyBoxTexture(va("%s%s", skyFile, "right.png"), skyBoxTextureIDs + 3);
+        loadSkyBoxTexture(va("%s%s", skyFile, "top.png"),   skyBoxTextureIDs + 4);
+        loadSkyBoxTexture(va("%s%s", skyFile, "bottom.png"),skyBoxTextureIDs + 5);
+    } else {        
+        // use one texture for all box surfaces
+        simpleSkyBox = 1;
+        loadSkyBoxTexture(skyFile, &skyBoxTextureID);
+    }
 }
 
 int gfxSetResolution() {
@@ -94,10 +137,12 @@ int gfxSetResolution() {
 
     }
 
-    video.flags = SDL_OPENGL | SDL_RESIZABLE;
+    video.flags = SDL_OPENGL;
 
     if (video.screenFS)
         video.flags |= SDL_FULLSCREEN;
+    else
+        video.flags |= SDL_RESIZABLE;
     
     videoInfo = (SDL_VideoInfo*) SDL_GetVideoInfo();
     
@@ -120,7 +165,16 @@ int gfxSetResolution() {
 
     if (!loadParticleTexture())
         return 3;
+
+    loadSkyBox();
     
+    // not sure if we need to re-attach to new surface
+    //if (video.agarStarted == 1) {
+    //    if (AG_SetVideoSurfaceSDL(video.sdlScreen) == -1) {
+    //        ( conAdd(LERR, "agar error while attaching to resized window: %s", AG_GetError() );
+    //    }
+    //}
+
     return 0;
 }
 
@@ -209,14 +263,30 @@ gfxInitRetry:
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
     glDisable(GL_DEPTH_TEST);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glCheck();
 
     checkPointParameters();
     checkPointSprite();
+
+    checkDriverBlacklist();
 
     SDL_ShowCursor(view.showCursor);
     SDL_EnableUNICODE(SDL_ENABLE);
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
+#ifndef WITHOUT_AGAR
+    AG_InitCore("gravit", 0);
+    //AG_InitGraphics("sdlgl");
+    if (AG_InitVideoSDL(video.sdlScreen, AG_VIDEO_OVERLAY | AG_VIDEO_OPENGL_OR_SDL) == -1)
+        conAdd(LERR, "agar error while initializing main window: %s", AG_GetError() );
+
+    video.agarStarted = 1;
+
+    if (!view.screenSaver)
+        osdInitDefaultWindows();
+#endif
+    
     return 1;
 
 }
@@ -260,19 +330,19 @@ void drawFrame() {
         break;
     case 1:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         break;
     case 2:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         break;
     case 3:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE );
+        glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
         break;
     case 4:
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA );
+        glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE_MINUS_SRC_ALPHA);
         break;
 
     }
@@ -395,7 +465,7 @@ void drawFrame() {
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        if (view.stereoMode) {
+        if (view.stereoMode == 1) {
             if (view.stereoModeCurrentBit == 0) {
                 glOrtho(0.0,video.screenW/2,0,video.screenH,-1.0,1.0);
             } else {
@@ -416,6 +486,7 @@ void drawFrame() {
             double size;
             VectorNew(moo);
             float *pos;
+            int success;
             pos = moo;
 
             pd = state.particleDetail + i;
@@ -427,13 +498,13 @@ void drawFrame() {
                 pos = p->pos;
             }
 
-            gluProject(
+            success = gluProject(
                 pos[0],pos[1],pos[2],
                 matModelView, matProject, viewport,
                 &screen[0], &screen[1], &screen[2]
             );
 
-            if (screen[2] > 1)
+            if ((success != GL_TRUE) || (screen[2] > 1))
                 continue;
 
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
@@ -450,7 +521,7 @@ void drawFrame() {
             glVertex2d(screen[0]-size, screen[1]+size);
             glEnd();
 
-            view.vertices+=4;
+            view.vertices += 4;
 
         }
 
@@ -601,11 +672,18 @@ void drawRGB() {
     float margin = 5;
     float i;
     float sx = (float)video.screenW - width - margin;
+#ifndef WITHOUT_AGAR
+    float sy = 70 + margin;
+#else
     float sy = margin;
+#endif
     float wx = width;
     float wy = 200;
     float c[4];
     float step = .01f;
+
+    if (view.screenSaver)
+        sy = margin;
 
     drawFrameSet2D();
 
@@ -614,7 +692,7 @@ void drawRGB() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // positive
-    for (i = 0; i < 1; i+=step) {
+    for (i = 0; i < 1; i += step) {
 
         colourFromNormal(c, i);
 
@@ -697,48 +775,283 @@ void translateToCenter() {
 
     VectorDivide(pos, state.particleCount, pos);
     glTranslatef(-pos[0], -pos[1], -pos[2]);
+    VectorCopy(pos, view.lastCenter);
+}
 
+#ifndef WITHOUT_AGAR
+void drawAgar() {
+    AG_Window *win;
+
+    if (AG_TIMEOUTS_QUEUED())
+		AG_ProcessTimeouts(AG_GetTicks());
+
+    // do not draw windows in screensaver mode
+    if (!view.screenSaver)
+    {
+        AG_LockVFS(&agDrivers);
+        AG_BeginRendering(agDriverSw);
+        AG_FOREACH_WINDOW(win, agDriverSw) {
+            AG_ObjectLock(win);
+            AG_WindowDraw(win);
+            AG_ObjectUnlock(win);
+        }
+    
+        AG_EndRendering(agDriverSw);
+        AG_UnlockVFS(&agDrivers);
+    }
+    // Agar leaves glTexEnvf env mode to GL_REPLACE :(
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+}
+#endif
+
+void setupCamera(int shouldTranslate, int bits) {
+    
+    glViewport(video.screenW / bits * view.stereoModeCurrentBit, 0, video.screenW / bits, video.screenH);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    if (!view.stereoMode) {
+        // narrow field of view when zooming in  (looks good with skybox :)
+        // the effect is similar to zooming in with a telescope.
+        // the formula below makes sure the field is logarithmicially adjusted between 15 and 55 degrees.
+        float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log(fmin(view.zoom, 96000.0)) / log(96000.0f)));
+
+        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
+    } else {
+        // if stereo mode, do not adjust field of view
+        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+        
+    if (shouldTranslate)
+        glTranslatef(0, 0, -view.zoom);
+    
+    glRotatef((float)view.rot[0], 1, 0, 0);
+    if (view.stereoMode) {
+        glRotatef((float)view.rot[1] + (view.stereoModeCurrentBit - .5) * view.stereoSeparation, 0, 1, 0);
+    } else {
+        glRotatef((float)view.rot[1], 0, 1, 0);
+    }
+    glRotatef((float)view.rot[2], 0, 0, 1);
+
+}
+
+
+void setupStereoCamera(int shouldTranslate) {
+    // set up stereo-view camera for red-cyan anaglyph glasses
+    //
+    // instead of gluPerspective, we use an asymetric frustrum
+    // see     : http://quiescentspark.blogspot.com/2011/05/rendering-3d-anaglyph-in-opengl.html
+    // see also: http://paulbourke.net/texture_colour/anaglyph/
+
+    float top, bottom, left, right;
+    float a, b, c;
+
+    //const int bits = 2;
+    const float nearClip = 0.01f;
+    const float farClip = fmax(view.zoom*2.0f, 100000.0f);
+    const float aspectRatio = (GLfloat)video.screenW / (GLfloat)video.screenH;
+    const float distConvergence = view.zoom * 0.95;
+
+    // telescope-zoom
+    //const float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log(fmin(view.zoom, 96000.0)) / log(96000.0f)));
+    //const float eyeDistance = view.stereoSeparation * fieldOfView;
+    // static view
+    const float fieldOfView = 45.0;
+    const float eyeDistance = view.stereoSeparation*45.0;
+
+
+    // compute asymetric perspective frustrum
+
+    top = nearClip * tan( (fieldOfView*PI/180.0)/2.0);
+    bottom = -top;
+
+    a = aspectRatio * tan( (fieldOfView*PI/180.0)/2.0) * distConvergence;
+    b = a - eyeDistance/2.0;
+    c = a + eyeDistance/2.0;
+
+    if (view.stereoModeCurrentBit == 0) {
+        left = -b * nearClip/distConvergence;
+        right=  c * nearClip/distConvergence;
+    } else {
+        left = -c * nearClip/distConvergence;
+        right=  b * nearClip/distConvergence;
+    }
+
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, video.screenW, video.screenH);
+
+    // Set the Projection Matrix
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glFrustum(left, right, bottom, top, nearClip, farClip);
+    //gluPerspective(fieldOfView, aspectRatio, nearClip, farClip);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // translate to left or right eye
+    if (view.stereoModeCurrentBit == 0)
+         glTranslatef( eyeDistance/2.0, 0.0f, 0.0f);
+    else
+         glTranslatef(-eyeDistance/2.0, 0.0f, 0.0f);
+    // glRotatef((float)(view.stereoModeCurrentBit - .5) * view.stereoSeparation * -0.2 , 0, 1, 0);
+
+
+    if (shouldTranslate)
+        glTranslatef(0, 0, -view.zoom);
+
+    glRotatef((float)view.rot[0], 1, 0, 0);
+    glRotatef((float)view.rot[1], 0, 1, 0);
+    glRotatef((float)view.rot[2], 0, 0, 1);
+
+
+    // set filter for anaglyph colors, and
+    // render into different color bits
+    if (view.stereoModeCurrentBit == 0)
+      // red
+      glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+    else
+      // cyan
+      glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+}
+
+
+void drawSkyBox(int bits) {
+    // fade skybox when zooming in
+    // (alpha blending with black background)
+    float fade = 0.15 + 0.85 * (sqrt(fmin(view.zoom, 48000.0f) / 48000.0f));
+
+    // check for valid texture before drawing the box
+    if (  ((simpleSkyBox == 0) && ((skyBoxTextureIDs[0] == 0) || !glIsTexture(skyBoxTextureIDs[0])))
+        ||((simpleSkyBox == 1) && ((skyBoxTextureID == 0) || !glIsTexture(skyBoxTextureID)))) {
+        conAdd(LERR, "invalid Sky texture #%d", view.drawSky);
+        view.drawSky ++;
+        if(view.drawSky > SKYBOX_LAST) view.drawSky = 0;
+        return;
+    }
+
+    if (view.stereoMode > 1) {
+        setupStereoCamera(GL_FALSE);
+        //fade = 1.0;
+    } else {
+        setupCamera(GL_FALSE, bits);
+    }
+    
+    glPushAttrib(GL_ENABLE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_LIGHTING);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    // Just in case we set all vertices to white.
+    glColor4f(1, 1, 1, fade);
+
+    // single texture --> bind now
+    if (simpleSkyBox == 1) glBindTexture(GL_TEXTURE_2D, skyBoxTextureID);
+    
+    // Render the front quad
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[0]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f, -0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f,  0.5f, -0.5f );
+    glTexCoord2f(0, 0); glVertex3f( -0.5f,  0.5f, -0.5f );
+    glTexCoord2f(0, 1); glVertex3f( -0.5f, -0.5f, -0.5f );
+    glEnd();
+
+    // Render the left quad
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[1]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(1, 0); glVertex3f( -0.5f,  0.5f, -0.5f );
+    glTexCoord2f(0, 0); glVertex3f( -0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 1); glVertex3f( -0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 1); glVertex3f( -0.5f, -0.5f, -0.5f );
+    glEnd();
+    
+    // Render the back quad
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[2]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(1, 1); glVertex3f( -0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 0); glVertex3f( -0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 0); glVertex3f(  0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
+    glEnd();    
+
+    // Render the right quad
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[3]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 1); glVertex3f(  0.5f, -0.5f, -0.5f );
+    glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 0); glVertex3f(  0.5f,  0.5f, -0.5f );
+    glEnd();
+    
+    // Render the top quad
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[4]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(1, 1); glVertex3f(  0.5f,  0.5f, -0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 0); glVertex3f( -0.5f,  0.5f,  0.5f );
+    glTexCoord2f(0, 1); glVertex3f( -0.5f,  0.5f, -0.5f );
+    glEnd();
+    
+    // Render the bottom quad
+    if (simpleSkyBox == 0) glBindTexture(GL_TEXTURE_2D, skyBoxTextureIDs[5]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex3f( -0.5f, -0.5f, -0.5f );
+    glTexCoord2f(0, 1); glVertex3f( -0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 1); glVertex3f(  0.5f, -0.5f,  0.5f );
+    glTexCoord2f(1, 0); glVertex3f(  0.5f, -0.5f, -0.5f );
+    glEnd();
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glPopAttrib();
 }
 
 void drawAll() {
 
-//	int i;
     int bits;
+    
     VectorNew(rotateIncrement);
+    VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
+    VectorAdd(rotateIncrement, view.rot, view.rot);
 
-    glClearColor(0,0,0,0);
+    glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
     view.vertices = 0;
 
-    if (view.stereoMode)
+    if (view.stereoMode > 0)
         bits = 2;
     else
         bits = 1;
 
     for (view.stereoModeCurrentBit = 0; view.stereoModeCurrentBit < bits; view.stereoModeCurrentBit++) {
 
-        glViewport(video.screenW/bits*view.stereoModeCurrentBit, 0, video.screenW/bits, video.screenH);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(45,(GLfloat)video.screenW/bits/(GLfloat)video.screenH,0.1f,10000000.0f);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
-        VectorAdd(rotateIncrement, view.rot, view.rot);
-
-        glTranslatef(0, 0, -view.zoom);
-
-        glRotatef((float)view.rot[0], 1, 0, 0);
-        if (view.stereoMode) {
-            glRotatef((float)view.rot[1] + (view.stereoModeCurrentBit-.5) * view.stereoSeparation, 0, 1, 0);
-        } else {
-            glRotatef((float)view.rot[1], 0, 1, 0);
+        if ((view.drawSky > 0) && (view.stereoMode < 2)) {
+             // load skybox textures if necessary
+             if (lastSkyBox != view.drawSky)
+                 loadSkyBox();
+             drawSkyBox(bits);
         }
-        glRotatef((float)view.rot[2], 0, 0, 1);
+
+
+        if (view.stereoMode > 1) {
+	    // red-cyan anaglyph
+            setupStereoCamera(GL_TRUE);
+	} else {
+	    // normal view or side-by-side
+	    setupCamera(GL_TRUE, bits);
+	}
 
         if (view.autoCenter)
             translateToCenter();
@@ -748,7 +1061,7 @@ void drawAll() {
             otDrawTree();
 
         drawFrame();
-
+    
         if (view.stereoOSD == 1) {
             if (view.drawOSD) {
                 drawOSD();
@@ -757,15 +1070,19 @@ void drawAll() {
             conDraw();
             drawPopupText();
         }
-
+        
+        
     }
-
+    // reset color mask
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        
     if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
-        view.tailSkip*=2;
+        view.tailSkip *= 2;
         conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
     }
 
     glViewport(0, 0, video.screenW, video.screenH);
+    
     if (view.stereoOSD == 0) {
         if (view.drawOSD) {
             drawOSD();
@@ -774,28 +1091,17 @@ void drawAll() {
         conDraw();
         drawPopupText();
     }
-
-    // just a test...
-    // otDrawField();
-
-//	if (view.drawAxis)
-//		drawAxis();
-
-//	if (view.drawOSD) {
-
-//		drawOSD();
-//		if (view.drawColourScheme) drawRGB();
-
-//	}
-
-//	conDraw();
-
+    
+#ifndef WITHOUT_AGAR
+    drawAgar();
+#else
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+#endif
 
     if (view.screenshotLoop)
         cmdScreenshot(NULL);
 
     SDL_GL_SwapBuffers();
-
 }
 
 void drawCube() {
@@ -875,6 +1181,61 @@ void checkPointSprite() {
     video.supportPointSprite = 1;
 
 }
+
+
+void checkDriverBlacklist() {
+    char *glVendor;     // the company responsible for this OpenGL implementation 
+    char *glRenderer;   // particular driver configuration (i.e. hardware platform)
+    // The strings GL_VENDOR and GL_RENDERER together uniquely specify a platform
+
+    char *glVersion;    // OpenGL version number. Vendor specific information may follow the number.
+    char *extList;      // list of supported OpenGL extensions
+
+    glVendor   = (char *)glGetString(GL_VENDOR);
+    glRenderer = (char *)glGetString(GL_RENDERER);
+    glVersion  = (char *)glGetString(GL_VERSION);
+    extList    = (char *)glGetString(GL_EXTENSIONS);
+
+    conAdd(LNORM, "OpenGL video driver: vendor=%s; renderer=%s; version=%s", glVendor, glRenderer, glVersion);
+
+    /*
+     * Hardware/Driver-specific workarounds
+     */
+
+    // Intel Graphics Media Accelerator (GMA) - usually part of mobile core i5/i7 CPUs
+    if ((strcmp(glVendor, "Intel") == 0)
+        && (  (strcmp(glRenderer, "Intel(R) HD Graphics") == 0)
+            ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0))
+       ) {
+       if (strstr(glVersion, " Build 8.15.10.") != NULL) {
+          // driver 15.10. causes problems with particlerendermode 1 (GL_ARB_point_sprite)
+          // (first observed in Version "2.1.0 - Build 8.15.10.2509" on Windows 7, 64bit)
+          // effect: particles properly drawn, but OSD and text in windows is not visible any more
+
+	  if (view.particleRenderMode == 1) {
+              conAdd(LERR,  "Sorry, Your video card driver is blacklisted for particleRenderMode 1.");
+              conAdd(LERR, "This means you can't have really pretty looking particles.");
+              conAdd(LNORM, "Setting particleRenderMode to 2");
+              view.particleRenderMode = 2;
+	  }
+          video.supportPointSprite = 0;
+       }
+    }
+
+    // software OpenGL driver, Microsoft Windows
+    if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
+       // awfully SLOW. -> prefer particleRenderMode 0
+       if (view.particleRenderMode == 1) {
+           conAdd(LHELP,  "Sorry, Your software driver is blacklisted for particleRenderMode 1.");
+           conAdd(LHELP, "It's too slow for really pretty looking particles.");
+           conAdd(LNORM, "Setting particleRenderMode to 0");
+           view.particleRenderMode = 0;
+       }
+       // ToDo: add more tweak to achieve higher framerates ...
+    }
+
+}
+
 
 void drawPopupText() {
 

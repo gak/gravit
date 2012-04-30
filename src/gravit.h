@@ -58,16 +58,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define DATA_DIR ""
 #endif
 
-#define CONFIG_FILE "gravit.cfg"
-#define SCREENSAVER_FILE "screensaver.cfg"
-
 #define SPAWNDIR DATA_DIR "spawn"
 #define MISCDIR DATA_DIR "data"
 
 #ifdef WIN32
+#   define CONFIG_PATH "cfg"
+#   define CONFIG_FILE "cfg/gravit.cfg"
+#   define SCREENSAVER_FILE "cfg/screensaver.cfg"
 #   define SCREENSHOT_PATH "screenshots"
 #   define SAVE_PATH "save"
 #else
+#   define CONFIG_PATH "."
+#   define CONFIG_FILE "gravit.cfg"
+#   define SCREENSAVER_FILE "screensaver.cfg"
 #   ifdef __MACH__
 #       define SCREENSHOT_PATH va("%s/Library/Application Support/com.slowchop.gravit/screenshots", getenv("HOME"))
 #       define SAVE_PATH va("%s/Library/Application Support/com.slowchop.gravit/save", getenv("HOME"))
@@ -156,8 +159,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #include <SDL_opengl.h>
     #include <SDL_image.h>
 
+#ifndef WITHOUT_AGAR
+    #include <agar/core.h>
+    #include <agar/gui.h>
+#endif
+
     #define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
     #define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
+#ifndef WITHOUT_AGAR
+    #define agarCheck() { const char *aer = AG_GetError(); if (aer) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); } }
+#endif
 
 #else
 
@@ -343,6 +354,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
         SDL_Surface *sdlScreen;
 
         int sdlStarted;
+        int agarStarted;
 
     } video_t;
 
@@ -465,6 +477,7 @@ typedef struct view_s {
 
     VectorNew(rot);
     float zoom;
+    VectorNew(lastCenter); //center of view; set by translateToCenter()
     int zoomFitAuto;
 
     int maxVertices;    // 0 for infinite, otherwise tailskip will double when hit
@@ -498,11 +511,14 @@ typedef struct view_s {
 
     int drawOSD;
     int drawColourScheme;
+    int drawSky;
+    int drawSkyRandom;
 
     float fps;
     int vertices;
 
     int verboseMode;
+    int useStdout;         // 1 to copy console output to stdout
 
     int blendMode;
 
@@ -537,6 +553,13 @@ typedef struct view_s {
     float popupTextFadeTime;    // ms
 
     int autoCenter;
+    
+#ifndef WITHOUT_AGAR
+    AG_Window *playbackWindow;
+    AG_Style osdStyle;
+    AG_Button *playButton;
+    AG_Button *recordButton;
+#endif
 
 } view_t;
 
@@ -651,7 +674,7 @@ extern con_t con[CONSOLE_HISTORY];
 void conAdd(int mode, char *f, ... );
 void conInit();
 void conDraw();
-void conInput(SDLKey c);
+void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode);
 void conTypedHistoryAdd(char *s);
 void conTypedHistoryChange(int i);
 void conFree();
@@ -661,10 +684,15 @@ void conAutoComplete();
 
 // osd.c
 void drawOSD();
+void osdInitDefaultWindows();
+void osdUpdate();
 
 // input.c
 int processKeys();
 void processMouse();
+
+// texture.c
+GLuint loadTexture(char *fileName, int isSkybox);
 
 // gfx.c
 void drawAll();
@@ -676,6 +704,9 @@ int gfxSetResolution();
 void checkPointParameters();
 void checkPointSprite();
 void drawPopupText();
+void loadSkyBox(void);
+// toDo: auto-detect list of availeable skyboxes
+#define SKYBOX_LAST 2
 
 // color.c
 void setColours();

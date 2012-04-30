@@ -44,7 +44,9 @@
 #if !defined(__INTEL_COMPILER)
 #include <mm_malloc.h>
 #endif
+#ifndef __MACH__
 #include <malloc.h>
+#endif
 typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
 #define _mm_init1_ps(f) {f, f, f, f}
 
@@ -55,7 +57,7 @@ typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  
 #endif
 
 #define ALIGNED __attribute__((aligned (16)))
-#define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__, __artificial__))
+#define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__))
 
 #endif
 

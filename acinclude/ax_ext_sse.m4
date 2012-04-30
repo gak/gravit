@@ -4,9 +4,11 @@
 #
 # SYNOPSIS
 #
-#   AX_EXT
+#   AX_EXT_SSE
 #
 # DESCRIPTION
+#
+#   AX_EXT_SSE does not add cflags and defines for SSE2/SSE3/SSSE3
 #
 #   Find supported SIMD extensions by requesting cpuid. When an SIMD
 #   extension is found, the -m"simdextensionname" is added to SIMD_FLAGS
@@ -32,7 +34,7 @@
 
 #serial 8
 
-AC_DEFUN([AX_EXT],
+AC_DEFUN([AX_EXT_SSE],
 [
   AC_REQUIRE([AX_GCC_X86_CPUID])
 
@@ -56,29 +58,29 @@ AC_DEFUN([AX_EXT],
     fi
   ])
 
- AC_CACHE_CHECK([whether sse2 is supported], [ax_cv_have_sse2_ext],
-  [
+# AC_CACHE_CHECK([whether sse2 is supported], [ax_cv_have_sse2_ext],
+#  [
     ax_cv_have_sse2_ext=no
-    if test "$((0x$edx>>26&0x01))" = 1; then
-      ax_cv_have_sse2_ext=yes
-    fi
-  ])
+#    if test "$((0x$edx>>26&0x01))" = 1; then
+#      ax_cv_have_sse2_ext=yes
+#    fi
+#  ])
 
- AC_CACHE_CHECK([whether sse3 is supported], [ax_cv_have_sse3_ext],
-  [
+# AC_CACHE_CHECK([whether sse3 is supported], [ax_cv_have_sse3_ext],
+#  [
     ax_cv_have_sse3_ext=no
-    if test "$((0x$ecx&0x01))" = 1; then
-      ax_cv_have_sse3_ext=yes
-    fi
-  ])
+#    if test "$((0x$ecx&0x01))" = 1; then
+#      ax_cv_have_sse3_ext=yes
+#    fi
+#  ])
 
- AC_CACHE_CHECK([whether ssse3 is supported], [ax_cv_have_ssse3_ext],
-  [
+# AC_CACHE_CHECK([whether ssse3 is supported], [ax_cv_have_ssse3_ext],
+#  [
     ax_cv_have_ssse3_ext=no
-    if test "$((0x$ecx>>9&0x01))" = 1; then
-      ax_cv_have_ssse3_ext=yes
-    fi
-  ])
+#    if test "$((0x$ecx>>9&0x01))" = 1; then
+#      ax_cv_have_ssse3_ext=yes
+#    fi
+#  ])
 
   if test "$ax_cv_have_mmx_ext" = yes; then
     AC_DEFINE(HAVE_MMX,,[Support mmx instructions])

@@ -2,9 +2,13 @@
 # Process this file with autoconf to produce a configure script.
 
 # ===============================================================================================
-# ToDo (FrMo):
+# ToDo:
 # -------------
-# * nothing ;-)
+# * improve agar detection (check for version >= 1.4.1)
+#
+# Changes (FrMo, April 2012):
+# -------------
+# * auto-detect agar library
 #
 # Changes (FrMo, Sept 2011):
 # -------------
@@ -62,7 +66,7 @@ AC_CHECK_HEADERS([omp.h],[
 
 # check for supported SIMD extensions (gcc specific)
 # if SSE is supported, HAVE_SSE will be set
-AX_EXT
+AX_EXT_SSE
 CFLAGS="$CFLAGS $SIMD_FLAGS -I/usr/local/include"
 LDFLAGS="$SIMD_FLAGS $LDFLAGS -L/usr/local/lib"
 
@@ -327,6 +331,49 @@ if test "x$enable_png" = xyes; then
    fi
 fi
 
+dnl Check for agar
+dnl agar 1.4.1 is required for the new GUI
+dnl http://www.libagar.org
+AC_MSG_CHECKING(if agar support is requested)
+AC_ARG_WITH(agar, AC_HELP_STRING([--with-agar], [AGAR support, required for new GUI (recommended)]), [WITH_AGAR=$withval], [WITH_AGAR=yes])
+
+AC_MSG_RESULT($WITH_AGAR)
+if test x"$WITH_AGAR" != x"no"; then
+ AM_CONDITIONAL(AGAR, true)
+else
+ AM_CONDITIONAL(AGAR, false)
+ AC_DEFINE([WITHOUT_AGAR], [1], [libagar])
+fi
+
+if test x"$WITH_AGAR" != x"no"
+then
+ #try agar-config
+ AC_PATH_PROG(AGARCONFIG, agar-config)
+ if test x"$AGARCONFIG" != x
+ then
+   AGAR_VERSION=`$AGARCONFIG --version`
+   AGAR_CFLAGS=`$AGARCONFIG --cflags`
+   AGAR_LIBS=`$AGARCONFIG --libs`
+   AC_DEFINE([HAVE_AGAR], [1], [libagar])
+   CFLAGS="$CFLAGS $AGAR_CFLAGS"
+   CPPFLAGS="$CPPFLAGS $AGAR_CFLAGS"
+   LIBS="$LIBS $AGAR_LIBS"
+ fi
+ 
+ #check if agar header files can be found 
+ AC_CHECK_HEADER([agar/core.h], [have_agar_hdr=yes])
+ if test x"$have_agar_hdr" = x
+ then
+   AM_CONDITIONAL(AGAR, false)
+   AC_DEFINE([WITHOUT_AGAR], [1], [libagar])
+   AC_MSG_WARN([*** Unable to find AGAR library (http://www.libagar.org)])
+   AC_MSG_WARN([new GUI disabled])
+ else
+  echo found AGAR library "$AGAR_VERSION"
+  AC_SUBST(AGAR_CFLAGS)
+  AC_SUBST(AGAR_LIBS)
+ fi
+fi
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

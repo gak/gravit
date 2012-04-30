@@ -40,6 +40,27 @@ int processKeys() {
             return 1;
         }
 
+#ifndef WITHOUT_AGAR
+        {
+            AG_DriverEvent ev;
+            int x;
+            int y;
+            AG_SDL_TranslateEvent(agDriverSw, &event, &ev);
+            if (ev.type == AG_DRIVER_MOUSE_BUTTON_DOWN) {
+                x = ev.data.button.x;
+                y = ev.data.button.y;
+                if (AG_WindowFocusAtPos(agDriverSw, x, y)) {
+                    AG_ProcessEvent(0, &ev);
+                    return 0;
+                }
+            } else {
+                // if console is open, do not forward keyboard events to agar
+	         if ( ! (view.consoleMode && ((event.type == SDL_KEYUP)||(event.type == SDL_KEYDOWN))) )
+                    AG_ProcessEvent(0, &ev);
+            }
+        }
+#endif
+        
         if (event.type == SDL_MOUSEBUTTONDOWN) {
 
             if (view.screenSaver) {
@@ -53,6 +74,19 @@ int processKeys() {
             if (event.button.button == SDL_BUTTON_WHEELUP)
                 view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
 
+#ifndef WITHOUT_AGAR
+           // code introduced together with agar
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                view.mouseButtons[0] = SDL_BUTTON(1);
+            }
+            
+        }
+        
+        if (event.type == SDL_MOUSEBUTTONUP) {
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                view.mouseButtons[0] = 0;
+            }
+#endif
         }
 
         if (event.type == SDL_KEYUP) {
@@ -68,7 +102,7 @@ int processKeys() {
             view.keys[event.key.keysym.sym] = 1;
 
             if (view.consoleMode) {
-                conInput(event.key.keysym.sym);
+                conInput(event.key.keysym.sym, event.key.keysym.mod, event.key.keysym.unicode);
                 return 0;
             }
 
@@ -146,14 +180,26 @@ int processKeys() {
                 if (hasCtrlOrCmdModifier())
                     cmdSaveFrameDump(NULL);
                 // toggle stereo mode
+                // mode 1 : side-by-side
+                // mode 2 : anaglyph, offaxis frustum
                 else {
-                    if (view.stereoMode)
+                    if (view.stereoMode > 1)
                         view.stereoMode = 0;
                     else {
-                        view.stereoMode = 1;
+                        view.stereoMode ++;
                         cmdStereoWarning(0);
                     }
-                    conAdd(LNORM, "stereoMode set to %i", view.stereoMode);
+
+                    if (view.stereoMode ==2 ) {
+                        conAdd(LNORM, "stereoMode set to %i (red-cyan 3D glasses)", view.stereoMode);
+		    } else {
+                        if (view.stereoMode ==1)
+                           conAdd(LNORM, "stereoMode set to %i (freeview 3D)", view.stereoMode);
+			else
+                           conAdd(LNORM, "stereoMode set to %i", view.stereoMode);
+		    }
+
+                    setColours();
                 }
                 break;
 
@@ -308,6 +354,13 @@ int processKeys() {
                 conAdd(LLOW, "drawOSD set to %i", view.drawOSD);
                 break;
 
+            case SDLK_p:
+                view.drawSky ++;
+                if(view.drawSky > SKYBOX_LAST) view.drawSky = 0;
+                conAdd(LLOW, "drawSky set to %i", view.drawSky);
+                break;
+
+
             case SDLK_q:
                 if (hasCtrlOrCmdModifier()) {
                     cmdQuit(NULL);  // OS X cmd-q
@@ -374,9 +427,16 @@ void processMouse() {
 
     int x,y;
 
+#ifdef WITHOUT_AGAR
+    // old code
     view.mouseButtons[1] = view.mouseButtons[0];
     memcpy(view.lastMousePosition, view.currentMousePosition, sizeof(view.currentMousePosition));
     view.mouseButtons[0] = SDL_GetMouseState(&view.currentMousePosition[0], &view.currentMousePosition[1]);
+#else
+    // newer code introduced together with agar
+    memcpy(view.lastMousePosition, view.currentMousePosition, sizeof(view.currentMousePosition));
+    SDL_GetMouseState(&view.currentMousePosition[0], &view.currentMousePosition[1]);
+#endif
     x = view.currentMousePosition[0] - view.lastMousePosition[0];
     y = view.currentMousePosition[1] - view.lastMousePosition[1];
 
@@ -386,7 +446,7 @@ void processMouse() {
         return;
     }
 
-    if (view.mouseButtons[0]) {
+    if (view.mouseButtons[0] & SDL_BUTTON(1) ) {
 
         // Unfortunately, on OS X WarpMouse seems to act like the mouse isn't pressed anymore.
         
@@ -402,7 +462,7 @@ void processMouse() {
 #endif
 
         // turn off cursor only after the 2nd warp mouse, otherwise showcursor does strange things.
-        if (view.mouseButtons[1]) {
+        if (view.mouseButtons[1] & SDL_BUTTON(1) ) {
             SDL_ShowCursor(0);
         }
 
@@ -414,7 +474,11 @@ void processMouse() {
         SDL_ShowCursor(view.showCursor);
 
     }
-
+#ifndef WITHOUT_AGAR
+    
+    // code introduced together with agar
+    view.mouseButtons[1] = view.mouseButtons[0];
+#endif
 }
 
 #else
