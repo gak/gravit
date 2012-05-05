@@ -61,14 +61,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define SPAWNDIR DATA_DIR "spawn"
 #define MISCDIR DATA_DIR "data"
 
-#ifdef WIN32
-#   define CONFIG_PATH "cfg"
+#if defined(WIN32) || (!defined(HAVE_CONFIG_H) && !defined(__MACH__))
+#   define CONFIG_PATH "cfg/"
 #   define CONFIG_FILE "cfg/gravit.cfg"
 #   define SCREENSAVER_FILE "cfg/screensaver.cfg"
 #   define SCREENSHOT_PATH "screenshots"
 #   define SAVE_PATH "save"
 #else
-#   define CONFIG_PATH "."
+#   define CONFIG_PATH ""
 #   define CONFIG_FILE "gravit.cfg"
 #   define SCREENSAVER_FILE "screensaver.cfg"
 #   ifdef __MACH__

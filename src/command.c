@@ -888,11 +888,8 @@ void cmdRunScript(char *arg) {
     sz = strtok(arg, " ");
     if (!sz) return;
     opt = strtok(NULL, " ");
-#ifdef WIN32
-    script=findFile(va("%s/%s", CONFIG_PATH, sz));
-#else
-    script=findFile(sz);
-#endif
+
+    script=findFile(va("%s%s", CONFIG_PATH, sz));
     if ((script != NULL) && (strlen(script)>0)) {
         configRead(script, (opt && !strcmp(opt, "ignoremissing")));
     } else {
