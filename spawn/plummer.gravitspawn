@@ -1,0 +1,278 @@
+-- vim:syntax=lua tabstop=4
+
+load("functions.lua")
+
+function describe()
+	log("some globular clusters.")
+end
+
+
+-- this function is "proper physics ready".
+
+local physicsmode = 2
+-- 0 -> proper physics
+-- 1 -> almost-proper physics
+-- 2 -> classic physics
+
+-- value of the gravitational constant
+local gconst = 0.0000001
+
+-- todo: physicsmode and gconst should be provided by gravit
+
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+-- helper fuctions
+-- vector with length r and rotation (q,p); q and p in range[-1,1]
+function mkvect(len, p, q)
+    local vx= len * math.sqrt(1 - q*q) * math.cos(2 * math.pi * p)
+    local vy= len * math.sqrt(1 - q*q) * math.sin(2 * math.pi * p)
+    local vz= len * q
+    local result=v(vx,vy,vz)
+    return result
+end
+
+function mkvector(len)
+   return mkvect(len, randomfloat(-1,1), randomfloat(-1,1))
+end
+
+
+function randomshell(len)
+   return mkvect(len, randomfloat(-1,1), randomfloat(-1,1))
+end
+
+
+function orbit_velocity(innermass, disttocenter)
+	local result = 0.0
+
+	if math.abs(disttocenter) > 0.1 then
+		result= math.sqrt(gconst * math.abs(innermass) / math.abs(disttocenter))
+	end
+
+	if physicsmode > 0 then
+	        result=result*math.sqrt(math.abs(disttocenter))
+	end
+
+	return result
+end
+
+
+function vecproduct(vect1,vect2)
+	-- cross product of two vectors
+	-- siehe http://de.wikipedia.org/wiki/Kreuzprodukt
+	-- ergibt den vektor, der senkrecht auf beiden vektoren steht
+	local vect3=v(0,0,0)
+
+	vect3.x = vect1.y * vect2.z - vect1.z * vect2.y
+	vect3.y = vect1.z * vect2.x - vect1.x * vect2.z
+	vect3.z = vect1.x * vect2.y - vect1.y * vect2.x
+	return vect3
+end
+
+
+function randomortho(vector, radius)
+	local vect1=v(0,0,0)
+	local vect2=v(0,0,0)
+	local vectresult=v(0,0,0)
+	local a=randomfloat(-1, 1)
+	local b=randomfloat(-1, 1)
+
+
+	-- step 0 : special handling for zero size vector
+	if (math.abs(vector.x) + math.abs(vector.y) + math.abs(vector.z) < 0.000001)  then
+		--return v(0,0,0)
+		return v(0,radius,0)
+	end
+
+	-- step one : choose one orthogonal vector
+	-- see http://www.wer-weiss-was.de/theme50/article3103419.html
+
+	if (math.abs(vector.z)>0.0001) then
+	   vect1 = v(0, vector.z, -vector.y)
+	else
+	   vect1 = v(vector.y, -vector.x,0)
+	   --vect1 = v(-vector.z, 0, vector.x)
+	end
+
+
+	-- step two : compute vect2 othogonal to vector and vect2
+	-- (using cross product), so 
+	-- (vect1, vect2, vector are othogonal now)
+	vect2 = vecproduct(vector,vect1)
+
+	--step 3: normalize vectors (optional..)
+	vect1=vect1 * (1/distance(vect1, v(0,0,0)))
+	vect2=vect2 * (1/distance(vect2, v(0,0,0)))
+
+	--step 4: vector3 = a*vect1 + b*vect2
+	vectresult.x= a*vect1.x + b*vect2.x
+	vectresult.y= a*vect1.y + b*vect2.y
+	vectresult.z= a*vect1.z + b*vect2.z
+
+	--step 4: normalize and scale
+	vectresult = vectresult * (radius / distance(vectresult, v(0,0,0)))
+	return vectresult
+end
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+
+
+
+-- adoption of the "plummer" formula (Aarseth, Henon and Wielen) from
+-- http://www.artcompsci.org/kali/vol/plummer/title.html
+
+-- the support for "almost_proper" physics is an educated guess,
+-- but it seems to work
+
+-- This function also includes scaling from 
+-- the "standard simulation units" system (total_mass = radius = G = 1) 
+-- to a system with arbitrary G, mass and radius
+
+function do_plummer(center, groupvel, target_radius, target_mass , start, particles)
+    local real_mass=0
+
+    -- compute physical units scale factors
+    local rfak = target_radius
+    local mfak = target_mass
+    local vfak = math.sqrt((mfak * gconst)/rfak)
+    if physicsmode > 0 then
+       vfak = vfak * math.sqrt(rfak)
+    end
+
+    mfak=mfak * 1.01
+
+    -- (plummer model scaling to   rad = mass = g = 1 )
+    local scalefactor_r = (3.0 * math.pi) / 16
+    local scalefactor_v = math.sqrt(1.0 / scalefactor_r)
+
+    -- build plummer model
+    local avg_mass=1.0 / particles
+    local cumulative_mass_min = 0                                                    
+    local cumulative_mass_max = avg_mass
+    for i=start, start+particles-1 do
+       --local mass = avg_mass
+       local mass = randomfloat(avg_mass * 0.8, avg_mass * 1.2)
+       cumulative_mass = randomfloat(cumulative_mass_min, cumulative_mass_max)        
+       cumulative_mass_min = cumulative_mass_max                                
+       cumulative_mass_max = cumulative_mass_max + avg_mass
+                                             
+       local radius = 1.0 / math.sqrt( cumulative_mass^(-2.0/3.0) - 1.0)
+       local pos = mkvector(radius) * scalefactor_r
+
+       local x = 0.0
+       local y = 0.1
+       while (y > (x*x*(1.0-x*x)^3.5)) do
+           x = randomfloat(0,1)
+           y = randomfloat(0,0.1)
+       end
+
+       velocity = x * math.sqrt(2.0 / math.sqrt(1 + radius*radius));
+
+       if physicsmode > 0 then
+	  velocity = velocity * math.sqrt(radius) 
+       end
+       if physicsmode == 2 then
+	  velocity = velocity * mass 
+       end
+
+
+       vel = mkvector(velocity) * scalefactor_v
+
+       -- scale pos,vel,mass to physical units, then allocate particle
+       pos  = pos  * rfak
+       vel  = vel  * vfak
+       mass = mass * mfak
+       particle(i, center + pos, groupvel + vel, mass)
+       -- sum real mass
+       real_mass=real_mass + mass
+    end
+    return real_mass
+end
+
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+
+function place_object_plummer(num, center, vel, ratio, start, particles)
+    local radius=randomfloat(50, 150)
+    local mass=4* math.sqrt(radius^3) * ratio
+
+     if physicsmode > 0 then
+        mass=mass*randomfloat(4,12)
+     end
+
+     if physicsmode == 2 then
+	mass=mass * 5
+     end
+
+   return do_plummer(center, vel, radius, mass, start, particles)
+end
+
+
+function spawn_one()
+   place_object_plummer(0, v(0,0,0), v(0,0,0), 1, 0, spawnparticles)
+end
+
+
+function spawn()
+
+	local num_objects=randomint(1,5)
+	local mass_unit=1.0
+	local min_distance=1500
+	local num_objects=1
+	
+	if randomint(0,1)>0 then
+	   num_objects=randomint(1,3)
+	end
+
+
+        local part=math.floor(spawnparticles / num_objects)
+
+        -- first postion
+	local pos = randomrange(400)
+	local mainvel = v(0,0,0)
+	local first = 0
+
+	-- i want to be dirty, lets spawn some very massive objects
+	if (randomint(0,3) > 2) then
+	   local smbhmass = 256 + physicsmode * 512
+	    -- let a smbh cross the scene
+	   for k=1 ,randomint(3,12) do
+	      particle(first, v(2000,2000,0) + mkvector(800) + randomrange(800), v(-4,-4,0), smbhmass)
+	    first=first +1
+	   end
+	 end
+
+	local mass = place_object_plummer(0, pos, mainvel, mass_unit, first, part-first)
+	local center=pos
+
+        -- spawn some plummer spheres
+	local pstart=part
+	for i=1, num_objects-1 do
+	   if i==(num_objects-1) then
+	      parts = spawnparticles - pstart
+	   end
+	   
+	   local ratio=mass_unit/randomfloat(0.9,4)
+	   pos = center + randomshell(min_distance) + randomrange(min_distance/3.0)
+	   local dist=distance(pos, center)
+
+	   local eccentricity = randomfloat(0.2, 0.8)
+	   local smalldist    = dist * math.sqrt(1- eccentricity*eccentricity)
+	   -- 2-body eliptic orbit
+	   local orbitVel=math.sqrt(gconst* mass *(1+ratio) * ((2/dist) - (1/smalldist)))
+
+	   if (physicsmode > 0) or (randomint(0,1)>0) then
+	         orbitVel = orbit_velocity(mass, dist)
+	   end
+
+	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
+
+	   mass = place_object_plummer(i, pos, mainvel, ratio, pstart, part)
+
+	   center=pos
+	   pstart=pstart+part
+	end 
+end
+

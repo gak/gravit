@@ -2,13 +2,17 @@ function vadd(v1, v2)
 	return v(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z)
 end
 
+function vsub(v1, v2)
+	return v(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
+end
+
 function vmul(v1, f)
 	return v(v1.x * f, v1.y * f, v1.z * f)
 end
 
 function v(_x, _y, _z)
 	t = { x = _x, y = _y, z = _z };
-	mt = { __add = vadd, __mul = vmul }
+	mt = { __add = vadd,  __sub = vsub, __mul = vmul }
 	setmetatable(t, mt)
 	return t
 end
