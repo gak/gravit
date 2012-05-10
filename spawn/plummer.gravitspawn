@@ -203,7 +203,8 @@ function place_object_plummer(num, center, vel, ratio, start, particles)
      end
 
      if physicsmode == 2 then
-	mass=mass * 5
+	mass=mass * 6
+	radius=radius * 6
      end
 
    return do_plummer(center, vel, radius, mass, start, particles)
@@ -220,14 +221,13 @@ function spawn()
 	local num_objects=randomint(1,5)
 	local mass_unit=1.0
 	local min_distance=1500
-	local num_objects=1
 	
-	if randomint(0,1)>0 then
-	   num_objects=randomint(1,3)
-	end
-
-
         local part=math.floor(spawnparticles / num_objects)
+
+        if physicsmode == 2 then
+	    min_distance= min_distance * 4
+	    mass_unit = mass_unit * 2
+        end
 
         -- first postion
 	local pos = randomrange(400)
@@ -265,6 +265,10 @@ function spawn()
 
 	   if (physicsmode > 0) or (randomint(0,1)>0) then
 	         orbitVel = orbit_velocity(mass, dist)
+	   end
+
+	   if physicsmode == 2 then
+	      orbitVel = orbitVel * math.sqrt(mass/2);
 	   end
 
 	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
