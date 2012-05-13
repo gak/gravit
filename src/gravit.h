@@ -332,6 +332,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #define GL_POINT_SPRITE_ARB 0x8861
     #define GL_COORD_REPLACE_ARB 0x8862
 
+    #ifndef GL_CLAMP_TO_EDGE
+        #define GL_CLAMP_TO_EDGE 0x812F
+    #endif
+
     typedef struct conf_s {
 
         int screenBPP;
