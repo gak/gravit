@@ -147,7 +147,7 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
     local scalefactor_v = math.sqrt(1.0 / scalefactor_r)
 
     -- build plummer model
-    local avg_mass=1.0 / particles
+    local avg_mass=0.94 / particles
     local cumulative_mass_min = 0                                                    
     local cumulative_mass_max = avg_mass
     for i=start, start+particles-1 do
@@ -268,7 +268,7 @@ function spawn()
 	   end
 
 	   if physicsmode == 2 then
-	      orbitVel = orbitVel * math.sqrt(mass/2);
+	      orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
 	   end
 
 	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
