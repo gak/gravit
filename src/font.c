@@ -153,6 +153,10 @@ int loadFonts() {
 
 void drawFontLetter(float x, float y, int letter) {
 
+//    if ((fonts[letter].id == 0) || (!glIsTexture(fonts[letter].id))) {
+//        conAdd(LERR, "texture id %u for character 0x%x is invalid", fonts[letter].id, letter);
+//    }
+
     glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
     glCheck();
 
@@ -237,7 +241,7 @@ void drawFontWordRA(float x, float y, char *word) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    for (i = strlen(word); i >= 0; i--) {
+    for (i = strlen(word) - 1; i >= 0; i--) {
 
         drawFontLetter(x, y, word[i]);
 
