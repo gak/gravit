@@ -1207,6 +1207,7 @@ void checkDriverBlacklist() {
         && (  (strcmp(glRenderer, "Intel(R) HD Graphics") == 0)
             ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0))
        ) {
+      /*
        if (strstr(glVersion, " Build 8.15.10.") != NULL) {
           // driver 15.10. causes problems with particlerendermode 1 (GL_ARB_point_sprite)
           // (first observed in Version "2.1.0 - Build 8.15.10.2509" on Windows 7, 64bit)
@@ -1220,6 +1221,7 @@ void checkDriverBlacklist() {
 	  }
           video.supportPointSprite = 0;
        }
+      */
     }
 
     // software OpenGL driver, Microsoft Windows
