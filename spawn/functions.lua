@@ -86,23 +86,24 @@ function rotatevector(pos, theta, around)
 
 	local result = v(0,0,0)
 
-	-- fixme: Quaternion rotation only works properly when "around" has scalar size 1
-	-- around = around * (1.0 / vlength(around))
+	--  Quaternion rotation only works properly when "around" has scalar size 1
+	around = around * (1.0 / vlength(around))
 
 	local costheta = math.cos(theta)
 	local sintheta = math.sin(theta)
+	local tcostheta = 1 - costheta
 
-	result.x = result.x + (costheta + (1 - costheta) * around.x * around.x) * pos.x
-	result.x = result.x + ((1 - costheta) * around.x * around.y - around.z * sintheta) * pos.y
-	result.x = result.x + ((1 - costheta) * around.x * around.z + around.y * sintheta) * pos.z
+	result.x = result.x + (tcostheta * around.x * around.x + costheta) * pos.x
+	result.x = result.x + (tcostheta * around.x * around.y - around.z * sintheta) * pos.y
+	result.x = result.x + (tcostheta * around.x * around.z + around.y * sintheta) * pos.z
 
-	result.y = result.y + ((1 - costheta) * around.x * around.y + around.z * sintheta) * pos.x
-	result.y = result.y + (costheta + (1 - costheta) * around.y * around.y) * pos.y
-	result.y = result.y +((1 - costheta) * around.y * around.z - around.x * sintheta) * pos.z
+	result.y = result.y + (tcostheta * around.x * around.y + around.z * sintheta) * pos.x
+	result.y = result.y + (tcostheta * around.y * around.y + costheta) * pos.y
+	result.y = result.y + (tcostheta * around.y * around.z - around.x * sintheta) * pos.z
 
-	result.z = result.z + ((1 - costheta) * around.x * around.z - around.y * sintheta) * pos.x
-	result.z = result.z + ((1 - costheta) * around.y * around.z + around.x * sintheta) * pos.y
-	result.z = result.z + (costheta + (1 - costheta) * around.z * around.z) * pos.z
+	result.z = result.z + (tcostheta * around.x * around.z - around.y * sintheta) * pos.x
+	result.z = result.z + (tcostheta * around.y * around.z + around.x * sintheta) * pos.y
+	result.z = result.z + (tcostheta * around.z * around.z + costheta) * pos.z
 
 	return result
 
