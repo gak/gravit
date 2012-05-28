@@ -24,21 +24,28 @@ local gconst = 0.0000001
 -- ----------------------------------------------------------------
 -- helper fuctions
 -- vector with length r and rotation (q,p); q and p in range[-1,1]
-function mkvect(len, p, q)
-    local vx= len * math.sqrt(1 - q*q) * math.cos(2 * math.pi * p)
-    local vy= len * math.sqrt(1 - q*q) * math.sin(2 * math.pi * p)
-    local vz= len * q
-    local result=v(vx,vy,vz)
-    return result
-end
-
-function mkvector(len)
-   return mkvect(len, randomfloat(-1,1), randomfloat(-1,1))
-end
-
+--function mkvect(len, p, q)
+--    local vx= len * math.sqrt(1 - q*q) * math.cos(2 * math.pi * p)
+--    local vy= len * math.sqrt(1 - q*q) * math.sin(2 * math.pi * p)
+--    local vz= len * q
+--    local result=v(vx,vy,vz)
+--    return result
+--end
 
 function randomshell(len)
-   return mkvect(len, randomfloat(-1,1), randomfloat(-1,1))
+    local pos
+    local d2
+    local rscale
+
+    -- pick random point inside unit sphere
+    repeat
+        pos = v(randomfloat(-1,1), randomfloat(-1,1), randomfloat(-1,1))
+	d2 = pos.x*pos.x + pos.y*pos.y + pos.z*pos.z
+    until (d2 > 0) and (d2 <= 1)
+
+    -- scale position vector to target length (so the point is always on the surface of the sphere)
+    rscale = len / math.sqrt(d2)
+    return pos * rscale
 end
 
 
@@ -158,7 +165,7 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
        cumulative_mass_max = cumulative_mass_max + avg_mass
                                              
        local radius = 1.0 / math.sqrt( cumulative_mass^(-2.0/3.0) - 1.0)
-       local pos = mkvector(radius) * scalefactor_r
+       local pos = randomshell(radius) * scalefactor_r
 
        local x = 0.0
        local y = 0.1
@@ -177,7 +184,7 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
        end
 
 
-       vel = mkvector(velocity) * scalefactor_v
+       vel = randomshell(velocity) * scalefactor_v
 
        -- scale pos,vel,mass to physical units, then allocate particle
        pos  = pos  * rfak
@@ -239,7 +246,7 @@ function spawn()
 	   local smbhmass = 256 + physicsmode * 512
 	    -- let a smbh cross the scene
 	   for k=1 ,randomint(3,12) do
-	      particle(first, v(2000,2000,0) + mkvector(800) + randomrange(800), v(-4,-4,0), smbhmass)
+	      particle(first, v(2000,2000,0) + randomshell(800) + randomrange(800), v(-4,-4,0), smbhmass)
 	    first=first +1
 	   end
 	 end
