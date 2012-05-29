@@ -243,10 +243,8 @@ void drawFontWordRA(float x, float y, char *word) {
 
     for (i = strlen(word) - 1; i >= 0; i--) {
 
+        x -= fonts[(int)word[i]].ow;
         drawFontLetter(x, y, word[i]);
-
-        if (i > 0)
-            x -= fonts[(int)word[i-1]].ow;
 
     }
 }
