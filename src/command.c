@@ -402,6 +402,7 @@ void cmdSpawn(char *arg) {
     char *scriptFile;
 #endif
     size_t memoryAvailable;
+    int needrestart = 0;
 
     if (arg)
         scriptName = arg;
@@ -472,7 +473,7 @@ cmdSpawnRestartSpawning:
     }
 
     // make sure no two particles are in the same spot
-    int needrestart = 0;
+    needrestart = 0;
     while (needrestart) {
         int i,j;
         needrestart = 0;

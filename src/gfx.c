@@ -1212,6 +1212,10 @@ void checkDriverBlacklist() {
           // driver 15.10. causes problems with particlerendermode 1 (GL_ARB_point_sprite)
           // (first observed in Version "2.1.0 - Build 8.15.10.2509" on Windows 7, 64bit)
           // effect: particles properly drawn, but OSD and text in windows is not visible any more
+          // other affected driver versions:
+          //    2.1.0 - Build 8.15.10.2559 (OSD not visible; but text in agar windows is OK)
+          // drivers that seem to work:
+          //    2.1.0 - Build 8.15.10.2202
 
 	  if (view.particleRenderMode == 1) {
               conAdd(LERR,  "Sorry, Your video card driver is blacklisted for particleRenderMode 1.");
