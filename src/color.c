@@ -63,6 +63,7 @@ void setColoursByVel() {
 
         d = velSpeed / velMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleTexture = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -113,6 +114,7 @@ void setColoursByKinetic() {
 
         d = kinValue / kinMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleTexture = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -163,6 +165,7 @@ void setColoursByMomentum() {
 
         d = kinValue / kinMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleTexture = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -217,6 +220,7 @@ void setColoursByAcceleration() {
 
         d = accCurrent / accMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleTexture = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -267,7 +271,7 @@ void setColoursByMass() {
             pd->col[2] = 1 - pd->col[2];
 
         }
-
+        pd->particleTexture = colourSprite(pd->col, pd->mass);
     }
 
 }
@@ -372,6 +376,45 @@ void colourFromNormal(float *c, float n) {
 	  // reduce to "half-color": red = 0,299*red + 0,587*green + 0,114*blue
 	  c[0] = 0.299*c[0] + 0.587*c[1] + 0.144*c[2];
     }
+
+    // more opacity
+    if ((view.glow == 1) || (view.glow == 2) || (view.glow > 5))
+      c[3] = sqrtf(c[3]);
+}
+
+
+GLuint colourSprite(float *c, float mass) {
+
+  if (view.glow == 0) return(particleTextureID);
+
+  // add starshine effect
+  // color by mass --> above 90% of highest mass
+  if((particleTextureID_glow != 0) && (view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
+      return(particleTextureID_glow);
+  // not coloring by mass --> add effect for the brightest particles
+  if((particleTextureID_glow != 0) && (view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
+      return(particleTextureID_glow);
+
+  // stereo mode --> use grayscale particle
+  if (view.stereoMode == 2)
+    return(particleTextureID_gray);
+
+
+  // select texture template based on dominant color
+  //   blue
+  if ((c[2] > c[1]) && (c[2] > c[0]) && (particleTextureID_blue != 0))
+    return(particleTextureID_blue);
+
+  //   green
+  if ((c[1] > c[0]) && (particleTextureID_green != 0))
+    return(particleTextureID_green);
+
+  //   red
+  if (particleTextureID_red != 0)
+    return(particleTextureID_red);
+  else
+    return(particleTextureID);
+
 }
 
 #endif

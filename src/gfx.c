@@ -37,7 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef NO_GUI
 
 // TODO: Move to view struct
-static GLuint particleTextureID = 0;
+GLuint particleTextureID = 0;
+GLuint particleTextureID_glow = 0;
+GLuint particleTextureID_red = 0;
+GLuint particleTextureID_green = 0;
+GLuint particleTextureID_blue = 0;
+GLuint particleTextureID_gray = 0;
+
 static GLuint skyBoxTextureID = 0;
 static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
 
@@ -73,6 +79,11 @@ void drawFrameSet3D() {
 }
 
 GLuint loadParticleTexture() {
+    particleTextureID_glow = loadTexture(va("%s%s", MISCDIR, "/particle_glow.png"), GL_FALSE);
+    particleTextureID_gray = loadTexture(va("%s%s", MISCDIR, "/particle_gray_glow.png"), GL_FALSE);
+    particleTextureID_red = loadTexture(va("%s%s", MISCDIR, "/particle_red_glow.png"), GL_FALSE);
+    particleTextureID_green = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
+    particleTextureID_blue = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
     particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
     return particleTextureID;
 }
@@ -373,7 +384,22 @@ void drawFrame() {
 
     if (view.particleRenderMode == 1) {
 
-        float quadratic[] =  { 0.0f, 0.0f, 0.01f };
+        float quadratic_0[] =  { 0.0f, 0.0f, 0.01f };
+        float quadratic_1[] =  { 0.0f, 0.0f, 0.01f };
+        float quadratic_2[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
+        float quadratic_3[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
+        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
+        float quadratic_5[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
+        float quadratic_6[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
+        float *quadratic;
+
+        quadratic = quadratic_0;
+        if (view.glow == 1) quadratic = quadratic_1;
+        if (view.glow == 2) quadratic = quadratic_2;
+        if (view.glow == 3) quadratic = quadratic_3;
+        if (view.glow == 4) quadratic = quadratic_4;
+        if (view.glow == 5) quadratic = quadratic_5;
+        if (view.glow >= 6) quadratic = quadratic_6;
 
         if (!video.supportPointParameters || !video.supportPointSprite) {
 
@@ -388,6 +414,12 @@ void drawFrame() {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
+  {
+  // set point sprite attributes for all point textures
+  // xxx - not sure if repeating this for every texture is really necessary 
+  GLuint sprites[6]= {particleTextureID, particleTextureID_glow, particleTextureID_red, particleTextureID_green, particleTextureID_blue, particleTextureID_gray};
+  int kk;
+  for (kk=0; kk<6; kk++) {
         glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
 
         glPointParameterfARB_ptr( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
@@ -400,12 +432,14 @@ void drawFrame() {
         // so i had to make textures an option with this mode
         if (view.particleRenderTexture) {
             glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
-            glBindTexture(GL_TEXTURE_2D, particleTextureID);
+            glBindTexture(GL_TEXTURE_2D, sprites[kk]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         glEnable( GL_POINT_SPRITE_ARB );
+    }
+  }
 
     } else if (view.particleRenderMode == 2) {
 
@@ -420,12 +454,25 @@ void drawFrame() {
 
     if (view.particleRenderMode == 0 || view.particleRenderMode == 1) {
 
+        GLuint lastTexture=state.particleDetail[0].particleTexture;
+        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, lastTexture);
+        glCheck();
+
         glBegin(GL_POINTS);
         for (i = 0; i < state.particleCount; i++) {
 
             VectorNew(pos);
 
             pd = state.particleDetail + i;
+
+            if ((view.particleRenderMode > 0) && (pd->particleTexture != lastTexture)) {
+                glEnd();
+                glBindTexture(GL_TEXTURE_2D, pd->particleTexture);
+                //glCheck();
+                glBegin(GL_POINTS);
+            }
+            lastTexture = pd->particleTexture;
+
             glColor4fv(pd->col);
             if (view.frameSkip < 0) {
                 particleInterpolate(i, ((float)view.frameSkipCounter / view.frameSkip), pos);
@@ -508,6 +555,7 @@ void drawFrame() {
                 continue;
 
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
+            glBindTexture(GL_TEXTURE_2D, pd->particleTexture);
 
             glBegin(GL_QUADS);
             glColor4fv(pd->col);

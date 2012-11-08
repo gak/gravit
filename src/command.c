@@ -150,6 +150,7 @@ cmd_t cmd[] = {
     ,{ "popuptext",					cmdPopupText,			NULL,						NULL,								NULL }
 
     ,{ "autocenter",				NULL,					NULL,						&view.autoCenter,					NULL }
+    ,{ "particleglow",				NULL,					NULL,						&view.glow,					NULL }
 
     ,{ "maxvertices",				NULL,					NULL,						&view.maxVertices,					NULL }
 
