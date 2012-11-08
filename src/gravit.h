@@ -385,6 +385,7 @@ typedef struct particleDetail_s {
 
     float mass;
     float col[4];
+    GLuint particleTexture;
 
 } particleDetail_t;
 
@@ -558,6 +559,8 @@ typedef struct view_s {
 
     int autoCenter;
     
+    int glow;          //0: no glow; 1-6: glow levels
+
 #ifndef WITHOUT_AGAR
     AG_Window *playbackWindow;
     AG_Style osdStyle;
@@ -712,11 +715,20 @@ void loadSkyBox(void);
 // toDo: auto-detect list of availeable skyboxes
 #define SKYBOX_LAST 2
 
+extern GLuint particleTextureID;
+extern GLuint particleTextureID_glow;
+extern GLuint particleTextureID_red;
+extern GLuint particleTextureID_green;
+extern GLuint particleTextureID_blue;
+extern GLuint particleTextureID_gray;
+
 // color.c
 void setColours();
 void setColoursByMass();
 void colourSpectrumClear();
 void colourFromNormal(float *c, float n);
+GLuint colourSprite(float *c, float mass);
+
 
 #else
 
