@@ -561,8 +561,36 @@ void drawFrame() {
                 &screen[0], &screen[1], &screen[2]
             );
 
-            if ((success != GL_TRUE) || (screen[2] > 1))
+            if ((success != GL_TRUE) || (screen[2] > 1.0) || (screen[2] < -1.0))
                 continue;
+
+            /* THIS IS A DIRTY HACK, but it works. */
+            /* it seems that z is usually very close to 1 (between 0.999982 and 0.999995)
+             * -> To achieve an effect similar to "glow" in particlerendermode 1,
+             * we multiply the z value with itself several times, which actually "stretches" 
+             * the value range towards the lower values.
+             */
+            if (view.glow > 1) {
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (view.glow > 2) {
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (view.glow > 3) {
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (view.glow > 4) {
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (screen[2] > 1.0) screen[2] = 1.0;
+            if (screen[2] < -1.0) screen[2] = -1.0;
 
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
             glBindTexture(GL_TEXTURE_2D, pd->particleTexture);
