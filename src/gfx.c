@@ -458,6 +458,13 @@ void drawFrame() {
         if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, lastTexture);
         glCheck();
 
+        // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the
+        // Z-Buffer read-only, which helps remove graphical artifacts generated
+        // from  rendering a list of particles that haven't been sorted by
+        // distance to the eye.
+        glEnable( GL_DEPTH_TEST );
+        glDepthMask( GL_FALSE );
+
         glBegin(GL_POINTS);
         for (i = 0; i < state.particleCount; i++) {
 
@@ -485,6 +492,9 @@ void drawFrame() {
 
         }
         glEnd();
+
+        glDepthMask( GL_TRUE );
+        glDisable( GL_DEPTH_TEST );
 
     } else if (view.particleRenderMode == 2) {
 
