@@ -363,7 +363,7 @@ int processKeys() {
 
             case SDLK_g:
                 view.glow ++;
-                if(view.glow > 6)
+                if(view.glow > 8)
                 {
                     view.glow = 0;
                     conAdd(LLOW, "Star glow disabled");

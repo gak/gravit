@@ -378,7 +378,7 @@ void colourFromNormal(float *c, float n) {
     }
 
     // more opacity
-    if ((view.glow == 1) || (view.glow == 2) || (view.glow > 5))
+    if ((view.glow == 1) || (view.glow == 2) || (view.glow > 7))
       c[3] = sqrtf(c[3]);
 }
 
@@ -386,6 +386,8 @@ void colourFromNormal(float *c, float n) {
 GLuint colourSprite(float *c, float mass) {
 
   if (view.glow == 0) return(particleTextureID);
+
+  if ((view.glow < 5) && (view.particleRenderMode == 1)) return (particleTextureID_gray2);
 
   // add starshine effect
   // color by mass --> above 90% of highest mass

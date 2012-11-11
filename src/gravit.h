@@ -721,6 +721,7 @@ extern GLuint particleTextureID_red;
 extern GLuint particleTextureID_green;
 extern GLuint particleTextureID_blue;
 extern GLuint particleTextureID_gray;
+extern GLuint particleTextureID_gray2;
 
 // color.c
 void setColours();

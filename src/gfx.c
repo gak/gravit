@@ -43,6 +43,7 @@ GLuint particleTextureID_red = 0;
 GLuint particleTextureID_green = 0;
 GLuint particleTextureID_blue = 0;
 GLuint particleTextureID_gray = 0;
+GLuint particleTextureID_gray2 = 0;
 
 static GLuint skyBoxTextureID = 0;
 static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
@@ -84,6 +85,7 @@ GLuint loadParticleTexture() {
     particleTextureID_red = loadTexture(va("%s%s", MISCDIR, "/particle_red_glow.png"), GL_FALSE);
     particleTextureID_green = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
     particleTextureID_blue = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
+    particleTextureID_gray2 = loadTexture(va("%s%s", MISCDIR, "/particle_gray2.png"), GL_FALSE);
     particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
     return particleTextureID;
 }
@@ -385,12 +387,14 @@ void drawFrame() {
     if (view.particleRenderMode == 1) {
 
         float quadratic_0[] =  { 0.0f, 0.0f, 0.01f };
-        float quadratic_1[] =  { 0.0f, 0.0f, 0.01f };
+        float quadratic_1[] =  { 0.0f, 0.0f, 0.0001f };
         float quadratic_2[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
-        float quadratic_3[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
-        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
-        float quadratic_5[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
-        float quadratic_6[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
+        float quadratic_3[] =  { 0.0f, 0.0f, 0.000001f, 0.00f };
+        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000003f, 0.00f };
+        float quadratic_5[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
+        float quadratic_6[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
+        float quadratic_7[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
+        float quadratic_8[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
         float *quadratic;
 
         quadratic = quadratic_0;
@@ -399,7 +403,9 @@ void drawFrame() {
         if (view.glow == 3) quadratic = quadratic_3;
         if (view.glow == 4) quadratic = quadratic_4;
         if (view.glow == 5) quadratic = quadratic_5;
-        if (view.glow >= 6) quadratic = quadratic_6;
+        if (view.glow == 6) quadratic = quadratic_6;
+        if (view.glow == 7) quadratic = quadratic_7;
+        if (view.glow >= 8) quadratic = quadratic_8;
 
         if (!video.supportPointParameters || !video.supportPointSprite) {
 
