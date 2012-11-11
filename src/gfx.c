@@ -44,6 +44,7 @@ GLuint particleTextureID_green = 0;
 GLuint particleTextureID_blue = 0;
 GLuint particleTextureID_gray = 0;
 GLuint particleTextureID_gray2 = 0;
+GLuint particleTextureID_glow2 = 0;
 
 static GLuint skyBoxTextureID = 0;
 static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
@@ -86,6 +87,7 @@ GLuint loadParticleTexture() {
     particleTextureID_green = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
     particleTextureID_blue = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
     particleTextureID_gray2 = loadTexture(va("%s%s", MISCDIR, "/particle_gray2.png"), GL_FALSE);
+    particleTextureID_glow2 = loadTexture(va("%s%s", MISCDIR, "/particle_glow2.png"), GL_FALSE);
     particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
     return particleTextureID;
 }
@@ -576,8 +578,8 @@ void drawFrame() {
              * we multiply the z value with itself several times, which actually "stretches" 
              * the value range towards the lower values.
              */
-            if (view.glow > 1) {
-                screen[2] *= screen[2] * screen[2];
+            if (view.glow > 0) {
+	        // basic amplification
                 screen[2] *= screen[2] * screen[2];
                 screen[2] *= screen[2] * screen[2];
                 screen[2] *= screen[2] * screen[2];
@@ -586,15 +588,23 @@ void drawFrame() {
                 screen[2] *= screen[2] * screen[2];
                 screen[2] *= screen[2] * screen[2];
             }
-            if (view.glow > 2) {
+            if (view.glow >= 1) {
+	        // similat to attenuation 0.0001
                 screen[2] *= screen[2] * screen[2];
             }
-            if (view.glow > 3) {
+            if (((view.glow >= 2) && (view.glow < 5)) || (view.glow >= 6)) {
+	        // similat to attenuation 0.00001
                 screen[2] *= screen[2] * screen[2];
             }
-            if (view.glow > 4) {
+            if (((view.glow >= 3) && (view.glow < 5)) || (view.glow >= 7)) {
+	        // similat to attenuation 0.000001
                 screen[2] *= screen[2] * screen[2];
             }
+            if (((view.glow >= 4) && (view.glow < 5)) || (view.glow >= 8)) {
+	        // similat to attenuation 0.0000001
+                screen[2] *= screen[2] * screen[2];
+            }
+
             if (screen[2] > 1.0) screen[2] = 1.0;
             if (screen[2] < -1.0) screen[2] = -1.0;
 

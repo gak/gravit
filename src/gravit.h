@@ -559,7 +559,7 @@ typedef struct view_s {
 
     int autoCenter;
     
-    int glow;          //0: no glow; 1-6: glow levels
+    int glow;          //0: no glow; 1-4: small stars; 4-8: big stars
 
 #ifndef WITHOUT_AGAR
     AG_Window *playbackWindow;
@@ -722,6 +722,7 @@ extern GLuint particleTextureID_green;
 extern GLuint particleTextureID_blue;
 extern GLuint particleTextureID_gray;
 extern GLuint particleTextureID_gray2;
+extern GLuint particleTextureID_glow2;
 
 // color.c
 void setColours();

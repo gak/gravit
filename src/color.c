@@ -387,35 +387,44 @@ GLuint colourSprite(float *c, float mass) {
 
   if (view.glow == 0) return(particleTextureID);
 
-  if ((view.glow < 5) && (view.particleRenderMode == 1)) return (particleTextureID_gray2);
+  if (view.glow < 5) {
+      // add starshine effect
+      // color by mass --> above 90% of highest mass
+      if((particleTextureID_glow2 != 0) && (view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
+          return(particleTextureID_glow2);
+      // not coloring by mass --> add effect for the brightest particles
+      if((particleTextureID_glow2 != 0) && (view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
+          return(particleTextureID_glow2);
 
-  // add starshine effect
-  // color by mass --> above 90% of highest mass
-  if((particleTextureID_glow != 0) && (view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
-      return(particleTextureID_glow);
-  // not coloring by mass --> add effect for the brightest particles
-  if((particleTextureID_glow != 0) && (view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
-      return(particleTextureID_glow);
+      return (particleTextureID_gray2);
 
-  // stereo mode --> use grayscale particle
-  if (view.stereoMode == 2)
-    return(particleTextureID_gray);
+  } else {
+      // special texture for big particles
+      if((particleTextureID_glow != 0) && (view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
+          return(particleTextureID_glow);
+
+      if((particleTextureID_glow != 0) && (view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
+          return(particleTextureID_glow);
+
+      // stereo mode --> use grayscale texture
+      if (view.stereoMode == 2)
+          return(particleTextureID_gray);
+
+      // select texture based on dominant color
+      //   blue
+      if ((c[2] > c[1]) && (c[2] > c[0]) && (particleTextureID_blue != 0))
+          return(particleTextureID_blue);
+      //   green
+      if ((c[1] > c[0]) && (particleTextureID_green != 0))
+          return(particleTextureID_green);
+      //   red
+      if (particleTextureID_red != 0)
+          return(particleTextureID_red);
+  }
 
 
-  // select texture template based on dominant color
-  //   blue
-  if ((c[2] > c[1]) && (c[2] > c[0]) && (particleTextureID_blue != 0))
-    return(particleTextureID_blue);
-
-  //   green
-  if ((c[1] > c[0]) && (particleTextureID_green != 0))
-    return(particleTextureID_green);
-
-  //   red
-  if (particleTextureID_red != 0)
-    return(particleTextureID_red);
-  else
-    return(particleTextureID);
+  // fallback
+  return(particleTextureID);
 
 }
 
