@@ -199,6 +199,8 @@ void stateInit() {
     state.gbase = 5;
     state.g = -0.00001f;
 
+    state.physics = PH_CLASSIC;
+
 #ifdef _OPENMP
     state.processFrameThreads = omp_get_max_threads();
 #else
@@ -349,8 +351,8 @@ void run() {
 
             view.frameSkipCounter = 0;
 
-            if (view.verboseMode)
-                conAdd(LLOW, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
+            //if (view.verboseMode)
+            //    conAdd(LLOW, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
 
             setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
 
@@ -384,8 +386,8 @@ void run() {
                 view.frameSkipCounter = 0;
             }
 
-            if (view.verboseMode)
-                conAdd(LLOW, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
+            //if (view.verboseMode)
+            //    conAdd(LLOW, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
 
         }
 

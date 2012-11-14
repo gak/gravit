@@ -442,8 +442,15 @@ cmdSpawnRestartSpawning:
     lua_pushstring(state.lua, SPAWNDIR "/?");
     lua_setglobal(state.lua, "LUA_PATH");
 
-    lua_pushnumber(state.lua, state.particleCount);
+    lua_pushnumber(state.lua, (double)state.particleCount);
     lua_setglobal(state.lua, "spawnparticles");
+
+    // forward some gravit state parameters to LUA
+    lua_pushnumber(state.lua,  (double)((int)state.physics));
+    lua_setglobal(state.lua,   "gravit_physics");
+    lua_pushnumber(state.lua,  fabs((double)state.g));
+    lua_setglobal(state.lua,   "gravit_g");
+
 
     scriptFile = va("%s/%s.gravitspawn", SPAWNDIR, scriptName);
 

@@ -398,7 +398,10 @@ typedef struct saveDetail_s {
 
 } saveDetail_t;
 
+// physics mode: CLASSIC, MODIFIED or PROPER
+typedef enum {PH_CLASSIC=0, PH_MODIFIED=1, PH_PROPER=2} physics_t;
 
+// global simulation state
 typedef struct state_s {
 
     particle_t *particleHistory;
@@ -445,6 +448,8 @@ typedef struct state_s {
 #ifdef HAVE_LUA
     lua_State *lua;
 #endif
+
+    physics_t physics;
 
 } state_t;
 
