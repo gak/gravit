@@ -36,14 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
-// TODO: Move to view struct
-GLuint particleTextureID = 0;
-GLuint particleTextureID_glow = 0;
-GLuint particleTextureID_red = 0;
-GLuint particleTextureID_green = 0;
-GLuint particleTextureID_blue = 0;
-GLuint particleTextureID_gray = 0;
+static GLuint particleTextureID = 0;
+static GLuint sprites[SPRITE_LAST+1];
 
+// TODO: Move to view struct
 static GLuint skyBoxTextureID = 0;
 static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
 
@@ -79,12 +75,21 @@ void drawFrameSet3D() {
 }
 
 GLuint loadParticleTexture() {
-    particleTextureID_glow = loadTexture(va("%s%s", MISCDIR, "/particle_glow.png"), GL_FALSE);
-    particleTextureID_gray = loadTexture(va("%s%s", MISCDIR, "/particle_gray_glow.png"), GL_FALSE);
-    particleTextureID_red = loadTexture(va("%s%s", MISCDIR, "/particle_red_glow.png"), GL_FALSE);
-    particleTextureID_green = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
-    particleTextureID_blue = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
+    int i;
+    sprites[SPRITE_GLOW]  = loadTexture(va("%s%s", MISCDIR, "/particle_glow.png"), GL_FALSE);
+    sprites[SPRITE_GRAY]  = loadTexture(va("%s%s", MISCDIR, "/particle_gray_glow.png"), GL_FALSE);
+    sprites[SPRITE_RED]   = loadTexture(va("%s%s", MISCDIR, "/particle_red_glow.png"), GL_FALSE);
+    sprites[SPRITE_GREEN] = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
+    sprites[SPRITE_BLUE]  = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
+    sprites[SPRITE_GRAY2] = loadTexture(va("%s%s", MISCDIR, "/particle_gray2.png"), GL_FALSE);
+    sprites[SPRITE_GLOW2] = loadTexture(va("%s%s", MISCDIR, "/particle_glow2.png"), GL_FALSE);
+
     particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
+    sprites[SPRITE_DEFAULT] = particleTextureID;
+
+    for (i=0; i < SPRITE_LAST+1; i++)
+        if(sprites[i] == 0) sprites[i] = particleTextureID;
+
     return particleTextureID;
 }
 
@@ -357,6 +362,7 @@ void drawFrame() {
         break;
 
     }
+    glCheck();
 
     if (view.particleRenderMode == 0) {
 
@@ -385,12 +391,14 @@ void drawFrame() {
     if (view.particleRenderMode == 1) {
 
         float quadratic_0[] =  { 0.0f, 0.0f, 0.01f };
-        float quadratic_1[] =  { 0.0f, 0.0f, 0.01f };
+        float quadratic_1[] =  { 0.0f, 0.0f, 0.0001f };
         float quadratic_2[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
-        float quadratic_3[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
-        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
-        float quadratic_5[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
-        float quadratic_6[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
+        float quadratic_3[] =  { 0.0f, 0.0f, 0.000001f, 0.00f };
+        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000003f, 0.00f };
+        float quadratic_5[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
+        float quadratic_6[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
+        float quadratic_7[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
+        float quadratic_8[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
         float *quadratic;
 
         quadratic = quadratic_0;
@@ -399,7 +407,9 @@ void drawFrame() {
         if (view.glow == 3) quadratic = quadratic_3;
         if (view.glow == 4) quadratic = quadratic_4;
         if (view.glow == 5) quadratic = quadratic_5;
-        if (view.glow >= 6) quadratic = quadratic_6;
+        if (view.glow == 6) quadratic = quadratic_6;
+        if (view.glow == 7) quadratic = quadratic_7;
+        if (view.glow >= 8) quadratic = quadratic_8;
 
         if (!video.supportPointParameters || !video.supportPointSprite) {
 
@@ -414,49 +424,55 @@ void drawFrame() {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
-  {
-  // set point sprite attributes for all point textures
-  // xxx - not sure if repeating this for every texture is really necessary 
-  GLuint sprites[6]= {particleTextureID, particleTextureID_glow, particleTextureID_red, particleTextureID_green, particleTextureID_blue, particleTextureID_gray};
-  int kk;
-  for (kk=0; kk<6; kk++) {
+	// glPointParameter and glPointSprite attributes are global (not per-texture)
         glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
+        glCheck();
 
         glPointParameterfARB_ptr( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
+        glCheck();
         glPointParameterfARB_ptr( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
+        glCheck();
 
         glPointSize( view.particleSizeMax );
+        glCheck();
 
         // lets you put textures on the sprite
         // doesn't work on some cards for some reason :(
         // so i had to make textures an option with this mode
         if (view.particleRenderTexture) {
             glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
-            glBindTexture(GL_TEXTURE_2D, sprites[kk]);
+            glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         glEnable( GL_POINT_SPRITE_ARB );
-    }
-  }
+        glCheck();
 
     } else if (view.particleRenderMode == 2) {
 
         glDisable(GL_DEPTH_TEST);
         if (view.particleRenderTexture) {
-            glBindTexture(GL_TEXTURE_2D, particleTextureID);
+            glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
+        glCheck();
 
     }
 
     if (view.particleRenderMode == 0 || view.particleRenderMode == 1) {
 
-        GLuint lastTexture=state.particleDetail[0].particleTexture;
-        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, lastTexture);
+        unsigned int lastSprite=state.particleDetail[0].particleSprite;
+        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, sprites[lastSprite]);
         glCheck();
+
+        // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the
+        // Z-Buffer read-only, which helps remove graphical artifacts generated
+        // from  rendering a list of particles that haven't been sorted by
+        // distance to the eye.
+        glEnable( GL_DEPTH_TEST );
+        glDepthMask( GL_FALSE );
 
         glBegin(GL_POINTS);
         for (i = 0; i < state.particleCount; i++) {
@@ -465,13 +481,13 @@ void drawFrame() {
 
             pd = state.particleDetail + i;
 
-            if ((view.particleRenderMode > 0) && (pd->particleTexture != lastTexture)) {
+            if ((view.particleRenderMode > 0) && (pd->particleSprite != lastSprite)) {
                 glEnd();
-                glBindTexture(GL_TEXTURE_2D, pd->particleTexture);
+                glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
                 //glCheck();
                 glBegin(GL_POINTS);
             }
-            lastTexture = pd->particleTexture;
+            lastSprite = pd->particleSprite;
 
             glColor4fv(pd->col);
             if (view.frameSkip < 0) {
@@ -485,6 +501,9 @@ void drawFrame() {
 
         }
         glEnd();
+
+        glDepthMask( GL_TRUE );
+        glDisable( GL_DEPTH_TEST );
 
     } else if (view.particleRenderMode == 2) {
 
@@ -551,11 +570,47 @@ void drawFrame() {
                 &screen[0], &screen[1], &screen[2]
             );
 
-            if ((success != GL_TRUE) || (screen[2] > 1))
+            if ((success != GL_TRUE) || (screen[2] > 1.0) || (screen[2] < -1.0))
                 continue;
 
+            /* THIS IS A DIRTY HACK, but it works. */
+            /* it seems that z is usually very close to 1 (between 0.999982 and 0.999995)
+             * -> To achieve an effect similar to "glow" in particlerendermode 1,
+             * we multiply the z value with itself several times, which actually "stretches" 
+             * the value range towards the lower values.
+             */
+            if (view.glow > 0) {
+	        // basic amplification
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (view.glow >= 1) {
+	        // similat to attenuation 0.0001
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (((view.glow >= 2) && (view.glow < 5)) || (view.glow >= 6)) {
+	        // similat to attenuation 0.00001
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (((view.glow >= 3) && (view.glow < 5)) || (view.glow >= 7)) {
+	        // similat to attenuation 0.000001
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (((view.glow >= 4) && (view.glow < 5)) || (view.glow >= 8)) {
+	        // similat to attenuation 0.0000001
+                screen[2] *= screen[2] * screen[2];
+            }
+
+            if (screen[2] > 1.0) screen[2] = 1.0;
+            if (screen[2] < -1.0) screen[2] = -1.0;
+
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
-            glBindTexture(GL_TEXTURE_2D, pd->particleTexture);
+            glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
 
             glBegin(GL_QUADS);
             glColor4fv(pd->col);
@@ -577,12 +632,14 @@ void drawFrame() {
         glPopMatrix();
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
+        glCheck();
 
     }
 
     if (view.particleRenderMode == 1 && video.supportPointParameters && video.supportPointSprite) {
 
         glDisable( GL_POINT_SPRITE_ARB );
+        glCheck();
 
     }
 
@@ -1275,6 +1332,40 @@ void checkDriverBlacklist() {
        }
       */
     }
+
+   // linux: MESA openGL on Intel integrated graphics
+    if (strcmp(glVendor, "Tungsten Graphics, Inc") == 0) {
+      if ((  strncmp(glRenderer, "Mesa DRI Intel(R) Ironlake Mobile", strlen("Mesa DRI Intel(R) Ironlake Mobile")) == 0)
+          || (strncmp(glRenderer, "Mesa DRI Mobile Intel", strlen("Mesa DRI Mobile Intel")) == 0)) {
+          if (  (strstr(glVersion, "OpenGL 1.4 (2.1 Mesa") != NULL) 
+                ||(strstr(glVersion, "2.1 Mesa 8.0.") != NULL) 
+                ||(strstr(glVersion, "2.1 Mesa 7.") != NULL)) {
+               // MESA 8.0 claims to have GL_ARB_point_sprite, but it does not work with particlerendermode 1.
+               // effect: instead of particle textures, coloured squares are drawn.
+                // known configurations that are affected:
+                //      mesa 8.0.4-0ubuntu0.2 (with mesa-dri), xorg-server 2:1.11.4-0ubuntu10.8  on Linux 3.2.0-32-generic #51-Ubuntu SMP x86_64 GNU/Linux
+                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
+                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=1.4 (2.1 Mesa 8.0.4)
+ 	        if (view.particleRenderMode == 1) {
+                    conAdd(LERR,  "Sorry, Your driver is blacklisted for particleRenderMode 1.");
+                    conAdd(LERR, "This means you can't have really pretty looking particles.");
+                    conAdd(LNORM, "Setting particleRenderMode to 2");
+                    view.particleRenderMode = 2;
+	        }
+                video.supportPointSprite = 0;
+          }
+      }
+      if (strncmp(glRenderer, "Mesa GLX Indirect", strlen("Mesa GLX Indirect")) == 0) {
+          if (view.particleRenderMode == 1) {
+              conAdd(LERR,  "Sorry, Your indirect rendering GLX driver is blacklisted for particleRenderMode 1.");
+              conAdd(LHELP, "Indirect rendering is too slow for really pretty looking particles.");
+              conAdd(LNORM, "Setting particleRenderMode to 0");
+              view.particleRenderMode = 0;
+	  }
+          video.supportPointSprite = 0;
+      }
+    }
+
 
     // software OpenGL driver, Microsoft Windows
     if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
