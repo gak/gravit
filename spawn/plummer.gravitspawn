@@ -8,16 +8,17 @@ end
 
 
 -- this function is "proper physics ready".
+PH_CLASSIC  = 0
+PH_MODIFIED = 1
+PH_PROPER   = 2
 
-local physicsmode = 2
--- 0 -> proper physics
--- 1 -> almost-proper physics
--- 2 -> classic physics
+-- local gravit_physics = 0
+-- 0 -> classic physics
+-- 1 -> modifued (almost-proper) physics
+-- 2 -> proper physics
 
 -- value of the gravitational constant
-local gconst = 0.0000001
-
--- todo: physicsmode and gconst should be provided by gravit
+-- local gravit_g = 0.0000001
 
 
 -- ----------------------------------------------------------------
@@ -32,6 +33,19 @@ local gconst = 0.0000001
 --    return result
 --end
 
+
+-- compute cross product of two vectors
+-- returns a vector that is perpendicular to both input vectors
+function vecproduct(vect1,vect2)
+	local vect3=v(0,0,0)
+
+	vect3.x = vect1.y * vect2.z - vect1.z * vect2.y
+	vect3.y = vect1.z * vect2.x - vect1.x * vect2.z
+	vect3.z = vect1.x * vect2.y - vect1.y * vect2.x
+	return vect3
+end
+
+-- randomly pick a point on the surface of a ball
 function randomshell(len)
     local pos
     local d2
@@ -48,35 +62,22 @@ function randomshell(len)
     return pos * rscale
 end
 
-
+-- compute velocity for stable orbit 
 function orbit_velocity(innermass, disttocenter)
 	local result = 0.0
 
 	if math.abs(disttocenter) > 0.1 then
-		result= math.sqrt(gconst * math.abs(innermass) / math.abs(disttocenter))
+		result= math.sqrt(gravit_g * math.abs(innermass) / math.abs(disttocenter))
 	end
 
-	if physicsmode > 0 then
+	if gravit_physics < PH_PROPER then
 	        result=result*math.sqrt(math.abs(disttocenter))
 	end
 
 	return result
 end
 
-
-function vecproduct(vect1,vect2)
-	-- cross product of two vectors
-	-- siehe http://de.wikipedia.org/wiki/Kreuzprodukt
-	-- ergibt den vektor, der senkrecht auf beiden vektoren steht
-	local vect3=v(0,0,0)
-
-	vect3.x = vect1.y * vect2.z - vect1.z * vect2.y
-	vect3.y = vect1.z * vect2.x - vect1.x * vect2.z
-	vect3.z = vect1.x * vect2.y - vect1.y * vect2.x
-	return vect3
-end
-
-
+-- returns a random vector that is orthogonal to the input vector
 function randomortho(vector, radius)
 	local vect1=v(0,0,0)
 	local vect2=v(0,0,0)
@@ -87,20 +88,16 @@ function randomortho(vector, radius)
 
 	-- step 0 : special handling for zero size vector
 	if (math.abs(vector.x) + math.abs(vector.y) + math.abs(vector.z) < 0.000001)  then
-		--return v(0,0,0)
 		return v(0,radius,0)
 	end
 
 	-- step one : choose one orthogonal vector
 	-- see http://www.wer-weiss-was.de/theme50/article3103419.html
-
 	if (math.abs(vector.z)>0.0001) then
 	   vect1 = v(0, vector.z, -vector.y)
 	else
 	   vect1 = v(vector.y, -vector.x,0)
-	   --vect1 = v(-vector.z, 0, vector.x)
 	end
-
 
 	-- step two : compute vect2 othogonal to vector and vect2
 	-- (using cross product), so 
@@ -121,9 +118,9 @@ function randomortho(vector, radius)
 	return vectresult
 end
 
--- ----------------------------------------------------------------
--- ----------------------------------------------------------------
 
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
 
 
 -- adoption of the "plummer" formula (Aarseth, Henon and Wielen) from
@@ -142,8 +139,8 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
     -- compute physical units scale factors
     local rfak = target_radius
     local mfak = target_mass
-    local vfak = math.sqrt((mfak * gconst)/rfak)
-    if physicsmode > 0 then
+    local vfak = math.sqrt((mfak * gravit_g)/rfak)
+    if gravit_physics < PH_PROPER then
        vfak = vfak * math.sqrt(rfak)
     end
 
@@ -176,10 +173,10 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
 
        velocity = x * math.sqrt(2.0 / math.sqrt(1 + radius*radius));
 
-       if physicsmode > 0 then
+       if gravit_physics < PH_PROPER then
 	  velocity = velocity * math.sqrt(radius) 
        end
-       if physicsmode == 2 then
+       if gravit_physics == PH_CLASSIC then
 	  velocity = velocity * mass 
        end
 
@@ -205,11 +202,11 @@ function place_object_plummer(num, center, vel, ratio, start, particles)
     local radius=randomfloat(50, 150)
     local mass=4* math.sqrt(radius^3) * ratio
 
-     if physicsmode > 0 then
+     if gravit_physics < PH_PROPER then
         mass=mass*randomfloat(4,12)
      end
 
-     if physicsmode == 2 then
+     if gravit_physics == PH_CLASSIC then
 	mass=mass * 6
 	radius=radius * 6
      end
@@ -225,13 +222,13 @@ end
 
 function spawn()
 
-	local num_objects=randomint(1,5)
+	local num_objects=randomint(1,6)
 	local mass_unit=1.0
 	local min_distance=1500
 	
         local part=math.floor(spawnparticles / num_objects)
 
-        if physicsmode == 2 then
+        if gravit_physics == PH_CLASSIC then
 	    min_distance= min_distance * 4
 	    mass_unit = mass_unit * 2
         end
@@ -243,7 +240,7 @@ function spawn()
 
 	-- i want to be dirty, lets spawn some very massive objects
 	if (randomint(0,3) > 2) then
-	   local smbhmass = 256 + physicsmode * 512
+	   local smbhmass = 256 + (2 - gravit_physics) * 512
 	    -- let a smbh cross the scene
 	   for k=1 ,randomint(3,12) do
 	      particle(first, v(2000,2000,0) + randomshell(800) + randomrange(800), v(-4,-4,0), smbhmass)
@@ -267,14 +264,15 @@ function spawn()
 
 	   local eccentricity = randomfloat(0.2, 0.8)
 	   local smalldist    = dist * math.sqrt(1- eccentricity*eccentricity)
-	   -- 2-body eliptic orbit
-	   local orbitVel=math.sqrt(gconst* mass *(1+ratio) * ((2/dist) - (1/smalldist)))
 
-	   if (physicsmode > 0) or (randomint(0,1)>0) then
+	   -- compute 2-body eliptic orbit
+	   local orbitVel=math.sqrt(gravit_g * mass *(1+ratio) * ((2/dist) - (1/smalldist)))
+
+	   if (gravit_physics < PH_PROPER) or (randomint(0,1)>0) then
 	         orbitVel = orbit_velocity(mass, dist)
 	   end
 
-	   if physicsmode == 2 then
+	   if gravit_physics == PH_MODIFIED then
 	      orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
 	   end
 
