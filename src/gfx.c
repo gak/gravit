@@ -362,6 +362,7 @@ void drawFrame() {
         break;
 
     }
+    glCheck();
 
     if (view.particleRenderMode == 0) {
 
@@ -425,11 +426,15 @@ void drawFrame() {
 
 	// glPointParameter and glPointSprite attributes are global (not per-texture)
         glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
+        glCheck();
 
         glPointParameterfARB_ptr( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
+        glCheck();
         glPointParameterfARB_ptr( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
+        glCheck();
 
         glPointSize( view.particleSizeMax );
+        glCheck();
 
         // lets you put textures on the sprite
         // doesn't work on some cards for some reason :(
@@ -442,6 +447,7 @@ void drawFrame() {
         }
 
         glEnable( GL_POINT_SPRITE_ARB );
+        glCheck();
 
     } else if (view.particleRenderMode == 2) {
 
@@ -451,6 +457,7 @@ void drawFrame() {
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
+        glCheck();
 
     }
 
@@ -625,12 +632,14 @@ void drawFrame() {
         glPopMatrix();
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
+        glCheck();
 
     }
 
     if (view.particleRenderMode == 1 && video.supportPointParameters && video.supportPointSprite) {
 
         glDisable( GL_POINT_SPRITE_ARB );
+        glCheck();
 
     }
 
