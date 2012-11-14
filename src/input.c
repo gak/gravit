@@ -238,6 +238,7 @@ int processKeys() {
                 if (view.particleRenderMode == 3)
                     view.particleRenderMode = 0;
                 conAdd(LNORM, "particleRenderMode set to %i" , view.particleRenderMode);
+                setColours();
                 break;
 
             case SDLK_MINUS:
@@ -360,6 +361,17 @@ int processKeys() {
                 conAdd(LLOW, "drawSky set to %i", view.drawSky);
                 break;
 
+            case SDLK_g:
+                view.glow ++;
+                if(view.glow > 8)
+                {
+                    view.glow = 0;
+                    conAdd(LLOW, "Star glow disabled");
+                } else {
+                    conAdd(LLOW, "Star glow set to %i", view.glow);
+                }
+                setColours();
+                break;
 
             case SDLK_q:
                 if (hasCtrlOrCmdModifier()) {

@@ -36,8 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
-// TODO: Move to view struct
 static GLuint particleTextureID = 0;
+static GLuint sprites[SPRITE_LAST+1];
+
+// TODO: Move to view struct
 static GLuint skyBoxTextureID = 0;
 static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
 
@@ -73,7 +75,21 @@ void drawFrameSet3D() {
 }
 
 GLuint loadParticleTexture() {
+    int i;
+    sprites[SPRITE_GLOW]  = loadTexture(va("%s%s", MISCDIR, "/particle_glow.png"), GL_FALSE);
+    sprites[SPRITE_GRAY]  = loadTexture(va("%s%s", MISCDIR, "/particle_gray_glow.png"), GL_FALSE);
+    sprites[SPRITE_RED]   = loadTexture(va("%s%s", MISCDIR, "/particle_red_glow.png"), GL_FALSE);
+    sprites[SPRITE_GREEN] = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
+    sprites[SPRITE_BLUE]  = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
+    sprites[SPRITE_GRAY2] = loadTexture(va("%s%s", MISCDIR, "/particle_gray2.png"), GL_FALSE);
+    sprites[SPRITE_GLOW2] = loadTexture(va("%s%s", MISCDIR, "/particle_glow2.png"), GL_FALSE);
+
     particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
+    sprites[SPRITE_DEFAULT] = particleTextureID;
+
+    for (i=0; i < SPRITE_LAST+1; i++)
+        if(sprites[i] == 0) sprites[i] = particleTextureID;
+
     return particleTextureID;
 }
 
@@ -346,6 +362,7 @@ void drawFrame() {
         break;
 
     }
+    glCheck();
 
     if (view.particleRenderMode == 0) {
 
@@ -373,7 +390,26 @@ void drawFrame() {
 
     if (view.particleRenderMode == 1) {
 
-        float quadratic[] =  { 0.0f, 0.0f, 0.01f };
+        float quadratic_0[] =  { 0.0f, 0.0f, 0.01f };
+        float quadratic_1[] =  { 0.0f, 0.0f, 0.0001f };
+        float quadratic_2[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
+        float quadratic_3[] =  { 0.0f, 0.0f, 0.000001f, 0.00f };
+        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000003f, 0.00f };
+        float quadratic_5[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
+        float quadratic_6[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
+        float quadratic_7[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
+        float quadratic_8[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
+        float *quadratic;
+
+        quadratic = quadratic_0;
+        if (view.glow == 1) quadratic = quadratic_1;
+        if (view.glow == 2) quadratic = quadratic_2;
+        if (view.glow == 3) quadratic = quadratic_3;
+        if (view.glow == 4) quadratic = quadratic_4;
+        if (view.glow == 5) quadratic = quadratic_5;
+        if (view.glow == 6) quadratic = quadratic_6;
+        if (view.glow == 7) quadratic = quadratic_7;
+        if (view.glow >= 8) quadratic = quadratic_8;
 
         if (!video.supportPointParameters || !video.supportPointSprite) {
 
@@ -388,37 +424,55 @@ void drawFrame() {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
+	// glPointParameter and glPointSprite attributes are global (not per-texture)
         glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
+        glCheck();
 
         glPointParameterfARB_ptr( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
+        glCheck();
         glPointParameterfARB_ptr( GL_POINT_SIZE_MIN_ARB, view.particleSizeMin );
+        glCheck();
 
         glPointSize( view.particleSizeMax );
+        glCheck();
 
         // lets you put textures on the sprite
         // doesn't work on some cards for some reason :(
         // so i had to make textures an option with this mode
         if (view.particleRenderTexture) {
             glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
-            glBindTexture(GL_TEXTURE_2D, particleTextureID);
+            glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         glEnable( GL_POINT_SPRITE_ARB );
+        glCheck();
 
     } else if (view.particleRenderMode == 2) {
 
         glDisable(GL_DEPTH_TEST);
         if (view.particleRenderTexture) {
-            glBindTexture(GL_TEXTURE_2D, particleTextureID);
+            glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
+        glCheck();
 
     }
 
     if (view.particleRenderMode == 0 || view.particleRenderMode == 1) {
+
+        unsigned int lastSprite=state.particleDetail[0].particleSprite;
+        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, sprites[lastSprite]);
+        glCheck();
+
+        // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the
+        // Z-Buffer read-only, which helps remove graphical artifacts generated
+        // from  rendering a list of particles that haven't been sorted by
+        // distance to the eye.
+        glEnable( GL_DEPTH_TEST );
+        glDepthMask( GL_FALSE );
 
         glBegin(GL_POINTS);
         for (i = 0; i < state.particleCount; i++) {
@@ -426,6 +480,15 @@ void drawFrame() {
             VectorNew(pos);
 
             pd = state.particleDetail + i;
+
+            if ((view.particleRenderMode > 0) && (pd->particleSprite != lastSprite)) {
+                glEnd();
+                glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
+                //glCheck();
+                glBegin(GL_POINTS);
+            }
+            lastSprite = pd->particleSprite;
+
             glColor4fv(pd->col);
             if (view.frameSkip < 0) {
                 particleInterpolate(i, ((float)view.frameSkipCounter / view.frameSkip), pos);
@@ -438,6 +501,9 @@ void drawFrame() {
 
         }
         glEnd();
+
+        glDepthMask( GL_TRUE );
+        glDisable( GL_DEPTH_TEST );
 
     } else if (view.particleRenderMode == 2) {
 
@@ -504,10 +570,47 @@ void drawFrame() {
                 &screen[0], &screen[1], &screen[2]
             );
 
-            if ((success != GL_TRUE) || (screen[2] > 1))
+            if ((success != GL_TRUE) || (screen[2] > 1.0) || (screen[2] < -1.0))
                 continue;
 
+            /* THIS IS A DIRTY HACK, but it works. */
+            /* it seems that z is usually very close to 1 (between 0.999982 and 0.999995)
+             * -> To achieve an effect similar to "glow" in particlerendermode 1,
+             * we multiply the z value with itself several times, which actually "stretches" 
+             * the value range towards the lower values.
+             */
+            if (view.glow > 0) {
+	        // basic amplification
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (view.glow >= 1) {
+	        // similat to attenuation 0.0001
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (((view.glow >= 2) && (view.glow < 5)) || (view.glow >= 6)) {
+	        // similat to attenuation 0.00001
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (((view.glow >= 3) && (view.glow < 5)) || (view.glow >= 7)) {
+	        // similat to attenuation 0.000001
+                screen[2] *= screen[2] * screen[2];
+            }
+            if (((view.glow >= 4) && (view.glow < 5)) || (view.glow >= 8)) {
+	        // similat to attenuation 0.0000001
+                screen[2] *= screen[2] * screen[2];
+            }
+
+            if (screen[2] > 1.0) screen[2] = 1.0;
+            if (screen[2] < -1.0) screen[2] = -1.0;
+
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
+            glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
 
             glBegin(GL_QUADS);
             glColor4fv(pd->col);
@@ -529,12 +632,14 @@ void drawFrame() {
         glPopMatrix();
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
+        glCheck();
 
     }
 
     if (view.particleRenderMode == 1 && video.supportPointParameters && video.supportPointSprite) {
 
         glDisable( GL_POINT_SPRITE_ARB );
+        glCheck();
 
     }
 

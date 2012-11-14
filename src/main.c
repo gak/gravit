@@ -138,7 +138,7 @@ void viewInit() {
     view.particleRenderTexture = 1;
 
     view.particleSizeMin = 4;
-    view.particleSizeMax = 1024;
+    view.particleSizeMax = 172;
 
     view.verboseMode = 0;
 
@@ -170,6 +170,8 @@ void viewInit() {
     view.popupTextFadeTime = 2000;	// ms
 
     view.autoCenter = 1;
+
+    view.glow = 3;
 
     view.maxVertices = 100000;
 

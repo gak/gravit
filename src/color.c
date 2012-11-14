@@ -63,6 +63,7 @@ void setColoursByVel() {
 
         d = velSpeed / velMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -113,6 +114,7 @@ void setColoursByKinetic() {
 
         d = kinValue / kinMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -163,6 +165,7 @@ void setColoursByMomentum() {
 
         d = kinValue / kinMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -217,6 +220,7 @@ void setColoursByAcceleration() {
 
         d = accCurrent / accMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -267,7 +271,7 @@ void setColoursByMass() {
             pd->col[2] = 1 - pd->col[2];
 
         }
-
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
     }
 
 }
@@ -372,6 +376,54 @@ void colourFromNormal(float *c, float n) {
 	  // reduce to "half-color": red = 0,299*red + 0,587*green + 0,114*blue
 	  c[0] = 0.299*c[0] + 0.587*c[1] + 0.144*c[2];
     }
+
+    // more opacity
+    if ((view.glow == 1) || (view.glow == 2) || (view.glow > 7))
+      c[3] = sqrtf(c[3]);
+}
+
+
+GLuint colourSprite(float *c, float mass) {
+
+  if (view.glow == 0) return(SPRITE_DEFAULT);
+
+  if (view.glow < 5) {
+      // add starshine effect
+      // color by mass --> make biggest masses shine
+      if((view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
+          return(SPRITE_GLOW2);
+      // not coloring by mass --> add effect for the brightest particles (using alpha channel)
+      if((view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
+          return(SPRITE_GLOW2);
+
+      return (SPRITE_GRAY2);
+
+  } else {
+      // special texture for big particles
+      if((view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
+          return(SPRITE_GLOW);
+      if((view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
+          return(SPRITE_GLOW);
+
+      // stereo mode --> use grayscale texture
+      if (view.stereoMode == 2)
+          return(SPRITE_GRAY);
+
+      // select texture based on dominant color
+      //   blue
+      if ((c[2] > c[1]) && (c[2] > c[0]))
+          return(SPRITE_BLUE);
+      //   green
+      if (c[1] > c[0])
+          return(SPRITE_GREEN);
+      //   red
+      return(SPRITE_RED);
+  }
+
+
+  // fallback
+  return(SPRITE_DEFAULT);
+
 }
 
 #endif

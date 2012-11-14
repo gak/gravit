@@ -200,6 +200,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
 #define FRAMEDETAILSIZE (sizeof(particleDetail_t) * state.particleCount)
+#define SAVEDETAILSIZE (sizeof(saveDetail_t) * state.particleCount)
 
 #define getParticleCurrentFrame(i) state.particleHistory + state.particleCount * state.currentFrame + (i)
 #define getParticleFirstFrame(i) state.particleHistory + (i)
@@ -385,8 +386,18 @@ typedef struct particleDetail_s {
 
     float mass;
     float col[4];
+    unsigned int particleSprite;
 
 } particleDetail_t;
+
+// particleDetail_t without temporal things
+typedef struct saveDetail_s {
+
+    float mass;
+    float col[4];
+
+} saveDetail_t;
+
 
 typedef struct state_s {
 
@@ -558,6 +569,8 @@ typedef struct view_s {
 
     int autoCenter;
     
+    int glow;          //0: no glow; 1-4: small stars; 4-8: big stars
+
 #ifndef WITHOUT_AGAR
     AG_Window *playbackWindow;
     AG_Style osdStyle;
@@ -712,11 +725,23 @@ void loadSkyBox(void);
 // toDo: auto-detect list of availeable skyboxes
 #define SKYBOX_LAST 2
 
+#define SPRITE_DEFAULT 0
+#define SPRITE_GLOW 1
+#define SPRITE_RED 2
+#define SPRITE_GREEN 3
+#define SPRITE_BLUE 4
+#define SPRITE_GRAY 5
+#define SPRITE_GRAY2 6
+#define SPRITE_GLOW2 7
+#define SPRITE_LAST 8
+
 // color.c
 void setColours();
 void setColoursByMass();
 void colourSpectrumClear();
 void colourFromNormal(float *c, float n);
+unsigned int colourSprite(float *c, float mass);
+
 
 #else
 

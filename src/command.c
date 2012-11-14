@@ -150,6 +150,7 @@ cmd_t cmd[] = {
     ,{ "popuptext",					cmdPopupText,			NULL,						NULL,								NULL }
 
     ,{ "autocenter",				NULL,					NULL,						&view.autoCenter,					NULL }
+    ,{ "particleglow",				NULL,					NULL,						&view.glow,					NULL }
 
     ,{ "maxvertices",				NULL,					NULL,						&view.maxVertices,					NULL }
 
@@ -698,7 +699,9 @@ void cmdSaveFrame(char *arg) {
 void cmdSaveFrameDump(char *arg) {
 
     saveInfo_t si;
+    saveDetail_t *sd;
     char *fileName;
+    unsigned int i;
 
     if (isSpawning())
         return;
@@ -730,9 +733,29 @@ void cmdSaveFrameDump(char *arg) {
     si.frame = state.frame;
     si.historyNFrame = state.historyNFrame;
 
+    //init saveDetail
+    sd = (saveDetail_t *) calloc(sizeof(saveDetail_t),state.particleCount);
+    if (!sd) {
+        conAdd(LERR, "Could not allocate %lu bytes of memory for saveDetail", (unsigned long)(SAVEDETAILSIZE));
+        free(sd);
+        return;
+    }
+    // copy particleDetail to saveDetail
+    for (i = 0; i < state.particleCount; i++) {
+        particleDetail_t *pd;
+        pd = getParticleDetail(i);
+        sd[i].mass  = pd->mass;
+        sd[i].col[0]= pd->col[0];
+        sd[i].col[1]= pd->col[1];
+        sd[i].col[2]= pd->col[2];
+        sd[i].col[3]= pd->col[3];
+    }
+
     conAdd(LNORM, "Saving %s...", arg);
     conAdd(LNORM, "Please Wait...");
     runVideo();
+
+    // dump raw data to files
 
     fileName = va("%s/%s.info", SAVE_PATH, arg);
     if (!SaveMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
@@ -741,7 +764,7 @@ void cmdSaveFrameDump(char *arg) {
     }
 
     fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
-    if (!SaveMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
+    if (!SaveMemoryDump(fileName, (unsigned char *)sd, SAVEDETAILSIZE)) {
         conAdd(LERR, "Failed to create %s", fileName);
         return;
     }
@@ -753,6 +776,7 @@ void cmdSaveFrameDump(char *arg) {
     }
     conAdd(LNORM, "Simulation saved sucesfully!");
 
+    free(sd);
     setFileName(arg);
 
 }
@@ -760,7 +784,9 @@ void cmdSaveFrameDump(char *arg) {
 void cmdLoadFrameDump(char *arg) {
 
     saveInfo_t si;
+    saveDetail_t *sd;
     char *fileName;
+    unsigned int i;
 
     if (isSpawning())
         return;
@@ -803,11 +829,19 @@ void cmdLoadFrameDump(char *arg) {
     state.frame = si.frame;
     state.historyNFrame = si.historyNFrame;
 
+    //init saveDetail
+    sd = (saveDetail_t *) calloc(sizeof(saveDetail_t),state.particleCount);
+    if (!sd) {
+        conAdd(LERR, "Could not allocate %lu bytes of memory for saveDetail", (unsigned long)(SAVEDETAILSIZE));
+        free(sd);
+        return;
+    }
+
     conAdd(LNORM, "Please Wait...");
     runVideo();
 
     fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
-    if (!LoadMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
+    if (!LoadMemoryDump(fileName, (unsigned char *)sd, SAVEDETAILSIZE)) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
@@ -818,10 +852,24 @@ void cmdLoadFrameDump(char *arg) {
         return;
     }
 
+    // get particleDetail from saveDetail
+    for (i = 0; i < state.particleCount; i++) {
+        particleDetail_t *pd;
+        pd = getParticleDetail(i);
+        pd->mass   = sd[i].mass;
+        pd->col[0] = sd[i].col[0];
+        pd->col[1] = sd[i].col[1];
+        pd->col[2] = sd[i].col[2];
+        pd->col[3] = sd[i].col[3];
+	pd->particleSprite=SPRITE_DEFAULT;
+    }
+
     state.currentFrame = 0;
     state.mode = 0;
+    setColours();
     conAdd(LNORM, "Simulation loaded sucesfully!");
 
+    free(sd);
     setFileName(arg);
 
 }
