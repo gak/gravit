@@ -36,16 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
-// TODO: Move to view struct
-GLuint particleTextureID = 0;
-GLuint particleTextureID_glow = 0;
-GLuint particleTextureID_red = 0;
-GLuint particleTextureID_green = 0;
-GLuint particleTextureID_blue = 0;
-GLuint particleTextureID_gray = 0;
-GLuint particleTextureID_gray2 = 0;
-GLuint particleTextureID_glow2 = 0;
+static GLuint particleTextureID = 0;
+static GLuint sprites[SPRITE_LAST+1];
 
+// TODO: Move to view struct
 static GLuint skyBoxTextureID = 0;
 static GLuint skyBoxTextureIDs[6] = {0,0,0,0,0,0};
 
@@ -81,14 +75,21 @@ void drawFrameSet3D() {
 }
 
 GLuint loadParticleTexture() {
-    particleTextureID_glow = loadTexture(va("%s%s", MISCDIR, "/particle_glow.png"), GL_FALSE);
-    particleTextureID_gray = loadTexture(va("%s%s", MISCDIR, "/particle_gray_glow.png"), GL_FALSE);
-    particleTextureID_red = loadTexture(va("%s%s", MISCDIR, "/particle_red_glow.png"), GL_FALSE);
-    particleTextureID_green = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
-    particleTextureID_blue = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
-    particleTextureID_gray2 = loadTexture(va("%s%s", MISCDIR, "/particle_gray2.png"), GL_FALSE);
-    particleTextureID_glow2 = loadTexture(va("%s%s", MISCDIR, "/particle_glow2.png"), GL_FALSE);
+    int i;
+    sprites[SPRITE_GLOW]  = loadTexture(va("%s%s", MISCDIR, "/particle_glow.png"), GL_FALSE);
+    sprites[SPRITE_GRAY]  = loadTexture(va("%s%s", MISCDIR, "/particle_gray_glow.png"), GL_FALSE);
+    sprites[SPRITE_RED]   = loadTexture(va("%s%s", MISCDIR, "/particle_red_glow.png"), GL_FALSE);
+    sprites[SPRITE_GREEN] = loadTexture(va("%s%s", MISCDIR, "/particle_green_glow.png"), GL_FALSE);
+    sprites[SPRITE_BLUE]  = loadTexture(va("%s%s", MISCDIR, "/particle_blue_glow.png"), GL_FALSE);
+    sprites[SPRITE_GRAY2] = loadTexture(va("%s%s", MISCDIR, "/particle_gray2.png"), GL_FALSE);
+    sprites[SPRITE_GLOW2] = loadTexture(va("%s%s", MISCDIR, "/particle_glow2.png"), GL_FALSE);
+
     particleTextureID = loadTexture(va("%s%s", MISCDIR, "/particle.png"), GL_FALSE);
+    sprites[SPRITE_DEFAULT] = particleTextureID;
+
+    for (i=0; i < SPRITE_LAST+1; i++)
+        if(sprites[i] == 0) sprites[i] = particleTextureID;
+
     return particleTextureID;
 }
 
@@ -422,12 +423,7 @@ void drawFrame() {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
-  {
-  // set point sprite attributes for all point textures
-  // xxx - not sure if repeating this for every texture is really necessary 
-  GLuint sprites[6]= {particleTextureID, particleTextureID_glow, particleTextureID_red, particleTextureID_green, particleTextureID_blue, particleTextureID_gray};
-  int kk;
-  for (kk=0; kk<6; kk++) {
+	// glPointParameter and glPointSprite attributes are global (not per-texture)
         glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
 
         glPointParameterfARB_ptr( GL_POINT_SIZE_MAX_ARB, view.particleSizeMax );
@@ -440,20 +436,18 @@ void drawFrame() {
         // so i had to make textures an option with this mode
         if (view.particleRenderTexture) {
             glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
-            glBindTexture(GL_TEXTURE_2D, sprites[kk]);
+            glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         glEnable( GL_POINT_SPRITE_ARB );
-    }
-  }
 
     } else if (view.particleRenderMode == 2) {
 
         glDisable(GL_DEPTH_TEST);
         if (view.particleRenderTexture) {
-            glBindTexture(GL_TEXTURE_2D, particleTextureID);
+            glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
@@ -462,8 +456,8 @@ void drawFrame() {
 
     if (view.particleRenderMode == 0 || view.particleRenderMode == 1) {
 
-        GLuint lastTexture=state.particleDetail[0].particleTexture;
-        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, lastTexture);
+        unsigned int lastSprite=state.particleDetail[0].particleSprite;
+        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, sprites[lastSprite]);
         glCheck();
 
         // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the
@@ -480,13 +474,13 @@ void drawFrame() {
 
             pd = state.particleDetail + i;
 
-            if ((view.particleRenderMode > 0) && (pd->particleTexture != lastTexture)) {
+            if ((view.particleRenderMode > 0) && (pd->particleSprite != lastSprite)) {
                 glEnd();
-                glBindTexture(GL_TEXTURE_2D, pd->particleTexture);
+                glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
                 //glCheck();
                 glBegin(GL_POINTS);
             }
-            lastTexture = pd->particleTexture;
+            lastSprite = pd->particleSprite;
 
             glColor4fv(pd->col);
             if (view.frameSkip < 0) {
@@ -609,7 +603,7 @@ void drawFrame() {
             if (screen[2] < -1.0) screen[2] = -1.0;
 
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
-            glBindTexture(GL_TEXTURE_2D, pd->particleTexture);
+            glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
 
             glBegin(GL_QUADS);
             glColor4fv(pd->col);

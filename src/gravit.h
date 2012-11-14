@@ -385,7 +385,7 @@ typedef struct particleDetail_s {
 
     float mass;
     float col[4];
-    GLuint particleTexture;
+    unsigned int particleSprite;
 
 } particleDetail_t;
 
@@ -715,21 +715,22 @@ void loadSkyBox(void);
 // toDo: auto-detect list of availeable skyboxes
 #define SKYBOX_LAST 2
 
-extern GLuint particleTextureID;
-extern GLuint particleTextureID_glow;
-extern GLuint particleTextureID_red;
-extern GLuint particleTextureID_green;
-extern GLuint particleTextureID_blue;
-extern GLuint particleTextureID_gray;
-extern GLuint particleTextureID_gray2;
-extern GLuint particleTextureID_glow2;
+#define SPRITE_DEFAULT 0
+#define SPRITE_GLOW 1
+#define SPRITE_RED 2
+#define SPRITE_GREEN 3
+#define SPRITE_BLUE 4
+#define SPRITE_GRAY 5
+#define SPRITE_GRAY2 6
+#define SPRITE_GLOW2 7
+#define SPRITE_LAST 8
 
 // color.c
 void setColours();
 void setColoursByMass();
 void colourSpectrumClear();
 void colourFromNormal(float *c, float n);
-GLuint colourSprite(float *c, float mass);
+unsigned int colourSprite(float *c, float mass);
 
 
 #else

@@ -63,7 +63,7 @@ void setColoursByVel() {
 
         d = velSpeed / velMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
-        pd->particleTexture = colourSprite(pd->col, pd->mass);
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -114,7 +114,7 @@ void setColoursByKinetic() {
 
         d = kinValue / kinMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
-        pd->particleTexture = colourSprite(pd->col, pd->mass);
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -165,7 +165,7 @@ void setColoursByMomentum() {
 
         d = kinValue / kinMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
-        pd->particleTexture = colourSprite(pd->col, pd->mass);
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -220,7 +220,7 @@ void setColoursByAcceleration() {
 
         d = accCurrent / accMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
-        pd->particleTexture = colourSprite(pd->col, pd->mass);
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
 
     }
 
@@ -271,7 +271,7 @@ void setColoursByMass() {
             pd->col[2] = 1 - pd->col[2];
 
         }
-        pd->particleTexture = colourSprite(pd->col, pd->mass);
+        pd->particleSprite = colourSprite(pd->col, pd->mass);
     }
 
 }
@@ -385,46 +385,44 @@ void colourFromNormal(float *c, float n) {
 
 GLuint colourSprite(float *c, float mass) {
 
-  if (view.glow == 0) return(particleTextureID);
+  if (view.glow == 0) return(SPRITE_DEFAULT);
 
   if (view.glow < 5) {
       // add starshine effect
-      // color by mass --> above 90% of highest mass
-      if((particleTextureID_glow2 != 0) && (view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
-          return(particleTextureID_glow2);
-      // not coloring by mass --> add effect for the brightest particles
-      if((particleTextureID_glow2 != 0) && (view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
-          return(particleTextureID_glow2);
+      // color by mass --> make biggest masses shine
+      if((view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
+          return(SPRITE_GLOW2);
+      // not coloring by mass --> add effect for the brightest particles (using alpha channel)
+      if((view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
+          return(SPRITE_GLOW2);
 
-      return (particleTextureID_gray2);
+      return (SPRITE_GRAY2);
 
   } else {
       // special texture for big particles
-      if((particleTextureID_glow != 0) && (view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
-          return(particleTextureID_glow);
-
-      if((particleTextureID_glow != 0) && (view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
-          return(particleTextureID_glow);
+      if((view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
+          return(SPRITE_GLOW);
+      if((view.particleColourMode != CM_MASS) && (fabs(c[3]) > 0.85))
+          return(SPRITE_GLOW);
 
       // stereo mode --> use grayscale texture
       if (view.stereoMode == 2)
-          return(particleTextureID_gray);
+          return(SPRITE_GRAY);
 
       // select texture based on dominant color
       //   blue
-      if ((c[2] > c[1]) && (c[2] > c[0]) && (particleTextureID_blue != 0))
-          return(particleTextureID_blue);
+      if ((c[2] > c[1]) && (c[2] > c[0]))
+          return(SPRITE_BLUE);
       //   green
-      if ((c[1] > c[0]) && (particleTextureID_green != 0))
-          return(particleTextureID_green);
+      if (c[1] > c[0])
+          return(SPRITE_GREEN);
       //   red
-      if (particleTextureID_red != 0)
-          return(particleTextureID_red);
+      return(SPRITE_RED);
   }
 
 
   // fallback
-  return(particleTextureID);
+  return(SPRITE_DEFAULT);
 
 }
 
