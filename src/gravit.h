@@ -200,6 +200,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
 #define FRAMEDETAILSIZE (sizeof(particleDetail_t) * state.particleCount)
+#define SAVEDETAILSIZE (sizeof(saveDetail_t) * state.particleCount)
 
 #define getParticleCurrentFrame(i) state.particleHistory + state.particleCount * state.currentFrame + (i)
 #define getParticleFirstFrame(i) state.particleHistory + (i)
@@ -388,6 +389,15 @@ typedef struct particleDetail_s {
     unsigned int particleSprite;
 
 } particleDetail_t;
+
+// particleDetail_t without temporal things
+typedef struct saveDetail_s {
+
+    float mass;
+    float col[4];
+
+} saveDetail_t;
+
 
 typedef struct state_s {
 
