@@ -140,15 +140,6 @@ int loadFonts() {
 
         }
 
-	/* Restore the alpha blending attributes */
-#if SDL_VERSION_ATLEAST(1, 3, 0)
-	SDL_SetSurfaceAlphaMod(fontSurface, saved_alpha);
-#else
-	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
-		SDL_SetAlpha(fontSurface, saved_flags, saved_alpha);
-	}
-#endif
-
         glGenTextures(1, &fonts[i].id);
         glCheck();
 
