@@ -1226,6 +1226,40 @@ void checkDriverBlacklist() {
        }
     }
 
+   // linux: MESA openGL on Intel integrated graphics
+    if (strcmp(glVendor, "Tungsten Graphics, Inc") == 0) {
+      if ((  strncmp(glRenderer, "Mesa DRI Intel(R) Ironlake Mobile", strlen("Mesa DRI Intel(R) Ironlake Mobile")) == 0)
+          || (strncmp(glRenderer, "Mesa DRI Mobile Intel", strlen("Mesa DRI Mobile Intel")) == 0)) {
+          if (  (strstr(glVersion, "OpenGL 1.4 (2.1 Mesa") != NULL) 
+                ||(strstr(glVersion, "2.1 Mesa 8.0.") != NULL) 
+                ||(strstr(glVersion, "2.1 Mesa 7.") != NULL)) {
+               // MESA 8.0 claims to have GL_ARB_point_sprite, but it does not work with particlerendermode 1.
+               // effect: instead of particle textures, coloured squares are drawn.
+                // known configurations that are affected:
+                //      mesa 8.0.4-0ubuntu0.2 (with mesa-dri), xorg-server 2:1.11.4-0ubuntu10.8  on Linux 3.2.0-32-generic #51-Ubuntu SMP x86_64 GNU/Linux
+                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
+                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=1.4 (2.1 Mesa 8.0.4)
+ 	        if (view.particleRenderMode == 1) {
+                    conAdd(LERR,  "Sorry, Your driver is blacklisted for particleRenderMode 1.");
+                    conAdd(LERR, "This means you can't have really pretty looking particles.");
+                    conAdd(LNORM, "Setting particleRenderMode to 2");
+                    view.particleRenderMode = 2;
+	        }
+                video.supportPointSprite = 0;
+          }
+      }
+      if (strncmp(glRenderer, "Mesa GLX Indirect", strlen("Mesa GLX Indirect")) == 0) {
+          if (view.particleRenderMode == 1) {
+              conAdd(LERR,  "Sorry, Your indirect rendering GLX driver is blacklisted for particleRenderMode 1.");
+              conAdd(LHELP, "Indirect rendering is too slow for really pretty looking particles.");
+              conAdd(LNORM, "Setting particleRenderMode to 0");
+              view.particleRenderMode = 0;
+	  }
+          video.supportPointSprite = 0;
+      }
+    }
+
+
     // software OpenGL driver, Microsoft Windows
     if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
        // awfully SLOW. -> prefer particleRenderMode 0
