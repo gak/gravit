@@ -318,7 +318,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     // function pointers for gl extensions
     typedef void (APIENTRY *FPglPointParameterfARB)(GLenum, GLfloat);
-    typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, GLfloat*);
+    typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, const GLfloat*);
 
     extern FPglPointParameterfARB glPointParameterfARB_ptr;
     extern FPglPointParameterfvARB glPointParameterfvARB_ptr;
