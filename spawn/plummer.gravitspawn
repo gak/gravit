@@ -14,7 +14,7 @@ PH_PROPER   = 2
 
 -- local gravit_physics = 0
 -- 0 -> classic physics
--- 1 -> modifued (almost-proper) physics
+-- 1 -> modified (almost-proper) physics
 -- 2 -> proper physics
 
 -- value of the gravitational constant
