@@ -125,7 +125,7 @@ function spawn()
 	local first = 0
 
 	-- i want to be dirty, lets spawn some very massive objects
-	if (randomint(0,3) > 2) then
+	if (randomint(0,2) > 1) then
 	   local smbhmass = 256 + (2 - gravit_physics) * 512
 	    -- let a smbh cross the scene
 	   for k=1 ,randomint(3,12) do

@@ -148,6 +148,10 @@ function makecloud(org, orgvel, radius, innermass, massmin, massmax, firstpartic
 	   if ((center_mode < 1) and (len > (10.0 * radius / particles))) then
 	      -- orbit velocity
 	      speed = orbit_velocity((total_mass) * len / radius, len)
+	      if gravit_physics == PH_CLASSIC then
+		 speed = speed * math.sqrt(mass * 0.5)
+	      end
+
 	      -- velocity orthogonal to center
 	      vel=randomortho(pos, speed)
 	   else
@@ -249,21 +253,22 @@ end
 
 function spawn()
 	local num_objects=randomint(1,6)
-        local part=math.floor(spawnparticles / num_objects)
 	local min_distance=1000
 
-        if gravit_physics == PH_CLASSIC then
-	    min_distance = min_distance * 4
+        if (gravit_physics == PH_CLASSIC) then
+	    min_distance = min_distance * 6
+	    if (randomint(0,3) > 2) then num_objects=randomint(1,15) end
         end
 
         -- first cloud
+        local parts=math.floor(spawnparticles / num_objects)
 	local pos = randomrange(400)
 	local mainvel = v(0,0,0)
-	local mass = place_object_cloud(0, pos, mainvel, 1, 0, part)
+	local mass = place_object_cloud(0, pos, mainvel, 1, 0, parts)
 	local center=pos
 
         -- spawn some more clouds
-	local pstart=part
+	local pstart=parts
 	for i=1, num_objects-1 do
 	   if i==(num_objects-1) then
 	      parts = spawnparticles - pstart
@@ -285,12 +290,13 @@ function spawn()
 	   if gravit_physics == PH_MODIFIED then
 	      orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
 	   end
+
 	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
 
 	   -- create cloud
-	   mass = place_object_cloud(i, pos, mainvel, ratio, pstart, part)
+	   mass = place_object_cloud(i, pos, mainvel, ratio, pstart, parts)
 	   center=pos
-	   pstart=pstart+part
+	   pstart=pstart+parts
 	end 
 end
 
