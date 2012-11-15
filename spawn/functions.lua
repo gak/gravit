@@ -53,6 +53,17 @@ function distance(v1,v2)
 	return math.sqrt((v1.x-v2.x)^2 + (v1.y-v2.y)^2 + (v1.z-v2.z)^2)
 end
 
+-- compute cross product of two vectors
+-- returns a vector that is perpendicular to both input vectors
+function vecproduct(vect1,vect2)
+	local vect3=v(0,0,0)
+
+	vect3.x = vect1.y * vect2.z - vect1.z * vect2.y
+	vect3.y = vect1.z * vect2.x - vect1.x * vect2.z
+	vect3.z = vect1.x * vect2.y - vect1.y * vect2.x
+	return vect3
+end
+
 -- slow and buggy
 -- function randomrange(radius)
 --      ????
@@ -67,6 +78,7 @@ end
 --	return pos
 -- end
 
+-- randomly pick a point inside a ball
 function randomrange(radius)
 	local pos
 	local d2
@@ -80,6 +92,24 @@ function randomrange(radius)
 	-- scale to target radius
 	return pos * radius
 end
+
+-- randomly pick a point on the surface of a ball
+function randomshell(radius)
+    local pos
+    local d2
+    local rscale
+
+    -- pick random position inside unit sphere (radius = 1)
+    repeat
+        pos = v(randomfloat(-1,1), randomfloat(-1,1), randomfloat(-1,1))
+	d2 = pos.x*pos.x + pos.y*pos.y + pos.z*pos.z
+    until (d2 > 0) and (d2 <= 1)
+
+    -- scale position vector to target radius (so the point is always on the surface of the sphere)
+    rscale = radius / math.sqrt(d2)
+    return pos * rscale
+end
+
 
 
 function rotatevector(pos, theta, around)
@@ -108,6 +138,49 @@ function rotatevector(pos, theta, around)
 	return result
 
 end
+
+-- returns a random vector that is orthogonal to the input vector
+function randomortho(vector, radius)
+	local vect1=v(0,0,0)
+	local vect2=v(0,0,0)
+	local vectresult=v(0,0,0)
+	local a=randomfloat(-1, 1)
+	local b=randomfloat(-1, 1)
+
+
+	-- step 0 : special handling for zero size vector
+	if (math.abs(vector.x) + math.abs(vector.y) + math.abs(vector.z) < 0.000001)  then
+		return v(0,radius,0)
+	end
+
+	-- step one : choose one orthogonal vector
+	-- see http://www.wer-weiss-was.de/theme50/article3103419.html
+	if (math.abs(vector.z)>0.0001) then
+	   vect1 = v(0, vector.z, -vector.y)
+	else
+	   vect1 = v(vector.y, -vector.x,0)
+	end
+
+	-- step two : compute vect2 othogonal to vector and vect2
+	-- (using cross product), so 
+	-- (vect1, vect2, vector are othogonal now)
+	vect2 = vecproduct(vector,vect1)
+
+	--step 3: normalize vectors (optional..)
+	vect1=vect1 * (1/distance(vect1, v(0,0,0)))
+	vect2=vect2 * (1/distance(vect2, v(0,0,0)))
+
+	--step 4: vector3 = a*vect1 + b*vect2
+	vectresult.x= a*vect1.x + b*vect2.x
+	vectresult.y= a*vect1.y + b*vect2.y
+	vectresult.z= a*vect1.z + b*vect2.z
+
+	--step 4: normalize and scale
+	vectresult = vectresult * (radius / distance(vectresult, v(0,0,0)))
+	return vectresult
+end
+
+
 
 function makeball(org, vel, radius, massmin, massmax, firstparticle, particles)
 

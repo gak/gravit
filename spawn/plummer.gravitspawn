@@ -1,128 +1,19 @@
 -- vim:syntax=lua tabstop=4
 
 load("functions.lua")
+load("constants.lua")
+load("physics.lua")
 
 function describe()
 	log("some globular clusters.")
 end
 
 
--- this function is "proper physics ready".
-PH_CLASSIC  = 0
-PH_MODIFIED = 1
-PH_PROPER   = 2
-
--- local gravit_physics = 0
--- 0 -> classic physics
--- 1 -> modified (almost-proper) physics
--- 2 -> proper physics
-
--- value of the gravitational constant
--- local gravit_g = 0.0000001
+-- this spawn script is "proper physics ready".
 
 
 -- ----------------------------------------------------------------
 -- ----------------------------------------------------------------
--- helper fuctions
--- vector with length r and rotation (q,p); q and p in range[-1,1]
---function mkvect(len, p, q)
---    local vx= len * math.sqrt(1 - q*q) * math.cos(2 * math.pi * p)
---    local vy= len * math.sqrt(1 - q*q) * math.sin(2 * math.pi * p)
---    local vz= len * q
---    local result=v(vx,vy,vz)
---    return result
---end
-
-
--- compute cross product of two vectors
--- returns a vector that is perpendicular to both input vectors
-function vecproduct(vect1,vect2)
-	local vect3=v(0,0,0)
-
-	vect3.x = vect1.y * vect2.z - vect1.z * vect2.y
-	vect3.y = vect1.z * vect2.x - vect1.x * vect2.z
-	vect3.z = vect1.x * vect2.y - vect1.y * vect2.x
-	return vect3
-end
-
--- randomly pick a point on the surface of a ball
-function randomshell(len)
-    local pos
-    local d2
-    local rscale
-
-    -- pick random point inside unit sphere
-    repeat
-        pos = v(randomfloat(-1,1), randomfloat(-1,1), randomfloat(-1,1))
-	d2 = pos.x*pos.x + pos.y*pos.y + pos.z*pos.z
-    until (d2 > 0) and (d2 <= 1)
-
-    -- scale position vector to target length (so the point is always on the surface of the sphere)
-    rscale = len / math.sqrt(d2)
-    return pos * rscale
-end
-
--- compute velocity for stable orbit 
-function orbit_velocity(innermass, disttocenter)
-	local result = 0.0
-
-	if math.abs(disttocenter) > 0.1 then
-		result= math.sqrt(gravit_g * math.abs(innermass) / math.abs(disttocenter))
-	end
-
-	if gravit_physics < PH_PROPER then
-	        result=result*math.sqrt(math.abs(disttocenter))
-	end
-
-	return result
-end
-
--- returns a random vector that is orthogonal to the input vector
-function randomortho(vector, radius)
-	local vect1=v(0,0,0)
-	local vect2=v(0,0,0)
-	local vectresult=v(0,0,0)
-	local a=randomfloat(-1, 1)
-	local b=randomfloat(-1, 1)
-
-
-	-- step 0 : special handling for zero size vector
-	if (math.abs(vector.x) + math.abs(vector.y) + math.abs(vector.z) < 0.000001)  then
-		return v(0,radius,0)
-	end
-
-	-- step one : choose one orthogonal vector
-	-- see http://www.wer-weiss-was.de/theme50/article3103419.html
-	if (math.abs(vector.z)>0.0001) then
-	   vect1 = v(0, vector.z, -vector.y)
-	else
-	   vect1 = v(vector.y, -vector.x,0)
-	end
-
-	-- step two : compute vect2 othogonal to vector and vect2
-	-- (using cross product), so 
-	-- (vect1, vect2, vector are othogonal now)
-	vect2 = vecproduct(vector,vect1)
-
-	--step 3: normalize vectors (optional..)
-	vect1=vect1 * (1/distance(vect1, v(0,0,0)))
-	vect2=vect2 * (1/distance(vect2, v(0,0,0)))
-
-	--step 4: vector3 = a*vect1 + b*vect2
-	vectresult.x= a*vect1.x + b*vect2.x
-	vectresult.y= a*vect1.y + b*vect2.y
-	vectresult.z= a*vect1.z + b*vect2.z
-
-	--step 4: normalize and scale
-	vectresult = vectresult * (radius / distance(vectresult, v(0,0,0)))
-	return vectresult
-end
-
-
--- ----------------------------------------------------------------
--- ----------------------------------------------------------------
-
-
 -- adoption of the "plummer" formula (Aarseth, Henon and Wielen) from
 -- http://www.artcompsci.org/kali/vol/plummer/title.html
 
@@ -194,9 +85,9 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
     return real_mass
 end
 
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
 
--- ----------------------------------------------------------------
--- ----------------------------------------------------------------
 
 function place_object_plummer(num, center, vel, ratio, start, particles)
     local radius=randomfloat(50, 150)
@@ -212,11 +103,6 @@ function place_object_plummer(num, center, vel, ratio, start, particles)
      end
 
    return do_plummer(center, vel, radius, mass, start, particles)
-end
-
-
-function spawn_one()
-   place_object_plummer(0, v(0,0,0), v(0,0,0), 1, 0, spawnparticles)
 end
 
 
@@ -248,40 +134,39 @@ function spawn()
 	   end
 	 end
 
+        -- first sphere
 	local mass = place_object_plummer(0, pos, mainvel, mass_unit, first, part-first)
 	local center=pos
 
-        -- spawn some plummer spheres
+        -- spawn some more spheres
 	local pstart=part
 	for i=1, num_objects-1 do
 	   if i==(num_objects-1) then
 	      parts = spawnparticles - pstart
 	   end
 	   
-	   local ratio=mass_unit/randomfloat(0.9,4)
+	   -- pick position
 	   pos = center + randomshell(min_distance) + randomrange(min_distance/3.0)
 	   local dist=distance(pos, center)
 
+	   -- compute 2-body eliptic orbit velocity
+	   local ratio=mass_unit/randomfloat(0.9,4)
 	   local eccentricity = randomfloat(0.2, 0.8)
 	   local smalldist    = dist * math.sqrt(1- eccentricity*eccentricity)
 
-	   -- compute 2-body eliptic orbit
 	   local orbitVel=math.sqrt(gravit_g * mass *(1+ratio) * ((2/dist) - (1/smalldist)))
 
 	   if (gravit_physics < PH_PROPER) or (randomint(0,1)>0) then
 	         orbitVel = orbit_velocity(mass, dist)
 	   end
-
 	   if gravit_physics == PH_MODIFIED then
 	      orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
 	   end
-
 	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
 
+	   -- create plummer sphere
 	   mass = place_object_plummer(i, pos, mainvel, ratio, pstart, part)
-
 	   center=pos
 	   pstart=pstart+part
 	end 
 end
-
