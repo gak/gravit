@@ -95,7 +95,7 @@ typedef struct {
     float * __restrict__ x;
     float * __restrict__ y;
     float * __restrict__ z;
-} vel_vectors;
+} acc_vectors;
 
 
 
@@ -111,7 +111,7 @@ typedef struct {
 //#define MIN_STEP2 0.05
 
 HOT
-static void do_processFramePP(particle_vectors pos, vel_vectors vel,
+static void do_processFramePP(particle_vectors pos, acc_vectors accel,
                               int start, int amount) {
     int i;
     //int particles_max = state.particleCount;
@@ -129,9 +129,9 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 
         //VectorNew(p1_vel);
         //VectorZero(p1_vel);
-        float p1_vel_x = 0.0f;
-        float p1_vel_y = 0.0f;
-        float p1_vel_z = 0.0f;
+        float p1_accel_x = 0.0f;
+        float p1_accel_y = 0.0f;
+        float p1_accel_z = 0.0f;
 
         int j;
 
@@ -166,21 +166,21 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
             force = p1_mass * pos.mass[j] / inverseSquareDistance;
 
             // sum of accelerations for p1
-            p1_vel_x += dv_x * force;
-            p1_vel_y += dv_y * force;
-            p1_vel_z += dv_z * force;
+            p1_accel_x += dv_x * force;
+            p1_accel_y += dv_y * force;
+            p1_accel_z += dv_z * force;
 
             // add acceleration for p2 (with negative sign, as the direction is inverted)
-            vel.x[j] -= dv_x * force;
-            vel.y[j] -= dv_y * force;
-            vel.z[j] -= dv_z * force;
+            accel.x[j] -= dv_x * force;
+            accel.y[j] -= dv_y * force;
+            accel.z[j] -= dv_z * force;
 
         }
 
         // write back buffered acceleration of p1
-        vel.x[i] += p1_vel_x;
-        vel.y[i] += p1_vel_y;
-        vel.z[i] += p1_vel_z;
+        accel.x[i] += p1_accel_x;
+        accel.y[i] += p1_accel_y;
+        accel.z[i] += p1_accel_z;
 
     }
 
@@ -190,8 +190,9 @@ static void do_processFramePP(particle_vectors pos, vel_vectors vel,
 
 void processFramePP(int start, int amount) {
     particle_vectors pos;
-    vel_vectors vel;
+    acc_vectors accel;
     particle_t * __restrict__ framebase = state.particleHistory + state.particleCount*state.frame;
+    particleDetail_t * __restrict__ framedetail = state.particleDetail;
 
     int i;
     int particles_max;
@@ -208,12 +209,12 @@ void processFramePP(int start, int amount) {
     //memset(pos.y, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.z, 0, sizeof(float) * (particles_max + 16));
     //memset(pos.mass, 0, sizeof(float) * (particles_max + 16));
-    MALLOC_ALIGNED( vel.x, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( vel.y, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( vel.z, sizeof(float)*(particles_max + 16), 16);
-    memset(vel.x, 0, sizeof(float) * (particles_max + 16));
-    memset(vel.y, 0, sizeof(float) * (particles_max + 16));
-    memset(vel.z, 0, sizeof(float) * (particles_max + 16));
+    MALLOC_ALIGNED( accel.x, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( accel.y, sizeof(float)*(particles_max + 16), 16);
+    MALLOC_ALIGNED( accel.z, sizeof(float)*(particles_max + 16), 16);
+    memset(accel.x, 0, sizeof(float) * (particles_max + 16));
+    memset(accel.y, 0, sizeof(float) * (particles_max + 16));
+    memset(accel.z, 0, sizeof(float) * (particles_max + 16));
 
 
     // copy frame data to vector-friendly arrays
@@ -226,14 +227,14 @@ void processFramePP(int start, int amount) {
 
 
     // calculate new accelerations
-    do_processFramePP(pos, vel, start, amount);
+    do_processFramePP(pos, accel, start, amount);
 
 
     // write back results
     for (i=0; i<particles_max; i++) {
-        framebase[i].vel[0] += vel.x[i] * state.g;
-        framebase[i].vel[1] += vel.y[i] * state.g;
-        framebase[i].vel[2] += vel.z[i] * state.g;
+        framedetail[i].accel[0] += accel.x[i] * state.g;
+        framedetail[i].accel[1] += accel.y[i] * state.g;
+        framedetail[i].accel[2] += accel.z[i] * state.g;
     }
 
 
@@ -243,8 +244,8 @@ void processFramePP(int start, int amount) {
     FREE_ALIGNED(pos.z);
     FREE_ALIGNED(pos.mass);
 
-    FREE_ALIGNED(vel.x);
-    FREE_ALIGNED(vel.y);
-    FREE_ALIGNED(vel.z);
+    FREE_ALIGNED(accel.x);
+    FREE_ALIGNED(accel.y);
+    FREE_ALIGNED(accel.z);
 
 }

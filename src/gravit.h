@@ -385,6 +385,7 @@ typedef struct particle_s {
 typedef struct particleDetail_s {
 
     float mass;
+    VectorNew(accel);   // new acceleration
     float col[4];
     unsigned int particleSprite;
 

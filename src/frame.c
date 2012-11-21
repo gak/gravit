@@ -162,6 +162,13 @@ static void accelerateParticles() {
     omp_set_num_threads(state.processFrameThreads);
 #endif
 
+    // zero accelerations
+    for (i = 0; i < state.particleCount; i++) {
+        particleDetail_t *pd;
+        pd = getParticleDetail(i);
+	VectorZero(pd->accel);
+    }
+
 #if NBODY_METHOD == METHOD_OT
     otFreeTree();
 #endif
@@ -195,6 +202,7 @@ static void accelerateParticles() {
 static void moveParticles() {
     int i;
     particle_t *p;
+    particleDetail_t *pd;
 
     // copy particles to next frame
     memcpy(
@@ -221,6 +229,8 @@ static void moveParticles() {
     // advance particles to final postions
     for (i = 0; i < state.particleCount; i++) {
         p = state.particleHistory + state.particleCount * (state.frame) + i;
+        pd = getParticleDetail(i);
+        VectorAdd(p->vel, pd->accel, p->vel);
         VectorAdd(p->pos, p->vel, p->pos);
     }
 

@@ -869,6 +869,7 @@ void cmdLoadFrameDump(char *arg) {
         pd->col[2] = sd[i].col[2];
         pd->col[3] = sd[i].col[3];
 	pd->particleSprite=SPRITE_DEFAULT;
+	VectorZero(pd->accel);
     }
 
     state.currentFrame = 0;
