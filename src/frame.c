@@ -148,6 +148,86 @@ void processMomentum() {
 
 }
 
+
+/*
+ * compute new particle accelerations, based on current positions
+ */
+static void accelerateParticles() {
+#if (!defined(WIN32) || defined(USE_PTHREAD)) && !defined(_OPENMP)
+    pthread_t ptt[MAX_THREADS];
+#endif
+        int i;
+
+#ifdef _OPENMP
+    omp_set_num_threads(state.processFrameThreads);
+#endif
+
+#if NBODY_METHOD == METHOD_OT
+    otFreeTree();
+#endif
+
+#if (defined(WIN32) && !defined(USE_PTHREAD)) || defined(_OPENMP)
+    processFrameThread(0);
+#else
+
+    if (state.processFrameThreads > 1) {
+        for (i = 0; i < state.processFrameThreads; i++) {
+            pthread_create(&ptt[i], NULL, (void*)processFrameThread, (void*)i);
+        }
+        for (i = 0; i < state.processFrameThreads; i++) {
+            pthread_join(ptt[i], NULL);
+        }
+
+    } else {
+        processFrameThread(0);
+    }
+
+#endif
+}
+
+
+/*
+ * compute and "integrate" new particle velocities, and advances particle postions to next time frame
+ *
+ * assumption:   one new frame is availeable at (state.particleHistory + state.particleCount * (state.frame+1))
+ * side effects: updates state.frame
+ */
+static void moveParticles() {
+    int i;
+    particle_t *p;
+
+    // copy particles to next frame
+    memcpy(
+        state.particleHistory + state.particleCount * (state.frame+1),
+        state.particleHistory + state.particleCount * state.frame,
+        FRAMESIZE
+    );
+    // use next frame
+    state.frame++;
+
+    // compute accelerations
+    accelerateParticles();
+
+    // Check if the recording frame was cancelled, if so - forget new frame and return;
+    if (!(state.mode & SM_RECORD))
+    {
+        state.frame--;
+        return;
+    }
+
+    //	processCollisions();
+    //	forceToCenter();
+
+    // advance particles to final postions
+    for (i = 0; i < state.particleCount; i++) {
+        p = state.particleHistory + state.particleCount * (state.frame) + i;
+        VectorAdd(p->pos, p->vel, p->pos);
+    }
+
+}
+
+
+
 void processFrame() {
 
     int i;
@@ -156,10 +236,6 @@ void processFrame() {
     Uint32 frameEnd = 0;
 
 //	processMomentum();
-
-#if (!defined(WIN32) || defined(USE_PTHREAD)) && !defined(_OPENMP)
-    pthread_t ptt[MAX_THREADS];
-#endif
 
     if (state.frame >= state.historyFrames - 1) {
 
@@ -198,56 +274,11 @@ void processFrame() {
 
     frameStart = getMS();
 
-#ifdef _OPENMP
-    omp_set_num_threads(state.processFrameThreads);
-#endif
-
-#if NBODY_METHOD == METHOD_OT
-    otFreeTree();
-#endif
-
-#if (defined(WIN32) && !defined(USE_PTHREAD)) || defined(_OPENMP)
-    processFrameThread(0);
-#else
-    
-    if (state.processFrameThreads > 1) {
-        
-        int i;
-        for (i = 0; i < state.processFrameThreads; i++) {
-            pthread_create(&ptt[i], NULL, (void*)processFrameThread, (void*)i);
-        }
-        
-        for (i = 0; i < state.processFrameThreads; i++) {
-            pthread_join(ptt[i], NULL);
-        }
-        
-    } else {
-        processFrameThread(0);
-    }
-    
-#endif
+    moveParticles();
 
     // Check if the recording frame was cancelled, if so just return;
     if (!(state.mode & SM_RECORD))
         return;
-
-    //	processCollisions();
-
-    //	forceToCenter();
-
-    // move particles to next page
-    memcpy(
-
-        state.particleHistory + state.particleCount * (state.frame+1),
-        state.particleHistory + state.particleCount * state.frame,
-        FRAMESIZE
-
-    );
-
-    for (i = 0; i < state.particleCount; i++) {
-        p = state.particleHistory + state.particleCount * (state.frame+1) + i;
-        VectorAdd(p->pos, p->vel, p->pos);
-    }
 
     state.totalFrames ++;
 
@@ -270,7 +301,6 @@ void processFrame() {
 
     }
 
-    state.frame ++;
     state.currentFrame = state.frame;
 
     if ((state.targetFrame >= 0) && (state.targetFrame <= state.frame) && (state.mode & SM_RECORD))
