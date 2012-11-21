@@ -86,6 +86,10 @@ int initFrame() {
 
     VectorZero(view.lastCenter);
 
+#ifdef USE_LEAPFROG_ALTERNATIVE
+    state.have_old_accel = 0;
+#endif
+
     return 1;
 
 }
@@ -204,6 +208,25 @@ static void moveParticles() {
     particle_t *p;
     particleDetail_t *pd;
 
+#if defined(USE_LEAPFROG) || defined(USE_LEAPFROG_ALTERNATIVE)
+    // use leapfrog integration sheme, as it has a much better acuracy,
+    // with very low additional computation costs
+
+    // http://einstein.drexel.edu/courses/Comp_Phys/Integrators/leapfrog/
+    // http://www.artcompsci.org/vol_1/v1_web/node34.html
+    // note: in gravit, the "time step" t is always 1
+
+#ifdef USE_LEAPFROG_ALTERNATIVE
+    // this is an "alternative" leapfrog implementation, which does not
+    // put the velocity 0.5 timesteps "ahead" of time.
+    // downside: we need to make sure that we still have the acceleration value of the last frame
+
+    // make sure we know the acceleration value of the current frame
+    if ((state.totalFrames == 0) || (state.have_old_accel == 0)) {
+        accelerateParticles();
+	state.have_old_accel = 1;
+    }
+
     // copy particles to next frame
     memcpy(
         state.particleHistory + state.particleCount * (state.frame+1),
@@ -213,7 +236,111 @@ static void moveParticles() {
     // use next frame
     state.frame++;
 
-    // compute accelerations
+
+    // advance positions first
+    // pos = old_pos + (vel * t) + (0.5 * old_accel * t*t)
+    for (i = 0; i < state.particleCount; i++) {
+        VectorNew(tempV);
+        p = state.particleHistory + state.particleCount * (state.frame) + i;
+        pd = getParticleDetail(i);
+
+	VectorMultiply(pd->accel, 0.5, tempV);
+	VectorAdd(tempV, p->vel, tempV);
+        VectorAdd(p->pos, tempV, p->pos);
+
+        // remember the last acceleration value
+        VectorCopy(pd->accel, pd->old_accel);
+    }
+
+    // compute new accelerations
+    accelerateParticles();
+
+    // Check if the recording frame was cancelled, if so - forget new frame and return;
+    if (!(state.mode & SM_RECORD))
+    {
+        state.frame--;
+	state.have_old_accel = 0;  // also, invalidate saved acceleration values
+        return;
+    }
+
+    // advance velocities for the next timestep
+    // vel = old_vel +  0.5 * (accel + old_accel) * t
+    for (i = 0; i < state.particleCount; i++) {
+        VectorNew(tempVel);
+        p = state.particleHistory + state.particleCount * (state.frame) + i;
+        pd = getParticleDetail(i);
+
+	VectorAdd(pd->accel, pd->old_accel, tempVel);
+	VectorMultiply(tempVel, 0.5, tempVel);
+        VectorAdd(p->vel, tempVel, p->vel);
+    }
+
+
+#else
+    // straigth forward "leapfrog" implementation
+
+    if (state.totalFrames == 0) {
+        // before doing the first timestep,
+        // we need put the velocity at time 0.5 (half a step ahead of time)
+        // --> compute initial accelerations
+        accelerateParticles();
+        // --> advance velocities by 1/2 step
+        for (i = 0; i < state.particleCount; i++) {
+            p = state.particleHistory + state.particleCount * (state.frame) + i;
+            pd = getParticleDetail(i);
+            VectorMultiplyAdd(pd->accel, 0.5, p->vel);
+        }
+	// now, we are ready for the first "real" timestep
+    }
+
+    // copy particles to next frame
+    memcpy(
+        state.particleHistory + state.particleCount * (state.frame+1),
+        state.particleHistory + state.particleCount * state.frame,
+        FRAMESIZE
+    );
+    // use next frame
+    state.frame++;
+
+    // advance positions
+    for (i = 0; i < state.particleCount; i++) {
+        p = state.particleHistory + state.particleCount * (state.frame) + i;
+        VectorAdd(p->pos, p->vel, p->pos);
+    }
+
+    // compute new accelerations
+    accelerateParticles();
+
+    // Check if the recording frame was cancelled, if so - forget new frame and return;
+    if (!(state.mode & SM_RECORD))
+    {
+        state.frame--;
+        return;
+    }
+
+    // advance velocities for the next timestep
+    for (i = 0; i < state.particleCount; i++) {
+        p = state.particleHistory + state.particleCount * (state.frame) + i;
+        pd = getParticleDetail(i);
+        VectorAdd(p->vel, pd->accel, p->vel);
+    }
+
+#endif
+
+
+#else
+    // simple "Euler" integration - low accuracy
+
+    // copy particles to next frame
+    memcpy(
+        state.particleHistory + state.particleCount * (state.frame+1),
+        state.particleHistory + state.particleCount * state.frame,
+        FRAMESIZE
+    );
+    // use next frame
+    state.frame++;
+
+    // compute new accelerations
     accelerateParticles();
 
     // Check if the recording frame was cancelled, if so - forget new frame and return;
@@ -226,14 +353,14 @@ static void moveParticles() {
     //	processCollisions();
     //	forceToCenter();
 
-    // advance particles to final postions
+    // advance velocities, then advance particles to final positions
     for (i = 0; i < state.particleCount; i++) {
         p = state.particleHistory + state.particleCount * (state.frame) + i;
         pd = getParticleDetail(i);
         VectorAdd(p->vel, pd->accel, p->vel);
         VectorAdd(p->pos, p->vel, p->pos);
     }
-
+#endif
 }
 
 
