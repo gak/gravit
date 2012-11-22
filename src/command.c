@@ -870,9 +870,6 @@ void cmdLoadFrameDump(char *arg) {
         pd->col[3] = sd[i].col[3];
 	pd->particleSprite=SPRITE_DEFAULT;
 	VectorZero(pd->accel);
-#ifdef USE_LEAPFROG_ALTERNATIVE
-	VectorZero(pd->old_accel);
-#endif
     }
 
     state.currentFrame = 0;

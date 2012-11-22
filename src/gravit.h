@@ -391,9 +391,6 @@ typedef struct particleDetail_s {
 
     float mass;
     VectorNew(accel);       // new acceleration
-#ifdef USE_LEAPFROG_ALTERNATIVE
-    VectorNew(old_accel);   // previous acceleration
-#endif
     float col[4];
     unsigned int particleSprite;
 

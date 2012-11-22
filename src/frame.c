@@ -219,9 +219,8 @@ static void moveParticles() {
 #ifdef USE_LEAPFROG_ALTERNATIVE
     // this is an "alternative" leapfrog implementation, which does not
     // put the velocity 0.5 timesteps "ahead" of time.
-    // downside: we need to make sure that we still have the acceleration value of the last frame
 
-    // make sure we know the acceleration value of the current frame
+    // make sure we know the accelerations of the current frame
     if ((state.totalFrames == 0) || (state.have_old_accel == 0)) {
         accelerateParticles();
 	state.have_old_accel = 1;
@@ -237,19 +236,13 @@ static void moveParticles() {
     state.frame++;
 
 
-    // advance positions first
-    // pos = old_pos + (vel * t) + (0.5 * old_accel * t*t)
+    // advance velocities by 0.5, then advance positions by 1 step
     for (i = 0; i < state.particleCount; i++) {
-        VectorNew(tempV);
         p = state.particleHistory + state.particleCount * (state.frame) + i;
         pd = getParticleDetail(i);
 
-	VectorMultiply(pd->accel, 0.5, tempV);
-	VectorAdd(tempV, p->vel, tempV);
-        VectorAdd(p->pos, tempV, p->pos);
-
-        // remember the last acceleration value
-        VectorCopy(pd->accel, pd->old_accel);
+        VectorMultiplyAdd(pd->accel, 0.5, p->vel);
+        VectorAdd(p->pos, p->vel, p->pos);
     }
 
     // compute new accelerations
@@ -263,16 +256,11 @@ static void moveParticles() {
         return;
     }
 
-    // advance velocities for the next timestep
-    // vel = old_vel +  0.5 * (accel + old_accel) * t
+    // advance velocities by 0.5
     for (i = 0; i < state.particleCount; i++) {
-        VectorNew(tempVel);
         p = state.particleHistory + state.particleCount * (state.frame) + i;
         pd = getParticleDetail(i);
-
-	VectorAdd(pd->accel, pd->old_accel, tempVel);
-	VectorMultiply(tempVel, 0.5, tempVel);
-        VectorAdd(p->vel, tempVel, p->vel);
+	VectorMultiplyAdd(pd->accel, 0.5, p->vel);
     }
 
 
