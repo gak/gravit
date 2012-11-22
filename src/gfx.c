@@ -166,6 +166,8 @@ int gfxSetResolution() {
         video.screenW = videoInfo->current_w;
         video.screenH = videoInfo->current_h;
     }
+
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
     
     video.sdlScreen = SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags );
     if (!video.sdlScreen) {
