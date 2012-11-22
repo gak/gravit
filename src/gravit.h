@@ -30,6 +30,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 
 
+// some flags - define to enable experimental features
+#define USE_LEAPFROG
+#define USE_LEAPFROG_ALTERNATIVE
+
+
 // a few gcc-specific attributes
 #ifdef __GNUC__
   #if __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
@@ -385,6 +390,10 @@ typedef struct particle_s {
 typedef struct particleDetail_s {
 
     float mass;
+    VectorNew(accel);       // new acceleration
+#ifdef USE_LEAPFROG_ALTERNATIVE
+    VectorNew(old_accel);   // previous acceleration
+#endif
     float col[4];
     unsigned int particleSprite;
 
@@ -449,6 +458,9 @@ typedef struct state_s {
     lua_State *lua;
 #endif
 
+#ifdef USE_LEAPFROG_ALTERNATIVE
+    int have_old_accel;
+#endif
     physics_t physics;
 
 } state_t;
