@@ -138,7 +138,7 @@ void viewInit() {
     view.particleRenderTexture = 1;
 
     view.particleSizeMin = 4;
-    view.particleSizeMax = 172;
+    view.particleSizeMax = 127;
 
     view.verboseMode = 0;
 

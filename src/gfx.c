@@ -392,15 +392,15 @@ void drawFrame() {
 
     if (view.particleRenderMode == 1) {
 
-        float quadratic_0[] =  { 0.0f, 0.0f, 0.01f };
-        float quadratic_1[] =  { 0.0f, 0.0f, 0.0001f };
-        float quadratic_2[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
-        float quadratic_3[] =  { 0.0f, 0.0f, 0.000001f, 0.00f };
-        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000003f, 0.00f };
-        float quadratic_5[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
-        float quadratic_6[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
-        float quadratic_7[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
-        float quadratic_8[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
+        float quadratic_0[] =  { 0.0f, 0.0f, 0.008f };
+        float quadratic_1[] =  { 0.0f, 0.0f, 0.00006f };
+        float quadratic_2[] =  { 0.0f, 0.0f, 0.000006f, 0.00f };
+        float quadratic_3[] =  { 0.0f, 0.0f, 0.0000008f, 0.00f };
+        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000001f, 0.00f };
+        float quadratic_5[] =  { 0.0f, 0.0f, 0.000008f, 0.00f };
+        float quadratic_6[] =  { 0.0f, 0.0f, 0.0000015f, 0.00f };
+        float quadratic_7[] =  { 0.0f, 0.0f, 0.0000005f, 0.00f };
+        float quadratic_8[] =  { 0.0f, 0.0f, 0.00000006f, 0.00f };
         float *quadratic;
 
         quadratic = quadratic_0;
