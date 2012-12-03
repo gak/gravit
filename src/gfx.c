@@ -612,6 +612,7 @@ void drawFrame() {
             if (screen[2] < -1.0) screen[2] = -1.0;
 
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
+            size = fmin(fabs(size), fabs(view.particleSizeMax));
             glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
 
             glBegin(GL_QUADS);
