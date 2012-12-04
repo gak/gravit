@@ -31,6 +31,8 @@ int loadFonts() {
     TTF_Font		*font = NULL;
     SDL_Surface		*fontSurface = NULL;
     SDL_Surface		*tmp = NULL;
+    Uint32 saved_flags;
+    Uint8  saved_alpha;
     static SDL_Color fontColour = {255,255,255};
     char letter[2];
     int i;
@@ -114,6 +116,20 @@ int loadFonts() {
 
         }
 
+
+	/* Save the alpha blending attributes */
+	saved_flags = fontSurface->flags & (SDL_SRCALPHA|SDL_RLEACCELOK);
+#if SDL_VERSION_ATLEAST(1, 3, 0)
+	SDL_GetSurfaceAlphaMod(fontSurface, &saved_alpha);
+	SDL_SetSurfaceAlphaMod(fontSurface, 0xFF);
+#else
+	saved_alpha = fontSurface->format->alpha;
+	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
+		SDL_SetAlpha(fontSurface, 0, 0);
+	}
+#endif
+
+	/* copy to texture surface */
         if (SDL_BlitSurface(fontSurface, NULL, tmp, NULL)) {
 
             TTF_CloseFont(font);
@@ -130,7 +146,7 @@ int loadFonts() {
         glBindTexture(GL_TEXTURE_2D, fonts[i].id);
         glCheck();
 
-        glTexImage2D(GL_TEXTURE_2D, 0, 3, fonts[i].w, fonts[i].h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fonts[i].w, fonts[i].h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
         glCheck();
 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -153,9 +169,9 @@ int loadFonts() {
 
 void drawFontLetter(float x, float y, int letter) {
 
-//    if ((fonts[letter].id == 0) || (!glIsTexture(fonts[letter].id))) {
-//        conAdd(LERR, "texture id %u for character 0x%x is invalid", fonts[letter].id, letter);
-//    }
+    if ((fonts[letter].id == 0) || (!glIsTexture(fonts[letter].id))) {
+        conAdd(LERR, "texture id %u for character 0x%x is invalid", fonts[letter].id, letter);
+    }
 
     glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
     glCheck();

@@ -1,0 +1,302 @@
+-- vim:syntax=lua tabstop=4
+
+load("functions.lua")
+load("constants.lua")
+load("physics.lua")
+
+function describe()
+	log("some clouds of ligher particles with random velocities")	
+end
+
+
+-- this spawn script is "proper physics ready".
+
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+
+
+-- rotate vector: alpha around x axis, then beta around z axis
+function rotvect_xz(pos, alpha, beta)
+   local res1 = v(0,0,0)
+   local res2 = v(0,0,0)
+-- x-axis
+   --y' = y*cos q - z*sin q
+   --z' = y*sin q + z*cos q
+   res1.y = pos.y * math.cos(alpha) - pos.z * math.sin(alpha)
+   res1.z = pos.y * math.sin(alpha) + pos.z * math.cos(alpha)
+   res1.x = pos.x
+
+-- z-axis
+   --x' = x*cos q - y*sin q
+   --y' = x*sin q + y*cos q 
+   res2.x = res1.x * math.cos(beta) - res1.y * math.sin(beta)
+   res2.y = res1.x * math.sin(beta) + res1.y * math.cos(beta)
+   res2.z = res1.z
+
+   return res2
+end
+
+
+function rotvect_xz_inv(pos, alpha, beta)
+
+   local res1 = v(0,0,0)
+   local res2 = v(0,0,0)
+
+-- z-axis
+   --x' = x*cos q - y*sin q
+   --y' = x*sin q + y*cos q 
+   res1.x = pos.x * math.cos(beta) - pos.y * math.sin(beta)
+   res1.y = pos.x * math.sin(beta) + pos.y * math.cos(beta)
+   res1.z = pos.z
+
+-- x-axis
+   --y' = y*cos q - z*sin q
+   --z' = y*sin q + z*cos q
+   res2.y = res1.y * math.cos(alpha) - res1.z * math.sin(alpha)
+   res2.z = res1.y * math.sin(alpha) + res1.z * math.cos(alpha)
+   res2.x = res1.x
+
+
+   return res2
+end
+
+
+-- make rotation around (y)-axis
+function makerot(realpos, vel, strength, maxradius, avgspeed, alpha, beta)
+
+   -- constants
+   local angular_fraction = 24
+
+   -- rotate postional vector
+   --local pos = realpos
+   local pos = rotvect_xz( realpos, alpha, beta)
+
+   -- compute rotation vector around y-axis for pos
+   local len=vlength(vel)
+
+   local radius=vlength(v(pos.x, 0, pos.z))
+   local radspeed=radius * 2*math.pi / angular_fraction
+
+   local rotvector= v(-pos.z, 0, pos.x)
+   --local rotvector= pos * 0.2 + v(-pos.z, 0, pos.x)
+   rotvector = rotvector * (1.0/vlength(rotvector))
+   rotvector = rotvector * radspeed
+
+   -- to scale down rotvector: strength * agvspeed at maxradius
+   local maxspeed=2* math.pi * maxradius / angular_fraction
+   rotvector= rotvector * (strength * avgspeed / maxspeed)
+
+   -- anti-rotate velocity vector
+   rotvector=rotvect_xz_inv(rotvector, -alpha, -beta)
+
+
+   -- vector add, then restore length
+   -- local rotvel = rotvector
+   local rotvel = vel + rotvector
+   rotvel = rotvel * (1.0 / vlength(rotvel)) * len
+
+   return rotvel
+end
+
+
+-- make random cloud
+function makecloud(org, orgvel, radius, innermass, massmin, massmax, firstparticle, particles, docenter)
+
+   local avg_mass   = (massmin+massmax)/2.0
+   local total_mass = (avg_mass * particles)+innermass
+   local avg_vel = math.sqrt(gravit_g * total_mass / radius)
+   --local maxrad=radius * 0.75
+   local maxrad=radius * 0.99
+
+   local center_mode= docenter
+
+   local rotalpha=randomfloat(-math.pi, math.pi)
+   local rotbeta=randomfloat(-math.pi, math.pi)
+   local strength=2^(randomfloat(-1,5))
+   --local strength=2^3
+
+   local mass_mixed_sign = 0
+   -- if (randomint(0,7) > 6) then
+   --    mass_mixed_sign = 1
+   -- end
+
+   if (firstparticle+particles >= spawnparticles) then
+      rotalpha=-math.pi/2 + (randomint(0,1) * math.pi)
+      rotbeta=0
+   end
+
+   if gravit_physics < PH_PROPER then
+      avg_vel = orbit_velocity(total_mass /2 , radius / 2)
+   end
+
+	for i=firstparticle,firstparticle+particles-1 do
+	   local len  = randomfloat(0.005, maxrad)
+	   local pos  = randomshell(len)
+
+	   --local mass = avg_mass
+	   local mass = randomfloat(massmin, massmax)
+
+	   local speed
+	   local vel=v(0,0,0)
+
+	   if (docenter>1) then
+	      center_mode= randomint(0,1)
+	   end
+
+
+	   if ((center_mode < 1) and (len > (10.0 * radius / particles))) then
+	      -- orbit velocity
+	      speed = orbit_velocity((total_mass) * len / radius, len)
+	      if gravit_physics == PH_CLASSIC then
+		 speed = speed * math.sqrt(mass * 0.5)
+	      end
+
+	      -- velocity orthogonal to center
+	      vel=randomortho(pos, speed)
+	   else
+	      -- average equlibrium speed
+	      speed= avg_vel
+	      if (center_mode < 1) then
+		 vel=randomortho(pos, speed)
+	      else
+	      -- random velocity vector
+		 vel  = randomshell(speed)
+	      end
+	   end
+
+	   vel=makerot(pos, vel, strength, radius, avg_vel, rotalpha, rotbeta)
+           if (mass_mixed_sign == 1) and (randomint(0,1) > 0) then
+	      mass = mass * -1
+           end
+	   particle(i, org+pos, orgvel+vel, mass)
+	end
+	
+end
+
+--------- ==============================================
+function do_the_cloud(center, mainvel, minrad, maxrad, fakminmass, fakmaxmass, centralorbit, onlyone, startp, parts)
+
+	-- local onlyone = randomint(0,1)
+	-- local onlyone = 1
+	-- local centralorbit = randomint(0,2)
+        -- local centralorbit=0
+	-- local center = v(0,0,0)
+	-- local mainvel =v(0,0,0)
+	-- missing : rotation vector !!
+
+
+        local mass_dev = randomfloat(0, 0.5)
+        --local mass_dev = 0
+
+   	local massiveparticles
+	local bigmass
+        local bigradius
+
+	local radius=randomfloat(minrad, maxrad)
+	local target_mass = randomfloat(radius*fakminmass, radius*fakmaxmass)
+
+	if (onlyone > 0) then
+	   massiveparticles = 0
+	   bigmass = 0
+	else
+	   -- massiveparticles = randomint(1, 6)
+	   massiveparticles = 2^(randomint(0, 9))
+	   bigmass = randomfloat(0.01, 0.1) * target_mass
+	   bigradius = randomfloat(0.1, 0.4) * radius
+		
+	   local bigmassmin=(bigmass/massiveparticles) * (1-mass_dev)
+	   local bigmassmax=(bigmass/massiveparticles) * (1+mass_dev)
+	   makecloud(center, mainvel, bigradius, 0, bigmassmin, bigmassmax, startp, massiveparticles, 0)	
+	end
+
+	local smallmass = (target_mass - bigmass) / spawnparticles
+	local massmin=smallmass  * (1-mass_dev)
+	local massmax=smallmass  * (1+mass_dev)
+	local innermass = bigmass
+
+	makecloud(center, mainvel, radius, innermass, massmin, massmax, startp + massiveparticles, parts-massiveparticles, centralorbit)
+	return target_mass
+end
+
+--------- ==============================================
+function place_object_cloud(num, center, vel, ratio, start, particles)
+        -- local centralorbit=0
+	local onlyone = 1
+        --local onlyone = randomint(0,1)
+	local centralorbit = randomint(0,2)
+
+	local minrad=200
+	local maxrad=400
+	local fakminmass=7 * ratio
+	local fakmaxmass=14 * ratio
+
+	if gravit_physics < PH_PROPER then
+	   fakminmass=fakminmass*12
+	   fakmaxmass=fakmaxmass*16
+	end
+
+        if gravit_physics == PH_CLASSIC then
+	   fakminmass=fakminmass*8
+	   fakmaxmass=fakmaxmass*8
+	   minrad=minrad * 2
+	   maxrad=maxrad * 6
+        end
+
+   return do_the_cloud(center, vel, minrad, maxrad, fakminmass, fakmaxmass, centralorbit, onlyone, start, particles)
+
+end
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+
+
+function spawn()
+	local num_objects=randomint(1,6)
+	local min_distance=1000
+
+        if (gravit_physics == PH_CLASSIC) then
+	    min_distance = min_distance * 6
+	    if (randomint(0,3) > 2) then num_objects=randomint(1,15) end
+        end
+
+        -- first cloud
+        local parts=math.floor(spawnparticles / num_objects)
+	local pos = randomrange(400)
+	local mainvel = v(0,0,0)
+	local mass = place_object_cloud(0, pos, mainvel, 1, 0, parts)
+	local center=pos
+
+        -- spawn some more clouds
+	local pstart=parts
+	for i=1, num_objects-1 do
+	   if i==(num_objects-1) then
+	      parts = spawnparticles - pstart
+	   end
+	   
+	   pos = center + randomshell(min_distance) + randomrange(min_distance/2.5)
+	   local dist=distance(pos, center)
+
+	   -- compute 2-body eliptic orbit velocity
+	   local ratio=1.0/randomfloat(0.9,4)
+	   local eccentricity = randomfloat(0.2, 0.8)
+	   local smalldist    = dist * math.sqrt(1- eccentricity*eccentricity)
+
+	   local orbitVel=math.sqrt(gravit_g * mass *(1+ratio) * ((2/dist) - (1/smalldist)))
+
+	   if (gravit_physics < PH_PROPER) or (randomint(0,1)>0) then
+	         orbitVel = orbit_velocity(mass, dist)
+	   end
+	   if gravit_physics == PH_MODIFIED then
+	      orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
+	   end
+
+	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
+
+	   -- create cloud
+	   mass = place_object_cloud(i, pos, mainvel, ratio, pstart, parts)
+	   center=pos
+	   pstart=pstart+parts
+	end 
+end
+

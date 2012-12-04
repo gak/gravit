@@ -48,7 +48,7 @@ typedef struct {
     float * __restrict__ x;
     float * __restrict__ y;
     float * __restrict__ z;
-} vel_vectors;
+} acc_vectors;
 
 
 #include "sse_functions.h"
@@ -67,7 +67,7 @@ typedef struct {
 static const __v128 vmin_step2 = _mm_init1_ps(MIN_STEP2);
 
 HOT
-static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
+static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
                                   int start, int amount) {
     int i;
 
@@ -81,9 +81,9 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
         __v128 p1_vpos_z ;
         __v128 p1_vmass  ;
 
-        __v128 p1_vvel_x  = _mm_init1_ps(0.0f);
-        __v128 p1_vvel_y  = _mm_init1_ps(0.0f);
-        __v128 p1_vvel_z  = _mm_init1_ps(0.0f);
+        __v128 p1_vaccel_x  = _mm_init1_ps(0.0f);
+        __v128 p1_vaccel_y  = _mm_init1_ps(0.0f);
+        __v128 p1_vaccel_z  = _mm_init1_ps(0.0f);
 
         //VectorNew(p1_pos);
         //VectorNew(p1_vel);
@@ -94,9 +94,9 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
         float p1_pos_z;
         float p1_mass;
 
-        float p1_vel_x = 0.0f;
-        float p1_vel_y = 0.0f;
-        float p1_vel_z = 0.0f;
+        float p1_accel_x = 0.0f;
+        float p1_accel_y = 0.0f;
+        float p1_accel_z = 0.0f;
 
 
         int j;
@@ -134,14 +134,14 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
             vforce = V_MUL( V_MUL( p1_vmass, LOAD_V4(pos.mass, j)), newtonrapson_rcp(vInvSqDist));
 
             // sum of accelerations for p1
-            V_INCR( p1_vvel_x, V_MUL( dv_vx, vforce));
-            V_INCR( p1_vvel_y, V_MUL( dv_vy, vforce));
-            V_INCR( p1_vvel_z, V_MUL( dv_vz, vforce));
+            V_INCR( p1_vaccel_x, V_MUL( dv_vx, vforce));
+            V_INCR( p1_vaccel_y, V_MUL( dv_vy, vforce));
+            V_INCR( p1_vaccel_z, V_MUL( dv_vz, vforce));
 
             // add acceleration for p2 (with negative sign, as the direction is inverted)
-            SUB_V4(vel.x, j, V_MUL( dv_vx, vforce));
-            SUB_V4(vel.y, j, V_MUL( dv_vy, vforce));
-            SUB_V4(vel.z, j, V_MUL( dv_vz, vforce));
+            SUB_V4(accel.x, j, V_MUL( dv_vx, vforce));
+            SUB_V4(accel.y, j, V_MUL( dv_vy, vforce));
+            SUB_V4(accel.z, j, V_MUL( dv_vz, vforce));
 
         }
 
@@ -153,9 +153,9 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
         p1_mass   = pos.mass[i];
 
         // copy vector results  to single floats
-        p1_vel_x = _vector4_sum(p1_vvel_x);
-        p1_vel_y = _vector4_sum(p1_vvel_y);
-        p1_vel_z = _vector4_sum(p1_vvel_z);
+        p1_accel_x = _vector4_sum(p1_vaccel_x);
+        p1_accel_y = _vector4_sum(p1_vaccel_y);
+        p1_accel_z = _vector4_sum(p1_vaccel_z);
 
 
         // do the remaining particles without SSE
@@ -178,21 +178,21 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
             force = p1_mass * pos.mass[j] / inverseSquareDistance;
 
             // sum of accelerations for p1
-            p1_vel_x += dv[0] * force;
-            p1_vel_y += dv[1] * force;
-            p1_vel_z += dv[2] * force;
+            p1_accel_x += dv[0] * force;
+            p1_accel_y += dv[1] * force;
+            p1_accel_z += dv[2] * force;
 
             // add acceleration for p2 (with negative sign, as the direction is inverted)
-            vel.x[j] -= dv[0] * force;
-            vel.y[j] -= dv[1] * force;
-            vel.z[j] -= dv[2] * force;
+            accel.x[j] -= dv[0] * force;
+            accel.y[j] -= dv[1] * force;
+            accel.z[j] -= dv[2] * force;
         }
 
 
         // write back buffered acceleration of p1
-        vel.x[i] += p1_vel_x;
-        vel.y[i] += p1_vel_y;
-        vel.z[i] += p1_vel_z;
+        accel.x[i] += p1_accel_x;
+        accel.y[i] += p1_accel_y;
+        accel.z[i] += p1_accel_z;
 
     }
 
@@ -202,8 +202,9 @@ static void do_processFramePP_SSE(particle_vectors pos, vel_vectors vel,
 
 void processFramePP_SSE(int start, int amount) {
     particle_vectors pos;
-    vel_vectors vel;
+    acc_vectors accel;
     particle_t *framebase = state.particleHistory + state.particleCount*state.frame;
+    particleDetail_t * __restrict__ framedetail = state.particleDetail;
 
     int i;
     int particles_max;
@@ -216,13 +217,13 @@ void processFramePP_SSE(int start, int amount) {
     pos.z    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
     pos.mass = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
 
-    vel.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    vel.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    vel.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    accel.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    accel.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    accel.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
 
-    memset(vel.x, 0, sizeof(float) * (particles_max + 16));
-    memset(vel.y, 0, sizeof(float) * (particles_max + 16));
-    memset(vel.z, 0, sizeof(float) * (particles_max + 16));
+    memset(accel.x, 0, sizeof(float) * (particles_max + 16));
+    memset(accel.y, 0, sizeof(float) * (particles_max + 16));
+    memset(accel.z, 0, sizeof(float) * (particles_max + 16));
 
 
     // copy frame data to vector-friendly arrays
@@ -235,14 +236,14 @@ void processFramePP_SSE(int start, int amount) {
 
 
     // calculate new accelerations
-    do_processFramePP_SSE(pos, vel, start, amount);
+    do_processFramePP_SSE(pos, accel, start, amount);
 
 
     // write back results
     for (i=0; i<particles_max; i++) {
-        framebase[i].vel[0] += vel.x[i] * state.g;
-        framebase[i].vel[1] += vel.y[i] * state.g;
-        framebase[i].vel[2] += vel.z[i] * state.g;
+        framedetail[i].accel[0] += accel.x[i] * state.g;
+        framedetail[i].accel[1] += accel.y[i] * state.g;
+        framedetail[i].accel[2] += accel.z[i] * state.g;
     }
 
 
@@ -252,9 +253,9 @@ void processFramePP_SSE(int start, int amount) {
     _mm_free(pos.z);
     _mm_free(pos.mass);
 
-    _mm_free(vel.x);
-    _mm_free(vel.y);
-    _mm_free(vel.z);
+    _mm_free(accel.x);
+    _mm_free(accel.y);
+    _mm_free(accel.z);
 
 }
 

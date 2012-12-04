@@ -64,7 +64,7 @@ void processFramePP(int start, int amount) {
 #endif
     for (i = start; i < amount; i++) {
         VectorNew(p1_pos);
-        VectorNew(p1_vel);
+        VectorNew(p1_acc);
         float p1_mass;
         
         particle_t *p1;
@@ -76,7 +76,7 @@ void processFramePP(int start, int amount) {
         
         p1_mass = pd1->mass;
         VectorCopy(p1->pos, p1_pos);
-        VectorZero(p1_vel);
+        VectorZero(p1_acc);
         
         for (j = i + 1; j < particles_max; j++) {
             
@@ -103,21 +103,21 @@ void processFramePP(int start, int amount) {
             force = state.g * p1_mass * pd2->mass / inverseSquareDistance;
             
             // sum of accelerations for p1
-            p1_vel[0] += dv[0] * force;
-            p1_vel[1] += dv[1] * force;
-            p1_vel[2] += dv[2] * force;
+            p1_acc[0] += dv[0] * force;
+            p1_acc[1] += dv[1] * force;
+            p1_acc[2] += dv[2] * force;
             
             // add acceleration for p2 (with negative sign, as the direction is inverted)
-            p2->vel[0] += -dv[0] * force;
-            p2->vel[1] += -dv[1] * force;
-            p2->vel[2] += -dv[2] * force;
+            pd2->accel[0] += -dv[0] * force;
+            pd2->accel[1] += -dv[1] * force;
+            pd2->accel[2] += -dv[2] * force;
             
         }
         
         // write back buffered acceleration of p1
-        p1->vel[0] += p1_vel[0];
-        p1->vel[1] += p1_vel[1];
-        p1->vel[2] += p1_vel[2];
+        pd1->accel[0] += p1_acc[0];
+        pd1->accel[1] += p1_acc[1];
+        pd1->accel[2] += p1_acc[2];
         
     }
     

@@ -85,6 +85,7 @@ int luaExecute(char *f) {
 
     if (f==NULL) f = "";
 
+    conAdd(LLOW, "LUA executing %-240.240s", f);
     ret = luaL_loadfile(state.lua, f);
     
     if (ret == LUA_ERRSYNTAX) {
@@ -141,7 +142,7 @@ void luag_TableToVector(lua_State *L, float *v) {
 int luag_load(lua_State *L) {
     
     char *s = (char*)lua_tostring(L, -1);
-    conAdd(LLOW, s);
+    conAdd(LLOW, "LUA requires %s", s);
     lua_pop(L, 1);
     
     //s = va("spawn/%s", s);

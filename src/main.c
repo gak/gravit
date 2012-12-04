@@ -138,7 +138,7 @@ void viewInit() {
     view.particleRenderTexture = 1;
 
     view.particleSizeMin = 4;
-    view.particleSizeMax = 172;
+    view.particleSizeMax = 127;
 
     view.verboseMode = 0;
 
@@ -198,6 +198,8 @@ void stateInit() {
 
     state.gbase = 5;
     state.g = -0.00001f;
+
+    state.physics = PH_CLASSIC;
 
 #ifdef _OPENMP
     state.processFrameThreads = omp_get_max_threads();
@@ -349,8 +351,8 @@ void run() {
 
             view.frameSkipCounter = 0;
 
-            if (view.verboseMode)
-                conAdd(LLOW, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
+            //if (view.verboseMode)
+            //    conAdd(LLOW, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
 
             setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
 
@@ -384,8 +386,8 @@ void run() {
                 view.frameSkipCounter = 0;
             }
 
-            if (view.verboseMode)
-                conAdd(LLOW, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
+            //if (view.verboseMode)
+            //    conAdd(LLOW, "P frame:%5i dt:%5i fs:%2i", state.currentFrame, view.deltaVideoFrame, state.historyNFrame);
 
         }
 
