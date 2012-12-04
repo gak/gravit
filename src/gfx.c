@@ -166,6 +166,8 @@ int gfxSetResolution() {
         video.screenW = videoInfo->current_w;
         video.screenH = videoInfo->current_h;
     }
+
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
     
     video.sdlScreen = SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags );
     if (!video.sdlScreen) {
@@ -390,15 +392,15 @@ void drawFrame() {
 
     if (view.particleRenderMode == 1) {
 
-        float quadratic_0[] =  { 0.0f, 0.0f, 0.01f };
-        float quadratic_1[] =  { 0.0f, 0.0f, 0.0001f };
-        float quadratic_2[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
-        float quadratic_3[] =  { 0.0f, 0.0f, 0.000001f, 0.00f };
-        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000003f, 0.00f };
-        float quadratic_5[] =  { 0.0f, 0.0f, 0.00001f, 0.00f };
-        float quadratic_6[] =  { 0.0f, 0.0f, 0.000003f, 0.00f };
-        float quadratic_7[] =  { 0.0f, 0.0f, 0.0000006f, 0.00f };
-        float quadratic_8[] =  { 0.0f, 0.0f, 0.00000009f, 0.00f };
+        float quadratic_0[] =  { 0.0f, 0.0f, 0.008f };
+        float quadratic_1[] =  { 0.0f, 0.0f, 0.00006f };
+        float quadratic_2[] =  { 0.0f, 0.0f, 0.000006f, 0.00f };
+        float quadratic_3[] =  { 0.0f, 0.0f, 0.0000008f, 0.00f };
+        float quadratic_4[] =  { 0.0f, 0.0f, 0.0000001f, 0.00f };
+        float quadratic_5[] =  { 0.0f, 0.0f, 0.000008f, 0.00f };
+        float quadratic_6[] =  { 0.0f, 0.0f, 0.0000015f, 0.00f };
+        float quadratic_7[] =  { 0.0f, 0.0f, 0.0000005f, 0.00f };
+        float quadratic_8[] =  { 0.0f, 0.0f, 0.00000006f, 0.00f };
         float *quadratic;
 
         quadratic = quadratic_0;
@@ -610,6 +612,7 @@ void drawFrame() {
             if (screen[2] < -1.0) screen[2] = -1.0;
 
             size = view.particleSizeMin + (1.f - (float)screen[2]) * view.particleSizeMax;
+            size = fmin(fabs(size), fabs(view.particleSizeMax));
             glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
 
             glBegin(GL_QUADS);

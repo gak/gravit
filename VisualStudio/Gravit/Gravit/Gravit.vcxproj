@@ -50,17 +50,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)\..\..\SDL\include;$(ProjectDir)\..\..\lua\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\SDL\lib\x86;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)\..\..\SDL\include;$(ProjectDir)\..\..\lua\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\SDL\lib\x86;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release OpenMP|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)\..\..\SDL\include;$(ProjectDir)\..\..\lua\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\..\..\SDL\lib;$(ProjectDir)\..\..\SDL\lib\x86;$(ProjectDir)\..\..\lua;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

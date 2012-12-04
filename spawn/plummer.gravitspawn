@@ -1,0 +1,172 @@
+-- vim:syntax=lua tabstop=4
+
+load("functions.lua")
+load("constants.lua")
+load("physics.lua")
+
+function describe()
+	log("some globular clusters.")
+end
+
+
+-- this spawn script is "proper physics ready".
+
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+-- adoption of the "plummer" formula (Aarseth, Henon and Wielen) from
+-- http://www.artcompsci.org/kali/vol/plummer/title.html
+
+-- the support for "almost_proper" physics is an educated guess,
+-- but it seems to work
+
+-- This function also includes scaling from 
+-- the "standard simulation units" system (total_mass = radius = G = 1) 
+-- to a system with arbitrary G, mass and radius
+
+function do_plummer(center, groupvel, target_radius, target_mass , start, particles)
+    local real_mass=0
+
+    -- compute physical units scale factors
+    local rfak = target_radius
+    local mfak = target_mass
+    local vfak = math.sqrt((mfak * gravit_g)/rfak)
+    if gravit_physics < PH_PROPER then
+       vfak = vfak * math.sqrt(rfak)
+    end
+
+    mfak=mfak * 1.01
+
+    -- (plummer model scaling to   rad = mass = g = 1 )
+    local scalefactor_r = (3.0 * math.pi) / 16
+    local scalefactor_v = math.sqrt(1.0 / scalefactor_r)
+
+    -- build plummer model
+    local avg_mass=0.94 / particles
+    local cumulative_mass_min = 0                                                    
+    local cumulative_mass_max = avg_mass
+    for i=start, start+particles-1 do
+       --local mass = avg_mass
+       local mass = randomfloat(avg_mass * 0.8, avg_mass * 1.2)
+       cumulative_mass = randomfloat(cumulative_mass_min, cumulative_mass_max)        
+       cumulative_mass_min = cumulative_mass_max                                
+       cumulative_mass_max = cumulative_mass_max + avg_mass
+                                             
+       local radius = 1.0 / math.sqrt( cumulative_mass^(-2.0/3.0) - 1.0)
+       local pos = randomshell(radius) * scalefactor_r
+
+       local x = 0.0
+       local y = 0.1
+       while (y > (x*x*(1.0-x*x)^3.5)) do
+           x = randomfloat(0,1)
+           y = randomfloat(0,0.1)
+       end
+
+       velocity = x * math.sqrt(2.0 / math.sqrt(1 + radius*radius));
+
+       if gravit_physics < PH_PROPER then
+	  velocity = velocity * math.sqrt(radius) 
+       end
+       if gravit_physics == PH_CLASSIC then
+	  velocity = velocity * mass 
+       end
+
+
+       vel = randomshell(velocity) * scalefactor_v
+
+       -- scale pos,vel,mass to physical units, then allocate particle
+       pos  = pos  * rfak
+       vel  = vel  * vfak
+       mass = mass * mfak
+       particle(i, center + pos, groupvel + vel, mass)
+       -- sum real mass
+       real_mass=real_mass + mass
+    end
+    return real_mass
+end
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+
+
+function place_object_plummer(num, center, vel, ratio, start, particles)
+    local radius=randomfloat(50, 150)
+    local mass=4* math.sqrt(radius^3) * ratio
+
+     if gravit_physics < PH_PROPER then
+        mass=mass*randomfloat(4,12)
+     end
+
+     if gravit_physics == PH_CLASSIC then
+	mass=mass * 6
+	radius=radius * 6
+     end
+
+   return do_plummer(center, vel, radius, mass, start, particles)
+end
+
+
+function spawn()
+
+	local num_objects=randomint(1,6)
+	local mass_unit=1.0
+	local min_distance=1500
+	
+        local part=math.floor(spawnparticles / num_objects)
+
+        if gravit_physics == PH_CLASSIC then
+	    min_distance= min_distance * 4
+	    mass_unit = mass_unit * 2
+        end
+
+        -- first postion
+	local pos = randomrange(400)
+	local mainvel = v(0,0,0)
+	local first = 0
+
+	-- i want to be dirty, lets spawn some very massive objects
+	if (randomint(0,2) > 1) then
+	   local smbhmass = 256 + (2 - gravit_physics) * 512
+	    -- let a smbh cross the scene
+	   for k=1 ,randomint(3,12) do
+	      particle(first, v(2000,2000,0) + randomshell(800) + randomrange(800), v(-4,-4,0), smbhmass)
+	    first=first +1
+	   end
+	 end
+
+        -- first sphere
+	local mass = place_object_plummer(0, pos, mainvel, mass_unit, first, part-first)
+	local center=pos
+
+        -- spawn some more spheres
+	local pstart=part
+	for i=1, num_objects-1 do
+	   if i==(num_objects-1) then
+	      parts = spawnparticles - pstart
+	   end
+	   
+	   -- pick position
+	   pos = center + randomshell(min_distance) + randomrange(min_distance/3.0)
+	   local dist=distance(pos, center)
+
+	   -- compute 2-body eliptic orbit velocity
+	   local ratio=mass_unit/randomfloat(0.9,4)
+	   local eccentricity = randomfloat(0.2, 0.8)
+	   local smalldist    = dist * math.sqrt(1- eccentricity*eccentricity)
+
+	   local orbitVel=math.sqrt(gravit_g * mass *(1+ratio) * ((2/dist) - (1/smalldist)))
+
+	   if (gravit_physics < PH_PROPER) or (randomint(0,1)>0) then
+	         orbitVel = orbit_velocity(mass, dist)
+	   end
+	   if gravit_physics == PH_MODIFIED then
+	      orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
+	   end
+	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
+
+	   -- create plummer sphere
+	   mass = place_object_plummer(i, pos, mainvel, ratio, pstart, part)
+	   center=pos
+	   pstart=pstart+part
+	end 
+end

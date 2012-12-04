@@ -76,7 +76,7 @@ void conAdd(int mode, char *f, ... ) {
     if (mode > 3)
         mode = 0;
 
-    if (mode < LNORM) return;
+    if ((mode < LNORM) && !view.verboseMode ) return;
 
 
     cpos++;
