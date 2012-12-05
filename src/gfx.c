@@ -1329,6 +1329,7 @@ void checkDriverBlacklist() {
               conAdd(LERR, "This means you can't have really pretty looking particles.");
               conAdd(LNORM, "Setting particleRenderMode to 2");
               view.particleRenderMode = 2;
+              view.particleSizeMax = 63;
 	  }
           video.supportPointSprite = 0;
        }
@@ -1352,6 +1353,7 @@ void checkDriverBlacklist() {
                     conAdd(LERR, "This means you can't have really pretty looking particles.");
                     conAdd(LNORM, "Setting particleRenderMode to 2");
                     view.particleRenderMode = 2;
+                    view.particleSizeMax = 63;
 	        }
                 video.supportPointSprite = 0;
           }
@@ -1362,6 +1364,7 @@ void checkDriverBlacklist() {
               conAdd(LHELP, "Indirect rendering is too slow for really pretty looking particles.");
               conAdd(LNORM, "Setting particleRenderMode to 0");
               view.particleRenderMode = 0;
+              view.particleSizeMax = 63;
 	  }
           video.supportPointSprite = 0;
       }
@@ -1376,6 +1379,7 @@ void checkDriverBlacklist() {
            conAdd(LHELP, "It's too slow for really pretty looking particles.");
            conAdd(LNORM, "Setting particleRenderMode to 0");
            view.particleRenderMode = 0;
+           view.particleSizeMax = 63;
        }
        // ToDo: add more tweak to achieve higher framerates ...
     }
