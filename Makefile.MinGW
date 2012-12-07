@@ -135,6 +135,8 @@ install: final
 	@$(INSTALL) ./spawn  $(NOARCH)
 	@touch $(NOARCH)/stdout.txt $(NOARCH)/stderr.txt
 	@echo ""
+	@-$(INSTALL) $(GCCPATH)/../lib/libgomp*.dll  $(DESTDIR)
+	@-$(INSTALL) $(GCCPATH)/../*/lib/libgomp*.dll  $(DESTDIR)
 	@-$(INSTALL) $(GCCPATH)/libgomp*.dll  $(DESTDIR)
 	@-$(INSTALL) $(GCCPATH)/*thread*.dll  $(DESTDIR)
 	@$(INSTALL) ./MinGW/lib$(ARCH)/*.dll $(DESTDIR)
