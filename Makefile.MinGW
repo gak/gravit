@@ -74,7 +74,9 @@ CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
 	 -O4 -ffast-math \
 	 -mwindows -DWIN32
 
-LDFLAGS = $(LIBDIRS)
+# for extra security on Windows, enable ASLR and DEP via GCC linker flags
+LDFLAGS = -Wl,--dynamicbase -Wl,--nxcompat \
+	  $(LIBDIRS)
 LDLIBS = -lag_gui -lag_core \
 	  -lSDL_ttf -lSDL_image -lfreetype -llua51 \
 	  -lGLU32 -lopenGL32 \
