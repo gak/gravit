@@ -70,6 +70,14 @@ AX_EXT_SSE
 CFLAGS="$CFLAGS $SIMD_FLAGS -I/usr/local/include"
 LDFLAGS="$SIMD_FLAGS $LDFLAGS -L/usr/local/lib"
 
+# windows gcc needs -mstackrealign (to avoid crash on XP)
+if test x"$ax_cv_c_compiler_vendor" = x"gnu" ; then
+    if test x"$host" = x"i686-pc-mingw32" ; then
+        CFLAGS="$CFLAGS -mstackrealign"
+        LDFLAGS="$LDFLAGS -mstackrealign"
+    fi
+fi
+
 # try to add compiler-specific optimization flags
 if test x"$ax_cv_c_compiler_vendor" = x"intel"; then
    #check for intel (icc) style flags
