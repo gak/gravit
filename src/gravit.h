@@ -29,6 +29,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "config.h"
 #endif
 
+// some flags - define to enable experimental features
+#undef HAVE_SSE
+#define USE_FIXED_PHYSICS
+#define USE_MODIFIED_PHYSICS
+
 
 // a few gcc-specific attributes
 #ifdef __GNUC__
