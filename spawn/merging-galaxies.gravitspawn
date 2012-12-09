@@ -240,11 +240,11 @@ function makegalaxy_orbit_2(galpos, galvel, galradius, massmin, massmax, firstpa
 	    startmass=randomfloat(massmin,massmax)
 	end
 
-	if (gravit_physics == PH_CLASSIC) then
+	-- if (gravit_physics == PH_CLASSIC) then
 	    -- no central SMBH
 	    startmass=randomfloat(massmin,massmax)
             -- no surrounding massive particles
-	end
+	-- end
 
 
 	particle(firstparticle, galpos, galvel, startmass * mass_sign)
@@ -326,6 +326,10 @@ function spawn()
 	maxangle = 0.36
      end
 
+     if (gravit_physics == PH_MODIFIED) then
+	rad=rad * 1.4
+	maxangle = 0.5
+     end
      if (gravit_physics == PH_CLASSIC) then
 	massmin=massmin*5
 	massmax=massmax*10
@@ -346,6 +350,10 @@ function spawn()
 	   massmin = faster * 0.7 * randomfloat(1,45)
 	   massmax = faster * 0.7 * randomfloat(massmin+5, massmin*2+10)
 	   target=randomrange(rad/3)
+	end
+	if (gravit_physics == PH_MODIFIED) then
+	   target=randomrange(rad * 2.5)
+	   speed2=speed2 * 2
 	end
 	if (gravit_physics == PH_CLASSIC) then
 	   massmin=massmin*5

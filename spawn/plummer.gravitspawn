@@ -119,6 +119,10 @@ function spawn()
 	    mass_unit = mass_unit * 2
         end
 
+        if gravit_physics == PH_MODIFIED then
+	    min_distance= min_distance * 1.7
+        end
+
         -- first postion
 	local pos = randomrange(400)
 	local mainvel = v(0,0,0)
@@ -159,9 +163,9 @@ function spawn()
 	   if (gravit_physics < PH_PROPER) or (randomint(0,1)>0) then
 	         orbitVel = orbit_velocity(mass, dist)
 	   end
-	   if gravit_physics == PH_MODIFIED then
-	      orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
-	   end
+	   -- if gravit_physics == PH_CLASSIC then
+	   --    orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
+	   -- end
 	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
 
 	   -- create plummer sphere
