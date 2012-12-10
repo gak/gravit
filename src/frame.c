@@ -86,6 +86,8 @@ int initFrame() {
 
     VectorZero(view.lastCenter);
 
+    view.colorMassMax = -255.0;
+
     state.have_old_accel = 0;
 
     return 1;

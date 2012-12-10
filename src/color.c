@@ -243,8 +243,13 @@ void setColoursByMass() {
 
             state.massRange[0] = pd->mass;
             state.massRange[1] = pd->mass;
+            if ((view.colorMassMax > 0.001) && (fabs(pd->mass) > view.colorMassMax))
+                state.massRange[0] = state.massRange[1] = view.colorMassMax;
 
         } else {
+
+            if ((view.colorMassMax > 0.001) && (fabs(pd->mass) > view.colorMassMax))
+                continue;
 
             if (pd->mass < state.massRange[0])
                 state.massRange[0] = pd->mass;
@@ -321,6 +326,7 @@ void colourFromNormal(float *c, float n) {
 
     int i;
     int bits;
+    int col;
 
     if (n < 0)
         n = 0;
@@ -348,7 +354,6 @@ void colourFromNormal(float *c, float n) {
 
             float j;
             float l,h;
-            int col;
 
             j = (n - (float)i / bits) * (float)bits;
 
@@ -371,6 +376,13 @@ void colourFromNormal(float *c, float n) {
         }
 
     }
+
+    // make sure color values are between -1.0 and 1.0
+    for (col = 0; col < 4; col++) {
+        c[col] = fmax(-1.0, c[col]);
+        c[col] = fmin( 1.0, c[col]);
+    }
+
 
     if (view.stereoMode == 2) {
 	  // reduce to "half-color": red = 0,299*red + 0,587*green + 0,114*blue

@@ -603,6 +603,7 @@ typedef struct view_s {
     AG_Button *recordButton;
 #endif
 
+  float colorMassMax;   //coloring upper threshold  - set by LUA command color_mass_max(m)
 } view_t;
 
 typedef struct spawnVars_s {
@@ -835,6 +836,7 @@ void luaFree();
 int luag_log(lua_State *L);
 int luag_load(lua_State *L);
 int luaExecute(char *f);
+int luag_colorMax(lua_State *L);
 #endif
 
 #endif

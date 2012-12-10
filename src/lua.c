@@ -54,6 +54,7 @@ int luaInit() {
     AddFunction("particle", luag_spawn)
     AddFunction("log", luag_log)
     AddFunction("load", luag_load);
+    AddFunction("color_mass_max", luag_colorMax);
 
     return 1;
 
@@ -199,6 +200,21 @@ int luag_log(lua_State *L) {
 
     char *s = (char*)lua_tostring(L, -1);
     conAdd(LNORM, s);
+    lua_pop(L,1);
+
+    return 0;
+
+}
+
+int luag_colorMax(lua_State *L) {
+
+    float cMax= fabs(lua_tonumber(L, -1));
+    if (cMax < 0.001) view.colorMassMax = -255.0; // reset
+
+    if ((view.colorMassMax < 0.0001) || (view.colorMassMax < cMax)) {
+        view.colorMassMax = cMax;
+        conAdd(LLOW, "Color by mass: maximum = %f", view.colorMassMax);
+    }
     lua_pop(L,1);
 
     return 0;

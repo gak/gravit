@@ -148,6 +148,8 @@ void viewInit() {
     view.colourSpectrumSteps = 0;
     view.colourSpectrum = 0;
 
+    view.colorMassMax = -255.0;
+
     view.stereoMode = 0;
     view.stereoModeCurrentBit = 0;
     // http://www.angelfire.com/ca/erker/freeview.html
@@ -207,10 +209,10 @@ void stateInit() {
     state.physics = PH_MODIFIED;
 #else
     //USE_FIXED_PHYSICS
-    //state.gbase = 1;
-    //state.g = 1.0f;
-    state.gbase = 2;
-    state.g = -0.43f;
+    state.gbase = 1;
+    state.g = -0.8f;
+    //state.gbase = 2;
+    //state.g = -0.43f;
     state.physics = PH_PROPER;
 #endif
 #endif
