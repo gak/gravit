@@ -26,6 +26,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <omp.h> // VC has to include this header to build the correct manifest to find vcom.dll or vcompd.dll
 #endif
 
+// microsoft specific workarounds for missing C99 standard functions
+#ifdef _MSC_VER
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+#include <math.h>
+#include <float.h>
+#define fmax max
+#define fmin min
+#define copysignf(x,y) ((float)_copysign(x,y))
+#endif
+#endif
+
+
 /* ************************************************************************** */
 /* How to allocate memory with 16byte alignment?                              */
 /* ************************************************************************** */
@@ -252,9 +264,15 @@ void processFramePP(int start, int amount) {
 
     // write back results
     for (i=0; i<particles_max; i++) {
+#if !defined(USE_FIXED_PHYSICS) && !defined(USE_MODIFIED_PHYSICS)
         framedetail[i].accel[0] += accel.x[i] * state.g;
         framedetail[i].accel[1] += accel.y[i] * state.g;
         framedetail[i].accel[2] += accel.z[i] * state.g;
+#else
+        framedetail[i].accel[0] += accel.x[i] * copysignf(state.g, -pos.mass[i]);
+        framedetail[i].accel[1] += accel.y[i] * copysignf(state.g, -pos.mass[i]);
+        framedetail[i].accel[2] += accel.z[i] * copysignf(state.g, -pos.mass[i]);
+#endif
     }
 
 
