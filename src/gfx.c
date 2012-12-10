@@ -21,15 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-// microsoft specific workarounds for missing C99 standard functions
-#ifdef _MSC_VER
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
-#include <math.h>
-#define fmax max
-#define fmin min
-#endif
-#endif
-
 #ifndef WITHOUT_AGAR
 #include "agar/gui/surface.h"
 #endif

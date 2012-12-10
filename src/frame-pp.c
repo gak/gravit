@@ -26,18 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <omp.h> // VC has to include this header to build the correct manifest to find vcom.dll or vcompd.dll
 #endif
 
-// microsoft specific workarounds for missing C99 standard functions
-#ifdef _MSC_VER
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
-#include <math.h>
-#include <float.h>
-#define fmax max
-#define fmin min
-#define copysignf(x,y) ((float)_copysign(x,y))
-#endif
-#endif
-
-
 /* ************************************************************************** */
 /* How to allocate memory with 16byte alignment?                              */
 /* ************************************************************************** */
@@ -123,7 +111,11 @@ typedef struct {
 #if !defined(USE_FIXED_PHYSICS) && !defined(USE_MODIFIED_PHYSICS)
 #define MIN_STEP2 0.05
 #else
+#if defined(USE_MODIFIED_PHYSICS)
 #define MIN_STEP2 0.25
+#else
+#define MIN_STEP2 0.75
+#endif
 #endif
 
 HOT

@@ -195,6 +195,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #include <lualib.h>
 #endif
 
+
+// microsoft specific workarounds for missing C99 standard functions
+#ifdef _MSC_VER
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+#include <math.h>
+#include <float.h>
+#define fmax(_x, _y) max(_x, _y)
+#define fmin(_x, _y) min(_x, _y)
+#define copysignf(_x,_y) ((float)_copysign(_x,_y))
+#endif
+#endif
+
+
 #ifndef MAX_PATH
     #define MAX_PATH 260
 #endif
