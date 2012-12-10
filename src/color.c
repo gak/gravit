@@ -276,6 +276,9 @@ void setColoursByMass() {
             pd->col[2] = 1 - pd->col[2];
 
         }
+        if ((view.colorMassMax > 0.001) && (fabs(pd->mass) > view.colorMassMax))
+            pd->col[3] *= 0.85;
+
         pd->particleSprite = colourSprite(pd->col, pd->mass);
     }
 
