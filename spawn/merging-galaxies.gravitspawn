@@ -327,6 +327,9 @@ function spawn()
 	massmin = faster * 0.7 * randomfloat(1,45)
 	massmax = faster * 0.7 * randomfloat(massmin+5, massmin*2+10)
 	maxangle = 0.36
+     else
+        massmax = massmax / faster
+        massmax = math.max(massmax, massmin+5)
      end
 
      if (gravit_physics == PH_MODIFIED) then
