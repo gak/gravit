@@ -160,12 +160,15 @@ function spawn()
 
 	   local orbitVel=math.sqrt(gravit_g * mass *(1+ratio) * ((2/dist) - (1/smalldist)))
 
-	   if (gravit_physics < PH_PROPER) or (randomint(0,1)>0) then
+	   if gravit_physics < PH_PROPER then
+	      orbitVel = orbitVel * math.sqrt(math.abs(dist))
+	       -- orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
+	   end
+
+	   if (gravit_physics < PH_MODIFIED) or (randomint(0,1)>0) then
 	         orbitVel = orbit_velocity(mass, dist)
 	   end
-	   -- if gravit_physics == PH_CLASSIC then
-	   --    orbitVel = orbitVel * 0.5 * math.sqrt(mass/2);
-	   -- end
+
 	   mainvel=randomortho(pos - center, orbitVel * randomfloat(0.5, 0.94))
 
 	   -- create plummer sphere
