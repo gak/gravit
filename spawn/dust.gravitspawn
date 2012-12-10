@@ -25,7 +25,12 @@ function spawn()
 	local smallmass = randomfloat(100, 1000)
 	local smallmassvaries = randomint(0,1)
 	local initvel = randomfloat(1, 100)
-	
+
+        -- tell gravit to ignore heavy particles
+	if (smallmassvaries == 1) then
+            color_mass_max(smallmass * 1.2)
+        end
+
 	for i=0,spawnparticles-1 do
 
 		if (i < massiveparticles) then
