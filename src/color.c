@@ -385,8 +385,10 @@ void colourFromNormal(float *c, float n) {
 
 
     if (view.stereoMode == 2) {
-	  // reduce to "half-color": red = 0,299*red + 0,587*green + 0,114*blue
-	  c[0] = 0.299*c[0] + 0.587*c[1] + 0.144*c[2];
+        // reduce to "half-color": red = 0,299*red + 0,587*green + 0,114*blue
+        c[0] = 0.299*c[0] + 0.587*c[1] + 0.144*c[2];
+        // reduce opacity, to avoid ghosting effects
+        c[3] = c[3] * 0.8;
     }
 
     // more opacity
@@ -400,6 +402,16 @@ GLuint colourSprite(float *c, float mass) {
   if (view.glow == 0) return(SPRITE_DEFAULT);
 
   if (view.glow < 5) {
+
+      // oversized --> use larger sprite
+      if ((view.colorMassMax > 0.001) && (fabs(mass) > view.colorMassMax))
+      {
+          if (view.stereoMode == 2)
+              return(SPRITE_GRAY);
+          else
+              return((mass > 0.001) ? SPRITE_RED : SPRITE_BLUE);
+      }
+
       // add starshine effect
       // color by mass --> make biggest masses shine
       if((view.particleColourMode == CM_MASS) && (fabs(mass) > fabs(state.massRange[1] * 0.9)))
