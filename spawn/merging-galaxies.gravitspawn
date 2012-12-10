@@ -283,7 +283,8 @@ function makegalaxy_orbit_2(galpos, galvel, galradius, massmin, massmax, firstpa
 	   if gravit_physics < PH_PROPER then
 	      startmass = startmass + 1.1 * makespiral_orbit_2(galpos, galvel, galradius, startradius+ball_radius, startmass, massmin, massmax, mass_sign, firstparticle+ball_particles+haloparticles+1, particles-ball_particles-haloparticles-1, ang_end)
 	   else
-	      startmass = startmass + 1.1 * makespiral_orbit_3(galpos, galvel, galradius, startradius+ball_radius, startmass, massmin, massmax, mass_sign, firstparticle+ball_particles+haloparticles+1, particles-ball_particles-haloparticles-1, ang_end)
+	      startmass = startmass + 1.1 * makespiral_orbit_2(galpos, galvel, galradius, startradius+ball_radius, startmass, massmin, massmax, mass_sign, firstparticle+ball_particles+haloparticles+1, particles-ball_particles-haloparticles-1, ang_end)
+	      -- startmass = startmass + 1.1 * makespiral_orbit_3(galpos, galvel, galradius, startradius+ball_radius, startmass, massmin, massmax, mass_sign, firstparticle+ball_particles+haloparticles+1, particles-ball_particles-haloparticles-1, ang_end)
 	   end
 
 	   -- halo
@@ -353,13 +354,11 @@ function spawn()
 	end
 	if (gravit_physics == PH_MODIFIED) then
 	   target=randomrange(rad * 2.5)
-	   speed2=speed2 * 2
 	end
 	if (gravit_physics == PH_CLASSIC) then
 	   massmin=massmin*5
 	   massmax=massmax*10
 	   target=randomrange(rad * 2)
-	   speed2=speed2 * 2
 	end
 
 	-- local rad2=randomfloat(rad*0.6, rad*1.5)
@@ -372,7 +371,13 @@ function spawn()
 	   rad2 = rad2 * 1.3
 	   y_offset=y_offset * 4
 	   pos2=pos2 * 14
+	   speed2 = speed2 * 0.1 * math.sqrt(math.abs(distance(target, pos2)))
 	end
+
+	if (gravit_physics == PH_MODIFIED) then
+	   pos2=pos2 * 8
+	   speed2 = speed2 * 0.25 * math.sqrt(math.abs(distance(target, pos2)))
+        end
 
 	if gravit_physics == PH_PROPER then
 	   pos2.y=pos2.y + y_offset
@@ -385,6 +390,7 @@ function spawn()
 	target.y = target.y * 1.5
 	local direction=speed2/distance(target, pos2)
 	local vel2= (pos2 - target) * direction
+	vel2 = vel2 * -0.8
 	makegalaxy_orbit_2(pos2*1.4, vel2 * -1.3, rad2, massmin, massmax, biggalaxysize+((i-1)*smallgalaxysize), smallgalaxysize, maxangle)
      end
 end
