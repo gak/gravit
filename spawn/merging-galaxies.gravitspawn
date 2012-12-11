@@ -250,6 +250,7 @@ function makegalaxy_orbit_2(galpos, galvel, galradius, massmin, massmax, firstpa
 	particle(firstparticle, galpos, galvel, startmass * mass_sign)
 
 	color_mass_max(1.3 * massmax)
+	color_mass_max(1.2 * massmax * factor_center)
 
 	if kind == 1 then
 	   makespiral_orbit_2(galpos, galvel, galradius, startradius, startmass, massmin, massmax, mass_sign, firstparticle+1, particles-1, ang_end)
@@ -315,7 +316,8 @@ function spawn()
      biggalaxysize = spawnparticles - (smallgalaxysize * num_small_objects);
 
      local faster=2.0
-     local maxangle = 0.17
+     -- local maxangle = 0.17
+     local maxangle = 0.35
 
      -- first galaxy
      local rad = 10.0+randomfloat(350, 1200)
