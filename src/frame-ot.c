@@ -142,7 +142,7 @@ void otBranchNodeCorner(node_t *n, int br, float *min, float *max) {
     VectorAdd(b->c, b->min, b->c);
 
     // Get Length of node
-    distance2(b->min, b->max, b->length2);
+    distance2(b->max, b->min, b->length2);
 
     b->mass = mass;
 
@@ -314,7 +314,7 @@ void otMakeTree() {
     VectorAdd(n->c, n->min, n->c);
 
     // get length
-    distance2(n->min, n->max, n->length2);
+    distance2(n->max, n->min, n->length2);
 
     otBranchNode_top(n);
 
@@ -439,16 +439,16 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 
         p2 = info->n->p;
 
-        distance2(info->p->pos, p2->pos, d);
+        distance2(p2->pos, info->p->pos, d);
 
 // 		frDoGravity(p,n,d); was
 
         { // now
             VectorNew(dv);
             float force;
-            dv[0] = info->p->pos[0] - info->n->cm[0];
-            dv[1] = info->p->pos[1] - info->n->cm[1];
-            dv[2] = info->p->pos[2] - info->n->cm[2];
+            dv[0] = info->n->cm[0] - info->p->pos[0];
+            dv[1] = info->n->cm[1] - info->p->pos[1];
+            dv[2] = info->n->cm[2] - info->p->pos[2];
 
             if (d) {
                 force = state.g * info->pd->mass * info->n->mass / d;
@@ -467,7 +467,7 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 
             b = (node_t *)info->n->b[i];
 
-            distance2(info->p->pos, b->cm, d);
+            distance2(b->cm, info->p->pos, d);
 
             if (!d)
                 continue;
@@ -488,9 +488,9 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
                 { // now
                     VectorNew(dv);
                     float force;
-                    dv[0] = info->p->pos[0] - b->cm[0];
-                    dv[1] = info->p->pos[1] - b->cm[1];
-                    dv[2] = info->p->pos[2] - b->cm[2];
+                    dv[0] = b->cm[0] - info->p->pos[0];
+                    dv[1] = b->cm[1] - info->p->pos[1];
+                    dv[2] = b->cm[2] - info->p->pos[2];
 
                     if (d) {
                         force = state.g * info->pd->mass * b->mass / d;
@@ -604,7 +604,7 @@ void otDrawFieldRecursive(float *pos, node_t *node, float *force) {
 
         b = (node_t *)node->b[i];
 
-        distance2(pos, b->cm, d);
+        distance2(b->cm, pos, d);
 
         if (!d)
             continue;
@@ -621,9 +621,9 @@ void otDrawFieldRecursive(float *pos, node_t *node, float *force) {
 
             {
                 VectorNew(dv);
-                dv[0] = pos[0] - b->cm[0];
-                dv[1] = pos[1] - b->cm[1];
-                dv[2] = pos[2] - b->cm[2];
+                dv[0] = b->cm[0] - pos[0];
+                dv[1] = b->cm[1] - pos[1];
+                dv[2] = b->cm[2] - pos[2];
 
                 if (d) {
                     f = state.g * b->mass / d;

@@ -1090,7 +1090,7 @@ void cmdSetG(char *arg) {
 
     float newg;
 
-    newg = -pow(10, -state.gbase);
+    newg = pow(10, -state.gbase);
     conAdd(LLOW, "\"G\" set to %.20f", newg);
     state.g = newg;
 

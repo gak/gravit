@@ -200,17 +200,17 @@ void stateInit() {
 
 #if !defined(USE_FIXED_PHYSICS) && !defined(USE_MODIFIED_PHYSICS)
     state.gbase = 5;
-    state.g = -0.00001f;
+    state.g = 0.00001f;
     state.physics = PH_CLASSIC;
 #else
 #if defined(USE_MODIFIED_PHYSICS)
     state.gbase = 3;
-    state.g = -0.035f;
+    state.g = 0.035f;
     state.physics = PH_MODIFIED;
 #else
     //USE_FIXED_PHYSICS
     state.gbase = 1;
-    state.g = -0.8f;
+    state.g = 0.8f;
     //state.gbase = 2;
     //state.g = -0.43f;
     state.physics = PH_PROPER;

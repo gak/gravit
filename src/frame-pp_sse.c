@@ -120,9 +120,9 @@ static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
             __v128 vInvSqDist;
             __v128 vforce;
 
-            dv_vx = V_SUB( p1_vpos_x, LOAD_V4(pos.x, j));
-            dv_vy = V_SUB( p1_vpos_y, LOAD_V4(pos.y, j));
-            dv_vz = V_SUB( p1_vpos_z, LOAD_V4(pos.z, j));
+            dv_vx = V_SUB( LOAD_V4(pos.x, j), p1_vpos_x);
+            dv_vy = V_SUB( LOAD_V4(pos.y, j), p1_vpos_y);
+            dv_vz = V_SUB( LOAD_V4(pos.z, j), p1_vpos_z);
 
             // get distance^2 between the two
             vInvSqDist  = V_MUL( dv_vx, dv_vx);
@@ -164,9 +164,9 @@ static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
             float inverseSquareDistance;
             float force;
 
-            dv[0] = p1_pos_x - pos.x[j];
-            dv[1] = p1_pos_y - pos.y[j];
-            dv[2] = p1_pos_z - pos.z[j];
+            dv[0] = pos.x[j] - p1_pos_x;
+            dv[1] = pos.y[j] - p1_pos_y;
+            dv[2] = pos.z[j] - p1_pos_z;
 
             // get distance^2 between the two
             inverseSquareDistance  = dv[0] * dv[0];

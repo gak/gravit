@@ -163,9 +163,9 @@ static void do_processFramePP(particle_vectors pos, acc_vectors accel,
             float force2;
             float invDistance;
 
-            dv_x = p1_pos_x - pos.x[j];
-            dv_y = p1_pos_y - pos.y[j];
-            dv_z = p1_pos_z - pos.z[j];
+            dv_x = pos.x[j] - p1_pos_x;
+            dv_y = pos.y[j] - p1_pos_y;
+            dv_z = pos.z[j] - p1_pos_z;
 
             // get distance^2 between the two
             squareDistance  = dv_x * dv_x;
@@ -261,9 +261,9 @@ void processFramePP(int start, int amount) {
         framedetail[i].accel[1] += accel.y[i] * state.g;
         framedetail[i].accel[2] += accel.z[i] * state.g;
 #else
-        framedetail[i].accel[0] += accel.x[i] * copysignf(state.g, -pos.mass[i]);
-        framedetail[i].accel[1] += accel.y[i] * copysignf(state.g, -pos.mass[i]);
-        framedetail[i].accel[2] += accel.z[i] * copysignf(state.g, -pos.mass[i]);
+        framedetail[i].accel[0] += accel.x[i] * copysignf(state.g, pos.mass[i]);
+        framedetail[i].accel[1] += accel.y[i] * copysignf(state.g, pos.mass[i]);
+        framedetail[i].accel[2] += accel.z[i] * copysignf(state.g, pos.mass[i]);
 #endif
     }
 
