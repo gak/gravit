@@ -397,6 +397,9 @@ void cmdSpawnCancel(void) {
 }
 
 void cmdSpawn(char *arg) {
+    VectorNew(pos);
+    VectorNew(vel);
+    float mass;
 
     char *scriptName;
 #ifdef HAVE_LUA
@@ -404,6 +407,7 @@ void cmdSpawn(char *arg) {
 #endif
     size_t memoryAvailable;
     int needrestart = 0;
+    int i,j;
 
     if (arg)
         scriptName = arg;
@@ -480,32 +484,31 @@ cmdSpawnRestartSpawning:
         goto cmdSpawnRestartSpawning;
     }
 
+#if !defined(USE_FIXED_PHYSICS) && !defined(USE_MODIFIED_PHYSICS)
     // make sure no two particles are in the same spot
+    // (only needed for classic physics)
     needrestart = 0;
     while (needrestart) {
-        int i,j;
         needrestart = 0;
         for (i = 0; i < state.particleCount; i++) {
-            for (j = 0; j < state.particleCount; j++) {
-                particle_t *p1;
+            particle_t *p1;
+            particleDetail_t *pd1;
+            p1 = getParticleCurrentFrame(i);
+            pd1 = getParticleDetail(i);
+
+            if (pd1->mass == 0) {
+                conAdd(LERR, "Particle %i has no mass", i);
+                pd1->mass = 1;
+                needrestart = 1;
+            }
+
+            for (j = 0; j < i; j++) {
                 particle_t *p2;
-                particleDetail_t *pd1;
                 particleDetail_t *pd2;
                 VectorNew(diff);
 
-                if (j == i)
-                    continue;
-
-                p1 = getParticleCurrentFrame(i);
                 p2 = getParticleCurrentFrame(j);
-                pd1 = getParticleDetail(i);
                 pd2 = getParticleDetail(j);
-
-                if (pd1->mass == 0) {
-                    conAdd(LERR, "Particle %i has no mass", i);
-                    pd1->mass = 1;
-                    needrestart = 1;
-                }
 
                 VectorSub(p1->pos, p2->pos, diff);
 #define MIN_STEP 0.001
@@ -523,6 +526,36 @@ cmdSpawnRestartSpawning:
             }
         }
     }
+#else
+    // center positions and velocities
+    VectorZero(pos);
+    VectorZero(vel);
+    mass=0;
+
+    // step 1 - compute center-of-mass and average velocitiy vectors
+    for (i = 0; i < state.particleCount; i++) {
+        particle_t *p;
+        particleDetail_t *pd;
+        p = getParticleCurrentFrame(i);
+        pd = getParticleDetail(i);
+	mass += fabs(pd->mass);
+        VectorMultiplyAdd(p->pos, fabs(pd->mass), pos);
+        VectorAdd(vel, p->vel, vel);
+    }
+    VectorDivide(pos, mass, pos);
+    VectorDivide(vel, (float)state.particleCount, vel);
+
+    // step 2 - center positions, remove average velocity
+    for (i = 0; i < state.particleCount; i++) {
+        particle_t *p;
+        p = getParticleCurrentFrame(i);
+        VectorSub(p->pos, pos, p->pos);
+        VectorSub(p->vel, vel, p->vel);
+    }
+
+#endif
+
+
 
 #ifndef NO_GUI
     setColours();
