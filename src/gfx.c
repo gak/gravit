@@ -151,6 +151,9 @@ int gfxSetResolution() {
         SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
         SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
 
+    } else {
+        SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0);
+        SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 0);
     }
 
     video.flags = SDL_OPENGL;
