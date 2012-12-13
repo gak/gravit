@@ -251,21 +251,23 @@ if test "$WITH_LUA" != "no"; then
    LUA_LIBS=`$LUACONFIG --libs --extralibs`
    AC_DEFINE([HAVE_LUA], [1], [liblua])
    AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+   AC_MSG_RESULT($LUACONFIG)
  else
 
    #try pkgconfig
-   PKG_CHECK_EXISTS([lua5.1], [have_lua=yes], [have_lua=no])
+   AC_MSG_CHECKING(for lua package)
+   for lua_name in lua5.2 lua-5.2 lua52 lua5.1 lua-5.1 lua51 lua5.3 lua-5.3 lua53 lua 
+   do
+       PKG_CHECK_EXISTS([$lua_name], [LUA_NAME=$lua_name; have_lua=yes; break], [have_lua=no])
+   done
+
    if test x$have_lua = xyes
    then
-       PKG_CHECK_MODULES(LUA,lua5.1,,[have_lua=no])
-   else
-       PKG_CHECK_EXISTS([lua], [have_lua=yes], [have_lua=no])
-       if test x$have_lua = xyes
-       then
-           PKG_CHECK_MODULES(LUA,lua >= 5.0,,[have_lua=no])
-       fi
+       AC_MSG_RESULT($LUA_NAME)
+       PKG_CHECK_MODULES(LUA,$LUA_NAME >= 5.0,[have_lua=yes], [have_lua=no])
    fi
 
+   # fallback: try to find the library directly
    if test x"$LUA_LIBS" = x; then
    # try LUA51
    AC_CHECK_LIB(lua51, lua_close, [
@@ -305,7 +307,7 @@ if test "$WITH_LUA" != "no"; then
 
  if test x"$LUA_LIBS" = x; then
    # show error
-   AC_MSG_ERROR(LUA was not found)
+   AC_MSG_ERROR(LUA (version 5.1 or newer) was not found)
  fi
 
  AC_SUBST(LUA_CFLAGS)
