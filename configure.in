@@ -255,8 +255,8 @@ if test "$WITH_LUA" != "no"; then
  else
 
    #try pkgconfig
-   AC_MSG_CHECKING(for lua package)
-   for lua_name in lua5.2 lua-5.2 lua52 lua5.1 lua-5.1 lua51 lua5.3 lua-5.3 lua53 lua 
+   AC_MSG_CHECKING(for pkg-config lua)
+   for lua_name in lua5.2 lua-5.2 lua52 lua5.1 lua-5.1 lua51 lua5.3 lua-5.3 lua53 lua
    do
        PKG_CHECK_EXISTS([$lua_name], [LUA_NAME=$lua_name; have_lua=yes; break], [have_lua=no])
    done
@@ -265,43 +265,27 @@ if test "$WITH_LUA" != "no"; then
    then
        AC_MSG_RESULT($LUA_NAME)
        PKG_CHECK_MODULES(LUA,$LUA_NAME >= 5.0,[have_lua=yes], [have_lua=no])
+   else
+       AC_MSG_RESULT(no)
    fi
 
    # fallback: try to find the library directly
-   if test x"$LUA_LIBS" = x; then
-   # try LUA51
-   AC_CHECK_LIB(lua51, lua_close, [
-     AC_CHECK_HEADERS([lua.h],[
-       LUA_LIBS="-llua51"
-       AC_DEFINE([HAVE_LUA], [1], [liblua51])
-       AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-     ])
-   ])
-   else
-     AC_DEFINE([HAVE_LUA], [1], [liblua])
-     AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-   fi
 
    if test x"$LUA_LIBS" = x; then
-     # try LUA 5.1
-     AC_CHECK_LIB(lua5.1, lua_close, [
-       AC_CHECK_HEADERS([lua.h],[
-         LUA_LIBS="-llua5.1"
-         AC_DEFINE([HAVE_LUA], [1], [liblua5.1])
-         AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-       ])
-     ])
-   fi
-
-   if test x"$LUA_LIBS" = x; then
-     # try old LUA API
-     AC_CHECK_LIB(lua, lua_close, [
-       AC_CHECK_HEADERS([lua.h],[
-         LUA_LIBS="-llua"
-         AC_DEFINE([HAVE_LUA], [1], [liblua])
-         AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-       ])
-     ])
+   # try linking with several possible lua libs
+     for lua_name in lua52 lua5.2 lua51 lua5.1 lua53 lua5.3 lua
+     do
+       if test x"$LUA_LIBS" = x; then
+         AC_CHECK_LIB($lua_name, lua_close, [
+           AC_CHECK_HEADERS([lua.h],[
+             LUA_LIBS="-l$lua_name"
+             AC_DEFINE([HAVE_LUA], [1], [liblua])
+             AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+             LUA_NAME=$lua_name
+           ])
+         ])
+       fi
+     done
    fi
  fi
 
