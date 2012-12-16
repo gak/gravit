@@ -31,6 +31,10 @@ function spawn()
             color_mass_max(smallmass * 1.2)
         end
 
+        local pos = v(0,0,0)
+        local vel = v(0,0,0)
+        local mass = 0
+
 	for i=0,spawnparticles-1 do
 
 		if (i < massiveparticles) then

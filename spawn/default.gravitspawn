@@ -2,6 +2,12 @@
 
 load("constants.lua")
 
+-- un-comment the next line to enable strict checking for undefined variables
+-- require('Strict')
+--     The so-called 'weak' mode is the default after require'ing Strict
+--     'Weak' means globals have to be initialised in the main part of a
+--     program before they can be used (similar to strict.lua)
+
 
 scripts = { "plummer", "one-galaxy", "binary-galaxy", "merging-galaxies", "many-galaxy", "snake", "loops", "dust", "clouds", "negative-collision", "negative-sphere", "negative-spiral", "negative-surround", "surround" }
 

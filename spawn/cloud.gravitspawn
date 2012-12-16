@@ -1,0 +1,32 @@
+-- vim:syntax=lua tabstop=4
+
+-- require("functions.lua")
+require("functions2.lua")
+
+function describe()
+	log("A few massive particles in a CLOUD of relatively ligher particles with random velocities")	
+end
+
+function spawn()
+	local onlyone = randomint(0,1)
+	local centralorbit = randomint(0,2)
+
+	local center = v(0,0,0)
+	local mainvel =v(0,0,0)
+
+	local minrad=400
+	local maxrad=800
+
+	local fakminmass=2
+	local fakmaxmass=8
+
+	if physicsmode > 0 then
+	   minrad=400
+	   maxrad=800
+	   fakminmass=4
+	   fakmaxmass=16
+	end
+
+	local mass1 = do_the_cloud(center, mainvel, minrad, maxrad, fakminmass, fakmaxmass, centralorbit, onlyone, 0, spawnparticles)
+end
+

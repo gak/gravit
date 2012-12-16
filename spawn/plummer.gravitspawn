@@ -48,8 +48,10 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
     local avg_mass=final_mass / particles
     local cumulative_mass_min = 0                                                    
     local cumulative_mass_max = avg_mass
+    local cumulative_mass = 0
     for i=start, start+particles-1 do
        --local mass = avg_mass
+       local velocity
        local mass = randomfloat(avg_mass * 0.8, avg_mass * 1.2)
        cumulative_mass = randomfloat(cumulative_mass_min, cumulative_mass_max)        
        cumulative_mass_min = cumulative_mass_max                                
@@ -75,7 +77,7 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
        end
 
 
-       vel = randomshell(velocity) * scalefactor_v
+       local vel = randomshell(velocity) * scalefactor_v
 
        -- scale pos,vel,mass to physical units, then allocate particle
        pos  = pos  * rfak
@@ -157,7 +159,7 @@ function spawn()
 	local pstart=part
 	for i=1, num_objects-1 do
 	   if i==(num_objects-1) then
-	      parts = spawnparticles - pstart
+	      part = spawnparticles - pstart
 	   end
 	   
 	   -- pick position

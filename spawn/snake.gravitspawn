@@ -8,20 +8,22 @@ end
 	
 function spawn()
 
-	curveness = randomfloat(0, 0.5)
-	speed = randomfloat(0,1)
+	local curveness = randomfloat(0, 0.5)
+	local speed = randomfloat(0,1)
+        local massincrement = 0
+
 	if (randomint(0,1) == 0) then
 		massincrement = randomfloat(-0.01,0.01)
 	else
 		massincrement = 0
 	end
-		
-	massrandom = randomfloat(0,100)
 
-	pos = v(0,0,0)
-	vel = v(0,0,0)
-	ang1 = 0
-	ang2 = 0
+	local massrandom = randomfloat(0,100)
+
+	local pos = v(0,0,0)
+	local vel = v(0,0,0)
+	local ang1 = 0
+	local ang2 = 0
 
 	for i=0,spawnparticles-1 do
 	

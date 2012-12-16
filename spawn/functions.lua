@@ -11,8 +11,8 @@ function vmul(v1, f)
 end
 
 function v(_x, _y, _z)
-	t = { x = _x, y = _y, z = _z };
-	mt = { __add = vadd,  __sub = vsub, __mul = vmul }
+	local t = { x = _x, y = _y, z = _z };
+	local mt = { __add = vadd,  __sub = vsub, __mul = vmul }
 	setmetatable(t, mt)
 	return t
 end
