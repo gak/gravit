@@ -33,9 +33,9 @@ function do_plummer(center, groupvel, target_radius, target_mass , start, partic
     local vfak = math.sqrt((mfak * gravit_g)/rfak)
     if gravit_physics < PH_PROPER then
        vfak = vfak * math.sqrt(rfak)
+       mfak=mfak * 1.01
     end
 
-    mfak=mfak * 1.01
     local final_mass = 0.99
     if gravit_physics < PH_PROPER   then final_mass = 0.97 end
     if gravit_physics < PH_MODIFIED then final_mass = 0.94 end
