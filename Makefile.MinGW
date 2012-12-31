@@ -78,7 +78,7 @@ CFLAGS = -DWITH_LUA -DHAVE_LUA -DHAVE_SSE -DHAVE_PNG -DUSE_PTHREAD \
 LDFLAGS = -Wl,--dynamicbase -Wl,--nxcompat \
 	  $(LIBDIRS)
 LDLIBS = -lag_gui -lag_core \
-	  -lSDL_ttf -lSDL_image -lfreetype -llua51 \
+	  -lSDL_ttf -lSDL_image -lfreetype -llua52 \
 	  -lGLU32 -lopenGL32 \
 	  -lmingw32 -lSDLmain -lSDL -lpng -mwindows  -lscrnsave -lwinmm -ldxguid \
 	  -lpthread
