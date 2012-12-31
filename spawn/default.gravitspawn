@@ -5,6 +5,7 @@ load("constants.lua")
 
 scripts = { "plummer", "one-galaxy", "binary-galaxy", "merging-galaxies", "many-galaxy", "snake", "loops", "dust", "clouds", "negative-collision", "negative-sphere", "negative-spiral", "negative-surround", "surround" }
 
+math.randomseed(os.time())
 r = math.random(1, #scripts)
 log("Spawning " .. scripts[r])
 
