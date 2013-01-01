@@ -357,11 +357,19 @@ then
    CFLAGS="$CFLAGS $AGAR_CFLAGS"
    CPPFLAGS="$CPPFLAGS $AGAR_CFLAGS"
    LIBS="$LIBS $AGAR_LIBS"
+   have_agar_lib=yes
+ else
+   #check for libag_gui presence
+   if test x"$host" = x"i686-pc-mingw32" ; then
+     AC_CHECK_LIB([ag_gui], [AG_DestroyGUI], [have_agar_lib=yes; LIBS="-lag_gui -lag_core $LIBS -lfreetype -lwinmm"], [], [-lag_core -lfreetype -lwinmm])
+   else
+     AC_CHECK_LIB([ag_gui], [AG_DestroyGUI], [have_agar_lib=yes; LIBS="-lag_gui -lag_core $LIBS -lfreetype"], [], [-lag_core -lfreetype])
+   fi
  fi
  
  #check if agar header files can be found 
  AC_CHECK_HEADER([agar/core.h], [have_agar_hdr=yes])
- if test x"$have_agar_hdr" = x
+ if test x"$have_agar_hdr" = x -o x"$have_agar_lib" = x
  then
    AM_CONDITIONAL(AGAR, false)
    AC_DEFINE([WITHOUT_AGAR], [1], [libagar])
