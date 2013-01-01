@@ -269,6 +269,11 @@ if test "$WITH_LUA" != "no"; then
        AC_MSG_RESULT(no)
    fi
 
+   if test x$have_lua = xyes; then
+     AC_DEFINE([HAVE_LUA], [1], [liblua])
+     AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+   fi
+
    # fallback: try to find the library directly
 
    if test x"$LUA_LIBS" = x; then
