@@ -480,7 +480,19 @@ typedef struct saveInfo_s {
     int totalFrames;
     int frame;
     int historyNFrame;
-//    float g;
+    // up to here: gravit version 0.5.0 or earlier
+
+    float zoom;            // view parameters
+    VectorNew(rot);        //   ...
+    VectorNew(pos);        //   ...
+    VectorNew(face);       //   ...
+    VectorNew(lastCenter); //   ...
+    int glow;              //   ...
+    float g;               // physics parameters
+    float gbase;           //   ...
+    physics_t physics;     //   ...
+    // up to here: gravit version 0.5.1
+
 
 } saveInfo_t;
 
@@ -686,7 +698,7 @@ int commandLineRead(int argc, char *argv[]);
 // tool.c
 char * va( char *format, ... );
 CONST_F int gfxPowerOfTwo(int input);
-int LoadMemoryDump(char *fileName, unsigned char *d, size_t size);
+size_t LoadMemoryDump(char *fileName, unsigned char *d, size_t size, size_t chunk);
 int SaveMemoryDump(char *FileName, unsigned char *d, size_t total);
 
 Uint32 getMS();
