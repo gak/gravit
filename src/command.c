@@ -779,6 +779,7 @@ void cmdSaveFrameDump(char *arg) {
     VectorCopy(view.face, si.face);
     VectorCopy(view.lastCenter, si.lastCenter);
     si.glow = view.glow;
+    si.colorMassMax = view.colorMassMax;
 
     si.physics = state.physics;
     si.g = state.g;
@@ -882,7 +883,8 @@ void cmdLoadFrameDump(char *arg) {
     state.frame = si.frame;
     state.historyNFrame = si.historyNFrame;
 
-    if (bytes == sizeof(si)) {
+    // XX remove the second condition before making the next release
+    if (bytes == sizeof(si) || (bytes == (sizeof(si) - sizeof(float)))) {
         // saveinfo is from gravit 0.5.1 or newer - restore additional information
         view.zoom = si.zoom;
         VectorCopy(si.rot, view.rot);
@@ -893,6 +895,7 @@ void cmdLoadFrameDump(char *arg) {
         state.physics = si.physics;
         state.g = si.g;
         state.gbase = si.gbase;
+        view.colorMassMax = si.colorMassMax;
     } else {
         conAdd(LNORM, "Saved data is from older gravit version - using defaults for view and physics.");
     }

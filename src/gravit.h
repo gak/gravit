@@ -491,6 +491,7 @@ typedef struct saveInfo_s {
     float g;               // physics parameters
     float gbase;           //   ...
     physics_t physics;     //   ...
+    float colorMassMax;    // coloring upper threshold
     // up to here: gravit version 0.5.1
 
 
