@@ -108,7 +108,8 @@ size_t LoadMemoryDump(char *fileName, unsigned char *d, size_t size, size_t chun
         p = fread(d, 1, amountToRead, fp);
 
         if (p < amountToRead) {
-	    if (bytes == 0) {
+            if ((bytes == 0) || (!feof(fp))) {
+                if (ferror(fp)) conAdd(LERR, "%s", strerror( errno ));
                 conAdd(LERR, "Short read on %s (%ld bytes)", fileName, (long)(p+bytes));
                 fclose(fp);
                 return 0;

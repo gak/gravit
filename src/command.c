@@ -861,7 +861,7 @@ void cmdLoadFrameDump(char *arg) {
         state.g = si.g;
         state.gbase = si.gbase;
     } else {
-        conAdd(LNORM, "Saved data is from older gravit version - using defaults for view and physics.");
+        conAdd(LNORM, "Saved data is from older gravit version.");
     }
 
     //init saveDetail
@@ -876,13 +876,15 @@ void cmdLoadFrameDump(char *arg) {
     runVideo();
 
     fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
-    if (LoadMemoryDump(fileName, (unsigned char *)sd, SAVEDETAILSIZE, 0) == 0) {
+    bytes = SAVEDETAILSIZE;
+    if (LoadMemoryDump(fileName, (unsigned char *)sd, bytes, 0) < bytes) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
 
     fileName = va("%s/%s.particles", SAVE_PATH, arg);
-    if (LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1), 0) ==0) {
+    bytes = FRAMESIZE * (state.frame+1);
+    if (LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, bytes, 0) < bytes) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
@@ -903,7 +905,7 @@ void cmdLoadFrameDump(char *arg) {
     state.currentFrame = 0;
     state.mode = 0;
     setColours();
-    conAdd(LNORM, "Simulation loaded sucesfully!");
+    conAdd(LHELP, "Simulation %s loaded sucesfully!", arg);
 
     free(sd);
     setFileName(arg);
