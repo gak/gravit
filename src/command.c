@@ -740,6 +740,17 @@ void cmdSaveFrameDump(char *arg) {
     si.frame = state.frame;
     si.historyNFrame = state.historyNFrame;
 
+    si.zoom = view.zoom;
+    VectorCopy(view.rot, si.rot);
+    VectorCopy(view.pos, si.pos);
+    VectorCopy(view.face, si.face);
+    VectorCopy(view.lastCenter, si.lastCenter);
+    si.glow = view.glow;
+
+    si.physics = state.physics;
+    si.g = state.g;
+    si.gbase = state.gbase;
+
     //init saveDetail
     sd = (saveDetail_t *) calloc(sizeof(saveDetail_t),state.particleCount);
     if (!sd) {
@@ -794,6 +805,7 @@ void cmdLoadFrameDump(char *arg) {
     saveDetail_t *sd;
     char *fileName;
     unsigned int i;
+    size_t bytes;
 
     if (isSpawning())
         return;
@@ -814,8 +826,9 @@ void cmdLoadFrameDump(char *arg) {
     if (!checkHomePath()) return;
 
     fileName = va("%s/%s.info", SAVE_PATH, arg);
-    if (!LoadMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
-        conAdd(LERR, "Failed to load %s", fileName);
+    if ((bytes = LoadMemoryDump(fileName, (unsigned char *)&si, sizeof(si), sizeof(int))) < (5*sizeof(int))) {
+        // invalid info file
+        conAdd(LERR, "Failed to load %s (%ld bytes)", fileName, (long)bytes);
         return;
     }
 
@@ -836,6 +849,21 @@ void cmdLoadFrameDump(char *arg) {
     state.frame = si.frame;
     state.historyNFrame = si.historyNFrame;
 
+    if (bytes == sizeof(si)) {
+        // saveinfo is from gravit 0.5.1 or newer - restore additional information
+        view.zoom = si.zoom;
+        VectorCopy(si.rot, view.rot);
+        VectorCopy(si.pos, view.pos);
+        VectorCopy(si.face, view.face);
+        VectorCopy(si.lastCenter, view.lastCenter);
+        view.glow = si.glow;
+        state.physics = si.physics;
+        state.g = si.g;
+        state.gbase = si.gbase;
+    } else {
+        conAdd(LNORM, "Saved data is from older gravit version - using defaults for view and physics.");
+    }
+
     //init saveDetail
     sd = (saveDetail_t *) calloc(sizeof(saveDetail_t),state.particleCount);
     if (!sd) {
@@ -848,13 +876,13 @@ void cmdLoadFrameDump(char *arg) {
     runVideo();
 
     fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
-    if (!LoadMemoryDump(fileName, (unsigned char *)sd, SAVEDETAILSIZE)) {
+    if (LoadMemoryDump(fileName, (unsigned char *)sd, SAVEDETAILSIZE, 0) == 0) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
 
     fileName = va("%s/%s.particles", SAVE_PATH, arg);
-    if (!LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
+    if (LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1), 0) ==0) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
@@ -1325,7 +1353,7 @@ void cmdSaveList(char *arg) {
 
 #endif
 
-        if (!LoadMemoryDump(va("%s/%s", SAVE_PATH, file), (unsigned char *)&si, sizeof(si))) {
+        if (LoadMemoryDump(va("%s/%s", SAVE_PATH, file), (unsigned char *)&si, sizeof(si), sizeof(int)) == 0) {
             conAdd(LERR, "Failed to load %s", file);
             return;
         }
