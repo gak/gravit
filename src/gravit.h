@@ -302,7 +302,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
     if (view.recordingVideoRefreshTime) { \
-        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*4) < getMS()) { \
+        if (((view.recordParticlesDone % 128) == 1) && (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS())) { \
             runInput(); \
             runVideo(); \
         } \
