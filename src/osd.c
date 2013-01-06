@@ -72,9 +72,14 @@ void drawOSD() {
         }
 
         DUH("particles", va("%i", state.particleCount));
+        switch(state.physics) {
+            case PH_PROPER:   DUH("physics", "Newtonian"); break;
+            case PH_MODIFIED: DUH("physics", "modified Newtonian"); break;
+            case PH_CLASSIC:  DUH("physics", "Gravit classic"); break;
+        }
         DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
-        DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
-        DUH("last record frame time", va("%ims", view.deltaRecordFrame));
+        //DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
+        //DUH("last record frame time", va("%ims", view.deltaRecordFrame));
 
         DUH("actual frames", va("%i", state.totalFrames));
         DUH("recording skip", va("%i", state.historyNFrame));
@@ -83,6 +88,8 @@ void drawOSD() {
         } else {
             DUH("display frame", va("%i", state.currentFrame));
         }
+
+        NEWLINE();
         DUH("recorded frames", va("%i", state.frame));
         DUH("max frames", va("%i", state.historyFrames));
         DUH("particle vertices", va("%i", view.vertices));
