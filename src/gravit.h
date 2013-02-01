@@ -336,6 +336,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #ifndef GL_CLAMP_TO_EDGE
         #define GL_CLAMP_TO_EDGE 0x812F
     #endif
+    #ifndef GL_ALIASED_POINT_SIZE_RANGE
+        #define GL_ALIASED_POINT_SIZE_RANGE 0x846D
+    #endif
 
     typedef struct conf_s {
 
