@@ -257,6 +257,12 @@ gfxInitRetry:
             if (video.screenAA) {
                 conAdd(LERR, "You have videoantialiasing on. I'm turning it off and restarting...");
                 video.screenAA = 0;
+                // without FSAA, particlerendermode 1 is not working on some graphics cards
+                // -> cowardly switch to mode 2
+                if(view.particleRenderMode == 1) {
+                    conAdd(LHELP, "   switching to particlerendermode 2 (slower, but more compatible)");
+                    view.particleRenderMode = 2;
+                }
                 goto gfxInitRetry;
             }
 
@@ -406,6 +412,8 @@ void drawFrame() {
         float quadratic_8[] =  { 0.0f, 0.0f, 0.00000006f, 0.00f };
         float *quadratic;
 
+        float pointRange[2];
+
         quadratic = quadratic_0;
         if (view.glow == 1) quadratic = quadratic_1;
         if (view.glow == 2) quadratic = quadratic_2;
@@ -429,6 +437,24 @@ void drawFrame() {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
+        // check against allowed point size range first
+        // use ALIASED_POINT_SIZE_RANGE if supported
+        glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, pointRange);
+        if(glGetError() != GL_NO_ERROR) {
+            glGetFloatv(GL_POINT_SIZE_RANGE, pointRange);
+        }
+        if (view.particleSizeMin < pointRange[0]) {
+            view.particleSizeMin = pointRange[0];
+            conAdd(LNORM, "Aliased point Size has reached its minimum of %f", view.particleSizeMin);
+        }
+        if (view.particleSizeMax > pointRange[1]) {
+            view.particleSizeMax = pointRange[1];
+            conAdd(LNORM, "Aliased point Size has reached its maximum of %f", view.particleSizeMax);
+        }
+
+        glEnable( GL_POINT_SPRITE_ARB );
+        glCheck();
+
 	// glPointParameter and glPointSprite attributes are global (not per-texture)
         glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
         glCheck();
@@ -446,12 +472,11 @@ void drawFrame() {
         // so i had to make textures an option with this mode
         if (view.particleRenderTexture) {
             glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+            glCheck();
             glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-
-        glEnable( GL_POINT_SPRITE_ARB );
         glCheck();
 
     } else if (view.particleRenderMode == 2) {
@@ -469,7 +494,14 @@ void drawFrame() {
     if (view.particleRenderMode == 0 || view.particleRenderMode == 1) {
 
         unsigned int lastSprite=state.particleDetail[0].particleSprite;
-        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, sprites[lastSprite]);
+        if (view.particleRenderMode > 0) {
+            if (view.particleRenderTexture) {
+                glBindTexture(GL_TEXTURE_2D, sprites[lastSprite]);
+                glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+            } else {
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+        }
         glCheck();
 
         // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the
@@ -486,10 +518,13 @@ void drawFrame() {
 
             pd = state.particleDetail + i;
 
-            if ((view.particleRenderMode > 0) && (pd->particleSprite != lastSprite)) {
+            if ((view.particleRenderMode > 0) && (pd->particleSprite != lastSprite) && (view.particleRenderTexture > 0)) {
                 glEnd();
                 glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
                 //glCheck();
+                // GL_COORD_REPLACE_ARB is not global --> repeat it
+                glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+
                 glBegin(GL_POINTS);
             }
             lastSprite = pd->particleSprite;
@@ -993,7 +1028,13 @@ void setupStereoCamera(int shouldTranslate) {
     }
 
 
+    // z-buffer writes must be enabled before clearing it
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
     glClear(GL_DEPTH_BUFFER_BIT);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
     glViewport(0, 0, video.screenW, video.screenH);
 
     // Set the Projection Matrix
@@ -1137,8 +1178,14 @@ void drawAll() {
     VectorAdd(rotateIncrement, view.rot, view.rot);
 
     glClearColor(0, 0, 0, 0);
+
+    // z-buffer writes must be enabled before clearing it
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
     view.vertices = 0;
 
     if (view.stereoMode > 0)
@@ -1340,20 +1387,25 @@ void checkDriverBlacklist() {
 
    // linux: MESA openGL on Intel integrated graphics
    // (VMVare is also based on MESA)
-    if ((strcmp(glVendor, "Tungsten Graphics, Inc") == 0) || (strcmp(glVendor, "VMware, Inc.") == 0)) {
+    if (  (strcmp(glVendor, "Tungsten Graphics, Inc") == 0) || (strcmp(glVendor, "VMware, Inc.") == 0)
+        ||(strncmp(glVendor, "Intel Open Source", strlen("Intel Open Source")) == 0) ) {
       if ((  strncmp(glRenderer, "Mesa DRI Intel(R) Ironlake Mobile", strlen("Mesa DRI Intel(R) Ironlake Mobile")) == 0)
           || (strncmp(glRenderer, "Mesa DRI Mobile Intel", strlen("Mesa DRI Mobile Intel")) == 0)
           || (strncmp(glRenderer, "Gallium ", strlen("Gallium ")) == 0)) {
           if (  (strstr(glVersion, "1.4 (2.1 Mesa") != NULL)
+                ||(strstr(glVersion, "2.1 Mesa 9.") != NULL)
                 ||(strstr(glVersion, "2.1 Mesa 8.0.") != NULL)
                 ||(strstr(glVersion, "2.1 Mesa 7.") != NULL)) {
                // MESA 8.0 claims to have GL_ARB_point_sprite, but it does not work with particlerendermode 1.
                // effect: instead of particle textures, coloured squares are drawn.
+               // MESA 9.0 on intel mobile shows single-coloured boxed instead of sprites
                 // known configurations that are affected:
                 //      mesa 8.0.4-0ubuntu0.2 (with mesa-dri), xorg-server 2:1.11.4-0ubuntu10.8  on Linux 3.2.0-32-generic #51-Ubuntu SMP x86_64 GNU/Linux
                 //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
                 //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=1.4 (2.1 Mesa 8.0.4)
                 //      GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on llvmpipe (LLVM 0x300); GL version=1.4 (2.1 Mesa 8.0.4)
+                //      GL vendor=Intel Open Source Technology Center; renderer=Mesa DRI Intel(R) Ironlake Mobile; version=2.1 Mesa 9.0
+
  	        if (view.particleRenderMode == 1) {
                     conAdd(LERR,  "Sorry, Your driver is blacklisted for particleRenderMode 1.");
                     conAdd(LERR, "This means you can't have really pretty looking particles.");
