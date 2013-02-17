@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #if HAVE_LUA
 
+int luag_logName(lua_State *L);
+
 int luaInit() {
 
     luaFree();
@@ -54,6 +56,7 @@ int luaInit() {
     AddFunction("particle", luag_spawn)
     AddFunction("log", luag_log)
     AddFunction("load", luag_load);
+    AddFunction("logName", luag_logName)
 
     return 1;
 
@@ -198,12 +201,28 @@ int luag_spawn(lua_State *L) {
 int luag_log(lua_State *L) {
 
     char *s = (char*)lua_tostring(L, -1);
-    conAdd(LNORM, s);
+    if (state.fileName)
+        conAdd(LHELP, "%s: %s", state.fileName, s);
+    else
+        conAdd(LHELP, "%s", s);
+
     lua_pop(L,1);
 
     return 0;
 
 }
+
+int luag_logName(lua_State *L) {
+
+    char *s = (char*)lua_tostring(L, -1);
+    conAdd(LLOW, "Spawning %s", s);
+    setFileName(s);
+    lua_pop(L,1);
+
+    return 0;
+
+}
+
 
 #else
 #pragma message( __FILE__ " : warning : define HAVE_LUA   to enable LUA spawn script support." )

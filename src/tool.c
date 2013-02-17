@@ -308,7 +308,7 @@ void freeFileName() {
 
     if (state.fileName) {
         free(state.fileName);
-        state.fileName = 0;
+        state.fileName = NULL;
     }
 
 }
@@ -318,11 +318,11 @@ void setFileName(char *name) {
     char buf[256];
 
     strncpy(buf, name, 255);
+    buf[255]=0;
 
     freeFileName();
 
-    state.fileName = malloc(strlen(buf)+1);	// +1 for \0
-    strcpy(state.fileName, buf);
+    state.fileName = strdup(buf);
 
 }
 
