@@ -164,10 +164,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #include <agar/gui.h>
 #endif
 
-    #define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
-    #define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
+    // according to the OpenGL specs, glGetError should be called in a loop, until it returns GL_NO_ERROR
+    #define glCheck() { GLenum er; while ((er = glGetError()) != GL_NO_ERROR) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, (int)er, gluErrorString(er)); } }
+    #define sdlCheck() { char *er = SDL_GetError(); if ((er!=NULL) && (strlen(er)>0)) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
 #ifndef WITHOUT_AGAR
-    #define agarCheck() { const char *aer = AG_GetError(); if (aer) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); } }
+    #define agarCheck() { const char *aer = AG_GetError(); if ((aer!=NULL) && (strlen(aer)>0)) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); AG_SetError("%s", "");} }
 #endif
 
 #else
