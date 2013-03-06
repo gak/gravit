@@ -36,6 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifndef NO_GUI
 
+#define CLIP_NEAR 0.01f
+#define CLIP_FAR 10000.0f
+#define CLIP_VERY_FAR 100000.0f
+
 static GLuint particleTextureID = 0;
 static GLuint sprites[SPRITE_LAST+1];
 
@@ -70,7 +74,10 @@ void drawFrameSet3D() {
     glLoadIdentity();
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
-    gluPerspective(45.0f, 1, 0, 10000.0f);
+    // render all primitives at integer positions
+    //glTranslatef(0.375, 0.375, 0.0);
+
+    gluPerspective(45.0f, 1, CLIP_NEAR, CLIP_FAR);
 
 }
 
@@ -309,6 +316,7 @@ gfxInitRetry:
         conAdd(LERR, "agar error while initializing main window: %s", AG_GetError() );
 
     video.agarStarted = 1;
+    AG_SetError("%s", "");
 
     if (!view.screenSaver)
         osdInitDefaultWindows();
@@ -355,6 +363,7 @@ void drawFrame() {
     case 0:
         glDisable(GL_BLEND);
         break;
+    default:
     case 1:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -586,6 +595,9 @@ void drawFrame() {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glCheck();
+        // render all primitives at integer positions
+        //glTranslatef(0.375, 0.375, 0.0);
+
 
         for (i = 0; i < state.particleCount; i++) {
 
@@ -702,6 +714,11 @@ void drawFrame() {
             int to;
             p = 0;
 
+            pd = state.particleDetail + i;
+            memcpy(sc, pd->col, sizeof(float)*4);
+            sc[3] *= view.tailOpacity;
+            glColor4fv(sc);
+
             glBegin(GL_LINE_STRIP);
 
             if (view.tailLength == -1)
@@ -722,16 +739,12 @@ void drawFrame() {
                 if (j >= state.historyFrames)
                     continue;
 
-                pd = state.particleDetail + i;
-
-                if (view.tailFaded)
+                if (view.tailFaded) {
                     c = (float)(j-k) / (float)(state.currentFrame-k) * view.tailOpacity;
-                else
-                    c = view.tailOpacity;
-
-                memcpy(sc, pd->col, sizeof(float)*4);
-                sc[3] *= c;
-                glColor4fv(sc);
+                    memcpy(sc, pd->col, sizeof(float)*4);
+                    sc[3] *= c;
+                    glColor4fv(sc);
+                }
 
                 p = state.particleHistory + state.particleCount * j + i;
                 glVertex3fv(p->pos);
@@ -750,7 +763,7 @@ void drawFrame() {
             }
 
             glEnd();
-
+            glColor4f(1, 1, 1, 1);
         }
 
     }
@@ -945,6 +958,8 @@ void drawAgar() {
         AG_EndRendering(agDriverSw);
         AG_UnlockVFS(&agDrivers);
     }
+    agarCheck();
+    glCheck();
     // Agar leaves glTexEnvf env mode to GL_REPLACE :(
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
@@ -963,14 +978,16 @@ void setupCamera(int shouldTranslate, int bits) {
         // the formula below makes sure the field is logarithmicially adjusted between 15 and 55 degrees.
         float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log(fmin(view.zoom, 96000.0)) / log(96000.0f)));
 
-        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
+        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, CLIP_NEAR, fmax(view.zoom * 2.0f, CLIP_VERY_FAR));
     } else {
         // if stereo mode, do not adjust field of view
-        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
+        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, CLIP_NEAR, fmax(view.zoom * 2.0f, CLIP_VERY_FAR));
     }
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    // render all primitives at integer positions
+    //if (shouldTranslate) glTranslatef(0.375, 0.375, 0.0);
         
     if (shouldTranslate)
         glTranslatef(0, 0, -view.zoom);
@@ -997,8 +1014,8 @@ void setupStereoCamera(int shouldTranslate) {
     float a, b, c;
 
     //const int bits = 2;
-    const float nearClip = 0.01f;
-    const float farClip = fmax(view.zoom*2.0f, 100000.0f);
+    const float nearClip = CLIP_NEAR;
+    const float farClip = fmax(view.zoom*2.0f, CLIP_VERY_FAR);
     const float aspectRatio = (GLfloat)video.screenW / (GLfloat)video.screenH;
     const float distConvergence = view.zoom * 0.95;
 
@@ -1046,6 +1063,8 @@ void setupStereoCamera(int shouldTranslate) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    // render all primitives at integer positions
+    //if (shouldTranslate) glTranslatef(0.375, 0.375, 0.0);
 
     // translate to left or right eye
     if (view.stereoModeCurrentBit == 0)
@@ -1183,6 +1202,7 @@ void drawAll() {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
 
@@ -1260,6 +1280,8 @@ void drawAll() {
         cmdScreenshot(NULL);
 
     SDL_GL_SwapBuffers();
+    sdlCheck();
+    glCheck();
 }
 
 void drawCube() {
@@ -1421,8 +1443,11 @@ void checkDriverBlacklist() {
               conAdd(LERR,  "Sorry, Your indirect rendering GLX driver is blacklisted for particleRenderMode 1.");
               conAdd(LHELP, "Indirect rendering is too slow for really pretty looking particles.");
               conAdd(LNORM, "Setting particleRenderMode to 0");
-              view.particleRenderMode = 0;
-              view.particleSizeMax = 63;
+              view.particleRenderMode = 2;
+              view.particleSizeMax = 31;
+              view.tailFaded = 0;
+              if (view.tailLength > 31) view.tailLength = 31;
+              if (view.tailOpacity < 1) view.tailOpacity = 0.5;
 	  }
           video.supportPointSprite = 0;
       }
@@ -1437,7 +1462,10 @@ void checkDriverBlacklist() {
            conAdd(LHELP, "It's too slow for really pretty looking particles.");
            conAdd(LNORM, "Setting particleRenderMode to 0");
            view.particleRenderMode = 0;
-           view.particleSizeMax = 63;
+           view.particleSizeMax = 31;
+           view.tailFaded = 0;
+           if (view.tailLength > 31) view.tailLength = 31;
+           if (view.tailOpacity < 1) view.tailOpacity = 0.5;
        }
        // ToDo: add more tweak to achieve higher framerates ...
     }
