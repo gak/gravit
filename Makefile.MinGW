@@ -159,7 +159,7 @@ clean:
 src/gravitrc.o: src/gravit.rc
 	windres src/gravit.rc src/gravitrc.o
 
-src/%.o: src/%.c
+src/%.o: src/%.c src/gravit.h
 	@echo $<
 	@$(CC) -c $(CFLAGS) $(subst ,, src/$*.c) -o src/$*.o
 
