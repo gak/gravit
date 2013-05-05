@@ -490,7 +490,7 @@ void run() {
         }
 
         /* pull the break on very fast video cards - 60fps playback is enough */
-        if ((state.mode & SM_PLAY ) == SM_PLAY) {
+        if (((state.mode & SM_PLAY ) == SM_PLAY) || (state.mode == 0)) {
             ts_after =  getMS();
             if (ts_after < (ts_before + PLAY_MIN_TIME)) SDL_Delay(PLAY_MIN_TIME - (ts_after - ts_before));
         }
