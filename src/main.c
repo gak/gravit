@@ -367,14 +367,13 @@ void runVideo() {
 
     ts = getMS();
 
-    // XXXX experimental
-    // // if we are still faster than 30 FPS, skip video update (record mode only)
-    //if ((state.mode & SM_RECORD) && (view.dirty < 1) && (view.minVideoRefreshTime == 0)) {
-    //  if ((view.lastRenderTime + ts - view.lastVideoFrame) < RECORD_MIN_REDRAW_TIME) {
-    //    view.lastVideoFrameSkip++;
-    //    return;
-    //  }
-    //}
+    // record mode: if we are still faster than 30 FPS, skip video update (only if frameskip is set)
+    if ((view.frameSkip != 0) && (state.mode & SM_RECORD) && (view.dirty < 1) && (view.minVideoRefreshTime == 0)) {
+      if ((view.lastRenderTime + ts - view.lastVideoFrame) < RECORD_MIN_REDRAW_TIME) {
+        view.lastVideoFrameSkip++;
+        return;
+      }
+    }
 
     // smooth zoom
     smoothChange(view.zoomTarget, 8.0f, 0.01f, &(view.zoom), &(view.zoomSpeed));

@@ -76,7 +76,7 @@ void drawOSD() {
         if (view.lastVideoFrameSkip == 0) {
             DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
         } else {
-            DUH("avg video fps", va("%3.2f * %ld", fpsCurrentAverageFPS, (long)view.lastVideoFrameSkip + 1));
+            DUH("avg video fps", va("%3.2f  (* %ld)", fpsCurrentAverageFPS, (long)view.lastVideoFrameSkip + 1));
         }
 
         DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
