@@ -357,6 +357,7 @@ void cmdExecute(char *string) {
     if (c->func)
         c->func(args);
 
+    view.dirty = 1;
 
 }
 
@@ -543,6 +544,8 @@ cmdSpawnRestartSpawning:
 
     if (view.zoomFitAuto) {
         cmdZoomFit(NULL);
+        view.zoomTarget = view.zoom;
+        view.zoomSpeed = 0;
     }
 
     view.frameSkipCounter = 0;
@@ -909,6 +912,12 @@ void cmdLoadFrameDump(char *arg) {
 
     free(sd);
     setFileName(arg);
+
+    view.zoomTarget = view.zoom;
+    view.zoomSpeed = 0;
+    VectorCopy(view.rot, view.rotTarget);
+    VectorZero(view.rotSpeed);
+    view.dirty = 1;
 
 }
 
@@ -1460,11 +1469,14 @@ void cmdZoomFit(char *arg) {
             // smooth zoomfit
             // zoom out if required change > 30%
 	    if ((new_zoom >= view.zoom) && (fabs(new_zoom / view.zoom) > 1.3)) {
-		view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+                view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+                view.dirty = 1;
 	    } else {
                 // zoom in if required change > 30%
-	        if (fabs(view.zoom / new_zoom) > 1.3)
+	        if (fabs(view.zoom / new_zoom) > 1.3) {
                     view.zoom = view.zoom - (view.zoom - new_zoom) / 60;
+                    view.dirty = 1;
+                }
 	    }
 	}
     }

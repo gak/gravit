@@ -32,6 +32,10 @@ video_t video;
 state_t state;
 view_t view;
 
+/* prototypes for local functions */
+static void smoothChange(float targetValue, float fraction, float minStep, float *value, float *currentSpeed);
+
+
 void loadDefaults() {
 
     state.memoryAvailable = 0;
@@ -157,6 +161,11 @@ void viewInit() {
     cmdFps(NULL);
     view.timed_frames=0;
     view.totalRenderTime=0;
+    view.zoomTarget = view.zoom;
+    view.zoomSpeed = 0;
+    VectorCopy(view.rot, view.rotTarget);
+    VectorZero(view.rotSpeed);
+    view.dirty = 0;
 
     memset(view.keys, 0, sizeof(view.keys));
 
@@ -311,6 +320,41 @@ void runInput() {
 
 }
 
+
+// max. sleep time in milliseconds (33-> limit to 30fps when idle)
+#define SMALL_NAP    33
+// a bit more than 30 FPS
+#define RECORD_MIN_REDRAW_TIME 30
+// limit playback speed to 60 fps
+#define PLAY_MIN_TIME 16
+
+static void smoothChange(float targetValue, float fraction, float minStep, float *value, float *currentSpeed)
+{
+    float dist;
+    float newSpeed;
+    dist = targetValue - *value;
+
+    // nothing to do
+    if (fabs(dist) < minStep) {
+      *value = targetValue;
+      *currentSpeed = 0.0f;
+      return;
+    }
+
+    // smooth acceleration
+    newSpeed = 0.7 * (*currentSpeed) + 0.3 * (1.3 * dist / fraction);
+
+    *currentSpeed = newSpeed;
+    *value = *value + newSpeed * (0.05 * view.deltaVideoFrame);
+
+    // make sure we stop at the target value
+    if ((dist >= 0) && (*value > targetValue)) *value = targetValue;
+    if ((dist  < 0) && (*value < targetValue)) *value = targetValue;
+
+    view.dirty = 1;
+}
+
+
 void runVideo() {
 
 #ifndef NO_GUI
@@ -322,11 +366,33 @@ void runVideo() {
         return;
 
     ts = getMS();
+
+    // XXXX experimental
+    // // if we are still faster than 30 FPS, skip video update (record mode only)
+    //if ((state.mode & SM_RECORD) && (view.dirty < 1) && (view.minVideoRefreshTime == 0)) {
+    //  if ((view.lastRenderTime + ts - view.lastVideoFrame) < RECORD_MIN_REDRAW_TIME) {
+    //    view.lastVideoFrameSkip++;
+    //    return;
+    //  }
+    //}
+
+    // smooth zoom
+    smoothChange(view.zoomTarget, 8.0f, 0.01f, &(view.zoom), &(view.zoomSpeed));
+    // smooth rotate
+    smoothChange(view.rotTarget[0], 10.0f, 0.1f, &(view.rot[0]), &(view.rotSpeed[0]));
+    smoothChange(view.rotTarget[1], 10.0f, 0.1f, &(view.rot[1]), &(view.rotSpeed[1]));
+    smoothChange(view.rotTarget[2], 10.0f, 0.1f, &(view.rot[2]), &(view.rotSpeed[2]));
+
     drawAll();
+    view.lastVideoFrameSkip=0;
 
     view.deltaVideoFrame = ts - view.lastVideoFrame;
     view.lastVideoFrame = ts;
     fpsUpdate((float)view.deltaVideoFrame);
+
+    // fix freak-out values
+    if (view.deltaVideoFrame < 1) view.deltaVideoFrame = 1;
+    if (view.deltaVideoFrame > 1000) view.deltaVideoFrame = 1000;
 
 #endif
 
@@ -340,6 +406,13 @@ void runVideo() {
 void run() {
 
     view.firstTimeStamp = view.lastRecordFrame = view.lastVideoFrame = getMS();
+
+    view.dirty = 0;
+    view.lastVideoFrameSkip=0;
+    view.zoomTarget = view.zoom;
+    view.zoomSpeed = 0;
+    VectorCopy(view.rot, view.rotTarget);
+    VectorZero(view.rotSpeed);
 
     while (!view.quit) {
 
@@ -402,13 +475,16 @@ void run() {
         }
 
         setColours();
-        if (view.zoomFitAuto == 2)
+        if (view.zoomFitAuto == 2) {
             cmdZoomFit(NULL);
+            view.zoomTarget = view.zoom;
+            view.zoomSpeed = 0;
+        }
 
         runVideo();
 
         /* if we are not recording or replaying, wait a bit -- helps to cool down you laptop :-)) */
-        if ((state.mode & (SM_RECORD|SM_PLAY) ) == 0) {
+        if (((state.mode & (SM_RECORD|SM_PLAY) ) == 0) && (view.dirty < 1)) {
             ts_after =  getMS();
             if (ts_after < (ts_before + SMALL_NAP)) SDL_Delay( SMALL_NAP - (ts_after - ts_before));
         }
@@ -425,6 +501,8 @@ void run() {
             if (ts_after < (ts_before + view.minVideoRefreshTime)) SDL_Delay(view.minVideoRefreshTime - (ts_after - ts_before));
         }
 
+        // if last video frame was displayed, reset dirty flag
+        if (view.lastVideoFrameSkip==0) view.dirty = 0;
     }
 
 }

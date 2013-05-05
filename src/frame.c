@@ -81,6 +81,7 @@ int initFrame() {
 
     view.timed_frames=0;
     view.totalRenderTime=0;
+    view.lastRenderTime = 0;
 
     fpsInit();
 
@@ -327,6 +328,7 @@ void processFrame() {
     state.totalFrames ++;
 
     frameEnd = getMS();
+    view.lastRenderTime = frameEnd - frameStart;
     view.totalRenderTime += frameEnd - frameStart;
     view.timed_frames ++;
 

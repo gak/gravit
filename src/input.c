@@ -62,6 +62,7 @@ int processKeys() {
 #endif
         
         if (event.type == SDL_MOUSEBUTTONDOWN) {
+            view.dirty = 1;
 
             if (view.screenSaver) {
                 cmdQuit(0);
@@ -69,10 +70,10 @@ int processKeys() {
             }
 
             if (event.button.button == SDL_BUTTON_WHEELDOWN)
-                view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
+                view.zoomTarget *= (1 + (view.deltaVideoFrame * 0.01f));
 
             if (event.button.button == SDL_BUTTON_WHEELUP)
-                view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
+                view.zoomTarget *= (1 + (view.deltaVideoFrame * -0.01f));
 
 #ifndef WITHOUT_AGAR
            // code introduced together with agar
@@ -83,6 +84,7 @@ int processKeys() {
         }
         
         if (event.type == SDL_MOUSEBUTTONUP) {
+            view.dirty = 1;
             if (event.button.button == SDL_BUTTON_LEFT) {
                 view.mouseButtons[0] = 0;
             }
@@ -410,11 +412,18 @@ int processKeys() {
 
     if (!view.consoleMode) {
 
-        if (view.keys[SDLK_a])
-            view.zoom /= (1 + (view.deltaVideoFrame * 0.01f));
-
-        if (view.keys[SDLK_z])
-            view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
+        if (view.keys[SDLK_a]) {
+            view.zoom /= (1 + (view.deltaVideoFrame * 0.005f));
+            view.zoomTarget = view.zoom;
+            view.zoomSpeed = 0;
+            view.dirty = 1;
+        }
+        if (view.keys[SDLK_z]) {
+            view.zoom *= (1 + (view.deltaVideoFrame * 0.005f));
+            view.zoomTarget = view.zoom;
+            view.zoomSpeed = 0;
+            view.dirty = 1;
+        }
         /*
         		if (view.keys[SDLK_UP])
         			view.face[0] -= state.dt * 0.1f;
@@ -478,9 +487,9 @@ void processMouse() {
             SDL_ShowCursor(0);
         }
 
-        view.rot[1] += x;
-        view.rot[0] += y;
-
+        view.rotTarget[1] += 0.5 * x;
+        view.rotTarget[0] += 0.5 * y;
+        view.dirty = 1;
     } else {
 
         SDL_ShowCursor(view.showCursor);

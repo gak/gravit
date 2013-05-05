@@ -500,11 +500,18 @@ typedef struct view_s {
     // Any value < SDL_TIMESLICE (usually 10 ms) disables this "handbrake"
     int minVideoRefreshTime;
 
+    // number of video display frames skipped
+    Uint32 lastVideoFrameSkip;
+
     Uint32 firstTimeStamp;
 
     // timer for rendering
     Uint32 totalRenderTime;
     Uint32 timed_frames;
+    Uint32 lastRenderTime;
+
+    // set to 1 to redraw ASAP (for smooth mouse movements etc)
+    int dirty;
 
     int quit;
 
@@ -514,7 +521,13 @@ typedef struct view_s {
     int showCursor;
 
     VectorNew(rot);
+    VectorNew(rotTarget);
+    VectorNew(rotSpeed);
+
     float zoom;
+    float zoomTarget;
+    float zoomSpeed;
+
     VectorNew(lastCenter); //center of view; set by translateToCenter()
     int zoomFitAuto;
 
