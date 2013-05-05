@@ -1195,6 +1195,7 @@ void drawAll() {
     VectorNew(rotateIncrement);
     VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
     VectorAdd(rotateIncrement, view.rot, view.rot);
+    VectorAdd(rotateIncrement, view.rotTarget, view.rotTarget);
 
     glClearColor(0, 0, 0, 0);
 
