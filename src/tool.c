@@ -210,18 +210,29 @@ Uint32 getMS() {
 
 }
 
-void setTitle(char *state) {
+static Uint32 tsWindowTitle = 0;
+void setTitle(char *stateText) {
 
 #ifndef NO_GUI
 
     char *a;
 
-    if (state)
-        a = va("%s - %s", GRAVIT_VERSION, state);
-    else
+    if (stateText) {
+        a = va("%s - %s", GRAVIT_VERSION, stateText);
+    } else {
         a = GRAVIT_VERSION;
+        tsWindowTitle = 0;
+    }
 
-    SDL_WM_SetCaption(a, a);
+    // first run
+    if (tsWindowTitle == 0) tsWindowTitle = getMS() - 1000;
+
+    // to avoid a flickering title bar, use 0.25 seconds
+    // delay between title updates during record
+    if ((stateText == NULL) || ((state.mode & SM_RECORD) == 0) || ((getMS() - tsWindowTitle) > 249)) {
+        SDL_WM_SetCaption(a, a);
+        tsWindowTitle = getMS();
+    }
 
 #endif
 

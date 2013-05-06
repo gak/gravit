@@ -426,7 +426,7 @@ void run() {
             //if (view.verboseMode)
             //    conAdd(LLOW, "R frame:%5i dt:%5i fs:%2i", state.totalFrames, view.deltaVideoFrame, state.historyNFrame);
 
-            setTitle(va("%s frame:%i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
+            setTitle(va("%s frame: %i/%i (skip:%i)", STRING_RECORD, state.totalFrames, state.historyFrames, state.historyNFrame));
 
             processFrame();
             ts = getMS();
