@@ -499,8 +499,8 @@ void processMouse() {
             view.rotTarget[0] += 0.5 * y;
         } else {
 	    // right mousebutton --> rotate around y / z axis
-            view.rotTarget[2] += 0.5 * x;
-            view.rotTarget[1] += 0.5 * y;
+            view.rotTarget[1] += 0.5 * x;
+            view.rotTarget[2] -= 0.5 * y;
         }
         view.dirty = 1;
         if (view.drawAxis==1) view.drawAxis=3;
