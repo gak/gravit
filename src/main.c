@@ -501,7 +501,10 @@ void run() {
         }
 
         // if last video frame was displayed, reset dirty flag
-        if (view.lastVideoFrameSkip==0) view.dirty = 0;
+        if (view.lastVideoFrameSkip==0) {
+            view.dirty = 0;
+            if (view.drawAxis==3) view.drawAxis=1;
+        }
     }
 
 }

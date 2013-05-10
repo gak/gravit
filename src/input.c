@@ -503,6 +503,8 @@ void processMouse() {
             view.rotTarget[1] += 0.5 * y;
         }
         view.dirty = 1;
+        if (view.drawAxis==1) view.drawAxis=3;
+
     } else {
 
         SDL_ShowCursor(view.showCursor);

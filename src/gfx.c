@@ -771,57 +771,84 @@ void drawFrame() {
 }
 
 void drawAxis() {
+    const float size  = 250.0f;
+    const float size2 = 155.0f;
 
-    drawFrameSet3D();
+    // normal axis colors
+    float colPlane[3][4] ={{ 0.8f, 0.2f, 0.2f, 0.1f},  // x plane
+                           { 0.2f, 0.8f, 0.2f, 0.1f},  // y plane
+                           { 0.2f, 0.2f, 0.8f, 0.1f}}; // z plane
+    float colArrow[3][4] ={{ 0.8f, 0.2f, 0.2f, 1.0f},  // x arrow
+                           { 0.2f, 0.8f, 0.2f, 1.0f},  // y arrow
+                           { 0.2f, 0.2f, 0.8f, 1.0f}}; // z arrow
 
+    // anaglyph-friendly axis colors
+    float colPlane3d[3][4] ={{ 0.8f, 0.3f, 0.3f, 0.2f},  // x plane
+                             { 0.3f, 0.6f, 0.4f, 0.2f},  // y plane
+                             { 0.3f, 0.3f, 0.6f, 0.2f}}; // z plane
+    float colArrow3d[3][4] ={{ 0.8f, 0.3f, 0.3f, 0.8f},  // x arrow
+                             { 0.3f, 0.6f, 0.4f, 0.8f},  // y arrow
+                             { 0.3f, 0.3f, 0.6f, 0.8f}}; // z arrow
+
+    //drawFrameSet3D();
     glEnable(GL_BLEND);
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUAL);
+    //glDepthMask(GL_TRUE);
+    //glEnable(GL_POLYGON_OFFSET_FILL);
+    //glPolygonOffset(1.0f, 2.0f);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glBegin(GL_QUADS);
 
     // x plane
-    glColor4f(0.8f,0.2f,0.2f,0.1f);
-    glVertex3f(0,-100,-100);
-    glVertex3f(0,100,-100);
-    glVertex3f(0,100,100);
-    glVertex3f(0,-100,100);
+    glColor4fv((view.stereoMode == 2) ? colPlane3d[0] : colPlane[0]);
+    glVertex3f(0,-size2,-size2);
+    glVertex3f(0, size2,-size2);
+    glVertex3f(0, size2, size2);
+    glVertex3f(0,-size2, size2);
 
     // y plane
-    glColor4f(0.2f,0.8f,0.2f,0.1f);
-    glVertex3f(-100,0,-100);
-    glVertex3f(100,0,-100);
-    glVertex3f(100,0,100);
-    glVertex3f(-100,0,100);
+    glColor4fv((view.stereoMode == 2) ? colPlane3d[1] : colPlane[1]);
+    glVertex3f(-size2,0,-size2);
+    glVertex3f( size2,0,-size2);
+    glVertex3f( size2,0, size2);
+    glVertex3f(-size2,0, size2);
 
     // z plane
-    glColor4f(0.2f,0.2f,0.8f,0.1f);
-    glVertex3f(-100,-100,0);
-    glVertex3f(100,-100,0);
-    glVertex3f(100,100,0);
-    glVertex3f(-100,100,0);
+    glColor4fv((view.stereoMode == 2) ? colPlane3d[2] : colPlane[2]);
+    glVertex3f(-size2,-size2,0);
+    glVertex3f( size2,-size2,0);
+    glVertex3f( size2, size2,0);
+    glVertex3f(-size2, size2,0);
 
     glEnd();
+
+    //glDisable(GL_POLYGON_OFFSET_FILL);
 
     glBegin(GL_LINES);
 
     // x plane
-    glColor4f(0.8f,0.2f,0.2f,1.0f);
-    glVertex3f(-100,0,0);
-    glVertex3f(100,0,0);
+    glColor4fv((view.stereoMode == 2) ? colArrow3d[0] : colArrow[0]);
+    glVertex3f(-size,0,0);
+    glVertex3f( size,0,0);
 
     // y plane
-    glColor4f(0.2f,0.8f,0.2f,1.0f);
-    glVertex3f(0,-100,0);
-    glVertex3f(0,100,0);
+    glColor4fv((view.stereoMode == 2) ? colArrow3d[1] : colArrow[1]);
+    glVertex3f(0,-size,0);
+    glVertex3f(0, size,0);
 
     // z plane
-    glColor4f(0.2f,0.2f,0.8f,1.0f);
-    glVertex3f(0,0,-100);
-    glVertex3f(0,0,100);
+    glColor4fv((view.stereoMode == 2) ? colArrow3d[2] : colArrow[2]);
+    glVertex3f(0,0,-size);
+    glVertex3f(0,0, size);
 
     glEnd();
+
+    //glDepthMask(GL_FALSE);
 
 }
 
@@ -1231,6 +1258,8 @@ void drawAll() {
 	    // normal view or side-by-side
 	    setupCamera(GL_TRUE, bits);
 	}
+
+        if (view.drawAxis > 1) drawAxis();
 
         if (view.autoCenter)
             translateToCenter();
