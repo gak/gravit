@@ -80,12 +80,18 @@ int processKeys() {
             if (event.button.button == SDL_BUTTON_LEFT) {
                 view.mouseButtons[0] = SDL_BUTTON(1);
             }
+            if (event.button.button == SDL_BUTTON_RIGHT) {
+                view.mouseButtons[0] = SDL_BUTTON(3);
+            }
             
         }
         
         if (event.type == SDL_MOUSEBUTTONUP) {
             view.dirty = 1;
             if (event.button.button == SDL_BUTTON_LEFT) {
+                view.mouseButtons[0] = 0;
+            }
+            if (event.button.button == SDL_BUTTON_RIGHT) {
                 view.mouseButtons[0] = 0;
             }
 #endif
@@ -467,7 +473,7 @@ void processMouse() {
         return;
     }
 
-    if (view.mouseButtons[0] & SDL_BUTTON(1) ) {
+    if ((view.mouseButtons[0] & SDL_BUTTON(1)) || (view.mouseButtons[0] & SDL_BUTTON(3))) {
 
         // Unfortunately, on OS X WarpMouse seems to act like the mouse isn't pressed anymore.
         
@@ -483,12 +489,19 @@ void processMouse() {
 #endif
 
         // turn off cursor only after the 2nd warp mouse, otherwise showcursor does strange things.
-        if (view.mouseButtons[1] & SDL_BUTTON(1) ) {
+        if ((view.mouseButtons[1] & SDL_BUTTON(1)) || (view.mouseButtons[1] & SDL_BUTTON(3))) {
             SDL_ShowCursor(0);
         }
 
-        view.rotTarget[1] += 0.5 * x;
-        view.rotTarget[0] += 0.5 * y;
+        if (view.mouseButtons[0] & SDL_BUTTON(1)) {
+            // left mousebutton --> rotate around x / y axis
+            view.rotTarget[1] += 0.5 * x;
+            view.rotTarget[0] += 0.5 * y;
+        } else {
+	    // right mousebutton --> rotate around y / z axis
+            view.rotTarget[2] += 0.5 * x;
+            view.rotTarget[1] += 0.5 * y;
+        }
         view.dirty = 1;
     } else {
 
