@@ -1296,7 +1296,7 @@ void drawAll() {
     }
     // reset color mask
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-        
+
     if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
         view.tailSkip *= 2;
         conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
@@ -1413,11 +1413,13 @@ void checkDriverBlacklist() {
 
     char *glVersion;    // OpenGL version number. Vendor specific information may follow the number.
     char *extList;      // list of supported OpenGL extensions
+    int haveSlowHardware;
 
     glVendor   = (char *)glGetString(GL_VENDOR);
     glRenderer = (char *)glGetString(GL_RENDERER);
     glVersion  = (char *)glGetString(GL_VERSION);
     extList    = (char *)glGetString(GL_EXTENSIONS);
+    haveSlowHardware = 0;
 
     conAdd(LNORM, "OpenGL video driver: vendor=%s; renderer=%s; version=%s", glVendor, glRenderer, glVersion);
 
@@ -1447,6 +1449,7 @@ void checkDriverBlacklist() {
               view.particleSizeMax = 63;
 	  }
           video.supportPointSprite = 0;
+          haveSlowHardware = 1;
        }
     }
 
@@ -1480,6 +1483,7 @@ void checkDriverBlacklist() {
 	        }
                 video.supportPointSprite = 0;
           }
+          haveSlowHardware = 1;
       }
       if (strncmp(glRenderer, "Mesa GLX Indirect", strlen("Mesa GLX Indirect")) == 0) {
           if (view.particleRenderMode == 1) {
@@ -1487,12 +1491,9 @@ void checkDriverBlacklist() {
               conAdd(LHELP, "Indirect rendering is too slow for really pretty looking particles.");
               conAdd(LNORM, "Setting particleRenderMode to 0");
               view.particleRenderMode = 2;
-              view.particleSizeMax = 31;
-              view.tailFaded = 0;
-              if (view.tailLength > 31) view.tailLength = 31;
-              if (view.tailOpacity < 1) view.tailOpacity = 0.5;
 	  }
           video.supportPointSprite = 0;
+          haveSlowHardware = 2;
       }
     }
 
@@ -1505,14 +1506,38 @@ void checkDriverBlacklist() {
            conAdd(LHELP, "It's too slow for really pretty looking particles.");
            conAdd(LNORM, "Setting particleRenderMode to 0");
            view.particleRenderMode = 0;
-           view.particleSizeMax = 31;
-           view.tailFaded = 0;
-           if (view.tailLength > 31) view.tailLength = 31;
-           if (view.tailOpacity < 1) view.tailOpacity = 0.5;
        }
-       // ToDo: add more tweak to achieve higher framerates ...
+      haveSlowHardware = 2;
     }
 
+    if (haveSlowHardware > 0) {
+        // some tweaks to speed up rendering 
+        if (view.particleSizeMax > 63) view.particleSizeMax = 63;
+        if (view.maxVertices > 72000) view.maxVertices = 72000 ;
+        if (view.tailLength > 16) view.tailLength = 16;
+        // setting tailFaded = 0 may actually give you a big speedup, but it looks ugly :-(
+        //view.tailFaded = 0;
+
+        glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+        glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_DONT_CARE);
+    }
+
+    if (haveSlowHardware > 1) {
+        // some heavy tweaks to speed up rendering 
+        if (view.particleSizeMax > 31) view.particleSizeMax = 31;
+        if (view.maxVertices > 32000) view.maxVertices = 32000 ;
+        if (view.tailLength > 16) view.tailLength = 16;
+        if (view.tailOpacity < 1) view.tailOpacity = 0.5;
+        view.tailFaded = 0;
+
+        glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+    }
+    glCheck();
 }
 
 
