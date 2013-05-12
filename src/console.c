@@ -156,7 +156,7 @@ void conDraw() {
 
             w = getnWordWidth(conCommand, conCommandPos);
             glDisable(GL_BLEND);
-            glLineWidth(1.0f);
+            glLineWidth(1.5f);
             glBindTexture(GL_TEXTURE_2D, 0);
             glColor4f(1,1,1,1);
             glBegin(GL_LINES);

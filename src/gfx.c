@@ -707,7 +707,11 @@ void drawFrame() {
         if (view.particleRenderMode == 0)
             glLineWidth(view.tailWidth+1);
 
-        glLineWidth(view.tailWidth);
+        // draw bigger lines when FSAA is not enabled
+        if (video.screenAA == 0)
+            glLineWidth(view.tailWidth+0.5);
+        else
+            glLineWidth(view.tailWidth);
 
         for (i = 0; i < state.particleCount; i++) {
 
@@ -792,13 +796,18 @@ void drawAxis() {
 
     //drawFrameSet3D();
     glEnable(GL_BLEND);
-    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     //glEnable(GL_DEPTH_TEST);
     //glDepthFunc(GL_LEQUAL);
     //glDepthMask(GL_TRUE);
     //glEnable(GL_POLYGON_OFFSET_FILL);
     //glPolygonOffset(1.0f, 2.0f);
+
+    // workaround for missing horizontal lines on intel graphics (linux, mesa)
+    glColor3f(0.5f,0.5f,0.5f);
+    glLineWidth((video.screenAA == 0) ? 1.5f : 1.0f);
+    glEnable(GL_LINE_SMOOTH);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -974,6 +983,10 @@ void drawAgar() {
     // do not draw windows in screensaver mode
     if (!view.screenSaver)
     {
+        // workaround for missing window borders and lines on intel graphics (linux, mesa)
+        glLineWidth((video.screenAA == 0) ? 1.5f : 1.0f);
+        glEnable(GL_LINE_SMOOTH);
+
         AG_LockVFS(&agDrivers);
         AG_BeginRendering(agDriverSw);
         AG_FOREACH_WINDOW(win, agDriverSw) {
