@@ -181,7 +181,7 @@ int gfxSetResolution() {
     
     video.sdlScreen = SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags );
     if (!video.sdlScreen) {
-        conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError());
+        conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError()); SDL_ClearError();
         return 1;
     }
 
