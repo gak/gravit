@@ -176,27 +176,12 @@ void drawFontLetter(float x, float y, int letter) {
     glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
     glCheck();
 
-    glPushMatrix();
-
-    glTranslatef(x,y,0);
-
-    glBegin(GL_QUADS);
-
-    glTexCoord2f(0, 0);
-    glVertex2i(0,0);
-
-    glTexCoord2f(0, 1);
-    glVertex2i(0,fonts[letter].h);
-
-    glTexCoord2f(1, 1);
-    glVertex2i(fonts[letter].w,fonts[letter].h);
-
-    glTexCoord2f(1, 0);
-    glVertex2i(fonts[letter].w,0);
-
+    glBegin(GL_TRIANGLE_STRIP);
+        glTexCoord2f(0, 0); glVertex2i(x, y);
+        glTexCoord2f(1, 0); glVertex2i(x+fonts[letter].w, y);
+        glTexCoord2f(0, 1); glVertex2i(x, y+fonts[letter].h);
+        glTexCoord2f(1, 1); glVertex2i(x+fonts[letter].w, y+fonts[letter].h);
     glEnd();
-
-    glPopMatrix();
 
 }
 
@@ -215,6 +200,7 @@ float drawFontWord(float x, float y, char *word) {
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    glCheck();
 
     return y + fontHeight;
 
@@ -263,6 +249,7 @@ void drawFontWordRA(float x, float y, char *word) {
         drawFontLetter(x, y, word[i]);
 
     }
+    glCheck();
 }
 
 void drawFontWordCA(float x, float y, char *word) {
