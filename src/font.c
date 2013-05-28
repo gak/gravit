@@ -169,12 +169,18 @@ int loadFonts() {
 
 void drawFontLetter(float x, float y, int letter) {
 
+    // do not draw blanks and unprintable chars
+    if (letter <= 32) return;
+    if (letter > 127) letter = (int)'?';
+
+    // make sure the font letter has a valid texture ID
     if ((fonts[letter].id == 0) || (!glIsTexture(fonts[letter].id))) {
         conAdd(LERR, "texture id %u for character 0x%x is invalid", fonts[letter].id, letter);
     }
 
+    // draw letter texture
     glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
-    glCheck();
+    //glCheck();
 
     glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(0, 0); glVertex2i(x, y);
