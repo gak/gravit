@@ -514,6 +514,13 @@ __attribute__((externally_visible))
 #endif
 int main(int argc, char *argv[]) {
 
+#if !defined(WIN32) && !defined(__MACH__)
+    // disable DGA mouse - it only creates problems, for example:
+    // * SDL < 1.3.x: in fullscreen mode, rotation only works each second click
+    // * VMware mouse driver: rotation goes completely crazy
+    setenv("SDL_VIDEO_X11_DGAMOUSE", "0", 0);
+#endif
+
     if (init(argc, argv)) {
 
         conAdd(LERR, "There has been an error on start-up. Read your gravit configration file to possibly fix this.");
