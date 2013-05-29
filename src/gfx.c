@@ -875,7 +875,13 @@ void drawRGB() {
     float wx = width;
     float wy = 200;
     float c[4];
-    float step = .01f;
+    float c2[4];
+    float step = .1f;
+
+
+    //let openGL do the color interpolation (requires glShadeModel(GL_SMOOTH))
+    if (view.colourSpectrumSteps > 1)
+      step = 1.0 / (float)view.colourSpectrumSteps;
 
     if (view.screenSaver)
         sy = margin;
@@ -890,12 +896,15 @@ void drawRGB() {
     for (i = 0; i < 1; i += step) {
 
         colourFromNormal(c, i);
+        colourFromNormal(c2, i+step);
 
-        glBegin(GL_QUADS);
         glColor4fv(c);
+        glBegin(GL_QUADS);
         glVertex2f(sx,		sy + wy * i);
         glVertex2f(sx + wx,	sy + wy * i);
+        glColor4fv(c2);
         glVertex2f(sx + wx,	sy + wy * (i + step));
+        glColor4fv(c2);
         glVertex2f(sx,		sy + wy * (i + step));
         glEnd();
 
@@ -907,8 +916,8 @@ void drawRGB() {
     glBegin(GL_LINE_STRIP);
     glVertex2f(sx-1,		sy-1);
     glVertex2f(sx+1 + wx,	sy-1);
-    glVertex2f(sx+1 + wx,	sy+2 + wy);
-    glVertex2f(sx-1,		sy+2 + wy);
+    glVertex2f(sx+1 + wx,	sy+ wy);
+    glVertex2f(sx-1,		sy+ wy);
     glVertex2f(sx-1,		sy-1);
     glEnd();
     glEnable(GL_LINE_SMOOTH);
@@ -921,16 +930,18 @@ void drawRGB() {
         for (i = 0; i  < 1; i+=step) {
 
             colourFromNormal(c, i);
+            colourFromNormal(c2, i+step);
 
-            c[0] = 1 - c[0];
-            c[1] = 1 - c[1];
-            c[2] = 1 - c[2];
+            c[0] = 1 - c[0];  c[1] = 1 - c[1];  c[2] = 1 - c[2];
+            c2[0]= 1 -c2[0]; c2[1] = 1 -c2[1]; c2[2] = 1 -c2[2];
 
-            glBegin(GL_QUADS);
             glColor4fv(c);
+            glBegin(GL_QUADS);
             glVertex2f(sx,		sy + wy * i);
             glVertex2f(sx + wx,	sy + wy * i);
+            glColor4fv(c2);
             glVertex2f(sx + wx,	sy + wy * (i + step));
+            glColor4fv(c2);
             glVertex2f(sx,		sy + wy * (i + step));
             glEnd();
 
@@ -942,8 +953,8 @@ void drawRGB() {
         glBegin(GL_LINE_STRIP);
         glVertex2f(sx-1,		sy-1);
         glVertex2f(sx+1 + wx,	sy-1);
-        glVertex2f(sx+1 + wx,	sy+2 + wy);
-        glVertex2f(sx-1,		sy+2 + wy);
+        glVertex2f(sx+1 + wx,	sy+ wy);
+        glVertex2f(sx-1,		sy+ wy);
         glVertex2f(sx-1,		sy-1);
         glEnd();
         glEnable(GL_LINE_SMOOTH);
