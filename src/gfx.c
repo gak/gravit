@@ -1527,6 +1527,7 @@ void checkDriverBlacklist() {
                     view.particleRenderMode = 2;
 	        }
                 view.particleSizeMax = 63;
+                if (view.tailLength > 4) view.tailLength = 4;
                 if (strncmp(glRenderer, "Gallium ", strlen("Gallium ")) != 0)
                     video.supportPointSprite = 0;  // only needed for Mesa DRI Intel; Gallium seems to be OK
           }
