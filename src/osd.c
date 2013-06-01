@@ -79,6 +79,8 @@ void drawOSD() {
             DUH("avg video fps", va("%3.2f  (* %ld)", fpsCurrentAverageFPS, (long)view.lastVideoFrameSkip + 1));
         }
 
+        if ((view.drawOSD == 1) || (view.consoleMode)) {
+
         DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
         DUH("last record frame time", va("%ims", view.deltaRecordFrame));
 
@@ -98,6 +100,8 @@ void drawOSD() {
 #endif
         
         DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
+        }
+
 
         if (state.mode & SM_RECORD) {
 
@@ -107,6 +111,8 @@ void drawOSD() {
 
             DUHC();
             DUH("time left", va("~%0.1f minutes", (float)view.deltaRecordFrame * (state.historyFrames - state.frame) / 1000 / 60));
+
+            if ((view.drawOSD == 1) || (view.consoleMode)) {
 
             switch (view.recordStatus) {
             case 0:
@@ -125,7 +131,7 @@ void drawOSD() {
             case 3:
                 DUH("status", "freeing tree");
                 break;
-            }
+            }}
 
         }
 
@@ -153,7 +159,7 @@ void drawOSD() {
             y = drawFontWord(x, y, "AUTO SCREENSHOT");
 
         }
-        
+
         
         // show renderer FPS average (if we have meaningful values)
         if ((view.timed_frames > 1) && (view.totalRenderTime > SDL_TIMESLICE )) {
@@ -164,7 +170,7 @@ void drawOSD() {
 
         // XXX: This might be too many stats. I'll implement this in the ajax windowing screens.
 	    DUH("avg renderer fps", va("%5.2f",
-                     (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ))
+                     (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ));
 	/*
 	    DUH("avg renderer frame time", va("%4.1f ms",
 		     (float) view.totalRenderTime / (float) view.timed_frames ));

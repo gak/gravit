@@ -359,7 +359,9 @@ int processKeys() {
                 break;
 
             case SDLK_o:
-                view.drawOSD = (!view.drawOSD)?1:0;
+                view.drawOSD++;
+                if (view.drawOSD > 3) view.drawOSD=0;
+                view.drawColourScheme = (view.drawOSD == 1) ? 1 : 0;
                 conAdd(LLOW, "drawOSD set to %i", view.drawOSD);
                 break;
 

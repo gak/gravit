@@ -1295,7 +1295,7 @@ void drawAll() {
         drawFrame();
     
         if (view.stereoOSD == 1) {
-            if (view.drawOSD) {
+            if (view.drawOSD > 0) {
                 drawOSD();
                 if (view.drawColourScheme) drawRGB();
             }
@@ -1316,7 +1316,7 @@ void drawAll() {
     glViewport(0, 0, video.screenW, video.screenH);
     
     if (view.stereoOSD == 0) {
-        if (view.drawOSD) {
+        if (view.drawOSD > 0) {
             drawOSD();
             if (view.drawColourScheme) drawRGB();
         }
@@ -1423,13 +1423,13 @@ void checkDriverBlacklist() {
     // The strings GL_VENDOR and GL_RENDERER together uniquely specify a platform
 
     char *glVersion;    // OpenGL version number. Vendor specific information may follow the number.
-    char *extList;      // list of supported OpenGL extensions
+    //char *extList;      // list of supported OpenGL extensions
     int haveSlowHardware;
 
     glVendor   = (char *)glGetString(GL_VENDOR);
     glRenderer = (char *)glGetString(GL_RENDERER);
     glVersion  = (char *)glGetString(GL_VERSION);
-    extList    = (char *)glGetString(GL_EXTENSIONS);
+    //extList    = (char *)glGetString(GL_EXTENSIONS);
     haveSlowHardware = 0;
 
     conAdd(LNORM, "OpenGL video driver: vendor=%s; renderer=%s; version=%s", glVendor, glRenderer, glVersion);
@@ -1464,9 +1464,50 @@ void checkDriverBlacklist() {
        }
     }
 
+    // software OpenGL driver, Microsoft Windows
+    //   GL vendor=Microsoft Corporation; GL renderer=GDI Generic; version=1.1.0
+    if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
+       // awfully SLOW. -> prefer particleRenderMode 0
+       conAdd(LERR, "Very slow software driver found, degrading visual effects.");
+
+       if (view.particleRenderMode == 1) view.particleRenderMode = 2;
+       if (view.particleSizeMax > 3) view.particleSizeMax = 3;
+       if (view.particleSizeMin < 2) view.particleSizeMin = 2;
+       if (view.glow > 0) view.glow = 0;
+
+       view.tailLength = 0;
+       haveSlowHardware = 2;
+    }
+
+    // VMVare drivers (based on MESA)
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on SVGA3D; build: RELEASE;  ; version=2.1 Mesa 7.12-devel (git-d6c318e)
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on SVGA3D; build: RELEASE;  ; version=2.1 Mesa 9.1.1
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on llvmpipe (LLVM 0x301); version=2.1 Mesa 9.0.3
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on llvmpipe (LLVM 0x300); version=1.4 (2.1 Mesa 8.0.4)
+    if (((strcmp(glVendor, "Tungsten Graphics, Inc") == 0) || (strcmp(glVendor, "VMware, Inc.") == 0))
+        &&(strncmp(glRenderer, "Gallium ", strlen("Gallium ")) == 0))
+    {
+       if (strstr(glRenderer, "on SVGA3D") != NULL) {
+           conAdd(LNORM, "Slow VMware accelerated 3D driver found, reducing visual effects.");
+           view.particleSizeMax = 80;
+           haveSlowHardware = 1;
+       } else {
+           conAdd(LERR, "Slow VMware software driver found, reducing visual effects.");
+           view.tailLength = 0;
+           view.particleSizeMax = 63;
+           haveSlowHardware = 2;
+       }
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Setting particleRenderMode to 2");
+           view.particleRenderMode = 2;
+       }
+    }
+
    // linux: MESA openGL on Intel integrated graphics
-   // (VMVare is also based on MESA)
-    if (  (strcmp(glVendor, "Tungsten Graphics, Inc") == 0) || (strcmp(glVendor, "VMware, Inc.") == 0)
+    //   GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
+    //   GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=1.4 (2.1 Mesa 8.0.4)
+    //   GL vendor=Intel Open Source Technology Center; renderer=Mesa DRI Intel(R) Ironlake Mobile; version=2.1 Mesa 9.0
+    if (  (strcmp(glVendor, "Tungsten Graphics, Inc") == 0)
         ||(strncmp(glVendor, "Intel Open Source", strlen("Intel Open Source")) == 0) ) {
       if ((  strncmp(glRenderer, "Mesa DRI Intel(R) Ironlake Mobile", strlen("Mesa DRI Intel(R) Ironlake Mobile")) == 0)
           || (strncmp(glRenderer, "Mesa DRI Mobile Intel", strlen("Mesa DRI Mobile Intel")) == 0)
@@ -1478,54 +1519,39 @@ void checkDriverBlacklist() {
                // MESA 8.0 claims to have GL_ARB_point_sprite, but it does not work with particlerendermode 1.
                // effect: instead of particle textures, coloured squares are drawn.
                // MESA 9.0 on intel mobile shows single-coloured boxed instead of sprites
-                // known configurations that are affected:
-                //      mesa 8.0.4-0ubuntu0.2 (with mesa-dri), xorg-server 2:1.11.4-0ubuntu10.8  on Linux 3.2.0-32-generic #51-Ubuntu SMP x86_64 GNU/Linux
-                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
-                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=1.4 (2.1 Mesa 8.0.4)
-                //      GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on llvmpipe (LLVM 0x300); GL version=1.4 (2.1 Mesa 8.0.4)
-                //      GL vendor=Intel Open Source Technology Center; renderer=Mesa DRI Intel(R) Ironlake Mobile; version=2.1 Mesa 9.0
 
  	        if (view.particleRenderMode == 1) {
                     conAdd(LERR,  "Sorry, Your driver is blacklisted for particleRenderMode 1.");
                     conAdd(LERR, "This means you can't have really pretty looking particles.");
                     conAdd(LNORM, "Setting particleRenderMode to 2");
                     view.particleRenderMode = 2;
-                    view.particleSizeMax = 63;
 	        }
-                video.supportPointSprite = 0;
+                view.particleSizeMax = 63;
+                if (strncmp(glRenderer, "Gallium ", strlen("Gallium ")) != 0)
+                    video.supportPointSprite = 0;  // only needed for Mesa DRI Intel; Gallium seems to be OK
           }
           haveSlowHardware = 1;
       }
+
       if (strncmp(glRenderer, "Mesa GLX Indirect", strlen("Mesa GLX Indirect")) == 0) {
           if (view.particleRenderMode == 1) {
               conAdd(LERR,  "Sorry, Your indirect rendering GLX driver is blacklisted for particleRenderMode 1.");
               conAdd(LHELP, "Indirect rendering is too slow for really pretty looking particles.");
-              conAdd(LNORM, "Setting particleRenderMode to 0");
+              conAdd(LERR, "Setting particleRenderMode to 0 and reducing visual effects");
               view.particleRenderMode = 2;
 	  }
           video.supportPointSprite = 0;
+          view.tailLength = 0;
           haveSlowHardware = 2;
       }
     }
 
 
-    // software OpenGL driver, Microsoft Windows
-    if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
-       // awfully SLOW. -> prefer particleRenderMode 0
-       if (view.particleRenderMode == 1) {
-           conAdd(LHELP,  "Sorry, Your software driver is blacklisted for particleRenderMode 1.");
-           conAdd(LHELP, "It's too slow for really pretty looking particles.");
-           conAdd(LNORM, "Setting particleRenderMode to 0");
-           view.particleRenderMode = 0;
-       }
-      haveSlowHardware = 2;
-    }
-
     if (haveSlowHardware > 0) {
         // some tweaks to speed up rendering 
         if (view.particleSizeMax > 63) view.particleSizeMax = 63;
-        if (view.maxVertices > 72000) view.maxVertices = 72000 ;
-        if (view.tailLength > 16) view.tailLength = 16;
+        if (view.maxVertices > 32000) view.maxVertices = 32000 ;
+        if (view.tailLength > 8) view.tailLength = 8;
         // setting tailFaded = 0 may actually give you a big speedup, but it looks ugly :-(
         //view.tailFaded = 0;
 
@@ -1538,10 +1564,15 @@ void checkDriverBlacklist() {
     if (haveSlowHardware > 1) {
         // some heavy tweaks to speed up rendering 
         if (view.particleSizeMax > 31) view.particleSizeMax = 31;
-        if (view.maxVertices > 32000) view.maxVertices = 32000 ;
-        if (view.tailLength > 16) view.tailLength = 16;
+        if (view.maxVertices > 16000) view.maxVertices = 16000 ;
+        if (view.tailLength > 4) view.tailLength = 4;
         if (view.tailOpacity < 1) view.tailOpacity = 0.5;
         view.tailFaded = 0;
+
+        view.drawSky = 0;
+        view.drawSkyRandom = 0;
+        view.drawOSD = 2;
+        view.drawColourScheme = 0;
 
         glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
         glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
