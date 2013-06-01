@@ -1,4 +1,4 @@
-#                                               -*- Autoconf -*-
+ #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
 # ===============================================================================================
@@ -381,6 +381,9 @@ then
   AC_SUBST(AGAR_LIBS)
  fi
 fi
+
+#check if we need to link with -ldl
+AC_CHECK_LIB([dl], [dlerror])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
