@@ -1489,12 +1489,13 @@ void checkDriverBlacklist() {
     {
        if (strstr(glRenderer, "on SVGA3D") != NULL) {
            conAdd(LNORM, "Slow VMware accelerated 3D driver found, reducing visual effects.");
-           view.particleSizeMax = 80;
+           if (view.particleSizeMax > 80) view.particleSizeMax = 80;
+           if (view.drawOSD > 0) view.drawOSD = 4;
            haveSlowHardware = 1;
        } else {
            conAdd(LERR, "Slow VMware software driver found, reducing visual effects.");
            view.tailLength = 0;
-           view.particleSizeMax = 63;
+           if (view.particleSizeMax > 63) view.particleSizeMax = 63;
            haveSlowHardware = 2;
        }
        if (view.particleRenderMode == 1) {
@@ -1526,7 +1527,7 @@ void checkDriverBlacklist() {
                     conAdd(LNORM, "Setting particleRenderMode to 2");
                     view.particleRenderMode = 2;
 	        }
-                view.particleSizeMax = 63;
+                if (view.particleSizeMax > 63) view.particleSizeMax = 63;
                 if (view.tailLength > 4) view.tailLength = 4;
                 if (strncmp(glRenderer, "Gallium ", strlen("Gallium ")) != 0)
                     video.supportPointSprite = 0;  // only needed for Mesa DRI Intel; Gallium seems to be OK
@@ -1572,7 +1573,7 @@ void checkDriverBlacklist() {
 
         view.drawSky = 0;
         view.drawSkyRandom = 0;
-        view.drawOSD = 2;
+        if (view.drawOSD > 0) view.drawOSD = 2;
         view.drawColourScheme = 0;
 
         glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
