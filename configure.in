@@ -353,6 +353,8 @@ then
    AGAR_VERSION=`$AGARCONFIG --version`
    AGAR_CFLAGS=`$AGARCONFIG --cflags`
    AGAR_LIBS=`$AGARCONFIG --libs`
+   AGAR_LIBDIR=`$AGARCONFIG --prefix`/lib
+
    AC_DEFINE([HAVE_AGAR], [1], [libagar])
    CFLAGS="$CFLAGS $AGAR_CFLAGS"
    CPPFLAGS="$CPPFLAGS $AGAR_CFLAGS"
@@ -379,6 +381,7 @@ then
   echo found AGAR library "$AGAR_VERSION"
   AC_SUBST(AGAR_CFLAGS)
   AC_SUBST(AGAR_LIBS)
+  AC_SUBST(AGAR_LIBDIR)
  fi
 fi
 
