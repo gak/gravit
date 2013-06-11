@@ -1439,9 +1439,11 @@ void checkDriverBlacklist() {
      */
 
     // Intel Graphics Media Accelerator (GMA) - usually part of mobile core i5/i7 CPUs
+    // or older (GL vendor=Intel; renderer=Intel 945GM; version=1.4.0 - Build 7.14.10.4926)
     if ((strcmp(glVendor, "Intel") == 0)
         && (  (strcmp(glRenderer, "Intel(R) HD Graphics") == 0)
-            ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0))
+            ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0)
+            ||((strstr(glRenderer, "Intel ") != NULL) && (strstr(glRenderer, "GM") != NULL)) )
        ) {
        if (strstr(glVersion, " Build 8.15.10.") != NULL) {
           // driver 15.10. causes problems with particlerendermode 1 (GL_ARB_point_sprite)
@@ -1460,8 +1462,11 @@ void checkDriverBlacklist() {
               view.particleSizeMax = 63;
 	  }
           video.supportPointSprite = 0;
-          haveSlowHardware = 1;
        }
+
+       if (view.drawOSD > 0) view.drawOSD = 4;
+       view.drawColourScheme = 0;
+       haveSlowHardware = 1;
     }
 
     // software OpenGL driver, Microsoft Windows
