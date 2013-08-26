@@ -389,9 +389,9 @@ void runVideo() {
     view.lastVideoFrame = ts;
     fpsUpdate((float)view.deltaVideoFrame);
 
-    // fix freak-out values
-    if (view.deltaVideoFrame < 1) view.deltaVideoFrame = 1;
-    if (view.deltaVideoFrame > 1000) view.deltaVideoFrame = 1000;
+    // fix freak-out values (to avoid "wild" zoom & rotate)
+    if (view.deltaVideoFrame < 1) view.deltaVideoFrame = 1;   // div by zero and negative values
+    if (view.deltaVideoFrame > 70) view.deltaVideoFrame = 70; // 15FPS
 
 #endif
 
