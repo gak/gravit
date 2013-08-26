@@ -1441,7 +1441,7 @@ void checkDriverBlacklist() {
     // Intel Graphics Media Accelerator (GMA) - usually part of mobile core i5/i7 CPUs
     // or older (GL vendor=Intel; renderer=Intel 945GM; version=1.4.0 - Build 7.14.10.4926)
     if ((strcmp(glVendor, "Intel") == 0)
-        && (  (strcmp(glRenderer, "Intel(R) HD Graphics") == 0)
+        && (  (strstr(glRenderer, "Intel(R) HD Graphics") != NULL)
             ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0)
             ||((strstr(glRenderer, "Intel ") != NULL) && (strstr(glRenderer, "GM") != NULL)) )
        ) {
@@ -1461,12 +1461,15 @@ void checkDriverBlacklist() {
               view.particleRenderMode = 2;
               view.particleSizeMax = 63;
 	  }
-          video.supportPointSprite = 0;
        }
 
-       if (view.drawOSD > 0) view.drawOSD = 4;
-       view.drawColourScheme = 0;
-       haveSlowHardware = 1;
+       if (strstr(glRenderer, "Intel(R) HD Graphics ") == NULL) {
+           // exclude Intel HD Graphics 3000/4000 from drastic degradation measures
+           if (view.drawOSD > 0) view.drawOSD = 4;
+           view.drawColourScheme = 0;
+           haveSlowHardware = 1;
+           video.supportPointSprite = 0;
+       }
     }
 
     // software OpenGL driver, Microsoft Windows
@@ -1508,6 +1511,42 @@ void checkDriverBlacklist() {
            view.particleRenderMode = 2;
        }
     }
+
+    // Linux software rendering: on llvmpipe, on softpipe, Software Rasterizer
+    if (  (strstr(glRenderer,"on llvmpipe") != NULL)
+        ||(strstr(glRenderer,"on softpipe") != NULL)
+        ||(strstr(glRenderer,"Software Rasterizer") != NULL)) {
+
+       conAdd(LERR, "Software renderer found, reducing visual effects.");
+       view.tailLength = 0;
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Setting particleRenderMode to 2");
+           view.particleRenderMode = 2;
+       }
+       video.supportPointSprite = 0;
+       haveSlowHardware = 2;
+   }
+
+   // VirtualBox driver: Chromium
+   // GL vendor=Humper; GL renderer=Chromium; GL version=2.1 Chromium 1.9
+    if (  (strstr(glRenderer,"Chromium") != NULL)
+        ||(strstr(glVersion,"Chromium ") != NULL)) {
+
+       conAdd(LERR, "VirtualBox indirect rendering found, reducing visual effects.");
+       if (view.tailLength > 4) view.tailLength = 4;
+       view.drawSky = 0;
+       view.drawSkyRandom = 0;
+       if (view.drawOSD > 0) view.drawOSD = 2;
+       view.drawColourScheme = 0;
+       haveSlowHardware = 1;
+
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Setting particleRenderMode to 2");
+           view.particleRenderMode = 2;
+       }
+       video.supportPointSprite = 0;
+   }
+
 
    // linux: MESA openGL on Intel integrated graphics
     //   GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
