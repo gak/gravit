@@ -1,7 +1,7 @@
 /*
 
 Gravit - A gravity simulator
-Copyright 2003-2005 Gerald Kaszuba
+Copyright 2003-2014 Gerald Kaszuba
 
 Gravit is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.5.0"
-#define GRAVIT_COPYRIGHT "Copyright 2003-2012 Gravit Development Team"
+#define GRAVIT_VERSION "Gravit 0.5.1"
+#define GRAVIT_COPYRIGHT "Copyright 2003-2014 Gravit Development Team"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
