@@ -1,6 +1,0 @@
-Skybox "Purple Nebula" downloaded from http://www.redsorceress.com/skybox.html
-
-===== original README =====
-This skybox is free for use but can't be sold for profit or altered in any way.
-
-Included in this zip floder are the zipped skybox and textures. Add the zipped skybox to your models directory and the textures to you textures directory of your OP. Go to your world and click on Options/World/Features. Now click on Sky and add the name of the skybox in Skybox without the zip. Click apply and OK. Your new skybox should start to download.
