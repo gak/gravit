@@ -1,0 +1,383 @@
+-- vim:syntax=lua tabstop=4
+
+load("functions.lua")
+load("constants.lua")
+load("physics.lua")
+
+-- this spawn script is "proper physics ready".
+
+
+function describe()
+    log("some merging galaxies")
+end
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+
+function rotatevect3(pos, alpha, beta)
+    local result=rotatevector(pos, alpha, v(1, 0, 0))   
+    return rotatevector(result, beta, v(0, 0, 1))
+end
+
+-- ----------------------------------------------------------------
+function makeball_orbit(galpos, galvel, galradius, startradius, startmass, massmin, massmax, mass_sign, firstparticle, particles)		
+	local massrange = math.abs(massmax - massmin)
+	local estmass = startmass + ((massmin + massrange/2 ) * particles)
+
+	local totalmass=0.0
+	local pos
+	local vel
+	local mass
+	local radius
+	local speed
+	local angle
+	local innermass
+	local tocenter
+	local xmass_sign=mass_sign
+	local endparticle = firstparticle+particles-1
+
+	-- ball volume = 4/3 * math.pi * r^3 ; ball surface=4*math.pi*r^2
+	-- desity = totalmass/totalvolume
+	local density= (estmass-startmass) / (4/3 * math.pi * (galradius^3 - startradius^3))
+
+	for i=firstparticle, endparticle do
+       	    radius = randomfloat(0.1,galradius-startradius)
+
+	    if gravit_physics < PH_PROPER then
+            	mass = randomfloat(massmin,massmax)
+	    else
+            	mass = (randomfloat(massmin,massmax)+randomfloat(massmin,massmax))/2.0
+	    end
+	    totalmass=totalmass+mass
+
+	    -- makes ball with uniform mass distribution -- and correct by 1/sqrt(2), to include "outbound" orbits
+	    if gravit_physics < PH_PROPER then
+            	pos = randomrange((galradius-startradius) * 0.9)
+	    else
+            	pos = randomrange((galradius-startradius) * 0.707)
+	    end
+
+	    -- move pos so ball starts at "startradius" instead of (0,0,0)
+	    radius=distance(v(0,0,0), pos)
+	    tocenter=pos * (1/radius) * startradius
+	    pos=pos+tocenter
+	    radius=distance(v(0,0,0), pos)
+
+	    if gravit_physics < PH_PROPER then
+	    	-- estimate enclosed mass; uniform mass distribution
+	    	innermass = startmass + ((radius-startradius)^3/(galradius-startradius)^3)*(estmass-startmass)
+            else
+	    	-- 2nd try: estimate enclosed mass; uniform mass distribution
+	    	-- proper mass estimation would be:
+            	-- mass of enclosed CIRCLE (2dim) = 2* pi * r^2 * 
+            	-- raduis * 
+	    	-- 	 (-1/r^3 - -1/1^3) = (-1/r^3 + 1) = (1 - 1/r^3) 
+
+	    	innermass= 2 * math.pi * (radius^2 - startradius^2) * density
+	    	innermass= startmass + innermass * radius * math.pi/2.1 * (1 - 1/(radius-startradius)^3)
+            end
+
+
+	    if (startmass > 0) then
+            	speed = orbit_velocity(innermass, radius) * randomfloat(0.9, 1.1)
+	        if gravit_physics == PH_CLASSIC then
+		   speed = speed * math.sqrt(mass * 0.5)
+	        end
+	    	tocenter=pos * (1/radius) * speed
+		vel=randomortho(pos, speed)
+	    else
+            	speed = - ((massmin+massmax)/2)/24
+	        if gravit_physics == PH_CLASSIC then
+		   speed = speed * math.sqrt(mass * 0.5)
+	        end
+	    	tocenter=pos * (1/radius) * speed
+	    	vel=tocenter
+	    end
+
+	    if (mass_sign ==2) then
+		xmass_sign= 1 - 2 * randomint(0,1)
+	    end
+
+            particle(i, galpos + pos, galvel + vel, mass * xmass_sign)
+
+	    -- enhance stability by enforcing symetry
+	    if (gravit_physics == PH_PROPER) and (i<endparticle-1) then
+	        i=i+1
+	        pos = v(-pos.x, -pos.y, -pos.z)
+	        vel = v(-vel.x, -vel.y, -vel.z)
+            	particle(i, galpos + pos, galvel + vel, mass * xmass_sign)
+	    end
+	end
+
+	return totalmass
+end
+
+-- ----------------------------------------------------------------
+
+function makespiral_orbit_2(galpos, galvel, galradius, startradius, startmass, massmin, massmax, mass_sign, firstparticle, particles, ang_end)
+	local totalmass=0.0
+	local massrange = math.abs(massmax - massmin)
+	local estmass = startmass + ((massmin + massrange/2 ) * particles)
+
+    	local galaxyalpha = randomfloat(0, ang_end * math.pi)
+    	local galaxybeta  = randomfloat(0, ang_end * math.pi)
+
+	local hotv=0.25
+	local hotmax=math.max(galradius*0.05, startradius*randomfloat(0.25,1.1))
+
+	local hotp= 0.0
+	local pos
+	local vel
+	local pos2
+	local vel2
+	local mass
+	local radius
+	local speed
+	local angle
+	local innermass
+	local tocenter
+	local endparticle = firstparticle+particles-1
+
+	local density = (estmass-startmass) / (galradius-startradius)
+	local xmass_sign=mass_sign
+	local antirotation_mode=randomint(0,1)
+
+	for i=firstparticle, endparticle do
+       	    radius = randomfloat(startradius, galradius)
+            angle = randomfloat(0,2*math.pi)
+
+	    if gravit_physics < PH_PROPER then
+            	mass = randomfloat(massmin,massmax)
+	    else
+            	mass = (randomfloat(massmin,massmax)+randomfloat(massmin,massmax))/2.0
+	    end
+
+	    totalmass=totalmass+mass
+	    hotp = hotmax / galradius * (galradius - radius)
+            pos = v(math.cos(angle)*radius, math.sin(angle)*radius, randomfloat(-hotp,hotp))
+            
+	    -- estimate enclosed mass; linear mass distribution over all radii
+	    innermass = startmass + ((radius-startradius)/(galradius-startradius))*(estmass-startmass)
+	    radius=distance(v(0,0,0), pos)
+
+	    speed = orbit_velocity(innermass, radius) * randomfloat(0.9, 1.1)
+	    if (gravit_physics == PH_PROPER) then
+	          speed = speed / math.sqrt(radius * 0.8 )
+	    end
+	    if gravit_physics == PH_CLASSIC then
+	       speed = speed * math.sqrt(mass * 0.5)
+	    end
+
+	    tocenter=pos * (1/radius) * speed
+            vel = v(-tocenter.y, tocenter.x, -tocenter.z + randomfloat(-(speed*hotv), speed*hotv) )
+
+	    if (antirotation_mode == 1) then
+	    	-- if (randomint(0,1)==0) then
+	    	    vel = vel * -1
+	    	    pos = v(pos.x,pos.y,-pos.z)
+	    	-- end
+	    end
+
+
+	    pos2 = rotatevect3(pos, galaxyalpha, galaxybeta)
+	    vel2 = rotatevect3(vel, galaxyalpha, galaxybeta)
+
+	    if (mass_sign ==2) then
+		xmass_sign= 1 - 2 * randomint(0,1)
+	    end
+
+            particle(i, galpos + pos2, galvel + vel2, mass * xmass_sign)
+	
+	    if (gravit_physics == PH_PROPER) and (i<endparticle-1) then
+	        i=i+1
+	        pos = v(-pos.x, -pos.y, -pos.z)
+	        vel = v(-vel.x, -vel.y, -vel.z)
+	    	pos2 = rotatevect3(pos, galaxyalpha, galaxybeta)
+	    	vel2 = rotatevect3(vel, galaxyalpha, galaxybeta)
+            	particle(i, galpos + pos2, galvel + vel2, mass * xmass_sign)
+
+	    end
+
+	end
+	return totalmass
+end
+
+-- ----------------------------------------------------------------
+function makegalaxy_orbit_2(galpos, galvel, galradius, massmin, massmax, firstparticle, particles, ang_end)
+	local kind=randomint(1, 3)
+	local mass_sign = 1
+	if randomint(0,1) == 1 then kind = 2 end
+	if (massmin > massmax) then
+	   massmin = -massmin
+	   massmax = -massmax
+	   mass_sign = -1
+	end
+	local startmass
+
+	-- central supermassive black hole = 1% of total mass
+	if gravit_physics < PH_PROPER then
+	    startmass = (massmax - massmin) * particles * randomfloat(0.005, 0.05)
+	else
+	    startmass = (massmax - massmin) * particles * randomfloat(0.001, 0.02)
+	end
+
+	local ball_particles=math.floor(particles/(randomfloat(2,8)))
+	local ball_radius = galradius / randomfloat(3,9)
+
+	local angular_vel=48
+	local startradius=math.pow(gravit_g * 2 * startmass, 1/3) * math.pow(angular_vel, 2/3) / math.pow (2*math.pi, 2/3)
+
+	-- allow the center bulge to have different masses
+        local factor_center=randomfloat(0.6, 2)
+
+	local haloparticles=0
+	local halofactor=1
+	local halostart =galradius * 1.3
+	local haloend   =galradius * 2
+
+	if randomint(0, 2) == 0 then
+	    -- no central SMBH
+	    startmass=randomfloat(massmin,massmax)
+	end
+
+	if (gravit_physics == PH_CLASSIC) then
+	    -- no central SMBH
+	    startmass=randomfloat(massmin,massmax)
+            -- no surrounding massive particles
+	end
+
+
+	particle(firstparticle, galpos, galvel, startmass * mass_sign)
+
+	if kind == 1 then
+	   makespiral_orbit_2(galpos, galvel, galradius, startradius, startmass, massmin, massmax, mass_sign, firstparticle+1, particles-1, ang_end)
+	else
+	   local do_halo=randomint(0, 3)
+	   if (gravit_physics == PH_CLASSIC) then
+	      -- no surrounding massive particles
+	      do_halo=randomint(0, 2)
+	   end
+	   if randomint(0,1) == 1 then do_halo = 0 end
+	   if kind == 3 then do_halo = 0 end
+
+
+	   if do_halo == 3 then
+	   -- type 1 : a few massive objects at long distances
+	      halofactor =randomfloat(1,10)
+	      haloparticles = math.floor((particles-ball_particles)/(halofactor+4))
+	      halostart    = galradius * randomfloat(0.8,1.1)
+	      haloend      = galradius * randomfloat(1.2,2)
+	   end
+	   if do_halo == 2 then
+	   -- type 3 : cloud of dust
+	      halofactor =randomfloat(0.1,0.6)
+	      haloparticles= randomint(math.floor((particles-ball_particles)/4), math.floor((particles-ball_particles)/1.5))
+	      halostart    = galradius * randomfloat(0.5,0.7)
+	      haloend      = galradius * randomfloat(0.9,1.5)
+	   end
+
+	   -- bulge
+	   startmass = startmass + makeball_orbit(galpos, galvel, ball_radius, startradius, startmass, massmin*factor_center, massmax*factor_center, mass_sign, firstparticle+1, ball_particles)
+
+	   -- disk
+	   if gravit_physics < PH_PROPER then
+	      startmass = startmass + 1.1 * makespiral_orbit_2(galpos, galvel, galradius, startradius+ball_radius, startmass, massmin, massmax, mass_sign, firstparticle+ball_particles+haloparticles+1, particles-ball_particles-haloparticles-1, ang_end)
+	   else
+	      startmass = startmass + 1.1 * makespiral_orbit_3(galpos, galvel, galradius, startradius+ball_radius, startmass, massmin, massmax, mass_sign, firstparticle+ball_particles+haloparticles+1, particles-ball_particles-haloparticles-1, ang_end)
+	   end
+
+	   -- halo
+	   if (do_halo > 1) then
+	      makeball_orbit(galpos, galvel, haloend, halostart, startmass, massmin*halofactor, massmax*halofactor, mass_sign, firstparticle+ball_particles+1, haloparticles)
+	   end
+	end
+end
+
+
+function makegalaxy_orbit(galpos, galvel, galradius, massmin, massmax, firstparticle, particles)
+	makegalaxy_orbit_2(galpos, galvel, galradius, massmin, massmax, firstparticle, particles,2)
+end
+
+-- ----------------------------------------------------------------
+-- ----------------------------------------------------------------
+
+
+function spawn()
+   -- work out a number of galaxies based on spawnparticles
+     local biggalaxysize = randomint(spawnparticles/4,spawnparticles/1.5)
+     local num_small_objects=randomint(1,3)
+
+     local smallgalaxysize = spawnparticles-biggalaxysize
+     smallgalaxysize = math.floor(smallgalaxysize / num_small_objects)
+     biggalaxysize = spawnparticles - (smallgalaxysize * num_small_objects);
+
+     local faster=2.0
+     local maxangle = 0.17
+
+     -- first galaxy
+     local rad = 10.0+randomfloat(350, 1200)
+     local massmin = faster * randomfloat(0.1,10)
+     local massmax = faster * randomfloat(massmin+2, massmin+20)
+
+     if gravit_physics < PH_PROPER then
+	rad= 10.0+randomfloat(200, 700)
+	massmin = faster * 0.7 * randomfloat(1,45)
+	massmax = faster * 0.7 * randomfloat(massmin+5, massmin*2+10)
+	maxangle = 0.36
+     end
+
+     if (gravit_physics == PH_CLASSIC) then
+	massmin=massmin*5
+	massmax=massmax*10
+	rad=rad * 2.2
+	maxangle = 0.6
+     end
+
+     makegalaxy_orbit_2(v(0,0,0), v(0,0,0), rad, massmin, massmax, 0, biggalaxysize, maxangle)
+
+     -- more galaxies
+     for i=1, num_small_objects do
+	massmin = faster * randomfloat(0.1,10)
+	massmax = faster * randomfloat(massmin+2, massmin+20)
+	local speed2 = randomfloat(2,8)
+	local target=randomrange(rad/4)
+
+	if gravit_physics < PH_PROPER then
+	   massmin = faster * 0.7 * randomfloat(1,45)
+	   massmax = faster * 0.7 * randomfloat(massmin+5, massmin*2+10)
+	   target=randomrange(rad/3)
+	end
+	if (gravit_physics == PH_CLASSIC) then
+	   massmin=massmin*5
+	   massmax=massmax*10
+	   target=randomrange(rad * 2)
+	   speed2=speed2 * 2
+	end
+
+	-- local rad2=randomfloat(rad*0.6, rad*1.5)
+	local rad2=randomfloat(rad*0.4, rad*1.2)
+	local y_offset=randomfloat(-300,300)
+	local pos2=randomrange(-200,200)
+	pos2.x=pos2.x * 1.5
+
+	if (gravit_physics == PH_CLASSIC) then
+	   rad2 = rad2 * 1.3
+	   y_offset=y_offset * 4
+	   pos2=pos2 * 14
+	end
+
+	if gravit_physics == PH_PROPER then
+	   pos2.y=pos2.y + y_offset
+	   pos2.x = pos2.x + rad2 + rad
+	else
+	   pos2.y=pos2.y + y_offset
+	   pos2.x = pos2.x + rad2 + rad/2
+	end
+
+	target.y = target.y * 1.5
+	local direction=speed2/distance(target, pos2)
+	local vel2= (pos2 - target) * direction
+	makegalaxy_orbit_2(pos2*1.4, vel2 * -1.3, rad2, massmin, massmax, biggalaxysize+((i-1)*smallgalaxysize), smallgalaxysize, maxangle)
+     end
+end
+

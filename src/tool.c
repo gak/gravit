@@ -78,10 +78,11 @@ int gfxPowerOfTwo(int input) {
 
 //tool.c(96) : warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
 // make p, pos, size, amountToRead become size_t
-int LoadMemoryDump(char *fileName, unsigned char *d, size_t size) {
+size_t LoadMemoryDump(char *fileName, unsigned char *d, size_t size, size_t chunk) {
 
     FILE *fp;
     size_t i, pos, p, amountToRead;
+    size_t bytes;
     size_t chunkMax = FILE_CHUNK_SIZE;
 
     fp = fopen(fileName, "rb");
@@ -92,10 +93,12 @@ int LoadMemoryDump(char *fileName, unsigned char *d, size_t size) {
 
     }
 
+    if (chunk > 0) chunkMax = chunk;
     i = 0;
     pos = 0;
+    bytes = 0;
 
-    while (pos < size) {
+    while ((pos < size) && !feof(fp)) {
 
         if (size - pos < chunkMax)
             amountToRead = size - pos;
@@ -104,15 +107,21 @@ int LoadMemoryDump(char *fileName, unsigned char *d, size_t size) {
 
         p = fread(d, 1, amountToRead, fp);
 
-        if (p == 0) {
-            conAdd(LERR, "Short read on %s", fileName);
-            fclose(fp);
-            return 0;
+        if (p < amountToRead) {
+            if ((bytes == 0) || (!feof(fp))) {
+                if (ferror(fp)) conAdd(LERR, "%s", strerror( errno ));
+                conAdd(LERR, "Short read on %s (%ld bytes)", fileName, (long)(p+bytes));
+                fclose(fp);
+                return 0;
+            } else {
+                conAdd(LLOW, "Short read on %s (%ld bytes)", fileName, (long)(p+bytes));
+            }
         }
 
 
         d += p;
         pos += p;
+        bytes += p;
 
         if (ferror(fp)) {
 
@@ -137,7 +146,7 @@ int LoadMemoryDump(char *fileName, unsigned char *d, size_t size) {
 
     fclose(fp);
 
-    return 1;
+    return bytes;
 }
 
 //tool.c(96) : warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
@@ -201,18 +210,29 @@ Uint32 getMS() {
 
 }
 
-void setTitle(char *state) {
+static Uint32 tsWindowTitle = 0;
+void setTitle(char *stateText) {
 
 #ifndef NO_GUI
 
     char *a;
 
-    if (state)
-        a = va("%s - %s", GRAVIT_VERSION, state);
-    else
+    if (stateText) {
+        a = va("%s - %s", GRAVIT_VERSION, stateText);
+    } else {
         a = GRAVIT_VERSION;
+        tsWindowTitle = 0;
+    }
 
-    SDL_WM_SetCaption(a, a);
+    // first run
+    if (tsWindowTitle == 0) tsWindowTitle = getMS() - 1000;
+
+    // to avoid a flickering title bar, use 0.25 seconds
+    // delay between title updates during record
+    if ((stateText == NULL) || ((state.mode & SM_RECORD) == 0) || ((getMS() - tsWindowTitle) > 249)) {
+        SDL_WM_SetCaption(a, a);
+        tsWindowTitle = getMS();
+    }
 
 #endif
 
@@ -299,7 +319,7 @@ void freeFileName() {
 
     if (state.fileName) {
         free(state.fileName);
-        state.fileName = 0;
+        state.fileName = NULL;
     }
 
 }
@@ -309,11 +329,11 @@ void setFileName(char *name) {
     char buf[256];
 
     strncpy(buf, name, 255);
+    buf[255]=0;
 
     freeFileName();
 
-    state.fileName = malloc(strlen(buf)+1);	// +1 for \0
-    strcpy(state.fileName, buf);
+    state.fileName = strdup(buf);
 
 }
 

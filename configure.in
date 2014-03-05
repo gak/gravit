@@ -1,4 +1,4 @@
-#                                               -*- Autoconf -*-
+ #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
 # ===============================================================================================
@@ -32,7 +32,7 @@
 
 
 AC_PREREQ(2.59)
-AC_INIT(gravit, 0.5.0, gravit@slowchop.com)
+AC_INIT(gravit, 0.5.1, gravit@slowchop.com)
 AC_CONFIG_SRCDIR([src/config.c])
 AC_CONFIG_HEADER(src/config.h)
 
@@ -40,7 +40,7 @@ dnl Detect the canonical build and host environments
 AC_CANONICAL_HOST
 
 dnl Setup for automake
-AM_INIT_AUTOMAKE(gravit, 0.5.0)
+AM_INIT_AUTOMAKE(gravit, 0.5.1)
 #Enable quiet compiles on automake 1.11.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
@@ -69,6 +69,14 @@ AC_CHECK_HEADERS([omp.h],[
 AX_EXT_SSE
 CFLAGS="$CFLAGS $SIMD_FLAGS -I/usr/local/include"
 LDFLAGS="$SIMD_FLAGS $LDFLAGS -L/usr/local/lib"
+
+# windows gcc needs -mstackrealign (to avoid crash on XP)
+if test x"$ax_cv_c_compiler_vendor" = x"gnu" ; then
+    if test x"$host" = x"i686-pc-mingw32" ; then
+        CFLAGS="$CFLAGS -mstackrealign"
+        LDFLAGS="$LDFLAGS -mstackrealign"
+    fi
+fi
 
 # try to add compiler-specific optimization flags
 if test x"$ax_cv_c_compiler_vendor" = x"intel"; then
@@ -243,61 +251,52 @@ if test "$WITH_LUA" != "no"; then
    LUA_LIBS=`$LUACONFIG --libs --extralibs`
    AC_DEFINE([HAVE_LUA], [1], [liblua])
    AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+   AC_MSG_RESULT($LUACONFIG)
  else
 
    #try pkgconfig
-   PKG_CHECK_EXISTS([lua5.1], [have_lua=yes], [have_lua=no])
+   AC_MSG_CHECKING(for pkg-config lua)
+   for lua_name in lua5.2 lua-5.2 lua52 lua5.1 lua-5.1 lua51 lua5.3 lua-5.3 lua53 lua
+   do
+       PKG_CHECK_EXISTS([$lua_name], [LUA_NAME=$lua_name; have_lua=yes; break], [have_lua=no])
+   done
+
    if test x$have_lua = xyes
    then
-       PKG_CHECK_MODULES(LUA,lua5.1,,[have_lua=no])
+       AC_MSG_RESULT($LUA_NAME)
+       PKG_CHECK_MODULES(LUA,$LUA_NAME >= 5.0,[have_lua=yes], [have_lua=no])
    else
-       PKG_CHECK_EXISTS([lua], [have_lua=yes], [have_lua=no])
-       if test x$have_lua = xyes
-       then
-           PKG_CHECK_MODULES(LUA,lua >= 5.0,,[have_lua=no])
-       fi
+       AC_MSG_RESULT(no)
    fi
 
-   if test x"$LUA_LIBS" = x; then
-   # try LUA51
-   AC_CHECK_LIB(lua51, lua_close, [
-     AC_CHECK_HEADERS([lua.h],[
-       LUA_LIBS="-llua51"
-       AC_DEFINE([HAVE_LUA], [1], [liblua51])
-       AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-     ])
-   ])
-   else
+   if test x$have_lua = xyes; then
      AC_DEFINE([HAVE_LUA], [1], [liblua])
      AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
    fi
 
-   if test x"$LUA_LIBS" = x; then
-     # try LUA 5.1
-     AC_CHECK_LIB(lua5.1, lua_close, [
-       AC_CHECK_HEADERS([lua.h],[
-         LUA_LIBS="-llua5.1"
-         AC_DEFINE([HAVE_LUA], [1], [liblua5.1])
-         AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-       ])
-     ])
-   fi
+   # fallback: try to find the library directly
 
    if test x"$LUA_LIBS" = x; then
-     # try old LUA API
-     AC_CHECK_LIB(lua, lua_close, [
-       AC_CHECK_HEADERS([lua.h],[
-         LUA_LIBS="-llua"
-         AC_DEFINE([HAVE_LUA], [1], [liblua])
-         AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
-       ])
-     ])
+   # try linking with several possible lua libs
+     for lua_name in lua52 lua5.2 lua51 lua5.1 lua53 lua5.3 lua
+     do
+       if test x"$LUA_LIBS" = x; then
+         AC_CHECK_LIB($lua_name, lua_close, [
+           AC_CHECK_HEADERS([lua.h],[
+             LUA_LIBS="-l$lua_name"
+             AC_DEFINE([HAVE_LUA], [1], [liblua])
+             AC_DEFINE([HAVE_LUA_H], [1], [lua.h])
+             LUA_NAME=$lua_name
+           ])
+         ])
+       fi
+     done
    fi
  fi
 
  if test x"$LUA_LIBS" = x; then
    # show error
-   AC_MSG_ERROR(LUA was not found)
+   AC_MSG_ERROR(LUA (version 5.1 or newer) was not found)
  fi
 
  AC_SUBST(LUA_CFLAGS)
@@ -354,15 +353,25 @@ then
    AGAR_VERSION=`$AGARCONFIG --version`
    AGAR_CFLAGS=`$AGARCONFIG --cflags`
    AGAR_LIBS=`$AGARCONFIG --libs`
+   AGAR_LIBDIR=`$AGARCONFIG --prefix`/lib
+
    AC_DEFINE([HAVE_AGAR], [1], [libagar])
    CFLAGS="$CFLAGS $AGAR_CFLAGS"
    CPPFLAGS="$CPPFLAGS $AGAR_CFLAGS"
    LIBS="$LIBS $AGAR_LIBS"
+   have_agar_lib=yes
+ else
+   #check for libag_gui presence
+   if test x"$host" = x"i686-pc-mingw32" ; then
+     AC_CHECK_LIB([ag_gui], [AG_DestroyGUI], [have_agar_lib=yes; LIBS="-lag_gui -lag_core $LIBS -lfreetype -lwinmm"], [], [-lag_core -lfreetype -lwinmm])
+   else
+     AC_CHECK_LIB([ag_gui], [AG_DestroyGUI], [have_agar_lib=yes; LIBS="-lag_gui -lag_core $LIBS -lfreetype"], [], [-lag_core -lfreetype])
+   fi
  fi
  
  #check if agar header files can be found 
  AC_CHECK_HEADER([agar/core.h], [have_agar_hdr=yes])
- if test x"$have_agar_hdr" = x
+ if test x"$have_agar_hdr" = x -o x"$have_agar_lib" = x
  then
    AM_CONDITIONAL(AGAR, false)
    AC_DEFINE([WITHOUT_AGAR], [1], [libagar])
@@ -372,8 +381,12 @@ then
   echo found AGAR library "$AGAR_VERSION"
   AC_SUBST(AGAR_CFLAGS)
   AC_SUBST(AGAR_LIBS)
+  AC_SUBST(AGAR_LIBDIR)
  fi
 fi
+
+#check if we need to link with -ldl
+AC_CHECK_LIB([dl], [dlerror])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

@@ -1,7 +1,7 @@
 /*
 
 Gravit - A gravity simulator
-Copyright 2003-2005 Gerald Kaszuba
+Copyright 2003-2014 Gerald Kaszuba
 
 Gravit is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.5.0"
-#define GRAVIT_COPYRIGHT "Copyright 2003-2012 Gravit Development Team"
+#define GRAVIT_VERSION "Gravit 0.5.1"
+#define GRAVIT_COPYRIGHT "Copyright 2003-2014 Gravit Development Team"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -164,10 +164,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #include <agar/gui.h>
 #endif
 
-    #define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
-    #define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
+    // according to the OpenGL specs, glGetError should be called in a loop, until it returns GL_NO_ERROR
+    #define glCheck() { GLenum er; while ((er = glGetError()) != GL_NO_ERROR) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, (int)er, gluErrorString(er)); } }
+    #define sdlCheck() { char *er = SDL_GetError(); if ((er!=NULL) && (strlen(er)>0)) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); SDL_ClearError(); } }
 #ifndef WITHOUT_AGAR
-    #define agarCheck() { const char *aer = AG_GetError(); if (aer) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); } }
+    #define agarCheck() { const char *aer = AG_GetError(); if ((aer!=NULL) && (strlen(aer)>0)) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); AG_SetError("%s", "");} }
 #endif
 
 #else
@@ -200,6 +201,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define frand(min,max) ((min) + ((float)rand() / RAND_MAX) * ((max) - (min)))
 #define FRAMESIZE (sizeof(particle_t)*state.particleCount)
 #define FRAMEDETAILSIZE (sizeof(particleDetail_t) * state.particleCount)
+#define SAVEDETAILSIZE (sizeof(saveDetail_t) * state.particleCount)
 
 #define getParticleCurrentFrame(i) state.particleHistory + state.particleCount * state.currentFrame + (i)
 #define getParticleFirstFrame(i) state.particleHistory + (i)
@@ -301,7 +303,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
     if (view.recordingVideoRefreshTime) { \
-        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*4) < getMS()) { \
+        if (((view.recordParticlesDone % 128) == 1) && (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS())) { \
             runInput(); \
             runVideo(); \
         } \
@@ -318,7 +320,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     // function pointers for gl extensions
     typedef void (APIENTRY *FPglPointParameterfARB)(GLenum, GLfloat);
-    typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, GLfloat*);
+    typedef void (APIENTRY *FPglPointParameterfvARB)(GLenum, const GLfloat*);
 
     extern FPglPointParameterfARB glPointParameterfARB_ptr;
     extern FPglPointParameterfvARB glPointParameterfvARB_ptr;
@@ -331,6 +333,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     #define GL_POINT_SPRITE_ARB 0x8861
     #define GL_COORD_REPLACE_ARB 0x8862
+
+    #ifndef GL_CLAMP_TO_EDGE
+        #define GL_CLAMP_TO_EDGE 0x812F
+    #endif
+    #ifndef GL_ALIASED_POINT_SIZE_RANGE
+        #define GL_ALIASED_POINT_SIZE_RANGE 0x846D
+    #endif
 
     typedef struct conf_s {
 
@@ -380,10 +389,24 @@ typedef struct particle_s {
 typedef struct particleDetail_s {
 
     float mass;
+    VectorNew(accel);       // new acceleration
     float col[4];
+    unsigned int particleSprite;
 
 } particleDetail_t;
 
+// particleDetail_t without temporal things
+typedef struct saveDetail_s {
+
+    float mass;
+    float col[4];
+
+} saveDetail_t;
+
+// physics mode: CLASSIC, MODIFIED or PROPER
+typedef enum {PH_CLASSIC=0, PH_MODIFIED=1, PH_PROPER=2} physics_t;
+
+// global simulation state
 typedef struct state_s {
 
     particle_t *particleHistory;
@@ -431,6 +454,9 @@ typedef struct state_s {
     lua_State *lua;
 #endif
 
+    int have_old_accel;
+    physics_t physics;
+
 } state_t;
 
 typedef struct saveInfo_s {
@@ -440,7 +466,19 @@ typedef struct saveInfo_s {
     int totalFrames;
     int frame;
     int historyNFrame;
-//    float g;
+    // up to here: gravit version 0.5.0 or earlier
+
+    float zoom;            // view parameters
+    VectorNew(rot);        //   ...
+    VectorNew(pos);        //   ...
+    VectorNew(face);       //   ...
+    VectorNew(lastCenter); //   ...
+    int glow;              //   ...
+    float g;               // physics parameters
+    float gbase;           //   ...
+    physics_t physics;     //   ...
+    // up to here: gravit version 0.5.1
+
 
 } saveInfo_t;
 
@@ -462,11 +500,18 @@ typedef struct view_s {
     // Any value < SDL_TIMESLICE (usually 10 ms) disables this "handbrake"
     int minVideoRefreshTime;
 
+    // number of video display frames skipped
+    Uint32 lastVideoFrameSkip;
+
     Uint32 firstTimeStamp;
 
     // timer for rendering
     Uint32 totalRenderTime;
     Uint32 timed_frames;
+    Uint32 lastRenderTime;
+
+    // set to 1 to redraw ASAP (for smooth mouse movements etc)
+    int dirty;
 
     int quit;
 
@@ -476,7 +521,13 @@ typedef struct view_s {
     int showCursor;
 
     VectorNew(rot);
+    VectorNew(rotTarget);
+    VectorNew(rotSpeed);
+
     float zoom;
+    float zoomTarget;
+    float zoomSpeed;
+
     VectorNew(lastCenter); //center of view; set by translateToCenter()
     int zoomFitAuto;
 
@@ -554,6 +605,8 @@ typedef struct view_s {
 
     int autoCenter;
     
+    int glow;          //0: no glow; 1-4: small stars; 4-8: big stars
+
 #ifndef WITHOUT_AGAR
     AG_Window *playbackWindow;
     AG_Style osdStyle;
@@ -643,7 +696,7 @@ int commandLineRead(int argc, char *argv[]);
 // tool.c
 char * va( char *format, ... );
 CONST_F int gfxPowerOfTwo(int input);
-int LoadMemoryDump(char *fileName, unsigned char *d, size_t size);
+size_t LoadMemoryDump(char *fileName, unsigned char *d, size_t size, size_t chunk);
 int SaveMemoryDump(char *FileName, unsigned char *d, size_t total);
 
 Uint32 getMS();
@@ -708,11 +761,23 @@ void loadSkyBox(void);
 // toDo: auto-detect list of availeable skyboxes
 #define SKYBOX_LAST 2
 
+#define SPRITE_DEFAULT 0
+#define SPRITE_GLOW 1
+#define SPRITE_RED 2
+#define SPRITE_GREEN 3
+#define SPRITE_BLUE 4
+#define SPRITE_GRAY 5
+#define SPRITE_GRAY2 6
+#define SPRITE_GLOW2 7
+#define SPRITE_LAST 8
+
 // color.c
 void setColours();
 void setColoursByMass();
 void colourSpectrumClear();
 void colourFromNormal(float *c, float n);
+unsigned int colourSprite(float *c, float mass);
+
 
 #else
 

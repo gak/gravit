@@ -452,9 +452,9 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 
             if (d) {
                 force = state.g * info->pd->mass * info->n->mass / d;
-                info->p->vel[0] += dv[0] * force;
-                info->p->vel[1] += dv[1] * force;
-                info->p->vel[2] += dv[2] * force;
+                info->pd->accel[0] += dv[0] * force;
+                info->pd->accel[1] += dv[1] * force;
+                info->pd->accel[2] += dv[2] * force;
             }
         }
 
@@ -494,9 +494,9 @@ void otComputeParticleToTreeRecursive(pttr_t *info) {
 
                     if (d) {
                         force = state.g * info->pd->mass * b->mass / d;
-                        info->p->vel[0] += dv[0] * force;
-                        info->p->vel[1] += dv[1] * force;
-                        info->p->vel[2] += dv[2] * force;
+                        info->pd->accel[0] += dv[0] * force;
+                        info->pd->accel[1] += dv[1] * force;
+                        info->pd->accel[2] += dv[2] * force;
                     }
                 }
 

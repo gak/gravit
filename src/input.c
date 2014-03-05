@@ -62,6 +62,7 @@ int processKeys() {
 #endif
         
         if (event.type == SDL_MOUSEBUTTONDOWN) {
+            view.dirty = 1;
 
             if (view.screenSaver) {
                 cmdQuit(0);
@@ -69,21 +70,28 @@ int processKeys() {
             }
 
             if (event.button.button == SDL_BUTTON_WHEELDOWN)
-                view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
+                view.zoomTarget *= (1 + (view.deltaVideoFrame * 0.01f));
 
             if (event.button.button == SDL_BUTTON_WHEELUP)
-                view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
+                view.zoomTarget *= (1 + (view.deltaVideoFrame * -0.01f));
 
 #ifndef WITHOUT_AGAR
            // code introduced together with agar
             if (event.button.button == SDL_BUTTON_LEFT) {
                 view.mouseButtons[0] = SDL_BUTTON(1);
             }
+            if (event.button.button == SDL_BUTTON_RIGHT) {
+                view.mouseButtons[0] = SDL_BUTTON(3);
+            }
             
         }
         
         if (event.type == SDL_MOUSEBUTTONUP) {
+            view.dirty = 1;
             if (event.button.button == SDL_BUTTON_LEFT) {
+                view.mouseButtons[0] = 0;
+            }
+            if (event.button.button == SDL_BUTTON_RIGHT) {
                 view.mouseButtons[0] = 0;
             }
 #endif
@@ -238,6 +246,7 @@ int processKeys() {
                 if (view.particleRenderMode == 3)
                     view.particleRenderMode = 0;
                 conAdd(LNORM, "particleRenderMode set to %i" , view.particleRenderMode);
+                setColours();
                 break;
 
             case SDLK_MINUS:
@@ -350,7 +359,10 @@ int processKeys() {
                 break;
 
             case SDLK_o:
-                view.drawOSD = (!view.drawOSD)?1:0;
+                view.drawOSD++;
+                if (view.drawOSD == 3) view.drawOSD = 4;
+                if (view.drawOSD > 4) view.drawOSD=0;
+                view.drawColourScheme = (view.drawOSD == 1) ? 1 : 0;
                 conAdd(LLOW, "drawOSD set to %i", view.drawOSD);
                 break;
 
@@ -360,6 +372,17 @@ int processKeys() {
                 conAdd(LLOW, "drawSky set to %i", view.drawSky);
                 break;
 
+            case SDLK_g:
+                view.glow ++;
+                if(view.glow > 8)
+                {
+                    view.glow = 0;
+                    conAdd(LLOW, "Star glow disabled");
+                } else {
+                    conAdd(LLOW, "Star glow set to %i", view.glow);
+                }
+                setColours();
+                break;
 
             case SDLK_q:
                 if (hasCtrlOrCmdModifier()) {
@@ -398,11 +421,18 @@ int processKeys() {
 
     if (!view.consoleMode) {
 
-        if (view.keys[SDLK_a])
-            view.zoom /= (1 + (view.deltaVideoFrame * 0.01f));
-
-        if (view.keys[SDLK_z])
-            view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
+        if (view.keys[SDLK_a]) {
+            view.zoom /= (1 + (view.deltaVideoFrame * 0.005f));
+            view.zoomTarget = view.zoom;
+            view.zoomSpeed = 0;
+            view.dirty = 1;
+        }
+        if (view.keys[SDLK_z]) {
+            view.zoom *= (1 + (view.deltaVideoFrame * 0.005f));
+            view.zoomTarget = view.zoom;
+            view.zoomSpeed = 0;
+            view.dirty = 1;
+        }
         /*
         		if (view.keys[SDLK_UP])
         			view.face[0] -= state.dt * 0.1f;
@@ -446,7 +476,7 @@ void processMouse() {
         return;
     }
 
-    if (view.mouseButtons[0] & SDL_BUTTON(1) ) {
+    if ((view.mouseButtons[0] & SDL_BUTTON(1)) || (view.mouseButtons[0] & SDL_BUTTON(3))) {
 
         // Unfortunately, on OS X WarpMouse seems to act like the mouse isn't pressed anymore.
         
@@ -462,12 +492,21 @@ void processMouse() {
 #endif
 
         // turn off cursor only after the 2nd warp mouse, otherwise showcursor does strange things.
-        if (view.mouseButtons[1] & SDL_BUTTON(1) ) {
+        if ((view.mouseButtons[1] & SDL_BUTTON(1)) || (view.mouseButtons[1] & SDL_BUTTON(3))) {
             SDL_ShowCursor(0);
         }
 
-        view.rot[1] += x;
-        view.rot[0] += y;
+        if (view.mouseButtons[0] & SDL_BUTTON(1)) {
+            // left mousebutton --> rotate around x / y axis
+            view.rotTarget[1] += 0.5 * x;
+            view.rotTarget[0] += 0.5 * y;
+        } else {
+	    // right mousebutton --> rotate around y / z axis
+            view.rotTarget[1] += 0.5 * x;
+            view.rotTarget[2] -= 0.5 * y;
+        }
+        view.dirty = 1;
+        if (view.drawAxis==1) view.drawAxis=3;
 
     } else {
 

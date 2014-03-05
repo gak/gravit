@@ -150,6 +150,7 @@ cmd_t cmd[] = {
     ,{ "popuptext",					cmdPopupText,			NULL,						NULL,								NULL }
 
     ,{ "autocenter",				NULL,					NULL,						&view.autoCenter,					NULL }
+    ,{ "particleglow",				NULL,					NULL,						&view.glow,					NULL }
 
     ,{ "maxvertices",				NULL,					NULL,						&view.maxVertices,					NULL }
 
@@ -356,6 +357,7 @@ void cmdExecute(char *string) {
     if (c->func)
         c->func(args);
 
+    view.dirty = 1;
 
 }
 
@@ -402,6 +404,7 @@ void cmdSpawn(char *arg) {
     char *scriptFile;
 #endif
     size_t memoryAvailable;
+    int needrestart = 0;
 
     if (arg)
         scriptName = arg;
@@ -440,8 +443,15 @@ cmdSpawnRestartSpawning:
     lua_pushstring(state.lua, SPAWNDIR "/?");
     lua_setglobal(state.lua, "LUA_PATH");
 
-    lua_pushnumber(state.lua, state.particleCount);
+    lua_pushnumber(state.lua, (double)state.particleCount);
     lua_setglobal(state.lua, "spawnparticles");
+
+    // forward some gravit state parameters to LUA
+    lua_pushnumber(state.lua,  (double)((int)state.physics));
+    lua_setglobal(state.lua,   "gravit_physics");
+    lua_pushnumber(state.lua,  fabs((double)state.g));
+    lua_setglobal(state.lua,   "gravit_g");
+
 
     scriptFile = va("%s/%s.gravitspawn", SPAWNDIR, scriptName);
 
@@ -472,7 +482,7 @@ cmdSpawnRestartSpawning:
     }
 
     // make sure no two particles are in the same spot
-    int needrestart = 0;
+    needrestart = 0;
     while (needrestart) {
         int i,j;
         needrestart = 0;
@@ -534,6 +544,8 @@ cmdSpawnRestartSpawning:
 
     if (view.zoomFitAuto) {
         cmdZoomFit(NULL);
+        view.zoomTarget = view.zoom;
+        view.zoomSpeed = 0;
     }
 
     view.frameSkipCounter = 0;
@@ -697,7 +709,9 @@ void cmdSaveFrame(char *arg) {
 void cmdSaveFrameDump(char *arg) {
 
     saveInfo_t si;
+    saveDetail_t *sd;
     char *fileName;
+    unsigned int i;
 
     if (isSpawning())
         return;
@@ -729,9 +743,40 @@ void cmdSaveFrameDump(char *arg) {
     si.frame = state.frame;
     si.historyNFrame = state.historyNFrame;
 
+    si.zoom = view.zoom;
+    VectorCopy(view.rot, si.rot);
+    VectorCopy(view.pos, si.pos);
+    VectorCopy(view.face, si.face);
+    VectorCopy(view.lastCenter, si.lastCenter);
+    si.glow = view.glow;
+
+    si.physics = state.physics;
+    si.g = state.g;
+    si.gbase = state.gbase;
+
+    //init saveDetail
+    sd = (saveDetail_t *) calloc(sizeof(saveDetail_t),state.particleCount);
+    if (!sd) {
+        conAdd(LERR, "Could not allocate %lu bytes of memory for saveDetail", (unsigned long)(SAVEDETAILSIZE));
+        free(sd);
+        return;
+    }
+    // copy particleDetail to saveDetail
+    for (i = 0; i < state.particleCount; i++) {
+        particleDetail_t *pd;
+        pd = getParticleDetail(i);
+        sd[i].mass  = pd->mass;
+        sd[i].col[0]= pd->col[0];
+        sd[i].col[1]= pd->col[1];
+        sd[i].col[2]= pd->col[2];
+        sd[i].col[3]= pd->col[3];
+    }
+
     conAdd(LNORM, "Saving %s...", arg);
     conAdd(LNORM, "Please Wait...");
     runVideo();
+
+    // dump raw data to files
 
     fileName = va("%s/%s.info", SAVE_PATH, arg);
     if (!SaveMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
@@ -740,7 +785,7 @@ void cmdSaveFrameDump(char *arg) {
     }
 
     fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
-    if (!SaveMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
+    if (!SaveMemoryDump(fileName, (unsigned char *)sd, SAVEDETAILSIZE)) {
         conAdd(LERR, "Failed to create %s", fileName);
         return;
     }
@@ -752,6 +797,7 @@ void cmdSaveFrameDump(char *arg) {
     }
     conAdd(LNORM, "Simulation saved sucesfully!");
 
+    free(sd);
     setFileName(arg);
 
 }
@@ -759,7 +805,10 @@ void cmdSaveFrameDump(char *arg) {
 void cmdLoadFrameDump(char *arg) {
 
     saveInfo_t si;
+    saveDetail_t *sd;
     char *fileName;
+    unsigned int i;
+    size_t bytes;
 
     if (isSpawning())
         return;
@@ -780,8 +829,9 @@ void cmdLoadFrameDump(char *arg) {
     if (!checkHomePath()) return;
 
     fileName = va("%s/%s.info", SAVE_PATH, arg);
-    if (!LoadMemoryDump(fileName, (unsigned char *)&si, sizeof(si))) {
-        conAdd(LERR, "Failed to load %s", fileName);
+    if ((bytes = LoadMemoryDump(fileName, (unsigned char *)&si, sizeof(si), sizeof(int))) < (5*sizeof(int))) {
+        // invalid info file
+        conAdd(LERR, "Failed to load %s (%ld bytes)", fileName, (long)bytes);
         return;
     }
 
@@ -802,26 +852,72 @@ void cmdLoadFrameDump(char *arg) {
     state.frame = si.frame;
     state.historyNFrame = si.historyNFrame;
 
+    if (bytes == sizeof(si)) {
+        // saveinfo is from gravit 0.5.1 or newer - restore additional information
+        view.zoom = si.zoom;
+        VectorCopy(si.rot, view.rot);
+        VectorCopy(si.pos, view.pos);
+        VectorCopy(si.face, view.face);
+        VectorCopy(si.lastCenter, view.lastCenter);
+        view.glow = si.glow;
+        state.physics = si.physics;
+        state.g = si.g;
+        state.gbase = si.gbase;
+    } else {
+        conAdd(LNORM, "Saved data is from older gravit version.");
+    }
+
+    //init saveDetail
+    sd = (saveDetail_t *) calloc(sizeof(saveDetail_t),state.particleCount);
+    if (!sd) {
+        conAdd(LERR, "Could not allocate %lu bytes of memory for saveDetail", (unsigned long)(SAVEDETAILSIZE));
+        free(sd);
+        return;
+    }
+
     conAdd(LNORM, "Please Wait...");
     runVideo();
 
     fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
-    if (!LoadMemoryDump(fileName, (unsigned char *)state.particleDetail, FRAMEDETAILSIZE)) {
+    bytes = SAVEDETAILSIZE;
+    if (LoadMemoryDump(fileName, (unsigned char *)sd, bytes, 0) < bytes) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
 
     fileName = va("%s/%s.particles", SAVE_PATH, arg);
-    if (!LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1))) {
+    bytes = FRAMESIZE * (state.frame+1);
+    if (LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, bytes, 0) < bytes) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
 
+    // get particleDetail from saveDetail
+    for (i = 0; i < state.particleCount; i++) {
+        particleDetail_t *pd;
+        pd = getParticleDetail(i);
+        pd->mass   = sd[i].mass;
+        pd->col[0] = sd[i].col[0];
+        pd->col[1] = sd[i].col[1];
+        pd->col[2] = sd[i].col[2];
+        pd->col[3] = sd[i].col[3];
+	pd->particleSprite=SPRITE_DEFAULT;
+	VectorZero(pd->accel);
+    }
+
     state.currentFrame = 0;
     state.mode = 0;
-    conAdd(LNORM, "Simulation loaded sucesfully!");
+    setColours();
+    conAdd(LHELP, "Simulation %s loaded sucesfully!", arg);
 
+    free(sd);
     setFileName(arg);
+
+    view.zoomTarget = view.zoom;
+    view.zoomSpeed = 0;
+    VectorCopy(view.rot, view.rotTarget);
+    VectorZero(view.rotSpeed);
+    view.dirty = 1;
 
 }
 
@@ -1268,7 +1364,7 @@ void cmdSaveList(char *arg) {
 
 #endif
 
-        if (!LoadMemoryDump(va("%s/%s", SAVE_PATH, file), (unsigned char *)&si, sizeof(si))) {
+        if (LoadMemoryDump(va("%s/%s", SAVE_PATH, file), (unsigned char *)&si, sizeof(si), sizeof(int)) == 0) {
             conAdd(LERR, "Failed to load %s", file);
             return;
         }
@@ -1373,11 +1469,14 @@ void cmdZoomFit(char *arg) {
             // smooth zoomfit
             // zoom out if required change > 30%
 	    if ((new_zoom >= view.zoom) && (fabs(new_zoom / view.zoom) > 1.3)) {
-		view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+                view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+                view.dirty = 1;
 	    } else {
                 // zoom in if required change > 30%
-	        if (fabs(view.zoom / new_zoom) > 1.3)
+	        if (fabs(view.zoom / new_zoom) > 1.3) {
                     view.zoom = view.zoom - (view.zoom - new_zoom) / 60;
+                    view.dirty = 1;
+                }
 	    }
 	}
     }

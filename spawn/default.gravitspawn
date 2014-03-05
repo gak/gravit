@@ -1,9 +1,13 @@
 -- vim:syntax=lua tabstop=4
 
-scripts = { "one-galaxy", "binary-galaxy", "many-galaxy", "snake", "loops", "dust", "negative-collision", "negative-sphere", "negative-spiral", "negative-surround", "surround" }
+load("constants.lua")
 
+
+scripts = { "plummer", "one-galaxy", "binary-galaxy", "merging-galaxies", "many-galaxy", "snake", "loops", "dust", "clouds", "negative-collision", "negative-sphere", "negative-spiral", "negative-surround", "surround" }
+
+math.randomseed(os.time())
 r = math.random(1, #scripts)
-log("Spawning " .. scripts[r])
+logName(scripts[r])
 
 file = scripts[r] .. ".gravitspawn"
 -- log(file)

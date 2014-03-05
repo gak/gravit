@@ -1,0 +1,67 @@
+
+
+Credits, Acknowledgements, License Terms
+This release of Gravit includes the following, unmodified third-party components in binary format:
+
+    * SDL 1.2.14
+    * SDL_ttf 2.0.10 (including freetype)
+    * SDL_image 1.2.10
+    * libPNG 1.4.0 (including zlib)
+    * LUA 5.1.4
+    * agar 1.4.1
+
+
+SDL - Simple DirectMedia Layer
+    Copyright (C) 1997-2009 Sam Lantinga
+    The Simple DirectMedia Layer library is currently available under the GNU Lesser General Public License (LGPL):
+    http://www.gnu.org/copyleft/lesser.html
+
+SDL_ttf:  A companion library to SDL for working with TrueType (tm) fonts
+    Copyright (C) 1997-2009 Sam Lantinga
+    This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+SDL_image:  An example image loading library for use with SDL
+    Copyright (C) 1997-2009 Sam Lantinga
+    This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+
+
+libpng version 1.4.0 - January 3, 2010
+    Copyright (c) 1998-2010 Glenn Randers-Pehrson
+    (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
+    (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
+    This code is released under the libpng license
+    http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
+
+
+zlib - the general purpose compression library
+    Copyright (C) 1995-2010 Jean-loup Gailly and Mark Adler
+    see http://www.gzip.org/zlib/zlib_license.html
+
+    This software is provided 'as-is', without any express or implied
+    warranty.  In no event will the authors be held liable for any damages
+    arising from the use of this software.
+
+
+LUA - a powerful, fast, lightweight, embeddable scripting language
+    Copyright © 1994–2012 Lua.org, PUC-Rio.
+    Lua is free software distributed under the terms of the MIT license
+    http://www.opensource.org/licenses/mit-license.html
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+
+
+AGAR - an open-source, cross-platform toolkit for graphical applications
+    Copyright © 2002-2010 Hypertriton, Inc. All rights reserved. 
+    Agar is free software. Its source code is freely usable and re-usable by everyone under a BSD license, which allows use in commercial applications free of charge. Agar is stable, well-maintained and has been growing organically since early 2002. The Agar project is sponsored and hosted by Csoft.net Hosting.
+    http://www.libagar.org/license.html
+
+    Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+        Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+        Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAG

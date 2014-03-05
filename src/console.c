@@ -76,7 +76,7 @@ void conAdd(int mode, char *f, ... ) {
     if (mode > 3)
         mode = 0;
 
-    if (mode < LNORM) return;
+    if ((mode < LNORM) && !view.verboseMode ) return;
 
 
     cpos++;
@@ -156,7 +156,7 @@ void conDraw() {
 
             w = getnWordWidth(conCommand, conCommandPos);
             glDisable(GL_BLEND);
-            glLineWidth(1.0f);
+            glLineWidth(1.5f);
             glBindTexture(GL_TEXTURE_2D, 0);
             glColor4f(1,1,1,1);
             glBegin(GL_LINES);
@@ -174,21 +174,23 @@ void conDraw() {
 
     }
 
-    if ((view.consoleMode && !view.drawOSD) || view.drawOSD) {
+    if ((view.consoleMode) || (view.drawOSD > 0)) {
+        int nn = CONSOLE_HISTORY;
 
         // draw console history
         y = video.screenH - 15 - fontHeight * 2;
 
-        for (i = 0; i < CONSOLE_HISTORY; i++) {
+        if ((view.consoleMode == 0) && (view.drawOSD > 1)) nn=view.drawOSD;
 
-            glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(CONSOLE_HISTORY-i) / CONSOLE_HISTORY + 0.2f);
+        for (i = 0; i < nn; i++) {
+            glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(nn-i) / nn + 0.2f);
 
             drawFontWord(x, y, con[p].s);
             y -= fontHeight;
 
             p--;
             if (p < 0)
-                p = CONSOLE_HISTORY - 1;
+                p = nn - 1;
 
         }
 

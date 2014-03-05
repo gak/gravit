@@ -154,10 +154,9 @@ ALWAYS_INLINE(__v128) newtonrapson_rsqrt4( const __v128 v ) {
 ALWAYS_INLINE(__v128) newtonrapson_rcp(const __v128 v) {
     //  x = reciprocal_approx(v);
     //  x' = x * (2 - x * v);
-    //   --> x' = 2x - x( x*v) = (x+x) - x (x*v)
 
     __v128 r = _mm_rcp_ps(v);
-    return (V_SUB( V_ADD(r, r), V_MUL( r, V_MUL(r, v))));
+    return (V_MUL(r, V_SUB( _two4, V_MUL(r, v))));
 }
 #endif
 
