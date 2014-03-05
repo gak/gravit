@@ -2,6 +2,22 @@ Gravit ChangeLog
 
     http://gravit.slowchop.com/
 
+0.5.1 2014/03/06
+
+    * Used new skybox images with liberal licences so the project is now actually "free software" (Tomasz Buchert)
+    * Many thanks for Frank Möhle for the rest of these changes!
+    * Lua 5.2
+    * Small updates for classic physics
+    * OpenGL rendering tweaks
+    * Glowing particle textures (#83)
+    * Added MESA GL 7.x/8.0.x to blacklist
+    * VMWare OpenGL driver to blacklist
+    * Added more spawn scripts: merging galaxies, clouds, plummer
+    * Fix setvideomode: second try with videoantialiasing=0 fails (#66)
+    * Use spawn name as default simulation name (#49)
+    * Smooth rotation and zoom (#89)
+    * Many bugs fixed, speed improvements, and build fixes
+
 0.5.0 2012/05/05
 
     * First release in 7 years!
