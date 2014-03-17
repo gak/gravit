@@ -7,8 +7,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppID={{95BFE5C6-C019-4CA9-A971-4D12F05AEBDC}
 AppName=Gravit (64bit)
-AppVersion=0.5.0
-AppVerName=Gravit 0.5.0 (64bit)
+AppVersion=0.5.1
+AppVerName=Gravit 0.5.1 (64bit)
 AppPublisher=Gravit Development Team
 AppPublisherURL=http://gravit.slowchop.com/
 AppSupportURL=http://gravit.slowchop.com/
@@ -19,7 +19,7 @@ AllowNoIcons=true
 LicenseFile=.\files\COPYING
 InfoAfterFile=.\files\README.txt
 OutputDir=.\
-OutputBaseFilename=setup-gravit-0.5.0-64bit
+OutputBaseFilename=setup-gravit-0.5.1-64bit
 Compression=lzma/Max
 SolidCompression=true
 WizardSmallImageFile=.\SmallImage.bmp
