@@ -278,7 +278,7 @@ if test "$WITH_LUA" != "no"; then
 
    if test x"$LUA_LIBS" = x; then
    # try linking with several possible lua libs
-     for lua_name in lua52 lua5.2 lua51 lua5.1 lua53 lua5.3 lua
+     for lua_name in lua lua52 lua51 lua53 lua5.2 lua5.1 lua5.3
      do
        if test x"$LUA_LIBS" = x; then
          AC_CHECK_LIB($lua_name, lua_close, [
