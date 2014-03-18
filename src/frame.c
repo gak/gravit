@@ -169,7 +169,7 @@ static void accelerateParticles() {
     for (i = 0; i < state.particleCount; i++) {
         particleDetail_t *pd;
         pd = getParticleDetail(i);
-	VectorZero(pd->accel);
+        VectorZero(pd->accel);
     }
 
 #if NBODY_METHOD == METHOD_OT
@@ -217,7 +217,7 @@ static void moveParticles() {
     // make sure we know the accelerations of the current frame
     if ((state.totalFrames == 0) || (state.have_old_accel == 0)) {
         accelerateParticles();
-	state.have_old_accel = 1;
+        state.have_old_accel = 1;
     }
 
     // copy particles to next frame
@@ -246,7 +246,7 @@ static void moveParticles() {
     if (!(state.mode & SM_RECORD))
     {
         state.frame--;
-	state.have_old_accel = 0;  // also, invalidate saved acceleration values
+        state.have_old_accel = 0;  // also, invalidate saved acceleration values
         return;
     }
 
@@ -254,7 +254,7 @@ static void moveParticles() {
     for (i = 0; i < state.particleCount; i++) {
         p = state.particleHistory + state.particleCount * (state.frame) + i;
         pd = getParticleDetail(i);
-	VectorMultiplyAdd(pd->accel, 0.5, p->vel);
+        VectorMultiplyAdd(pd->accel, 0.5, p->vel);
     }
 
 
