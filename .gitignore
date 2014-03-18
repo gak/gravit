@@ -14,3 +14,26 @@ Xcode/Gravit/build
 *.sdf
 *.opensdf
 
+# *nix
+
+.deps/
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+depcomp
+dist/
+gravit
+install-sh
+missing
+out/
+src/config.h
+src/config.h.in
+src/stamp-h1
+
