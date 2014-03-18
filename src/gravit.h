@@ -457,6 +457,9 @@ typedef struct state_s {
     int have_old_accel;
     physics_t physics;
 
+    VectorNew(wrapTop);
+    VectorNew(wrapBot);
+
 } state_t;
 
 typedef struct saveInfo_s {
@@ -479,6 +482,10 @@ typedef struct saveInfo_s {
     physics_t physics;     //   ...
     // up to here: gravit version 0.5.1
 
+    // XXX: GAK WRAP
+    VectorNew(wrapTop);
+    VectorNew(wrapBot);
+    // up to here: gravit version 0.5.2
 
 } saveInfo_t;
 

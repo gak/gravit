@@ -257,6 +257,34 @@ static void moveParticles() {
         VectorMultiplyAdd(pd->accel, 0.5, p->vel);
     }
 
+    // XXX: GAK WRAP
+    if (1) {
+        int j;
+        VectorNew(width);
+
+        state.wrapTop[0] = -1;
+        state.wrapTop[1] = -1;
+        state.wrapTop[2] = -1;
+        state.wrapBot[0] = 1;
+        state.wrapBot[1] = 1;
+        state.wrapBot[2] = 1;
+        VectorMultiply(state.wrapBot, 5000, state.wrapBot);
+        VectorMultiply(state.wrapTop, 5000, state.wrapTop);
+
+        VectorSub(state.wrapBot, state.wrapTop, width);
+
+        for (i = 0; i < state.particleCount; i++) {
+            p = state.particleHistory + state.particleCount * (state.frame) + i;
+            for (j = 0; j < 3; j++) {
+
+                while (p->pos[j] < state.wrapTop[j])
+                    p->pos[j] += width[j];
+
+                while (p->pos[j] > state.wrapBot[j])
+                    p->pos[j] -= width[j];
+            }
+        }
+    }
 
     //	processCollisions();
     //	forceToCenter();
