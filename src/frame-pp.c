@@ -51,7 +51,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //#define MIN_STEP2 0.05
 
 
-void processFramePP(int start, int amount) {
+void processFramePP(int start, int amount, float *offset) {
 
     int i;
     int particles_max = state.particleCount;
@@ -67,6 +67,8 @@ void processFramePP(int start, int amount) {
         VectorNew(p1_acc);
         float p1_mass;
         
+        VectorNew(p2_pos);
+
         particle_t *p1;
         particleDetail_t *pd1;
         int j;
@@ -88,17 +90,25 @@ void processFramePP(int start, int amount) {
             particleDetail_t *pd2;
             
             p2 = state.particleHistory + state.particleCount*state.frame + j;
+            VectorCopy(p2->pos, p2_pos);
             pd2 = state.particleDetail + j;
+
+            if (offset) {
+                VectorAdd(p2_pos, offset, p2_pos);
+            }
             
-            dv[0] = p1_pos[0] - p2->pos[0];
-            dv[1] = p1_pos[1] - p2->pos[1];
-            dv[2] = p1_pos[2] - p2->pos[2];
+            dv[0] = p1_pos[0] - p2_pos[0];
+            dv[1] = p1_pos[1] - p2_pos[1];
+            dv[2] = p1_pos[2] - p2_pos[2];
             
             // get distance^2 between the two
             inverseSquareDistance  = dv[0] * dv[0];
             inverseSquareDistance += dv[1] * dv[1];
             inverseSquareDistance += dv[2] * dv[2];
             //inverseSquareDistance +=  + MIN_STEP2;
+
+            if (inverseSquareDistance < state.frame * 0.01f)
+                continue;
             
             force = state.g * p1_mass * pd2->mass / inverseSquareDistance;
             
@@ -108,9 +118,11 @@ void processFramePP(int start, int amount) {
             p1_acc[2] += dv[2] * force;
             
             // add acceleration for p2 (with negative sign, as the direction is inverted)
-            pd2->accel[0] += -dv[0] * force;
-            pd2->accel[1] += -dv[1] * force;
-            pd2->accel[2] += -dv[2] * force;
+            if (!offset) {
+                pd2->accel[0] += -dv[0] * force;
+                pd2->accel[1] += -dv[1] * force;
+                pd2->accel[2] += -dv[2] * force;
+            }
             
         }
         

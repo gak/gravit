@@ -116,11 +116,38 @@ void processFrameThread(int thread) {
 
 #if NBODY_METHOD == METHOD_OT
     processFrameOT(sliceStart, sliceEnd);
+    a
 #else
 #ifdef HAVE_SSE
     processFramePP_SSE(sliceStart, sliceEnd);
+    a
 #else
-    processFramePP(sliceStart, sliceEnd);
+    // processFramePP(sliceStart, sliceEnd, NULL);
+
+    // XXX: GAK WRAP
+    VectorNew(offset);
+    VectorNew(width);
+    VectorSub(state.wrapBot, state.wrapTop, width);
+    int x, y, z;
+
+    // This is terrible code
+    for (x = -1; x <= 1; x++) {
+        for (y = -1; y <= 1; y++) {
+            for (z = -1; z <= 1; z++) {
+                /*if      (x == 0 && y != 0 && z != 0) {}
+                else if (x != 0 && y == 0 && z != 0) {}
+                else if (x != 0 && y != 0 && z == 0) {}
+                else continue;
+                */
+
+                offset[0] = x * width[0];
+                offset[1] = y * width[1];
+                offset[2] = z * width[2];
+
+                processFramePP(sliceStart, sliceEnd, offset);
+            }
+        }
+    }
 #endif
 #endif
     

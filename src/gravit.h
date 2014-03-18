@@ -799,7 +799,7 @@ void forceToCenter();
 void processCollisions();
 
 // frame-pp.c
-void processFramePP(int s, int n);
+void processFramePP(int s, int n, float *offset);
 
 // frame-pp_sse.c
 void processFramePP_SSE(int s, int n);
