@@ -127,18 +127,16 @@ void processFrameThread(int thread) {
     // XXX: GAK WRAP
     VectorNew(offset);
     VectorNew(width);
-    VectorSub(state.wrapBot, state.wrapTop, width);
+    VectorSub(state.wrapTop, state.wrapBot, width);
     int x, y, z;
 
     // This is terrible code
     for (x = -1; x <= 1; x++) {
         for (y = -1; y <= 1; y++) {
             for (z = -1; z <= 1; z++) {
-                /*if      (x == 0 && y != 0 && z != 0) {}
-                else if (x != 0 && y == 0 && z != 0) {}
-                else if (x != 0 && y != 0 && z == 0) {}
-                else continue;
-                */
+
+	      // use only the 6 adjacent sides of the cube
+	      if ((abs(z) + abs(y) + abs(x)) >1) continue;
 
                 offset[0] = x * width[0];
                 offset[1] = y * width[1];
@@ -289,28 +287,30 @@ static void moveParticles() {
         int j;
         VectorNew(width);
 
-        state.wrapTop[0] = -1;
-        state.wrapTop[1] = -1;
-        state.wrapTop[2] = -1;
-        state.wrapBot[0] = 1;
-        state.wrapBot[1] = 1;
-        state.wrapBot[2] = 1;
+        state.wrapTop[0] = 1.0;
+        state.wrapTop[1] = 1.0;
+        state.wrapTop[2] = 1.0;
+        state.wrapBot[0] = -1.0;
+        state.wrapBot[1] = -1.0;
+        state.wrapBot[2] = -1.0;
         VectorMultiply(state.wrapBot, 5000, state.wrapBot);
         VectorMultiply(state.wrapTop, 5000, state.wrapTop);
 
-        VectorSub(state.wrapBot, state.wrapTop, width);
+        VectorSub(state.wrapTop, state.wrapBot, width);
 
+#if 1
         for (i = 0; i < state.particleCount; i++) {
             p = state.particleHistory + state.particleCount * (state.frame) + i;
             for (j = 0; j < 3; j++) {
 
-                while (p->pos[j] < state.wrapTop[j])
+                while (p->pos[j] < state.wrapBot[j])
                     p->pos[j] += width[j];
 
-                while (p->pos[j] > state.wrapBot[j])
+                while (p->pos[j] > state.wrapTop[j])
                     p->pos[j] -= width[j];
             }
         }
+#endif
     }
 
     //	processCollisions();

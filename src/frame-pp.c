@@ -48,7 +48,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // optional - min. distance squared -- used as smoothing length, 
 //            to avoid the "stars shooting out of the galaxy" effect
-//#define MIN_STEP2 0.05
+#define MIN_STEP2 0.05
 
 
 void processFramePP(int start, int amount, float *offset) {
@@ -79,6 +79,11 @@ void processFramePP(int start, int amount, float *offset) {
         p1_mass = pd1->mass;
         VectorCopy(p1->pos, p1_pos);
         VectorZero(p1_acc);
+
+	// small optimization: instead of adding the offset to all "remote" particles,
+        // we subtract the offset from the "local" particle postion.
+        // The resulting distance vector is the same, trust me :-)
+        VectorSub(p1_pos, offset, p1_pos);
         
         for (j = i + 1; j < particles_max; j++) {
             
@@ -93,9 +98,7 @@ void processFramePP(int start, int amount, float *offset) {
             VectorCopy(p2->pos, p2_pos);
             pd2 = state.particleDetail + j;
 
-            if (offset) {
-                VectorAdd(p2_pos, offset, p2_pos);
-            }
+            //VectorAdd(p2_pos, offset, p2_pos);
             
             dv[0] = p1_pos[0] - p2_pos[0];
             dv[1] = p1_pos[1] - p2_pos[1];
@@ -105,11 +108,8 @@ void processFramePP(int start, int amount, float *offset) {
             inverseSquareDistance  = dv[0] * dv[0];
             inverseSquareDistance += dv[1] * dv[1];
             inverseSquareDistance += dv[2] * dv[2];
-            //inverseSquareDistance +=  + MIN_STEP2;
+            inverseSquareDistance +=  + MIN_STEP2;
 
-            if (inverseSquareDistance < state.frame * 0.01f)
-                continue;
-            
             force = state.g * p1_mass * pd2->mass / inverseSquareDistance;
             
             // sum of accelerations for p1
@@ -118,11 +118,9 @@ void processFramePP(int start, int amount, float *offset) {
             p1_acc[2] += dv[2] * force;
             
             // add acceleration for p2 (with negative sign, as the direction is inverted)
-            if (!offset) {
-                pd2->accel[0] += -dv[0] * force;
-                pd2->accel[1] += -dv[1] * force;
-                pd2->accel[2] += -dv[2] * force;
-            }
+                pd2->accel[0] -= dv[0] * force;
+                pd2->accel[1] -= dv[1] * force;
+                pd2->accel[2] -= dv[2] * force;
             
         }
         
