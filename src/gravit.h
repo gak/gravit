@@ -802,7 +802,7 @@ void processCollisions();
 void processFramePP(int s, int n, float *offset);
 
 // frame-pp_sse.c
-void processFramePP_SSE(int s, int n);
+void processFramePP_SSE(int s, int n, float *offset);
 
 // frame-ot.c
 typedef struct node_s {

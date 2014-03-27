@@ -68,7 +68,7 @@ static const __v128 vmin_step2 = _mm_init1_ps(MIN_STEP2);
 
 HOT
 static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
-                                  int start, int amount) {
+                                  int start, int amount, float *offset) {
     int i;
 
     // apply gravity to every specified velocity
@@ -85,7 +85,7 @@ static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
         __v128 p1_vaccel_y  = _mm_init1_ps(0.0f);
         __v128 p1_vaccel_z  = _mm_init1_ps(0.0f);
 
-        //VectorNew(p1_pos);
+        VectorNew(p1_pos);
         //VectorNew(p1_vel);
         //VectorZero(p1_vel);
 
@@ -103,9 +103,16 @@ static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
         int vector_limit;
         vector_limit = (i / VECT_SIZE) * VECT_SIZE;  // round down to value divisible by 4
 
-        p1_vpos_x = _mm_set1_ps(pos.x[i]);
-        p1_vpos_y = _mm_set1_ps(pos.y[i]);
-        p1_vpos_z = _mm_set1_ps(pos.z[i]);
+	// small optimization: instead of adding the offset to all "remote" particles,
+        // we subtract the offset from the "local" particle postion.
+        // The resulting distance vector is the same, trust me :-)
+        p1_pos[0] = pos.x[i] - offset[0];
+        p1_pos[1] = pos.y[i] - offset[1];
+        p1_pos[2] = pos.z[i] - offset[2];
+
+        p1_vpos_x = _mm_set1_ps(p1_pos[0]);
+        p1_vpos_y = _mm_set1_ps(p1_pos[1]);
+        p1_vpos_z = _mm_set1_ps(p1_pos[2]);
         p1_vmass  = _mm_set1_ps(pos.mass[i]);
 
 
@@ -146,10 +153,10 @@ static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
         }
 
 
-        // cache p1 data
-        p1_pos_x = pos.x[i];
-        p1_pos_y = pos.y[i];
-        p1_pos_z = pos.z[i];
+        // cache p1 data (with offset)
+        p1_pos_x = pos.x[i] - offset[0];
+        p1_pos_y = pos.y[i] - offset[1];
+        p1_pos_z = pos.z[i] - offset[2];
         p1_mass   = pos.mass[i];
 
         // copy vector results  to single floats
@@ -200,7 +207,7 @@ static void do_processFramePP_SSE(particle_vectors pos, acc_vectors accel,
 
 
 
-void processFramePP_SSE(int start, int amount) {
+void processFramePP_SSE(int start, int amount, float *offset) {
     particle_vectors pos;
     acc_vectors accel;
     particle_t *framebase = state.particleHistory + state.particleCount*state.frame;
@@ -236,7 +243,7 @@ void processFramePP_SSE(int start, int amount) {
 
 
     // calculate new accelerations
-    do_processFramePP_SSE(pos, accel, start, amount);
+    do_processFramePP_SSE(pos, accel, start, amount, offset);
 
 
     // write back results

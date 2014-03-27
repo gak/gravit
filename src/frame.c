@@ -118,10 +118,6 @@ void processFrameThread(int thread) {
     processFrameOT(sliceStart, sliceEnd);
     a
 #else
-#ifdef HAVE_SSE
-    processFramePP_SSE(sliceStart, sliceEnd);
-    a
-#else
     // processFramePP(sliceStart, sliceEnd, NULL);
 
     // XXX: GAK WRAP
@@ -142,11 +138,14 @@ void processFrameThread(int thread) {
                 offset[1] = y * width[1];
                 offset[2] = z * width[2];
 
+#ifdef HAVE_SSE
+                processFramePP_SSE(sliceStart, sliceEnd, offset);
+#else
                 processFramePP(sliceStart, sliceEnd, offset);
+#endif
             }
         }
     }
-#endif
 #endif
     
 }
