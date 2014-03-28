@@ -700,6 +700,15 @@ void drawFrame() {
 //	sc[3] = 1;
 
     if (view.tailLength > 0 || view.tailLength == -1) {
+        VectorNew(lastPos);
+        VectorNew(width);
+        // get "wrapping" offset
+        VectorSub(state.wrapTop, state.wrapBot, width);
+        VectorMultiply(width, 0.75, width);
+
+        // if wrapTop-wrapBot = 0 --> set very large value
+        if (fabs(width[0]) < 0.00001)
+            width[0]=width[1]=width[2] = 1000000;
 
         // Not sure why this helps but,
         // it is a fix for one case where only points are drawn instead of lines
@@ -722,6 +731,9 @@ void drawFrame() {
             memcpy(sc, pd->col, sizeof(float)*4);
             sc[3] *= view.tailOpacity;
             glColor4fv(sc);
+
+            p = state.particleHistory + state.particleCount * state.currentFrame + i;
+            VectorCopy(p->pos, lastPos);
 
             glBegin(GL_LINE_STRIP);
 
@@ -751,9 +763,34 @@ void drawFrame() {
                 }
 
                 p = state.particleHistory + state.particleCount * j + i;
-                glVertex3fv(p->pos);
 
+                // if the particle has "warped", skip the line segment
+                if( (fabs(lastPos[0] - p->pos[0]) > width[0])
+                  ||(fabs(lastPos[1] - p->pos[1]) > width[1])
+                  ||(fabs(lastPos[2] - p->pos[2]) > width[2]) ) {
+
+                    // FIXME: this should make sure we do not get an empty line stip
+                    // but it does not work....
+                    //  if ((j==k) || (j == state.currentFrame))
+                    //  {
+                    //    sc[3] *= 0.01;
+                    //    glColor4fv(sc);
+                    //    continue;
+                    //  }
+                    //  else {
+
+                    // skip this line segment
+                        glEnd();
+                        glBegin(GL_LINE_STRIP);
+                        glColor4fv(sc);
+
+                    //}
+                }
+
+                glVertex3fv(p->pos);
                 view.vertices++;
+
+                VectorCopy(p->pos, lastPos);
 
             }
 
