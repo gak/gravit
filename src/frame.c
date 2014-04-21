@@ -276,7 +276,6 @@ static void moveParticles() {
 void processFrame() {
 
     int i;
-    particle_t *p;
     Uint32 frameStart = 0;
     Uint32 frameEnd = 0;
 

@@ -249,7 +249,7 @@ void drawFontWordRA(float x, float y, char *word) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    for (i = strlen(word) - 1; i >= 0; i--) {
+    for (i = (int)strlen(word) - 1; i >= 0; i--) {
 
         x -= fonts[(int)word[i]].ow;
         drawFontLetter(x, y, word[i]);

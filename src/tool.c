@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #else
         #define mkdir(path, mode) mkdir(path)
     #endif
+    // get definition of SIZE_MAX
+    #include <stdint.h>
 #endif
 
 #ifdef __MACH__
@@ -468,15 +470,21 @@ int checkHomePath() {
 size_t getMemory() {
 
     // From http://stackoverflow.com/questions/2513505/how-to-get-available-memory-c-g
-    size_t realMemory;
     
 #ifdef WIN32
+    size_t realMemory;
     MEMORYSTATUSEX status;
     status.dwLength = sizeof(status);
     GlobalMemoryStatusEx(&status);
-    return status.ullTotalPhys;
+
+    if (status.ullTotalPhys >= SIZE_MAX)
+        realMemory = SIZE_MAX;
+    else
+        realMemory = (size_t)status.ullTotalPhys;
+    return realMemory;
 #else
 #ifdef __MACH__
+    size_t realMemory;
     int mib[2] = { CTL_HW, HW_MEMSIZE };
     u_int namelen = sizeof(mib) / sizeof(mib[0]);
     uint64_t size;

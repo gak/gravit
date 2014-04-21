@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "gravit.h"
 
-con_t con[CONSOLE_HISTORY];
+con_t con[CONSOLE_HISTORY+1];
 int cpos = 0;
 
 char conCommand[CONSOLE_LENGTH+1];
@@ -29,7 +29,7 @@ int conCommandPos;
 unsigned int conBlinkTime;
 int conBlinkOn;
 
-char *conTypedHistory[CONSOLE_TYPED_HISTORY];
+char *conTypedHistory[CONSOLE_TYPED_HISTORY+1];
 int conTypedHistoryPos;
 int conTypedHistoryPointer;
 
@@ -37,7 +37,7 @@ int conTypedHistoryPointer;
 int conCompPos;	// the position of the last BC
 char conCompWord[CONSOLE_LENGTH+1]; // the current BC
 int conCompWordsFoundCount; // commands found starting with BC
-char *conCompWordsFoundPtrs[MAX_COMPLETE_LIST]; // an array of commands starting with BC
+char *conCompWordsFoundPtrs[MAX_COMPLETE_LIST+1]; // an array of commands starting with BC
 int conCompWordsFoundIndex;
 
 static col_t cols[] = {
@@ -259,8 +259,8 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
 
         if (conCommandPos < CONSOLE_LENGTH) {
             int i,l;
-            l = strlen(conCommand);
-            for (i = strlen(conCommand); i > conCommandPos-1; i--)
+            l = (int)strlen(conCommand);
+            for (i = (int)strlen(conCommand); i > conCommandPos-1; i--)
                 conCommand[i+1]=conCommand[i];
 
             conCommand[conCommandPos] = (char) c;
@@ -356,7 +356,7 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
 
 void conTypedHistoryAdd(char *s) {
 
-    conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(s)+1);
+    conTypedHistory[conTypedHistoryPos] = (char *)realloc(conTypedHistory[conTypedHistoryPos], strlen(s)+1);
     strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
 
     conTypedHistoryPos++;
@@ -379,7 +379,7 @@ void conTypedHistoryChange(int i) {
 
     // make sure conCommand is at conTypedHistoryPos
     if (conTypedHistoryPos == lastPtr) {
-        conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(conCommand)+1);
+        conTypedHistory[conTypedHistoryPos] = (char *)realloc(conTypedHistory[conTypedHistoryPos], strlen(conCommand)+1);
         strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
     }
 
@@ -390,15 +390,16 @@ void conTypedHistoryChange(int i) {
     }
 
     strcpy(conCommand, conTypedHistory[conTypedHistoryPointer]);
-    conCommandPos = strlen(conCommand);
+    conCommandPos = (int)strlen(conCommand);
 
 }
 
 void conAutoComplete() {
 
-    int lenCommand;
-    int lenString;
-    int i, j;
+    size_t lenCommand;
+    size_t lenString;
+    int i;
+	size_t j;
     cmd_t *c;
 
     if (!strlen(conCommand))
@@ -434,7 +435,7 @@ void conAutoComplete() {
                     strcpy(conCompWord, c->cmd);
                     // see what we can match
                 } else {
-                    int l;
+                    size_t l;
                     l = strlen(conCompWord);
                     if (lenCommand < l)
                         l = lenCommand;
@@ -466,7 +467,7 @@ void conAutoComplete() {
     if (conCompWordsFoundIndex >= conCompWordsFoundCount)
         conCompWordsFoundIndex = 0;
     strcpy(conCommand, conCompWordsFoundPtrs[conCompWordsFoundIndex]);
-    conCommandPos = strlen(conCommand);
+    conCommandPos = (int)strlen(conCommand);
 
 }
 

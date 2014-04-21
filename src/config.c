@@ -42,7 +42,7 @@ int configRead(char *filename, int ignoreMissing) {
     conAdd(LLOW, "Executing Script: %s", filename);
 
     while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
-        int len = strlen(buffer) - 1;
+        int len = (int)strlen(buffer) - 1;
 
         while (len >= 0 && (isspace(buffer[len]) || buffer[len] == 13 || buffer[len] == 10)) buffer[len--] = 0;
         if (len <= 0 || buffer[0] == '#') continue;

@@ -118,7 +118,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #ifndef __GNUC__
         // stop conversion from 'double ' to 'float ', possible loss of data
         #pragma warning ( disable : 4244 )
-    #endif
+        // silence warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup.
+        #define strdup(x) _strdup(x)
+        // silence warning C4055: typecast from data pointer 'void *' to function pointer 'FPglPointParameterfARB'
+        #pragma warning ( disable : 4055 )
+#endif
 
 #else
 
@@ -723,7 +727,7 @@ void spawnDefaults();
 int isSpawning();
 
 // console.c
-extern con_t con[CONSOLE_HISTORY];
+extern con_t con[CONSOLE_HISTORY+1];
 void conAdd(int mode, char *f, ... );
 void conInit();
 void conDraw();

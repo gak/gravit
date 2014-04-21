@@ -236,8 +236,8 @@ void cmdPrint(cmd_t *c) {
 int cmdFind(char *string) {
 
     cmd_t *c;
-    int lenString;
-    int lenCommand;
+    size_t lenString;
+    size_t lenCommand;
     int i;
 
     lenString = strlen(string);
@@ -268,8 +268,8 @@ int cmdFind(char *string) {
 int cmdPrintStartingWith(char *string) {
 
     cmd_t *c;
-    int lenString;
-    int lenCommand;
+    size_t lenString;
+    size_t lenCommand;
     int i;
 
     lenString = strlen(string);
@@ -302,7 +302,7 @@ void cmdExecute(char *string) {
     int j;
     cmd_t *c;
     char cmdbuf[CONSOLE_LENGTH];
-    int stringLength;
+    size_t stringLength;
     char *args;
     int ivar;
     float fvar;
@@ -711,7 +711,7 @@ void cmdSaveFrameDump(char *arg) {
     saveInfo_t si;
     saveDetail_t *sd;
     char *fileName;
-    unsigned int i;
+    int i;
 
     if (isSpawning())
         return;
@@ -807,7 +807,7 @@ void cmdLoadFrameDump(char *arg) {
     saveInfo_t si;
     saveDetail_t *sd;
     char *fileName;
-    unsigned int i;
+    int i;
     size_t bytes;
 
     if (isSpawning())
