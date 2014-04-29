@@ -1470,6 +1470,12 @@ void checkDriverBlacklist() {
            haveSlowHardware = 1;
            video.supportPointSprite = 0;
        }
+
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Falling back to particleRenderMode 2");
+           view.particleRenderMode = 2;
+       }
+
     }
 
     // software OpenGL driver, Microsoft Windows
@@ -1558,6 +1564,7 @@ void checkDriverBlacklist() {
           || (strncmp(glRenderer, "Mesa DRI Mobile Intel", strlen("Mesa DRI Mobile Intel")) == 0)
           || (strncmp(glRenderer, "Gallium ", strlen("Gallium ")) == 0)) {
           if (  (strstr(glVersion, "1.4 (2.1 Mesa") != NULL)
+                ||(strstr(glVersion, "2.1 Mesa 10.") != NULL)
                 ||(strstr(glVersion, "2.1 Mesa 9.") != NULL)
                 ||(strstr(glVersion, "2.1 Mesa 8.0.") != NULL)
                 ||(strstr(glVersion, "2.1 Mesa 7.") != NULL)) {
