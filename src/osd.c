@@ -46,7 +46,7 @@ void drawOSD() {
     y = 10;
     glColor4f(1,1,1,1);
     drawFontWordCA(video.screenW / 2, y, "Hit SPACE to start a new simulation");
-    drawFontWordCA(video.screenW / 2, y += fontHeight, "Hold down a mouse button and move it around to change your orientation.");
+    drawFontWordCA(video.screenW / 2, y += fontHeight, "Use arrow keys, or hold down a mouse button and move it around to change your orientation.");
     drawFontWordCA(video.screenW / 2, y += fontHeight, "Use the scroll wheel, or the A and Z keys to zoom in and out.");
     glColor4f(1,1,1,.5f);
     drawFontWordCA(video.screenW / 2, y += fontHeight, "press F1 for keyboard commands help.");
@@ -395,7 +395,7 @@ void osdInitIntroWindow() {
     AG_BoxSetSpacing(vBox, 10);
     
     text = AG_LabelNew(vBox, 0, 0);
-    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.\n");
+    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Use arrow keys, or hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.\n");
     AG_WidgetSetSize(text, 200, 100);
     
     // AG_Checkbox *showAgain = AG_CheckboxNew(vBox, AG_CHECKBOX_SET, "Show this window on startup");

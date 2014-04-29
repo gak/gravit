@@ -431,8 +431,42 @@ int processKeys() {
             view.zoom *= (1 + (view.deltaVideoFrame * 0.005f));
             view.zoomTarget = view.zoom;
             view.zoomSpeed = 0;
+        }
+
+        // allow arrow keys instead of mouse dragging
+
+        if (view.keys[SDLK_PAGEUP]) {
+            view.zoomTarget *= (1 + (view.deltaVideoFrame * -0.005f));
             view.dirty = 1;
         }
+        if (view.keys[SDLK_PAGEDOWN]) {
+            view.zoomTarget *= (1 + (view.deltaVideoFrame * 0.005f));
+            view.dirty = 1;
+        }
+
+
+        if (view.keys[SDLK_UP]) {
+            view.rotTarget[0] -= view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+        if (view.keys[SDLK_DOWN]) {
+            view.rotTarget[0] += view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+        if (view.keys[SDLK_LEFT]) {
+            view.rotTarget[1] -= view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+        if (view.keys[SDLK_RIGHT]) {
+            view.rotTarget[1] += view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+
+
         /*
         		if (view.keys[SDLK_UP])
         			view.face[0] -= state.dt * 0.1f;
