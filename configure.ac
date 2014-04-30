@@ -66,7 +66,17 @@ AC_CHECK_HEADERS([omp.h],[
 
 # check for supported SIMD extensions (gcc specific)
 # if SSE is supported, HAVE_SSE will be set
-AX_EXT_SSE
+if test x"$ax_cv_c_compiler_vendor" != x"intel"; then
+    AX_EXT_SSE
+else
+    # skip SSE cpuid test for intel compiler
+    ax_cv_have_sse_ext=yes
+    AC_DEFINE(HAVE_SSE,,[Support SSE (Streaming SIMD Extensions) instructions])
+    AX_CHECK_COMPILER_FLAGS(-xSSE2, SIMD_FLAGS="-xSSE2", [])
+    #AX_CHECK_COMPILER_FLAGS(-axAVX, SIMD_FLAGS="-axAVX", [])
+    AC_SUBST(SIMD_FLAGS)
+fi
+
 CFLAGS="$CFLAGS $SIMD_FLAGS -I/usr/local/include"
 LDFLAGS="$SIMD_FLAGS $LDFLAGS -L/usr/local/lib"
 
