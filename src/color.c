@@ -230,13 +230,11 @@ void setColoursByAcceleration() {
 void setColoursByMass() {
 
     int i;
-    particle_t *p;
     particleDetail_t *pd;
     float d;
 
     for (i = 0; i < state.particleCount; i++) {
 
-        p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
 
         if (i == 0) {
@@ -258,7 +256,6 @@ void setColoursByMass() {
 
     for (i = 0; i < state.particleCount; i++) {
 
-        p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
 
         d = pd->mass / state.massRange[1];

@@ -258,8 +258,7 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
             return;
 
         if (conCommandPos < CONSOLE_LENGTH) {
-            int i,l;
-            l = (int)strlen(conCommand);
+            int i;
             for (i = (int)strlen(conCommand); i > conCommandPos-1; i--)
                 conCommand[i+1]=conCommand[i];
 

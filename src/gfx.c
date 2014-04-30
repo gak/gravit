@@ -715,7 +715,6 @@ void drawFrame() {
 
         for (i = 0; i < state.particleCount; i++) {
 
-            int to;
             p = 0;
 
             pd = state.particleDetail + i;
@@ -731,11 +730,6 @@ void drawFrame() {
                 k = 0;
             else
                 k = state.currentFrame - (view.tailLength+2);
-
-            if (state.mode & SM_RECORD)
-                to = state.currentFrame;
-            else
-                to = state.currentFrame + 1;
 
             for (j = k; j <= state.currentFrame; j+=view.tailSkip ) {
                 //for (j = state.currentFrame; j >= k; j-=view.tailSkip ) {

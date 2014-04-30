@@ -491,7 +491,6 @@ cmdSpawnRestartSpawning:
                 particle_t *p1;
                 particle_t *p2;
                 particleDetail_t *pd1;
-                particleDetail_t *pd2;
                 VectorNew(diff);
 
                 if (j == i)
@@ -500,7 +499,6 @@ cmdSpawnRestartSpawning:
                 p1 = getParticleCurrentFrame(i);
                 p2 = getParticleCurrentFrame(j);
                 pd1 = getParticleDetail(i);
-                pd2 = getParticleDetail(j);
 
                 if (pd1->mass == 0) {
                     conAdd(LERR, "Particle %i has no mass", i);
