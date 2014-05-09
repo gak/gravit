@@ -72,8 +72,9 @@ else
     # skip SSE cpuid test for intel compiler
     ax_cv_have_sse_ext=yes
     AC_DEFINE(HAVE_SSE,,[Support SSE (Streaming SIMD Extensions) instructions])
-    AX_CHECK_COMPILER_FLAGS(-xSSE2, SIMD_FLAGS="-xSSE2", [])
-    #AX_CHECK_COMPILER_FLAGS(-axAVX, SIMD_FLAGS="-axAVX", [])
+    AX_CHECK_COMPILE_FLAG(-xSSE2, SIMD_FLAGS="-xSSE2")
+    #AX_CHECK_COMPILE_FLAG(-axAVX, SIMD_FLAGS="-axAVX")
+    #AX_CHECK_COMPILE_FLAG(-axCORE-AVX2 -fma, SIMD_FLAGS="-axCORE-AVX2 -fma")
     AC_SUBST(SIMD_FLAGS)
 fi
 
@@ -140,7 +141,7 @@ AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([atexit floor ftime memset mkdir pow select sqrt strchr strdup strerror strstr])
+AC_CHECK_FUNCS([atexit floor ftime memset mkdir pow select setenv sqrt strchr strdup strerror strstr])
 
 # check for functions to do aligned malloc
 AC_CHECK_HEADERS([intrin.h x86intrin.h xmmintrin.h malloc.h memory.h])
