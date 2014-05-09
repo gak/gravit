@@ -199,22 +199,22 @@ void processFramePP(int start, int amount) {
     particles_max = state.particleCount;
 
 
-    // create arrays, aligned to 16 bytes
+    // create arrays, aligned to 64 bytes (cache line size)
 
-    MALLOC_ALIGNED( pos.x, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( pos.y, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( pos.z, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( pos.mass, sizeof(float)*(particles_max + 16), 16);
-    //memset(pos.x, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.y, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.z, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.mass, 0, sizeof(float) * (particles_max + 16));
-    MALLOC_ALIGNED( accel.x, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( accel.y, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( accel.z, sizeof(float)*(particles_max + 16), 16);
-    memset(accel.x, 0, sizeof(float) * (particles_max + 16));
-    memset(accel.y, 0, sizeof(float) * (particles_max + 16));
-    memset(accel.z, 0, sizeof(float) * (particles_max + 16));
+    MALLOC_ALIGNED( pos.x, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( pos.y, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( pos.z, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( pos.mass, sizeof(float)*(particles_max + 64), 64);
+    //memset(pos.x, 0, sizeof(float) * (particles_max + 64));
+    //memset(pos.y, 0, sizeof(float) * (particles_max + 64));
+    //memset(pos.z, 0, sizeof(float) * (particles_max + 64));
+    //memset(pos.mass, 0, sizeof(float) * (particles_max + 64));
+    MALLOC_ALIGNED( accel.x, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( accel.y, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( accel.z, sizeof(float)*(particles_max + 64), 64);
+    memset(accel.x, 0, sizeof(float) * (particles_max + 64));
+    memset(accel.y, 0, sizeof(float) * (particles_max + 64));
+    memset(accel.z, 0, sizeof(float) * (particles_max + 64));
 
 
     // copy frame data to vector-friendly arrays

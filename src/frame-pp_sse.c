@@ -211,19 +211,19 @@ void processFramePP_SSE(int start, int amount) {
     particles_max = state.particleCount;
 
 
-    // create arrays aligned to 16 bytes
-    pos.x    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.y    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.z    = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    pos.mass = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    // create arrays aligned to 64 bytes  (cache line lize)
+    pos.x    = (float*) _mm_malloc(sizeof(float)*(particles_max + 64), 64);
+    pos.y    = (float*) _mm_malloc(sizeof(float)*(particles_max + 64), 64);
+    pos.z    = (float*) _mm_malloc(sizeof(float)*(particles_max + 64), 64);
+    pos.mass = (float*) _mm_malloc(sizeof(float)*(particles_max + 64), 64);
 
-    accel.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    accel.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
-    accel.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 16), 16);
+    accel.x = (float*) _mm_malloc(sizeof(float)*(particles_max + 64), 64);
+    accel.y = (float*) _mm_malloc(sizeof(float)*(particles_max + 64), 64);
+    accel.z = (float*) _mm_malloc(sizeof(float)*(particles_max + 64), 64);
 
-    memset(accel.x, 0, sizeof(float) * (particles_max + 16));
-    memset(accel.y, 0, sizeof(float) * (particles_max + 16));
-    memset(accel.z, 0, sizeof(float) * (particles_max + 16));
+    memset(accel.x, 0, sizeof(float) * (particles_max + 64));
+    memset(accel.y, 0, sizeof(float) * (particles_max + 64));
+    memset(accel.z, 0, sizeof(float) * (particles_max + 64));
 
 
     // copy frame data to vector-friendly arrays
