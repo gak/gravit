@@ -157,7 +157,7 @@ void processMomentum() {
  */
 static void accelerateParticles() {
 #if (!defined(WIN32) || defined(USE_PTHREAD)) && !defined(_OPENMP)
-    pthread_t ptt[MAX_THREADS];
+    pthread_t ptt[MAX_THREADS+1];
 #endif
         int i;
 
