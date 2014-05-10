@@ -44,7 +44,7 @@ void drawOSD() {
 #ifdef WITHOUT_AGAR
     // Top middle
     y = 10;
-    glColor4f(1,1,1,1);
+    glColor4f(0,.6,.8,.6f);
     drawFontWordCA(video.screenW / 2, y, "Hit SPACE to start a new simulation");
     drawFontWordCA(video.screenW / 2, y += fontHeight, "Use arrow keys, or hold down a mouse button and move it around to change your orientation.");
     drawFontWordCA(video.screenW / 2, y += fontHeight, "Use the scroll wheel, or the A and Z keys to zoom in and out.");
