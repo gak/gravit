@@ -1009,6 +1009,9 @@ void drawAgar() {
     glCheck();
     // Agar leaves glTexEnvf env mode to GL_REPLACE :(
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    // .. and also leaves glShadeModel mode to GL_FLAT
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
 }
 #endif
 
