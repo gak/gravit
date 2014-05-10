@@ -55,6 +55,7 @@ Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 #else
 /* ******************************************************************* */
 // use gcc extensions for SSE
+
 #if (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) > 40500
 // x86intrin.h availeable since gcc 4.5.0
 #include <malloc.h>
@@ -67,11 +68,10 @@ Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 #if !defined(__INTEL_COMPILER)
 #include <mm_malloc.h>
 #endif
+
 #ifndef __MACH__
 #include <malloc.h>
 #endif
-typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
-#define _mm_init1_ps(f) {f, f, f, f}
 
 #if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
 // workaround for buggy _mm_malloc in mingw
@@ -81,6 +81,16 @@ typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  
 
 #define ALIGNED __attribute__((aligned (16)))
 #define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__))
+
+#ifdef WIN32
+// windows: use gcc extensions to define vector type
+typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
+#else
+// all others: rely on buildin vector types
+#define __v128 __m128
+#endif
+
+#define _mm_init1_ps(f) {f, f, f, f}
 
 #endif
 
