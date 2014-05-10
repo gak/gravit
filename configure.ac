@@ -5,6 +5,17 @@
 # ToDo:
 # -------------
 # * improve agar detection (check for version >= 1.4.1)
+# * add debugging support (--enable-debug)
+#
+# Changes (FrMo, Mai 2014):
+# -------------
+# * improved intel icc support
+# * updated to autoconf 2 syntax
+# * updated acinclude/ with latest versions from gnu autoconf-archive
+#
+# Changes (FrMo, 2013):
+# -------------
+# * improved lua detection, add support for LUA 5.2
 #
 # Changes (FrMo, April 2012):
 # -------------
@@ -31,8 +42,8 @@
 # ===============================================================================================
 
 
-AC_PREREQ(2.59)
-AC_INIT(gravit, 0.5.1, gravit@slowchop.com)
+AC_PREREQ([2.69])
+AC_INIT([gravit],[0.5.1],[gravit@slowchop.com])
 AC_CONFIG_SRCDIR([src/config.c])
 AC_CONFIG_HEADER(src/config.h)
 
@@ -49,7 +60,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 : ${CFLAGS="-Wall -O3"}
 # Checks for programs.
 AC_PROG_CC
-AC_LANG_C
+AC_LANG([C])
 AC_EXEEXT
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -92,9 +103,11 @@ fi
 # try to add compiler-specific optimization flags
 if test x"$ax_cv_c_compiler_vendor" = x"intel"; then
    #check for intel (icc) style flags
+
    AX_CHECK_COMPILE_FLAG(-ipo, CFLAGS="$CFLAGS -O3 -ipo")
    AX_CHECK_COMPILE_FLAG(-parallel, CFLAGS="$CFLAGS -parallel")
    AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+
    AX_CHECK_COMPILE_FLAG(-no-prec-div, CFLAGS="$CFLAGS -no-prec-div")
    AX_CHECK_COMPILE_FLAG(-static-intel, CFLAGS="$CFLAGS -static-intel")
    #only for intel core i3/i5/i7 and newer
@@ -211,7 +224,7 @@ dnl Check for OpenGL - borrowed from SDL_ttf
         #SYS_GL_LIBS="-Wl,-framework,AGL"
         ;;
     *-*-aix*)
-        if test x$ac_cv_prog_gcc = xyes; then
+        if test x$ac_cv_c_compiler_gnu = xyes; then
             CFLAGS="-mthreads"
 	fi
         SYS_GL_LIBS=""
@@ -230,13 +243,13 @@ dnl Check for OpenGL - borrowed from SDL_ttf
    esac
    AC_MSG_CHECKING(for OpenGL support)
    have_opengl=no
-   AC_TRY_COMPILE([
+   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
     #include "SDL_opengl.h"
-   ],[
+   ]], [[
     GLuint texture;
-   ],[
+   ]])],[
    have_opengl=yes
-   ])
+   ],[])
    AC_MSG_RESULT($have_opengl)
    if test x$have_opengl = xyes; then
        GL_LIBS="$SYS_GL_LIBS"
@@ -249,7 +262,7 @@ fi
 
 dnl Check for lua - borrowed from lighttpd
 AC_MSG_CHECKING(if lua support is requested)
-AC_ARG_WITH(lua, AC_HELP_STRING([--with-lua], [LUA support for custom spawn locations (recommended)]), [WITH_LUA=$withval], [WITH_LUA=yes])
+AC_ARG_WITH(lua, AS_HELP_STRING([--with-lua],[LUA support for custom spawn locations (recommended)]), [WITH_LUA=$withval], [WITH_LUA=yes])
 
 AC_MSG_RESULT($WITH_LUA)
 if test "$WITH_LUA" != "no"; then
@@ -318,7 +331,7 @@ fi
 
 
 dnl Check for libpng - borrowed from SDL_image
-AC_ARG_WITH(png, AC_HELP_STRING([--with-png], [use PNG format for screenshots (recommended)]), [enable_png=$withval], [enable_png=yes])
+AC_ARG_WITH(png, AS_HELP_STRING([--with-png],[use PNG format for screenshots (recommended)]), [enable_png=$withval], [enable_png=yes])
 if test "x$enable_png" = xyes; then
     PKG_CHECK_MODULES([LIBPNG], [libpng], [dnl
         have_png_hdr=yes
@@ -345,7 +358,7 @@ dnl Check for agar
 dnl agar 1.4.1 is required for the new GUI
 dnl http://www.libagar.org
 AC_MSG_CHECKING(if agar support is requested)
-AC_ARG_WITH(agar, AC_HELP_STRING([--with-agar], [AGAR support, required for new GUI (recommended)]), [WITH_AGAR=$withval], [WITH_AGAR=yes])
+AC_ARG_WITH(agar, AS_HELP_STRING([--with-agar],[AGAR support, required for new GUI (recommended)]), [WITH_AGAR=$withval], [WITH_AGAR=yes])
 
 AC_MSG_RESULT($WITH_AGAR)
 if test x"$WITH_AGAR" != x"no"; then
