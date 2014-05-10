@@ -5,10 +5,10 @@
 # ToDo:
 # -------------
 # * improve agar detection (check for version >= 1.4.1)
-# * add debugging support (--enable-debug)
 #
 # Changes (FrMo, Mai 2014):
 # -------------
+# * debugging support added ( ./configure --enable-debug)
 # * improved intel icc support
 # * updated to autoconf 2 syntax
 # * updated acinclude/ with latest versions from gnu autoconf-archive
@@ -55,9 +55,20 @@ AM_INIT_AUTOMAKE([subdir-objects])
 #Enable quiet compiles on automake 1.11.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+AC_ARG_ENABLE([debug],
+              [AS_HELP_STRING([--enable-debug],
+                              [reduce optimization and enable debugging info (default is no)])],
+              [], [enable_debug=no])
+
+AM_CONDITIONAL([DEBUG], [test x$enable_debug = xyes])
+
+
 # set default optimization flags
-# use "-Wall -O2 -g" if you want to debug
+if test x"$enable_debug" = x"yes"; then
+: ${CFLAGS="-Wall -O -g"}
+fi
 : ${CFLAGS="-Wall -O3"}
+
 # Checks for programs.
 AC_PROG_CC
 AC_LANG([C])
@@ -103,25 +114,28 @@ fi
 # try to add compiler-specific optimization flags
 if test x"$ax_cv_c_compiler_vendor" = x"intel"; then
    #check for intel (icc) style flags
-
-   AX_CHECK_COMPILE_FLAG(-ipo, CFLAGS="$CFLAGS -O3 -ipo")
-   AX_CHECK_COMPILE_FLAG(-parallel, CFLAGS="$CFLAGS -parallel")
-   AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+   if test x"$enable_debug" != x"yes"; then
+      AX_CHECK_COMPILE_FLAG(-ipo, CFLAGS="$CFLAGS -O3 -ipo")
+      AX_CHECK_COMPILE_FLAG(-parallel, CFLAGS="$CFLAGS -parallel")
+      AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+   else
+      AX_CHECK_COMPILE_FLAG(-g -debug all, CFLAGS="$CFLAGS -g -debug all")
+   fi
 
    AX_CHECK_COMPILE_FLAG(-no-prec-div, CFLAGS="$CFLAGS -no-prec-div")
    AX_CHECK_COMPILE_FLAG(-static-intel, CFLAGS="$CFLAGS -static-intel")
-   #only for intel core i3/i5/i7 and newer
-   #AX_CHECK_COMPILE_FLAG(-xSSE4.1, CFLAGS="$CFLAGS -xSSE4.1")
-   #AX_CHECK_COMPILE_FLAG(-xSSE4.2, CFLAGS="$CFLAGS -xSSE4.2")
+
 else
    #check for gcc-style optimization flags
-   AX_CHECK_COMPILE_FLAG(-Ofast, CFLAGS="$CFLAGS -Ofast" LDFLAGS="$LDFLAGS -Ofast")
-   AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+   if test x"$enable_debug" != x"yes"; then
+      AX_CHECK_COMPILE_FLAG(-Ofast, CFLAGS="$CFLAGS -Ofast" LDFLAGS="$LDFLAGS -Ofast")
+      AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+   else
+      AX_CHECK_COMPILE_FLAG(-O2, CFLAGS="$CFLAGS -O2" LDFLAGS="$LDFLAGS -O2")
+      AX_CHECK_COMPILE_FLAG(-g3, CFLAGS="$CFLAGS -g3")
+   fi
+
    AX_CHECK_COMPILE_FLAG(-ffast-math, CFLAGS="$CFLAGS -ffast-math")
-   #only for intel corei3/5/7 and newer
-   #AX_CHECK_COMPILE_FLAG(-msse4, CFLAGS="$CFLAGS -msse4")
-   #AX_CHECK_COMPILE_FLAG(-msse4.1, CFLAGS="$CFLAGS -msse4.1")
-   #AX_CHECK_COMPILE_FLAG(-msse4.2, CFLAGS="$CFLAGS -msse4.2")
 fi
 
 
