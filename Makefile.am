@@ -42,6 +42,9 @@ else
 AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" $(LUA_CFLAGS) -DWITHOUT_AGAR
 endif
 
+if DEBUG
+AM_CPPFLAGS += -DDEBUG -DNDEBUG
+endif
 
 # Rule to build windows resources
 #%.o : %.rc
