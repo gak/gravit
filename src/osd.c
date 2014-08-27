@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -44,9 +44,9 @@ void drawOSD() {
 #ifdef WITHOUT_AGAR
     // Top middle
     y = 10;
-    glColor4f(1,1,1,1);
+    glColor4f(0,.6,.8,.6f);
     drawFontWordCA(video.screenW / 2, y, "Hit SPACE to start a new simulation");
-    drawFontWordCA(video.screenW / 2, y += fontHeight, "Hold down a mouse button and move it around to change your orientation.");
+    drawFontWordCA(video.screenW / 2, y += fontHeight, "Use arrow keys, or hold down a mouse button and move it around to change your orientation.");
     drawFontWordCA(video.screenW / 2, y += fontHeight, "Use the scroll wheel, or the A and Z keys to zoom in and out.");
     glColor4f(1,1,1,.5f);
     drawFontWordCA(video.screenW / 2, y += fontHeight, "press F1 for keyboard commands help.");
@@ -72,14 +72,17 @@ void drawOSD() {
         }
 
         DUH("particles", va("%i", state.particleCount));
-        switch(state.physics) {
-            case PH_PROPER:   DUH("physics", "Newtonian"); break;
-            case PH_MODIFIED: DUH("physics", "modified Newtonian"); break;
-            case PH_CLASSIC:  DUH("physics", "Gravit classic"); break;
+
+        if (view.lastVideoFrameSkip == 0) {
+            DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
+        } else {
+            DUH("avg video fps", va("%3.2f  (* %ld)", fpsCurrentAverageFPS, (long)view.lastVideoFrameSkip + 1));
         }
-        DUH("avg video fps", va("%3.2f", fpsCurrentAverageFPS));
-        //DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
-        //DUH("last record frame time", va("%ims", view.deltaRecordFrame));
+
+        if ((view.drawOSD == 1) || (view.consoleMode)) {
+
+        // DUH("avg video frame time", va("%.0fms", fpsCurrentAverageFT));
+        // DUH("last record frame time", va("%ims", view.deltaRecordFrame));
 
         DUH("actual frames", va("%i", state.totalFrames));
         DUH("recording skip", va("%i", state.historyNFrame));
@@ -99,6 +102,15 @@ void drawOSD() {
 #endif
         
         DUH("memory allocated", va("%.1fmb", (float)state.memoryAllocated / 1024 / 1024));
+        }
+
+        if ((view.drawOSD == 1) || (view.consoleMode)) {
+            switch(state.physics) {
+                case PH_PROPER:   DUH("physics", "Newtonian"); break;
+                case PH_MODIFIED: DUH("physics", "modified Newtonian"); break;
+                case PH_CLASSIC:  DUH("physics", "Gravit classic"); break;
+            }
+        }
 
         if (state.mode & SM_RECORD) {
 
@@ -108,6 +120,8 @@ void drawOSD() {
 
             DUHC();
             DUH("time left", va("~%0.1f minutes", (float)view.deltaRecordFrame * (state.historyFrames - state.frame) / 1000 / 60));
+
+            if ((view.drawOSD == 1) || (view.consoleMode)) {
 
             switch (view.recordStatus) {
             case 0:
@@ -126,7 +140,7 @@ void drawOSD() {
             case 3:
                 DUH("status", "freeing tree");
                 break;
-            }
+            }}
 
         }
 
@@ -154,7 +168,7 @@ void drawOSD() {
             y = drawFontWord(x, y, "AUTO SCREENSHOT");
 
         }
-        
+
         
         // show renderer FPS average (if we have meaningful values)
         if ((view.timed_frames > 1) && (view.totalRenderTime > SDL_TIMESLICE )) {
@@ -165,7 +179,7 @@ void drawOSD() {
 
         // XXX: This might be too many stats. I'll implement this in the ajax windowing screens.
 	    DUH("avg renderer fps", va("%5.2f",
-                     (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ))
+                     (float) view.timed_frames/ (float) view.totalRenderTime * 1000.0f ));
 	/*
 	    DUH("avg renderer frame time", va("%4.1f ms",
 		     (float) view.totalRenderTime / (float) view.timed_frames ));
@@ -390,7 +404,7 @@ void osdInitIntroWindow() {
     AG_BoxSetSpacing(vBox, 10);
     
     text = AG_LabelNew(vBox, 0, 0);
-    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.\n");
+    AG_LabelText(text, "Gravit is a free, visually stunning gravity simulator, where you can spend endless\ntime experimenting with various configurations of simulated universes.\n\nQuick Start:\n\n - Click on RESPAWN to start a new simulation.\n - Click on PLAY to replay a recording\n - Click on RECORD to resume recording\n - Use arrow keys, or hold down a mouse button and move it around to change your perspective.\n - Use the A and Z keys, or the scroll wheel to zoom in and out.\n");
     AG_WidgetSetSize(text, 200, 100);
     
     // AG_Checkbox *showAgain = AG_CheckboxNew(vBox, AG_CHECKBOX_SET, "Show this window on startup");

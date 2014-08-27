@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -230,13 +230,11 @@ void setColoursByAcceleration() {
 void setColoursByMass() {
 
     int i;
-    particle_t *p;
     particleDetail_t *pd;
     float d;
 
     for (i = 0; i < state.particleCount; i++) {
 
-        p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
 
         if (i == 0) {
@@ -263,7 +261,6 @@ void setColoursByMass() {
 
     for (i = 0; i < state.particleCount; i++) {
 
-        p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
 
         d = pd->mass / state.massRange[1];

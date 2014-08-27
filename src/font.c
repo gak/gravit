@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -169,34 +169,25 @@ int loadFonts() {
 
 void drawFontLetter(float x, float y, int letter) {
 
+    // do not draw blanks and unprintable chars
+    if (letter <= 32) return;
+    if (letter > 127) letter = (int)'?';
+
+    // make sure the font letter has a valid texture ID
     if ((fonts[letter].id == 0) || (!glIsTexture(fonts[letter].id))) {
         conAdd(LERR, "texture id %u for character 0x%x is invalid", fonts[letter].id, letter);
     }
 
+    // draw letter texture
     glBindTexture(GL_TEXTURE_2D, fonts[letter].id);
-    glCheck();
+    //glCheck();
 
-    glPushMatrix();
-
-    glTranslatef(x,y,0);
-
-    glBegin(GL_QUADS);
-
-    glTexCoord2f(0, 0);
-    glVertex2i(0,0);
-
-    glTexCoord2f(0, 1);
-    glVertex2i(0,fonts[letter].h);
-
-    glTexCoord2f(1, 1);
-    glVertex2i(fonts[letter].w,fonts[letter].h);
-
-    glTexCoord2f(1, 0);
-    glVertex2i(fonts[letter].w,0);
-
+    glBegin(GL_TRIANGLE_STRIP);
+        glTexCoord2f(0, 0); glVertex2i(x, y);
+        glTexCoord2f(1, 0); glVertex2i(x+fonts[letter].w, y);
+        glTexCoord2f(0, 1); glVertex2i(x, y+fonts[letter].h);
+        glTexCoord2f(1, 1); glVertex2i(x+fonts[letter].w, y+fonts[letter].h);
     glEnd();
-
-    glPopMatrix();
 
 }
 
@@ -215,6 +206,7 @@ float drawFontWord(float x, float y, char *word) {
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    glCheck();
 
     return y + fontHeight;
 
@@ -257,12 +249,13 @@ void drawFontWordRA(float x, float y, char *word) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    for (i = strlen(word) - 1; i >= 0; i--) {
+    for (i = (int)strlen(word) - 1; i >= 0; i--) {
 
         x -= fonts[(int)word[i]].ow;
         drawFontLetter(x, y, word[i]);
 
     }
+    glCheck();
 }
 
 void drawFontWordCA(float x, float y, char *word) {

@@ -15,13 +15,15 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
 #include "gravit.h"
 
 #if HAVE_LUA
+
+int luag_logName(lua_State *L);
 
 int luaInit() {
 
@@ -55,6 +57,7 @@ int luaInit() {
     AddFunction("log", luag_log)
     AddFunction("load", luag_load);
     AddFunction("color_mass_max", luag_colorMax);
+    AddFunction("logName", luag_logName)
 
     return 1;
 
@@ -199,7 +202,11 @@ int luag_spawn(lua_State *L) {
 int luag_log(lua_State *L) {
 
     char *s = (char*)lua_tostring(L, -1);
-    conAdd(LNORM, s);
+    if (state.fileName)
+        conAdd(LHELP, "%s: %s", state.fileName, s);
+    else
+        conAdd(LHELP, "%s", s);
+
     lua_pop(L,1);
 
     return 0;
@@ -218,8 +225,19 @@ int luag_colorMax(lua_State *L) {
     lua_pop(L,1);
 
     return 0;
+}
+
+int luag_logName(lua_State *L) {
+
+    char *s = (char*)lua_tostring(L, -1);
+    conAdd(LLOW, "Spawning %s", s);
+    setFileName(s);
+    lua_pop(L,1);
+
+    return 0;
 
 }
+
 
 #else
 #pragma message( __FILE__ " : warning : define HAVE_LUA   to enable LUA spawn script support." )

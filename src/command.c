@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -236,8 +236,8 @@ void cmdPrint(cmd_t *c) {
 int cmdFind(char *string) {
 
     cmd_t *c;
-    int lenString;
-    int lenCommand;
+    size_t lenString;
+    size_t lenCommand;
     int i;
 
     lenString = strlen(string);
@@ -268,8 +268,8 @@ int cmdFind(char *string) {
 int cmdPrintStartingWith(char *string) {
 
     cmd_t *c;
-    int lenString;
-    int lenCommand;
+    size_t lenString;
+    size_t lenCommand;
     int i;
 
     lenString = strlen(string);
@@ -302,7 +302,7 @@ void cmdExecute(char *string) {
     int j;
     cmd_t *c;
     char cmdbuf[CONSOLE_LENGTH];
-    int stringLength;
+    size_t stringLength;
     char *args;
     int ivar;
     float fvar;
@@ -357,6 +357,7 @@ void cmdExecute(char *string) {
     if (c->func)
         c->func(args);
 
+    view.dirty = 1;
 
 }
 
@@ -504,11 +505,9 @@ cmdSpawnRestartSpawning:
 
             for (j = 0; j < i; j++) {
                 particle_t *p2;
-                particleDetail_t *pd2;
                 VectorNew(diff);
 
                 p2 = getParticleCurrentFrame(j);
-                pd2 = getParticleDetail(j);
 
                 VectorSub(p1->pos, p2->pos, diff);
 #define MIN_STEP 0.001
@@ -538,7 +537,7 @@ cmdSpawnRestartSpawning:
         particleDetail_t *pd;
         p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
-	mass += fabs(pd->mass);
+        mass += fabs(pd->mass);
         VectorMultiplyAdd(p->pos, fabs(pd->mass), pos);
         VectorAdd(vel, p->vel, vel);
     }
@@ -576,6 +575,8 @@ cmdSpawnRestartSpawning:
 
     if (view.zoomFitAuto) {
         cmdZoomFit(NULL);
+        view.zoomTarget = view.zoom;
+        view.zoomSpeed = 0;
     }
 
     view.frameSkipCounter = 0;
@@ -741,7 +742,7 @@ void cmdSaveFrameDump(char *arg) {
     saveInfo_t si;
     saveDetail_t *sd;
     char *fileName;
-    unsigned int i;
+    int i;
 
     if (isSpawning())
         return;
@@ -838,7 +839,7 @@ void cmdLoadFrameDump(char *arg) {
     saveInfo_t si;
     saveDetail_t *sd;
     char *fileName;
-    unsigned int i;
+    int i;
     size_t bytes;
 
     if (isSpawning())
@@ -897,7 +898,7 @@ void cmdLoadFrameDump(char *arg) {
         state.gbase = si.gbase;
         view.colorMassMax = si.colorMassMax;
     } else {
-        conAdd(LNORM, "Saved data is from older gravit version - using defaults for view and physics.");
+        conAdd(LNORM, "Saved data is from older gravit version.");
     }
 
     //init saveDetail
@@ -912,13 +913,15 @@ void cmdLoadFrameDump(char *arg) {
     runVideo();
 
     fileName = va("%s/%s.particledetail", SAVE_PATH, arg);
-    if (LoadMemoryDump(fileName, (unsigned char *)sd, SAVEDETAILSIZE, 0) == 0) {
+    bytes = SAVEDETAILSIZE;
+    if (LoadMemoryDump(fileName, (unsigned char *)sd, bytes, 0) < bytes) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
 
     fileName = va("%s/%s.particles", SAVE_PATH, arg);
-    if (LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, FRAMESIZE * (state.frame+1), 0) ==0) {
+    bytes = FRAMESIZE * (state.frame+1);
+    if (LoadMemoryDump(fileName, (unsigned char *)state.particleHistory, bytes, 0) < bytes) {
         conAdd(LERR, "Failed to load %s", fileName);
         return;
     }
@@ -939,10 +942,16 @@ void cmdLoadFrameDump(char *arg) {
     state.currentFrame = 0;
     state.mode = 0;
     setColours();
-    conAdd(LNORM, "Simulation loaded sucesfully!");
+    conAdd(LHELP, "Simulation %s loaded sucesfully!", arg);
 
     free(sd);
     setFileName(arg);
+
+    view.zoomTarget = view.zoom;
+    view.zoomSpeed = 0;
+    VectorCopy(view.rot, view.rotTarget);
+    VectorZero(view.rotSpeed);
+    view.dirty = 1;
 
 }
 
@@ -1494,11 +1503,14 @@ void cmdZoomFit(char *arg) {
             // smooth zoomfit
             // zoom out if required change > 30%
 	    if ((new_zoom >= view.zoom) && (fabs(new_zoom / view.zoom) > 1.3)) {
-		view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+                view.zoom = view.zoom + (new_zoom - view.zoom) / 120;
+                view.dirty = 1;
 	    } else {
                 // zoom in if required change > 30%
-	        if (fabs(view.zoom / new_zoom) > 1.3)
+	        if (fabs(view.zoom / new_zoom) > 1.3) {
                     view.zoom = view.zoom - (view.zoom - new_zoom) / 60;
+                    view.dirty = 1;
+                }
 	    }
 	}
     }

@@ -1,7 +1,9 @@
 /*
 
+This file is part of
 Gravit - A gravity simulator
 Copyright 2003-2005 Gerald Kaszuba
+Copyright 2012-2014 Frank Moehle
 
 Gravit is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -26,6 +28,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 
 #ifndef NO_GUI
+
+#define CLIP_NEAR 0.01f
+#define CLIP_FAR 10000.0f
+#define CLIP_VERY_FAR 100000.0f
 
 static GLuint particleTextureID = 0;
 static GLuint sprites[SPRITE_LAST+1];
@@ -61,7 +67,10 @@ void drawFrameSet3D() {
     glLoadIdentity();
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
-    gluPerspective(45.0f, 1, 0, 10000.0f);
+    // render all primitives at integer positions
+    //glTranslatef(0.375, 0.375, 0.0);
+
+    gluPerspective(45.0f, 1, CLIP_NEAR, CLIP_FAR);
 
 }
 
@@ -165,7 +174,7 @@ int gfxSetResolution() {
     
     video.sdlScreen = SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags );
     if (!video.sdlScreen) {
-        conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError());
+        conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError()); SDL_ClearError();
         return 1;
     }
 
@@ -248,6 +257,12 @@ gfxInitRetry:
             if (video.screenAA) {
                 conAdd(LERR, "You have videoantialiasing on. I'm turning it off and restarting...");
                 video.screenAA = 0;
+                // without FSAA, particlerendermode 1 is not working on some graphics cards
+                // -> cowardly switch to mode 2
+                if(view.particleRenderMode == 1) {
+                    conAdd(LHELP, "   switching to particlerendermode 2 (slower, but more compatible)");
+                    view.particleRenderMode = 2;
+                }
                 goto gfxInitRetry;
             }
 
@@ -294,6 +309,7 @@ gfxInitRetry:
         conAdd(LERR, "agar error while initializing main window: %s", AG_GetError() );
 
     video.agarStarted = 1;
+    AG_SetError("%s", "");
 
     if (!view.screenSaver)
         osdInitDefaultWindows();
@@ -340,6 +356,7 @@ void drawFrame() {
     case 0:
         glDisable(GL_BLEND);
         break;
+    default:
     case 1:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -397,6 +414,8 @@ void drawFrame() {
         float quadratic_8[] =  { 0.0f, 0.0f, 0.00000006f, 0.00f };
         float *quadratic;
 
+        float pointRange[2];
+
         quadratic = quadratic_0;
         if (view.glow == 1) quadratic = quadratic_1;
         if (view.glow == 2) quadratic = quadratic_2;
@@ -420,6 +439,24 @@ void drawFrame() {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POINT_SMOOTH);	// enabling this makes particles dissapear
 
+        // check against allowed point size range first
+        // use ALIASED_POINT_SIZE_RANGE if supported
+        glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, pointRange);
+        if(glGetError() != GL_NO_ERROR) {
+            glGetFloatv(GL_POINT_SIZE_RANGE, pointRange);
+        }
+        if (view.particleSizeMin < pointRange[0]) {
+            view.particleSizeMin = pointRange[0];
+            conAdd(LNORM, "Aliased point Size has reached its minimum of %f", view.particleSizeMin);
+        }
+        if (view.particleSizeMax > pointRange[1]) {
+            view.particleSizeMax = pointRange[1];
+            conAdd(LNORM, "Aliased point Size has reached its maximum of %f", view.particleSizeMax);
+        }
+
+        glEnable( GL_POINT_SPRITE_ARB );
+        glCheck();
+
 	// glPointParameter and glPointSprite attributes are global (not per-texture)
         glPointParameterfvARB_ptr( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
         glCheck();
@@ -437,12 +474,11 @@ void drawFrame() {
         // so i had to make textures an option with this mode
         if (view.particleRenderTexture) {
             glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+            glCheck();
             glBindTexture(GL_TEXTURE_2D, sprites[SPRITE_DEFAULT]);
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-
-        glEnable( GL_POINT_SPRITE_ARB );
         glCheck();
 
     } else if (view.particleRenderMode == 2) {
@@ -460,7 +496,14 @@ void drawFrame() {
     if (view.particleRenderMode == 0 || view.particleRenderMode == 1) {
 
         unsigned int lastSprite=state.particleDetail[0].particleSprite;
-        if (view.particleRenderMode > 0) glBindTexture(GL_TEXTURE_2D, sprites[lastSprite]);
+        if (view.particleRenderMode > 0) {
+            if (view.particleRenderTexture) {
+                glBindTexture(GL_TEXTURE_2D, sprites[lastSprite]);
+                glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+            } else {
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+        }
         glCheck();
 
         // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the
@@ -477,10 +520,13 @@ void drawFrame() {
 
             pd = state.particleDetail + i;
 
-            if ((view.particleRenderMode > 0) && (pd->particleSprite != lastSprite)) {
+            if ((view.particleRenderMode > 0) && (pd->particleSprite != lastSprite) && (view.particleRenderTexture > 0)) {
                 glEnd();
                 glBindTexture(GL_TEXTURE_2D, sprites[pd->particleSprite]);
                 //glCheck();
+                // GL_COORD_REPLACE_ARB is not global --> repeat it
+                glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+
                 glBegin(GL_POINTS);
             }
             lastSprite = pd->particleSprite;
@@ -542,6 +588,9 @@ void drawFrame() {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glCheck();
+        // render all primitives at integer positions
+        //glTranslatef(0.375, 0.375, 0.0);
+
 
         for (i = 0; i < state.particleCount; i++) {
 
@@ -651,12 +700,20 @@ void drawFrame() {
         if (view.particleRenderMode == 0)
             glLineWidth(view.tailWidth+1);
 
-        glLineWidth(view.tailWidth);
+        // draw bigger lines when FSAA is not enabled
+        if (video.screenAA == 0)
+            glLineWidth(view.tailWidth+0.5);
+        else
+            glLineWidth(view.tailWidth);
 
         for (i = 0; i < state.particleCount; i++) {
 
-            int to;
             p = 0;
+
+            pd = state.particleDetail + i;
+            memcpy(sc, pd->col, sizeof(float)*4);
+            sc[3] *= view.tailOpacity;
+            glColor4fv(sc);
 
             glBegin(GL_LINE_STRIP);
 
@@ -667,27 +724,18 @@ void drawFrame() {
             else
                 k = state.currentFrame - (view.tailLength+2);
 
-            if (state.mode & SM_RECORD)
-                to = state.currentFrame;
-            else
-                to = state.currentFrame + 1;
-
             for (j = k; j <= state.currentFrame; j+=view.tailSkip ) {
                 //for (j = state.currentFrame; j >= k; j-=view.tailSkip ) {
 
                 if (j >= state.historyFrames)
                     continue;
 
-                pd = state.particleDetail + i;
-
-                if (view.tailFaded)
+                if (view.tailFaded) {
                     c = (float)(j-k) / (float)(state.currentFrame-k) * view.tailOpacity;
-                else
-                    c = view.tailOpacity;
-
-                memcpy(sc, pd->col, sizeof(float)*4);
-                sc[3] *= c;
-                glColor4fv(sc);
+                    memcpy(sc, pd->col, sizeof(float)*4);
+                    sc[3] *= c;
+                    glColor4fv(sc);
+                }
 
                 p = state.particleHistory + state.particleCount * j + i;
                 glVertex3fv(p->pos);
@@ -706,7 +754,7 @@ void drawFrame() {
             }
 
             glEnd();
-
+            glColor4f(1, 1, 1, 1);
         }
 
     }
@@ -714,57 +762,89 @@ void drawFrame() {
 }
 
 void drawAxis() {
+    const float size  = 250.0f;
+    const float size2 = 155.0f;
 
-    drawFrameSet3D();
+    // normal axis colors
+    float colPlane[3][4] ={{ 0.8f, 0.2f, 0.2f, 0.1f},  // x plane
+                           { 0.2f, 0.8f, 0.2f, 0.1f},  // y plane
+                           { 0.2f, 0.2f, 0.8f, 0.1f}}; // z plane
+    float colArrow[3][4] ={{ 0.8f, 0.2f, 0.2f, 1.0f},  // x arrow
+                           { 0.2f, 0.8f, 0.2f, 1.0f},  // y arrow
+                           { 0.2f, 0.2f, 0.8f, 1.0f}}; // z arrow
 
+    // anaglyph-friendly axis colors
+    float colPlane3d[3][4] ={{ 0.8f, 0.3f, 0.3f, 0.2f},  // x plane
+                             { 0.3f, 0.6f, 0.4f, 0.2f},  // y plane
+                             { 0.3f, 0.3f, 0.6f, 0.2f}}; // z plane
+    float colArrow3d[3][4] ={{ 0.8f, 0.3f, 0.3f, 0.8f},  // x arrow
+                             { 0.3f, 0.6f, 0.4f, 0.8f},  // y arrow
+                             { 0.3f, 0.3f, 0.6f, 0.8f}}; // z arrow
+
+    //drawFrameSet3D();
     glEnable(GL_BLEND);
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUAL);
+    //glDepthMask(GL_TRUE);
+    //glEnable(GL_POLYGON_OFFSET_FILL);
+    //glPolygonOffset(1.0f, 2.0f);
+
+    // workaround for missing horizontal lines on intel graphics (linux, mesa)
+    glColor3f(0.5f,0.5f,0.5f);
+    glLineWidth((video.screenAA == 0) ? 1.5f : 1.0f);
+    glEnable(GL_LINE_SMOOTH);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glBegin(GL_QUADS);
 
     // x plane
-    glColor4f(0.8f,0.2f,0.2f,0.1f);
-    glVertex3f(0,-100,-100);
-    glVertex3f(0,100,-100);
-    glVertex3f(0,100,100);
-    glVertex3f(0,-100,100);
+    glColor4fv((view.stereoMode == 2) ? colPlane3d[0] : colPlane[0]);
+    glVertex3f(0,-size2,-size2);
+    glVertex3f(0, size2,-size2);
+    glVertex3f(0, size2, size2);
+    glVertex3f(0,-size2, size2);
 
     // y plane
-    glColor4f(0.2f,0.8f,0.2f,0.1f);
-    glVertex3f(-100,0,-100);
-    glVertex3f(100,0,-100);
-    glVertex3f(100,0,100);
-    glVertex3f(-100,0,100);
+    glColor4fv((view.stereoMode == 2) ? colPlane3d[1] : colPlane[1]);
+    glVertex3f(-size2,0,-size2);
+    glVertex3f( size2,0,-size2);
+    glVertex3f( size2,0, size2);
+    glVertex3f(-size2,0, size2);
 
     // z plane
-    glColor4f(0.2f,0.2f,0.8f,0.1f);
-    glVertex3f(-100,-100,0);
-    glVertex3f(100,-100,0);
-    glVertex3f(100,100,0);
-    glVertex3f(-100,100,0);
+    glColor4fv((view.stereoMode == 2) ? colPlane3d[2] : colPlane[2]);
+    glVertex3f(-size2,-size2,0);
+    glVertex3f( size2,-size2,0);
+    glVertex3f( size2, size2,0);
+    glVertex3f(-size2, size2,0);
 
     glEnd();
+
+    //glDisable(GL_POLYGON_OFFSET_FILL);
 
     glBegin(GL_LINES);
 
     // x plane
-    glColor4f(0.8f,0.2f,0.2f,1.0f);
-    glVertex3f(-100,0,0);
-    glVertex3f(100,0,0);
+    glColor4fv((view.stereoMode == 2) ? colArrow3d[0] : colArrow[0]);
+    glVertex3f(-size,0,0);
+    glVertex3f( size,0,0);
 
     // y plane
-    glColor4f(0.2f,0.8f,0.2f,1.0f);
-    glVertex3f(0,-100,0);
-    glVertex3f(0,100,0);
+    glColor4fv((view.stereoMode == 2) ? colArrow3d[1] : colArrow[1]);
+    glVertex3f(0,-size,0);
+    glVertex3f(0, size,0);
 
     // z plane
-    glColor4f(0.2f,0.2f,0.8f,1.0f);
-    glVertex3f(0,0,-100);
-    glVertex3f(0,0,100);
+    glColor4fv((view.stereoMode == 2) ? colArrow3d[2] : colArrow[2]);
+    glVertex3f(0,0,-size);
+    glVertex3f(0,0, size);
 
     glEnd();
+
+    //glDepthMask(GL_FALSE);
 
 }
 
@@ -782,7 +862,13 @@ void drawRGB() {
     float wx = width;
     float wy = 200;
     float c[4];
-    float step = .01f;
+    float c2[4];
+    float step = .1f;
+
+
+    //let openGL do the color interpolation (requires glShadeModel(GL_SMOOTH))
+    if (view.colourSpectrumSteps > 1)
+      step = 1.0 / (float)view.colourSpectrumSteps;
 
     if (view.screenSaver)
         sy = margin;
@@ -797,12 +883,15 @@ void drawRGB() {
     for (i = 0; i < 1; i += step) {
 
         colourFromNormal(c, i);
+        colourFromNormal(c2, i+step);
 
-        glBegin(GL_QUADS);
         glColor4fv(c);
+        glBegin(GL_QUADS);
         glVertex2f(sx,		sy + wy * i);
         glVertex2f(sx + wx,	sy + wy * i);
+        glColor4fv(c2);
         glVertex2f(sx + wx,	sy + wy * (i + step));
+        glColor4fv(c2);
         glVertex2f(sx,		sy + wy * (i + step));
         glEnd();
 
@@ -814,8 +903,8 @@ void drawRGB() {
     glBegin(GL_LINE_STRIP);
     glVertex2f(sx-1,		sy-1);
     glVertex2f(sx+1 + wx,	sy-1);
-    glVertex2f(sx+1 + wx,	sy+2 + wy);
-    glVertex2f(sx-1,		sy+2 + wy);
+    glVertex2f(sx+1 + wx,	sy+ wy);
+    glVertex2f(sx-1,		sy+ wy);
     glVertex2f(sx-1,		sy-1);
     glEnd();
     glEnable(GL_LINE_SMOOTH);
@@ -828,16 +917,18 @@ void drawRGB() {
         for (i = 0; i  < 1; i+=step) {
 
             colourFromNormal(c, i);
+            colourFromNormal(c2, i+step);
 
-            c[0] = 1 - c[0];
-            c[1] = 1 - c[1];
-            c[2] = 1 - c[2];
+            c[0] = 1 - c[0];  c[1] = 1 - c[1];  c[2] = 1 - c[2];
+            c2[0]= 1 -c2[0]; c2[1] = 1 -c2[1]; c2[2] = 1 -c2[2];
 
-            glBegin(GL_QUADS);
             glColor4fv(c);
+            glBegin(GL_QUADS);
             glVertex2f(sx,		sy + wy * i);
             glVertex2f(sx + wx,	sy + wy * i);
+            glColor4fv(c2);
             glVertex2f(sx + wx,	sy + wy * (i + step));
+            glColor4fv(c2);
             glVertex2f(sx,		sy + wy * (i + step));
             glEnd();
 
@@ -849,8 +940,8 @@ void drawRGB() {
         glBegin(GL_LINE_STRIP);
         glVertex2f(sx-1,		sy-1);
         glVertex2f(sx+1 + wx,	sy-1);
-        glVertex2f(sx+1 + wx,	sy+2 + wy);
-        glVertex2f(sx-1,		sy+2 + wy);
+        glVertex2f(sx+1 + wx,	sy+ wy);
+        glVertex2f(sx-1,		sy+ wy);
         glVertex2f(sx-1,		sy-1);
         glEnd();
         glEnable(GL_LINE_SMOOTH);
@@ -890,6 +981,10 @@ void drawAgar() {
     // do not draw windows in screensaver mode
     if (!view.screenSaver)
     {
+        // workaround for missing window borders and lines on intel graphics (linux, mesa)
+        glLineWidth((video.screenAA == 0) ? 1.5f : 1.0f);
+        glEnable(GL_LINE_SMOOTH);
+
         AG_LockVFS(&agDrivers);
         AG_BeginRendering(agDriverSw);
         AG_FOREACH_WINDOW(win, agDriverSw) {
@@ -901,8 +996,13 @@ void drawAgar() {
         AG_EndRendering(agDriverSw);
         AG_UnlockVFS(&agDrivers);
     }
+    agarCheck();
+    glCheck();
     // Agar leaves glTexEnvf env mode to GL_REPLACE :(
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    // .. and also leaves glShadeModel mode to GL_FLAT
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
 }
 #endif
 
@@ -919,14 +1019,16 @@ void setupCamera(int shouldTranslate, int bits) {
         // the formula below makes sure the field is logarithmicially adjusted between 15 and 55 degrees.
         float fieldOfView = 15.0 + 40.0 * (fmax(0.1, log(fmin(view.zoom, 96000.0)) / log(96000.0f)));
 
-        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
+        gluPerspective(fieldOfView, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, CLIP_NEAR, fmax(view.zoom * 2.0f, CLIP_VERY_FAR));
     } else {
         // if stereo mode, do not adjust field of view
-        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, 0.01f, fmax(view.zoom * 2.0f, 100000.0f));
+        gluPerspective(45, (GLfloat)video.screenW / bits / (GLfloat)video.screenH, CLIP_NEAR, fmax(view.zoom * 2.0f, CLIP_VERY_FAR));
     }
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    // render all primitives at integer positions
+    //if (shouldTranslate) glTranslatef(0.375, 0.375, 0.0);
         
     if (shouldTranslate)
         glTranslatef(0, 0, -view.zoom);
@@ -953,8 +1055,8 @@ void setupStereoCamera(int shouldTranslate) {
     float a, b, c;
 
     //const int bits = 2;
-    const float nearClip = 0.01f;
-    const float farClip = fmax(view.zoom*2.0f, 100000.0f);
+    const float nearClip = CLIP_NEAR;
+    const float farClip = fmax(view.zoom*2.0f, CLIP_VERY_FAR);
     const float aspectRatio = (GLfloat)video.screenW / (GLfloat)video.screenH;
     const float distConvergence = view.zoom * 0.95;
 
@@ -984,7 +1086,13 @@ void setupStereoCamera(int shouldTranslate) {
     }
 
 
+    // z-buffer writes must be enabled before clearing it
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
     glClear(GL_DEPTH_BUFFER_BIT);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
     glViewport(0, 0, video.screenW, video.screenH);
 
     // Set the Projection Matrix
@@ -996,6 +1104,8 @@ void setupStereoCamera(int shouldTranslate) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    // render all primitives at integer positions
+    //if (shouldTranslate) glTranslatef(0.375, 0.375, 0.0);
 
     // translate to left or right eye
     if (view.stereoModeCurrentBit == 0)
@@ -1126,10 +1236,18 @@ void drawAll() {
     VectorNew(rotateIncrement);
     VectorMultiply(view.autoRotate, view.deltaVideoFrame, rotateIncrement);
     VectorAdd(rotateIncrement, view.rot, view.rot);
+    VectorAdd(rotateIncrement, view.rotTarget, view.rotTarget);
 
     glClearColor(0, 0, 0, 0);
+
+    // z-buffer writes must be enabled before clearing it
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
     view.vertices = 0;
 
     if (view.stereoMode > 0)
@@ -1155,6 +1273,8 @@ void drawAll() {
 	    setupCamera(GL_TRUE, bits);
 	}
 
+        if (view.drawAxis > 1) drawAxis();
+
         if (view.autoCenter)
             translateToCenter();
 
@@ -1165,7 +1285,7 @@ void drawAll() {
         drawFrame();
     
         if (view.stereoOSD == 1) {
-            if (view.drawOSD) {
+            if (view.drawOSD > 0) {
                 drawOSD();
                 if (view.drawColourScheme) drawRGB();
             }
@@ -1177,7 +1297,7 @@ void drawAll() {
     }
     // reset color mask
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-        
+
     if (view.vertices > view.maxVertices && view.tailSkip < state.particleCount) {
         view.tailSkip *= 2;
         conAdd(LNORM, "Adjusting tailSkip to %i because vertices is bigger then allowed (maxvertices=%i)", view.tailSkip, view.maxVertices);
@@ -1186,7 +1306,7 @@ void drawAll() {
     glViewport(0, 0, video.screenW, video.screenH);
     
     if (view.stereoOSD == 0) {
-        if (view.drawOSD) {
+        if (view.drawOSD > 0) {
             drawOSD();
             if (view.drawColourScheme) drawRGB();
         }
@@ -1204,6 +1324,8 @@ void drawAll() {
         cmdScreenshot(NULL);
 
     SDL_GL_SwapBuffers();
+    sdlCheck();
+    glCheck();
 }
 
 void drawCube() {
@@ -1291,12 +1413,14 @@ void checkDriverBlacklist() {
     // The strings GL_VENDOR and GL_RENDERER together uniquely specify a platform
 
     char *glVersion;    // OpenGL version number. Vendor specific information may follow the number.
-    char *extList;      // list of supported OpenGL extensions
+    //char *extList;      // list of supported OpenGL extensions
+    int haveSlowHardware;
 
     glVendor   = (char *)glGetString(GL_VENDOR);
     glRenderer = (char *)glGetString(GL_RENDERER);
     glVersion  = (char *)glGetString(GL_VERSION);
-    extList    = (char *)glGetString(GL_EXTENSIONS);
+    //extList    = (char *)glGetString(GL_EXTENSIONS);
+    haveSlowHardware = 0;
 
     conAdd(LNORM, "OpenGL video driver: vendor=%s; renderer=%s; version=%s", glVendor, glRenderer, glVersion);
 
@@ -1305,9 +1429,11 @@ void checkDriverBlacklist() {
      */
 
     // Intel Graphics Media Accelerator (GMA) - usually part of mobile core i5/i7 CPUs
+    // or older (GL vendor=Intel; renderer=Intel 945GM; version=1.4.0 - Build 7.14.10.4926)
     if ((strcmp(glVendor, "Intel") == 0)
-        && (  (strcmp(glRenderer, "Intel(R) HD Graphics") == 0)
-            ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0))
+        && (  (strstr(glRenderer, "Intel(R) HD Graphics") != NULL)
+            ||(strcmp(glRenderer, "Mobile Intel(R) HD Graphics") == 0)
+            ||((strstr(glRenderer, "Intel ") != NULL) && (strstr(glRenderer, "GM") != NULL)) )
        ) {
        if (strstr(glVersion, " Build 8.15.10.") != NULL) {
           // driver 15.10. causes problems with particlerendermode 1 (GL_ARB_point_sprite)
@@ -1325,62 +1451,178 @@ void checkDriverBlacklist() {
               view.particleRenderMode = 2;
               view.particleSizeMax = 63;
 	  }
-          video.supportPointSprite = 0;
+       }
+
+       if (strstr(glRenderer, "Intel(R) HD Graphics ") == NULL) {
+           // exclude Intel HD Graphics 3000/4000 from drastic degradation measures
+           if (view.drawOSD > 0) view.drawOSD = 4;
+           view.drawColourScheme = 0;
+           haveSlowHardware = 1;
+           video.supportPointSprite = 0;
+       }
+
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Falling back to particleRenderMode 2");
+           view.particleRenderMode = 2;
+       }
+
+    }
+
+    // software OpenGL driver, Microsoft Windows
+    //   GL vendor=Microsoft Corporation; GL renderer=GDI Generic; version=1.1.0
+    if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
+       // awfully SLOW. -> prefer particleRenderMode 0
+       conAdd(LERR, "Very slow software driver found, degrading visual effects.");
+
+       if (view.particleRenderMode == 1) view.particleRenderMode = 2;
+       if (view.particleSizeMax > 3) view.particleSizeMax = 3;
+       if (view.particleSizeMin < 2) view.particleSizeMin = 2;
+       if (view.glow > 0) view.glow = 0;
+
+       view.tailLength = 0;
+       haveSlowHardware = 2;
+    }
+
+    // VMVare drivers (based on MESA)
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on SVGA3D; build: RELEASE;  ; version=2.1 Mesa 7.12-devel (git-d6c318e)
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on SVGA3D; build: RELEASE;  ; version=2.1 Mesa 9.1.1
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on llvmpipe (LLVM 0x301); version=2.1 Mesa 9.0.3
+    //   GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on llvmpipe (LLVM 0x300); version=1.4 (2.1 Mesa 8.0.4)
+    if (((strcmp(glVendor, "Tungsten Graphics, Inc") == 0) || (strcmp(glVendor, "VMware, Inc.") == 0))
+        &&(strncmp(glRenderer, "Gallium ", strlen("Gallium ")) == 0))
+    {
+       if (strstr(glRenderer, "on SVGA3D") != NULL) {
+           conAdd(LNORM, "Slow VMware accelerated 3D driver found, reducing visual effects.");
+           if (view.particleSizeMax > 80) view.particleSizeMax = 80;
+           if (view.drawOSD > 0) view.drawOSD = 4;
+           haveSlowHardware = 1;
+       } else {
+           conAdd(LERR, "Slow VMware software driver found, reducing visual effects.");
+           view.tailLength = 0;
+           if (view.particleSizeMax > 63) view.particleSizeMax = 63;
+           haveSlowHardware = 2;
+       }
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Setting particleRenderMode to 2");
+           view.particleRenderMode = 2;
        }
     }
 
+    // Linux software rendering: on llvmpipe, on softpipe, Software Rasterizer
+    if (  (strstr(glRenderer,"on llvmpipe") != NULL)
+        ||(strstr(glRenderer,"on softpipe") != NULL)
+        ||(strstr(glRenderer,"Software Rasterizer") != NULL)) {
+
+       conAdd(LERR, "Software renderer found, reducing visual effects.");
+       view.tailLength = 0;
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Setting particleRenderMode to 2");
+           view.particleRenderMode = 2;
+       }
+       video.supportPointSprite = 0;
+       haveSlowHardware = 2;
+   }
+
+   // VirtualBox driver: Chromium
+   // GL vendor=Humper; GL renderer=Chromium; GL version=2.1 Chromium 1.9
+    if (  (strstr(glRenderer,"Chromium") != NULL)
+        ||(strstr(glVersion,"Chromium ") != NULL)) {
+
+       conAdd(LERR, "VirtualBox indirect rendering found, reducing visual effects.");
+       if (view.tailLength > 4) view.tailLength = 4;
+       view.drawSky = 0;
+       view.drawSkyRandom = 0;
+       if (view.drawOSD > 0) view.drawOSD = 2;
+       view.drawColourScheme = 0;
+       haveSlowHardware = 1;
+
+       if (view.particleRenderMode == 1) {
+           conAdd(LNORM, "Setting particleRenderMode to 2");
+           view.particleRenderMode = 2;
+       }
+       video.supportPointSprite = 0;
+   }
+
+
    // linux: MESA openGL on Intel integrated graphics
-   // (VMVare is also based on MESA)
-    if ((strcmp(glVendor, "Tungsten Graphics, Inc") == 0) || (strcmp(glVendor, "VMware, Inc.") == 0)) {
+    //   GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
+    //   GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=1.4 (2.1 Mesa 8.0.4)
+    //   GL vendor=Intel Open Source Technology Center; renderer=Mesa DRI Intel(R) Ironlake Mobile; version=2.1 Mesa 9.0
+    if (  (strcmp(glVendor, "Tungsten Graphics, Inc") == 0)
+        ||(strncmp(glVendor, "Intel Open Source", strlen("Intel Open Source")) == 0) ) {
       if ((  strncmp(glRenderer, "Mesa DRI Intel(R) Ironlake Mobile", strlen("Mesa DRI Intel(R) Ironlake Mobile")) == 0)
           || (strncmp(glRenderer, "Mesa DRI Mobile Intel", strlen("Mesa DRI Mobile Intel")) == 0)
           || (strncmp(glRenderer, "Gallium ", strlen("Gallium ")) == 0)) {
           if (  (strstr(glVersion, "1.4 (2.1 Mesa") != NULL)
+                ||(strstr(glVersion, "2.1 Mesa 10.") != NULL)
+                ||(strstr(glVersion, "2.1 Mesa 9.") != NULL)
                 ||(strstr(glVersion, "2.1 Mesa 8.0.") != NULL)
                 ||(strstr(glVersion, "2.1 Mesa 7.") != NULL)) {
                // MESA 8.0 claims to have GL_ARB_point_sprite, but it does not work with particlerendermode 1.
                // effect: instead of particle textures, coloured squares are drawn.
-                // known configurations that are affected:
-                //      mesa 8.0.4-0ubuntu0.2 (with mesa-dri), xorg-server 2:1.11.4-0ubuntu10.8  on Linux 3.2.0-32-generic #51-Ubuntu SMP x86_64 GNU/Linux
-                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=2.1 Mesa 8.0.4
-                //      GL vendor=Tungsten Graphics, Inc; GL renderer=Mesa DRI Intel(R) Ironlake Mobile ; GL version=1.4 (2.1 Mesa 8.0.4)
-                //      GL vendor=VMware, Inc.; GL renderer=Gallium 0.4 on llvmpipe (LLVM 0x300); GL version=1.4 (2.1 Mesa 8.0.4)
+               // MESA 9.0 on intel mobile shows single-coloured boxed instead of sprites
+
  	        if (view.particleRenderMode == 1) {
                     conAdd(LERR,  "Sorry, Your driver is blacklisted for particleRenderMode 1.");
                     conAdd(LERR, "This means you can't have really pretty looking particles.");
                     conAdd(LNORM, "Setting particleRenderMode to 2");
                     view.particleRenderMode = 2;
-                    view.particleSizeMax = 63;
 	        }
-                video.supportPointSprite = 0;
+                if (view.particleSizeMax > 63) view.particleSizeMax = 63;
+                if (view.tailLength > 4) view.tailLength = 4;
+                if (strncmp(glRenderer, "Gallium ", strlen("Gallium ")) != 0)
+                    video.supportPointSprite = 0;  // only needed for Mesa DRI Intel; Gallium seems to be OK
           }
+          haveSlowHardware = 1;
       }
+
       if (strncmp(glRenderer, "Mesa GLX Indirect", strlen("Mesa GLX Indirect")) == 0) {
           if (view.particleRenderMode == 1) {
               conAdd(LERR,  "Sorry, Your indirect rendering GLX driver is blacklisted for particleRenderMode 1.");
               conAdd(LHELP, "Indirect rendering is too slow for really pretty looking particles.");
-              conAdd(LNORM, "Setting particleRenderMode to 0");
-              view.particleRenderMode = 0;
-              view.particleSizeMax = 63;
+              conAdd(LERR, "Setting particleRenderMode to 0 and reducing visual effects");
+              view.particleRenderMode = 2;
 	  }
           video.supportPointSprite = 0;
+          view.tailLength = 0;
+          haveSlowHardware = 2;
       }
     }
 
 
-    // software OpenGL driver, Microsoft Windows
-    if ((strcmp(glVendor, "Microsoft Corporation") == 0) && (strcmp(glRenderer, "GDI Generic") == 0)) {
-       // awfully SLOW. -> prefer particleRenderMode 0
-       if (view.particleRenderMode == 1) {
-           conAdd(LHELP,  "Sorry, Your software driver is blacklisted for particleRenderMode 1.");
-           conAdd(LHELP, "It's too slow for really pretty looking particles.");
-           conAdd(LNORM, "Setting particleRenderMode to 0");
-           view.particleRenderMode = 0;
-           view.particleSizeMax = 63;
-       }
-       // ToDo: add more tweak to achieve higher framerates ...
+    if (haveSlowHardware > 0) {
+        // some tweaks to speed up rendering 
+        if (view.particleSizeMax > 63) view.particleSizeMax = 63;
+        if (view.maxVertices > 32000) view.maxVertices = 32000 ;
+        if (view.tailLength > 8) view.tailLength = 8;
+        // setting tailFaded = 0 may actually give you a big speedup, but it looks ugly :-(
+        //view.tailFaded = 0;
+
+        glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+        glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_DONT_CARE);
     }
 
+    if (haveSlowHardware > 1) {
+        // some heavy tweaks to speed up rendering 
+        if (view.particleSizeMax > 31) view.particleSizeMax = 31;
+        if (view.maxVertices > 16000) view.maxVertices = 16000 ;
+        if (view.tailLength > 4) view.tailLength = 4;
+        if (view.tailOpacity < 1) view.tailOpacity = 0.5;
+        view.tailFaded = 0;
+
+        view.drawSky = 0;
+        view.drawSkyRandom = 0;
+        if (view.drawOSD > 0) view.drawOSD = 2;
+        view.drawColourScheme = 0;
+
+        glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+    }
+    glCheck();
 }
 
 

@@ -1,7 +1,8 @@
 /*
 
+This file is part of
 Gravit - A gravity simulator
-Copyright 2003-2005 Gerald Kaszuba
+Copyright 2003-2014 Gravit Development Team: 2003-2014 Gerald Kaszuba / 2011-2014 Frank Moehle
 
 Gravit is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,15 +16,15 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
 #ifndef GRAVIT_H_
 #define GRAVIT_H_
 
-#define GRAVIT_VERSION "Gravit 0.5.0"
-#define GRAVIT_COPYRIGHT "Copyright 2003-2012 Gravit Development Team"
+#define GRAVIT_VERSION "Gravit 0.5.1"
+#define GRAVIT_COPYRIGHT "Copyright 2003-2014 Gravit Development Team"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -123,7 +124,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #ifndef __GNUC__
         // stop conversion from 'double ' to 'float ', possible loss of data
         #pragma warning ( disable : 4244 )
-    #endif
+        // silence warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup.
+        #define strdup(x) _strdup(x)
+        // silence warning C4055: typecast from data pointer 'void *' to function pointer 'FPglPointParameterfARB'
+        #pragma warning ( disable : 4055 )
+#endif
 
 #else
 
@@ -169,10 +174,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #include <agar/gui.h>
 #endif
 
-    #define glCheck() { GLuint er = glGetError(); if (er) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, er, gluErrorString(er)); } }
-    #define sdlCheck() { char *er = SDL_GetError(); if (er) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); } }
+    // according to the OpenGL specs, glGetError should be called in a loop, until it returns GL_NO_ERROR
+    #define glCheck() { GLenum er; while ((er = glGetError()) != GL_NO_ERROR) { conAdd(LERR, "glError: %s:%i %i %s", __FILE__, __LINE__, (int)er, gluErrorString(er)); } }
+    #define sdlCheck() { char *er = SDL_GetError(); if ((er!=NULL) && (strlen(er)>0)) { conAdd(LERR, "SDL Error: %s:%i %s", __FILE__, __LINE__, er); SDL_ClearError(); } }
 #ifndef WITHOUT_AGAR
-    #define agarCheck() { const char *aer = AG_GetError(); if (aer) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); } }
+    #define agarCheck() { const char *aer = AG_GetError(); if ((aer!=NULL) && (strlen(aer)>0)) { conAdd(LERR, "agar Error: %s:%i %s", __FILE__, __LINE__, aer); AG_SetError("%s", "");} }
 #endif
 
 #else
@@ -320,7 +326,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // this define is to render video in the middle of a spawn
 #define doVideoUpdateInSpawn() \
     if (view.recordingVideoRefreshTime) { \
-        if (view.lastVideoFrame + (view.recordingVideoRefreshTime*4) < getMS()) { \
+        if (((view.recordParticlesDone % 128) == 1) && (view.lastVideoFrame + (view.recordingVideoRefreshTime*2) < getMS())) { \
             runInput(); \
             runVideo(); \
         } \
@@ -353,6 +359,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     #ifndef GL_CLAMP_TO_EDGE
         #define GL_CLAMP_TO_EDGE 0x812F
+    #endif
+    #ifndef GL_ALIASED_POINT_SIZE_RANGE
+        #define GL_ALIASED_POINT_SIZE_RANGE 0x846D
     #endif
 
     typedef struct conf_s {
@@ -515,11 +524,18 @@ typedef struct view_s {
     // Any value < SDL_TIMESLICE (usually 10 ms) disables this "handbrake"
     int minVideoRefreshTime;
 
+    // number of video display frames skipped
+    Uint32 lastVideoFrameSkip;
+
     Uint32 firstTimeStamp;
 
     // timer for rendering
     Uint32 totalRenderTime;
     Uint32 timed_frames;
+    Uint32 lastRenderTime;
+
+    // set to 1 to redraw ASAP (for smooth mouse movements etc)
+    int dirty;
 
     int quit;
 
@@ -529,7 +545,13 @@ typedef struct view_s {
     int showCursor;
 
     VectorNew(rot);
+    VectorNew(rotTarget);
+    VectorNew(rotSpeed);
+
     float zoom;
+    float zoomTarget;
+    float zoomSpeed;
+
     VectorNew(lastCenter); //center of view; set by translateToCenter()
     int zoomFitAuto;
 
@@ -726,7 +748,7 @@ void spawnDefaults();
 int isSpawning();
 
 // console.c
-extern con_t con[CONSOLE_HISTORY];
+extern con_t con[CONSOLE_HISTORY+1];
 void conAdd(int mode, char *f, ... );
 void conInit();
 void conDraw();

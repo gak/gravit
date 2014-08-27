@@ -13,7 +13,7 @@ scripts = { "plummer", "one-galaxy", "binary-galaxy", "merging-galaxies", "many-
 
 math.randomseed(os.time())
 r = math.random(1, #scripts)
-log("Spawning " .. scripts[r])
+logName(scripts[r])
 
 file = scripts[r] .. ".gravitspawn"
 -- log(file)

@@ -21,6 +21,6 @@ final: $(OBJS)
 clean:
 	rm -f src/*.o $(FINAL)
 
-src/%o: src/%c
+src/%o: src/%c src/gravit.h
 	gcc -c $(CFLAGS) $(subst ,, src/$*c) -o src/$*o
 

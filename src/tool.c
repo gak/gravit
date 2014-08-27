@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #else
         #define mkdir(path, mode) mkdir(path)
     #endif
+    // get definition of SIZE_MAX
+    #include <stdint.h>
 #endif
 
 #ifdef __MACH__
@@ -108,7 +110,8 @@ size_t LoadMemoryDump(char *fileName, unsigned char *d, size_t size, size_t chun
         p = fread(d, 1, amountToRead, fp);
 
         if (p < amountToRead) {
-	    if (bytes == 0) {
+            if ((bytes == 0) || (!feof(fp))) {
+                if (ferror(fp)) conAdd(LERR, "%s", strerror( errno ));
                 conAdd(LERR, "Short read on %s (%ld bytes)", fileName, (long)(p+bytes));
                 fclose(fp);
                 return 0;
@@ -209,18 +212,29 @@ Uint32 getMS() {
 
 }
 
-void setTitle(char *state) {
+static Uint32 tsWindowTitle = 0;
+void setTitle(char *stateText) {
 
 #ifndef NO_GUI
 
     char *a;
 
-    if (state)
-        a = va("%s - %s", GRAVIT_VERSION, state);
-    else
+    if (stateText) {
+        a = va("%s - %s", GRAVIT_VERSION, stateText);
+    } else {
         a = GRAVIT_VERSION;
+        tsWindowTitle = 0;
+    }
 
-    SDL_WM_SetCaption(a, a);
+    // first run
+    if (tsWindowTitle == 0) tsWindowTitle = getMS() - 1000;
+
+    // to avoid a flickering title bar, use 0.25 seconds
+    // delay between title updates during record
+    if ((stateText == NULL) || ((state.mode & SM_RECORD) == 0) || ((getMS() - tsWindowTitle) > 249)) {
+        SDL_WM_SetCaption(a, a);
+        tsWindowTitle = getMS();
+    }
 
 #endif
 
@@ -307,7 +321,7 @@ void freeFileName() {
 
     if (state.fileName) {
         free(state.fileName);
-        state.fileName = 0;
+        state.fileName = NULL;
     }
 
 }
@@ -317,11 +331,11 @@ void setFileName(char *name) {
     char buf[256];
 
     strncpy(buf, name, 255);
+    buf[255]=0;
 
     freeFileName();
 
-    state.fileName = malloc(strlen(buf)+1);	// +1 for \0
-    strcpy(state.fileName, buf);
+    state.fileName = strdup(buf);
 
 }
 
@@ -456,15 +470,21 @@ int checkHomePath() {
 size_t getMemory() {
 
     // From http://stackoverflow.com/questions/2513505/how-to-get-available-memory-c-g
-    size_t realMemory;
     
 #ifdef WIN32
+    size_t realMemory;
     MEMORYSTATUSEX status;
     status.dwLength = sizeof(status);
     GlobalMemoryStatusEx(&status);
-    return status.ullTotalPhys;
+
+    if (status.ullTotalPhys >= SIZE_MAX)
+        realMemory = SIZE_MAX;
+    else
+        realMemory = (size_t)status.ullTotalPhys;
+    return realMemory;
 #else
 #ifdef __MACH__
+    size_t realMemory;
     int mib[2] = { CTL_HW, HW_MEMSIZE };
     u_int namelen = sizeof(mib) / sizeof(mib[0]);
     uint64_t size;

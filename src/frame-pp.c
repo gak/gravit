@@ -1,7 +1,9 @@
 /*
 
+This file is part of
 Gravit - A gravity simulator
 Copyright 2003-2005 Gerald Kaszuba
+Copyright 2012-2014 Frank Moehle
 
 Gravit is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -174,16 +176,16 @@ static void do_processFramePP(particle_vectors pos, acc_vectors accel,
             squareDistance += MIN_STEP2;
 
 #if !defined(USE_FIXED_PHYSICS) && !defined(USE_MODIFIED_PHYSICS)
-	    invDistance = 1.0f / squareDistance;               // 1.0 / (Distance^2)
+            invDistance = 1.0f / squareDistance;               // 1.0 / (Distance^2)
             force1 = p1_mass * pos.mass[j] * invDistance;
             force2 = force1;
 #else
 #if defined(USE_MODIFIED_PHYSICS)
-	    invDistance = 1.0f / squareDistance;               // 1.0 / (Distance^2)
+            invDistance = 1.0f / squareDistance;               // 1.0 / (Distance^2)
 #else
     //USE_FIXED_PHYSICS                                        // this is a shortcut to compute 1.0/(sqrt(sqDist) * sqDist)
-	    squareDistance *= squareDistance * squareDistance; //    distance ^6
-	    invDistance  = 1.0f / sqrtf(squareDistance);       //    inverse distance ^3/2
+            squareDistance *= squareDistance * squareDistance; //    distance ^6
+            invDistance  = 1.0f / sqrtf(squareDistance);       //    inverse distance ^3/2
 #endif
             force1 = pos.mass[j] * invDistance;
             force2 = p1_mass     * invDistance;
@@ -223,22 +225,22 @@ void processFramePP(int start, int amount) {
     particles_max = state.particleCount;
 
 
-    // create arrays, aligned to 16 bytes
+    // create arrays, aligned to 64 bytes (cache line size)
 
-    MALLOC_ALIGNED( pos.x, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( pos.y, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( pos.z, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( pos.mass, sizeof(float)*(particles_max + 16), 16);
-    //memset(pos.x, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.y, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.z, 0, sizeof(float) * (particles_max + 16));
-    //memset(pos.mass, 0, sizeof(float) * (particles_max + 16));
-    MALLOC_ALIGNED( accel.x, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( accel.y, sizeof(float)*(particles_max + 16), 16);
-    MALLOC_ALIGNED( accel.z, sizeof(float)*(particles_max + 16), 16);
-    memset(accel.x, 0, sizeof(float) * (particles_max + 16));
-    memset(accel.y, 0, sizeof(float) * (particles_max + 16));
-    memset(accel.z, 0, sizeof(float) * (particles_max + 16));
+    MALLOC_ALIGNED( pos.x, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( pos.y, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( pos.z, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( pos.mass, sizeof(float)*(particles_max + 64), 64);
+    //memset(pos.x, 0, sizeof(float) * (particles_max + 64));
+    //memset(pos.y, 0, sizeof(float) * (particles_max + 64));
+    //memset(pos.z, 0, sizeof(float) * (particles_max + 64));
+    //memset(pos.mass, 0, sizeof(float) * (particles_max + 64));
+    MALLOC_ALIGNED( accel.x, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( accel.y, sizeof(float)*(particles_max + 64), 64);
+    MALLOC_ALIGNED( accel.z, sizeof(float)*(particles_max + 64), 64);
+    memset(accel.x, 0, sizeof(float) * (particles_max + 64));
+    memset(accel.y, 0, sizeof(float) * (particles_max + 64));
+    memset(accel.z, 0, sizeof(float) * (particles_max + 64));
 
 
     // copy frame data to vector-friendly arrays

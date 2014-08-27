@@ -1,7 +1,9 @@
 /*
 
+This file is part of
 Gravit - A gravity simulator
 Copyright 2003-2005 Gerald Kaszuba
+Copyright 2011-2014 Frank Moehle
 
 Gravit is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA 
 
 */
 
@@ -81,6 +83,7 @@ int initFrame() {
 
     view.timed_frames=0;
     view.totalRenderTime=0;
+    view.lastRenderTime = 0;
 
     fpsInit();
 
@@ -158,7 +161,7 @@ void processMomentum() {
  */
 static void accelerateParticles() {
 #if (!defined(WIN32) || defined(USE_PTHREAD)) && !defined(_OPENMP)
-    pthread_t ptt[MAX_THREADS];
+    pthread_t ptt[MAX_THREADS+1];
 #endif
         int i;
 
@@ -277,7 +280,6 @@ static void moveParticles() {
 void processFrame() {
 
     int i;
-    particle_t *p;
     Uint32 frameStart = 0;
     Uint32 frameEnd = 0;
 
@@ -329,6 +331,7 @@ void processFrame() {
     state.totalFrames ++;
 
     frameEnd = getMS();
+    view.lastRenderTime = frameEnd - frameStart;
     view.totalRenderTime += frameEnd - frameStart;
     view.timed_frames ++;
 

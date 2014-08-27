@@ -15,13 +15,13 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
 #include "gravit.h"
 
-con_t con[CONSOLE_HISTORY];
+con_t con[CONSOLE_HISTORY+1];
 int cpos = 0;
 
 char conCommand[CONSOLE_LENGTH+1];
@@ -29,7 +29,7 @@ int conCommandPos;
 unsigned int conBlinkTime;
 int conBlinkOn;
 
-char *conTypedHistory[CONSOLE_TYPED_HISTORY];
+char *conTypedHistory[CONSOLE_TYPED_HISTORY+1];
 int conTypedHistoryPos;
 int conTypedHistoryPointer;
 
@@ -37,7 +37,7 @@ int conTypedHistoryPointer;
 int conCompPos;	// the position of the last BC
 char conCompWord[CONSOLE_LENGTH+1]; // the current BC
 int conCompWordsFoundCount; // commands found starting with BC
-char *conCompWordsFoundPtrs[MAX_COMPLETE_LIST]; // an array of commands starting with BC
+char *conCompWordsFoundPtrs[MAX_COMPLETE_LIST+1]; // an array of commands starting with BC
 int conCompWordsFoundIndex;
 
 static col_t cols[] = {
@@ -156,7 +156,7 @@ void conDraw() {
 
             w = getnWordWidth(conCommand, conCommandPos);
             glDisable(GL_BLEND);
-            glLineWidth(1.0f);
+            glLineWidth(1.5f);
             glBindTexture(GL_TEXTURE_2D, 0);
             glColor4f(1,1,1,1);
             glBegin(GL_LINES);
@@ -174,21 +174,23 @@ void conDraw() {
 
     }
 
-    if ((view.consoleMode && !view.drawOSD) || view.drawOSD) {
+    if ((view.consoleMode) || (view.drawOSD > 0)) {
+        int nn = CONSOLE_HISTORY;
 
         // draw console history
         y = video.screenH - 15 - fontHeight * 2;
 
-        for (i = 0; i < CONSOLE_HISTORY; i++) {
+        if ((view.consoleMode == 0) && (view.drawOSD > 1)) nn=view.drawOSD;
 
-            glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(CONSOLE_HISTORY-i) / CONSOLE_HISTORY + 0.2f);
+        for (i = 0; i < nn; i++) {
+            glColor4f(con[p].c.r, con[p].c.g, con[p].c.b, (float)(nn-i) / nn + 0.2f);
 
             drawFontWord(x, y, con[p].s);
             y -= fontHeight;
 
             p--;
             if (p < 0)
-                p = CONSOLE_HISTORY - 1;
+                p = nn - 1;
 
         }
 
@@ -256,9 +258,8 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
             return;
 
         if (conCommandPos < CONSOLE_LENGTH) {
-            int i,l;
-            l = strlen(conCommand);
-            for (i = strlen(conCommand); i > conCommandPos-1; i--)
+            int i;
+            for (i = (int)strlen(conCommand); i > conCommandPos-1; i--)
                 conCommand[i+1]=conCommand[i];
 
             conCommand[conCommandPos] = (char) c;
@@ -354,7 +355,7 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
 
 void conTypedHistoryAdd(char *s) {
 
-    conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(s)+1);
+    conTypedHistory[conTypedHistoryPos] = (char *)realloc(conTypedHistory[conTypedHistoryPos], strlen(s)+1);
     strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
 
     conTypedHistoryPos++;
@@ -377,7 +378,7 @@ void conTypedHistoryChange(int i) {
 
     // make sure conCommand is at conTypedHistoryPos
     if (conTypedHistoryPos == lastPtr) {
-        conTypedHistory[conTypedHistoryPos] = realloc(conTypedHistory[conTypedHistoryPos], strlen(conCommand)+1);
+        conTypedHistory[conTypedHistoryPos] = (char *)realloc(conTypedHistory[conTypedHistoryPos], strlen(conCommand)+1);
         strcpy(conTypedHistory[conTypedHistoryPos], conCommand);
     }
 
@@ -388,15 +389,16 @@ void conTypedHistoryChange(int i) {
     }
 
     strcpy(conCommand, conTypedHistory[conTypedHistoryPointer]);
-    conCommandPos = strlen(conCommand);
+    conCommandPos = (int)strlen(conCommand);
 
 }
 
 void conAutoComplete() {
 
-    int lenCommand;
-    int lenString;
-    int i, j;
+    size_t lenCommand;
+    size_t lenString;
+    int i;
+	size_t j;
     cmd_t *c;
 
     if (!strlen(conCommand))
@@ -432,7 +434,7 @@ void conAutoComplete() {
                     strcpy(conCompWord, c->cmd);
                     // see what we can match
                 } else {
-                    int l;
+                    size_t l;
                     l = strlen(conCompWord);
                     if (lenCommand < l)
                         l = lenCommand;
@@ -464,7 +466,7 @@ void conAutoComplete() {
     if (conCompWordsFoundIndex >= conCompWordsFoundCount)
         conCompWordsFoundIndex = 0;
     strcpy(conCommand, conCompWordsFoundPtrs[conCompWordsFoundIndex]);
-    conCommandPos = strlen(conCommand);
+    conCommandPos = (int)strlen(conCommand);
 
 }
 

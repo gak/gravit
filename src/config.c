@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -42,7 +42,7 @@ int configRead(char *filename, int ignoreMissing) {
     conAdd(LLOW, "Executing Script: %s", filename);
 
     while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
-        int len = strlen(buffer) - 1;
+        int len = (int)strlen(buffer) - 1;
 
         while (len >= 0 && (isspace(buffer[len]) || buffer[len] == 13 || buffer[len] == 10)) buffer[len--] = 0;
         if (len <= 0 || buffer[0] == '#') continue;

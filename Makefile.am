@@ -37,11 +37,14 @@ endif
 
 if AGAR
 AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" $(LUA_CFLAGS)
-LIBS += -Wl,-rpath=/usr/local/lib
+LIBS += -Wl,-rpath=$(AGAR_LIBDIR):/usr/local/lib:../lib
 else
 AM_CPPFLAGS = -DSYSCONFDIR=\"$(sysconfdir)/\" -DDATA_DIR=\"$(datadir)/\" $(LUA_CFLAGS) -DWITHOUT_AGAR
 endif
 
+if DEBUG
+AM_CPPFLAGS += -DDEBUG -DNDEBUG
+endif
 
 # Rule to build windows resources
 #%.o : %.rc

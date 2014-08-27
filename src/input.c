@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gravit; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 */
 
@@ -62,6 +62,7 @@ int processKeys() {
 #endif
         
         if (event.type == SDL_MOUSEBUTTONDOWN) {
+            view.dirty = 1;
 
             if (view.screenSaver) {
                 cmdQuit(0);
@@ -69,21 +70,28 @@ int processKeys() {
             }
 
             if (event.button.button == SDL_BUTTON_WHEELDOWN)
-                view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
+                view.zoomTarget *= (1 + (view.deltaVideoFrame * 0.01f));
 
             if (event.button.button == SDL_BUTTON_WHEELUP)
-                view.zoom *= (1 + (view.deltaVideoFrame * -0.01f));
+                view.zoomTarget *= (1 + (view.deltaVideoFrame * -0.01f));
 
 #ifndef WITHOUT_AGAR
            // code introduced together with agar
             if (event.button.button == SDL_BUTTON_LEFT) {
                 view.mouseButtons[0] = SDL_BUTTON(1);
             }
+            if (event.button.button == SDL_BUTTON_RIGHT) {
+                view.mouseButtons[0] = SDL_BUTTON(3);
+            }
             
         }
         
         if (event.type == SDL_MOUSEBUTTONUP) {
+            view.dirty = 1;
             if (event.button.button == SDL_BUTTON_LEFT) {
+                view.mouseButtons[0] = 0;
+            }
+            if (event.button.button == SDL_BUTTON_RIGHT) {
                 view.mouseButtons[0] = 0;
             }
 #endif
@@ -351,7 +359,10 @@ int processKeys() {
                 break;
 
             case SDLK_o:
-                view.drawOSD = (!view.drawOSD)?1:0;
+                view.drawOSD++;
+                if (view.drawOSD == 3) view.drawOSD = 4;
+                if (view.drawOSD > 4) view.drawOSD=0;
+                view.drawColourScheme = (view.drawOSD == 1) ? 1 : 0;
                 conAdd(LLOW, "drawOSD set to %i", view.drawOSD);
                 break;
 
@@ -410,11 +421,52 @@ int processKeys() {
 
     if (!view.consoleMode) {
 
-        if (view.keys[SDLK_a])
-            view.zoom /= (1 + (view.deltaVideoFrame * 0.01f));
+        if (view.keys[SDLK_a]) {
+            view.zoom /= (1 + (view.deltaVideoFrame * 0.005f));
+            view.zoomTarget = view.zoom;
+            view.zoomSpeed = 0;
+            view.dirty = 1;
+        }
+        if (view.keys[SDLK_z]) {
+            view.zoom *= (1 + (view.deltaVideoFrame * 0.005f));
+            view.zoomTarget = view.zoom;
+            view.zoomSpeed = 0;
+        }
 
-        if (view.keys[SDLK_z])
-            view.zoom *= (1 + (view.deltaVideoFrame * 0.01f));
+        // allow arrow keys instead of mouse dragging
+
+        if (view.keys[SDLK_PAGEUP]) {
+            view.zoomTarget *= (1 + (view.deltaVideoFrame * -0.005f));
+            view.dirty = 1;
+        }
+        if (view.keys[SDLK_PAGEDOWN]) {
+            view.zoomTarget *= (1 + (view.deltaVideoFrame * 0.005f));
+            view.dirty = 1;
+        }
+
+
+        if (view.keys[SDLK_UP]) {
+            view.rotTarget[0] -= view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+        if (view.keys[SDLK_DOWN]) {
+            view.rotTarget[0] += view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+        if (view.keys[SDLK_LEFT]) {
+            view.rotTarget[1] -= view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+        if (view.keys[SDLK_RIGHT]) {
+            view.rotTarget[1] += view.deltaVideoFrame * 0.1f;
+            view.dirty = 1;
+            if (view.drawAxis==1) view.drawAxis=3;
+        }
+
+
         /*
         		if (view.keys[SDLK_UP])
         			view.face[0] -= state.dt * 0.1f;
@@ -458,7 +510,7 @@ void processMouse() {
         return;
     }
 
-    if (view.mouseButtons[0] & SDL_BUTTON(1) ) {
+    if ((view.mouseButtons[0] & SDL_BUTTON(1)) || (view.mouseButtons[0] & SDL_BUTTON(3))) {
 
         // Unfortunately, on OS X WarpMouse seems to act like the mouse isn't pressed anymore.
         
@@ -474,12 +526,21 @@ void processMouse() {
 #endif
 
         // turn off cursor only after the 2nd warp mouse, otherwise showcursor does strange things.
-        if (view.mouseButtons[1] & SDL_BUTTON(1) ) {
+        if ((view.mouseButtons[1] & SDL_BUTTON(1)) || (view.mouseButtons[1] & SDL_BUTTON(3))) {
             SDL_ShowCursor(0);
         }
 
-        view.rot[1] += x;
-        view.rot[0] += y;
+        if (view.mouseButtons[0] & SDL_BUTTON(1)) {
+            // left mousebutton --> rotate around x / y axis
+            view.rotTarget[1] += 0.5 * x;
+            view.rotTarget[0] += 0.5 * y;
+        } else {
+	    // right mousebutton --> rotate around y / z axis
+            view.rotTarget[1] += 0.5 * x;
+            view.rotTarget[2] -= 0.5 * y;
+        }
+        view.dirty = 1;
+        if (view.drawAxis==1) view.drawAxis=3;
 
     } else {
 

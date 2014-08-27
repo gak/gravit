@@ -1,4 +1,4 @@
-/* SaveSurf: an example on how to save a SDLSurface in PNG
+/* This file is based on SaveSurf: an example on how to save a SDLSurface in PNG
    Copyright (C) 2006 Angelo "Encelo" Theodorou
  
    This program is free software; you can redistribute it and/or modify
@@ -13,11 +13,10 @@
   
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+   Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
    NOTE: 
- 
-   This program is part of "Mars, Land of No Mercy" SDL examples, 
+   This program is based in parts on the "Mars, Land of No Mercy" SDL examples,
    you can find other examples on http://marsnomercy.org
 
 */

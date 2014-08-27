@@ -1,3 +1,26 @@
+/*
+
+This file is part of
+Gravit - A gravity simulator
+Copyright 2012 Frank Moehle
+
+Gravit is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Gravit is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gravit; if not, write to the Free Software
+Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+*/
+
+
 
 //define this to sacrify accuracy for speed (up to 40% faster)
 //#define SPEED_SPEED_SPEED
@@ -32,6 +55,7 @@
 #else
 /* ******************************************************************* */
 // use gcc extensions for SSE
+
 #if (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) > 40500
 // x86intrin.h availeable since gcc 4.5.0
 #include <malloc.h>
@@ -44,11 +68,10 @@
 #if !defined(__INTEL_COMPILER)
 #include <mm_malloc.h>
 #endif
+
 #ifndef __MACH__
 #include <malloc.h>
 #endif
-typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
-#define _mm_init1_ps(f) {f, f, f, f}
 
 #if defined(__MINGW32__) || defined(mingw32) || defined(MINGW)
 // workaround for buggy _mm_malloc in mingw
@@ -58,6 +81,16 @@ typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  
 
 #define ALIGNED __attribute__((aligned (16)))
 #define ALWAYS_INLINE(ret_type) static inline ret_type __attribute__((__gnu_inline__, __always_inline__))
+
+#ifdef WIN32
+// windows: use gcc extensions to define vector type
+typedef float __v128 __attribute__(( vector_size(4*sizeof(float)) ,aligned(16)  ));
+#else
+// all others: rely on buildin vector types
+#define __v128 __m128
+#endif
+
+#define _mm_init1_ps(f) {f, f, f, f}
 
 #endif
 
