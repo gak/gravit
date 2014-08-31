@@ -67,6 +67,14 @@ void drawFrameSet2D() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    // make sure that depth testing and backface culling does not interfere with 2D drawing mode
+    // (in case the GUI library has enabled them)
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    // enable blending, disable alpha mask
+    glDisable(GL_ALPHA_TEST);
+    glEnable(GL_BLEND);
+
 }
 
 void drawFrameSet3D() {
@@ -552,6 +560,19 @@ void drawFrame() {
 
         }
         glEnd();
+
+        // Disable point sprite texture coodinates before rendering non-point primitives.
+        // Without this, all text disappears on intel graphics.
+        if ((view.particleRenderMode == 1) && (view.particleRenderTexture)) {
+            glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_FALSE );
+        }
+
+        if ((view.particleRenderMode == 1) && (video.supportPointSprite)) {
+           glDisable( GL_POINT_SPRITE_ARB );
+        }
+
+        glCheck();
+
 
         glDepthMask( GL_TRUE );
         glDisable( GL_DEPTH_TEST );
@@ -1470,10 +1491,12 @@ void checkDriverBlacklist() {
            video.supportPointSprite = 0;
        }
 
-       if (view.particleRenderMode == 1) {
-           conAdd(LNORM, "Falling back to particleRenderMode 2");
-           view.particleRenderMode = 2;
-       }
+       // not necessary any more
+
+       //if (view.particleRenderMode == 1) {
+       //    conAdd(LNORM, "Falling back to particleRenderMode 2");
+       //    view.particleRenderMode = 2;
+       //}
 
     }
 
