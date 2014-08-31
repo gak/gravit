@@ -49,6 +49,12 @@ Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
 #else
 
+  #if defined(__INTEL_COMPILER) && defined(HAVE__MM_MALLOC)
+    // intel icc - prefer _mm_malloc()
+    #define MALLOC_ALIGNED(target, size, alignment) {target =  (float*) _mm_malloc(size, alignment);}
+    #define FREE_ALIGNED(target)                    {_mm_free(target);}
+
+  #else
     // linux, unix, MacOS:  use (posix_)memalign
     #include <stdlib.h>
     //#include <malloc.h>
@@ -68,7 +74,7 @@ Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
         #define FREE_ALIGNED(target)                    {free(target);}
 
     #endif
-
+  #endif
 #endif
 /* ************************************************************************** */
 
@@ -152,8 +158,19 @@ static void do_processFramePP(particle_vectors pos, acc_vectors accel,
 
 
 #ifdef __INTEL_COMPILER
-#pragma vector always
-#pragma vector aligned
+    #pragma ivdep
+    #pragma vector always
+    #pragma vector aligned
+	__assume_aligned(pos.x, 32);
+	__assume_aligned(pos.y, 32);
+	__assume_aligned(pos.z, 32);
+	__assume_aligned(pos.mass, 32);
+	__assume_aligned(accel.x, 32);
+	__assume_aligned(accel.y, 32);
+	__assume_aligned(accel.z, 32);
+#endif
+#ifdef __GNUC__
+    #pragma GCC ivdep
 #endif
         for (j = 0; j < i; j++) {
             //VectorNew(dv);
@@ -225,22 +242,22 @@ void processFramePP(int start, int amount) {
     particles_max = state.particleCount;
 
 
-    // create arrays, aligned to 64 bytes (cache line size)
+    // create arrays, aligned to 128 bytes (cache line size)
 
-    MALLOC_ALIGNED( pos.x, sizeof(float)*(particles_max + 64), 64);
-    MALLOC_ALIGNED( pos.y, sizeof(float)*(particles_max + 64), 64);
-    MALLOC_ALIGNED( pos.z, sizeof(float)*(particles_max + 64), 64);
-    MALLOC_ALIGNED( pos.mass, sizeof(float)*(particles_max + 64), 64);
-    //memset(pos.x, 0, sizeof(float) * (particles_max + 64));
-    //memset(pos.y, 0, sizeof(float) * (particles_max + 64));
-    //memset(pos.z, 0, sizeof(float) * (particles_max + 64));
-    //memset(pos.mass, 0, sizeof(float) * (particles_max + 64));
-    MALLOC_ALIGNED( accel.x, sizeof(float)*(particles_max + 64), 64);
-    MALLOC_ALIGNED( accel.y, sizeof(float)*(particles_max + 64), 64);
-    MALLOC_ALIGNED( accel.z, sizeof(float)*(particles_max + 64), 64);
-    memset(accel.x, 0, sizeof(float) * (particles_max + 64));
-    memset(accel.y, 0, sizeof(float) * (particles_max + 64));
-    memset(accel.z, 0, sizeof(float) * (particles_max + 64));
+    MALLOC_ALIGNED( pos.x, sizeof(float)*(particles_max + 128), 128);
+    MALLOC_ALIGNED( pos.y, sizeof(float)*(particles_max + 128), 128);
+    MALLOC_ALIGNED( pos.z, sizeof(float)*(particles_max + 128), 128);
+    MALLOC_ALIGNED( pos.mass, sizeof(float)*(particles_max + 128), 128);
+    //memset(pos.x, 0, sizeof(float) * (particles_max + 128));
+    //memset(pos.y, 0, sizeof(float) * (particles_max + 128));
+    //memset(pos.z, 0, sizeof(float) * (particles_max + 128));
+    //memset(pos.mass, 0, sizeof(float) * (particles_max + 128));
+    MALLOC_ALIGNED( accel.x, sizeof(float)*(particles_max + 128), 128);
+    MALLOC_ALIGNED( accel.y, sizeof(float)*(particles_max + 128), 128);
+    MALLOC_ALIGNED( accel.z, sizeof(float)*(particles_max + 128), 128);
+    memset(accel.x, 0, sizeof(float) * (particles_max + 128));
+    memset(accel.y, 0, sizeof(float) * (particles_max + 128));
+    memset(accel.z, 0, sizeof(float) * (particles_max + 128));
 
 
     // copy frame data to vector-friendly arrays
