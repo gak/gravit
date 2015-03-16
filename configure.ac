@@ -182,8 +182,10 @@ AC_CHECK_LIB([m], [pow])
 
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
+# check AC_FUNC_REALLOC may end up in linker error: undefined rpl_realloc
+# AC_FUNC_MALLOC
+# AC_FUNC_REALLOC
+AC_CHECK_FUNCS([malloc realloc])
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
