@@ -275,7 +275,9 @@ void conInput(SDLKey keySym, SDLMod modifier, Uint16 unicode) {
 
         if (conCommandPos > 0) {
 
-            strcpy(&conCommand[conCommandPos-1], &conCommand[conCommandPos]);
+            // strcpy(&conCommand[conCommandPos-1], &conCommand[conCommandPos]);
+            //strcpy can have undefined results when memory areas overlap.
+            memmove(&conCommand[conCommandPos-1], &conCommand[conCommandPos], strlen(&conCommand[conCommandPos])+1);
             conCommandPos--;
 
         }

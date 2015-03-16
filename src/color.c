@@ -194,7 +194,7 @@ void setColoursByAcceleration() {
         plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
         distance(zero, p->vel, velSpeed1);
         distance(p->vel, plast->vel, velSpeed2);
-        accCurrent = abs(velSpeed2 - velSpeed1);
+        accCurrent = fabs(velSpeed2 - velSpeed1);
 
         if (i == 0) {
 
