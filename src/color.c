@@ -52,11 +52,12 @@ void setColoursByVel() {
         }
 
     }
+    if (velMax < 0.0001) velMax=0.0001;
 
     // applies velocity based on the highest
     for (i = 0; i < state.particleCount; i++) {
 
-        p = getParticleFirstFrame(i);
+        p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
 
         distance(zero, p->vel, velSpeed);
@@ -89,7 +90,7 @@ void setColoursByKinetic() {
 
         distance(zero, p->vel, velocity);
         velocity = fabs(velocity);
-        kinValue = velocity * velocity * pd->mass * 0.5;
+        kinValue = velocity * velocity * fabs(pd->mass) * 0.5;
 
         if (i == 0) {
 
@@ -103,10 +104,11 @@ void setColoursByKinetic() {
         }
 
     }
+    if (kinMax < 0.0001) kinMax=0.0001;
 
     for (i = 0; i < state.particleCount; i++) {
 
-        p = getParticleFirstFrame(i);
+        p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
 
         distance(zero, p->vel, velocity);
@@ -140,7 +142,7 @@ void setColoursByMomentum() {
 
         distance(zero, p->vel, velocity);
         velocity = fabs(velocity);
-        kinValue = velocity * pd->mass;
+        kinValue = velocity * fabs(pd->mass);
 
         if (i == 0) {
 
@@ -154,10 +156,11 @@ void setColoursByMomentum() {
         }
 
     }
+    if (kinMax < 0.0001) kinMax=0.0001;
 
     for (i = 0; i < state.particleCount; i++) {
 
-        p = getParticleFirstFrame(i);
+        p = getParticleCurrentFrame(i);
         pd = getParticleDetail(i);
 
         distance(zero, p->vel, velocity);
@@ -185,16 +188,24 @@ void setColoursByAcceleration() {
     VectorNew(zero);
     VectorZero(zero);
 
-    if (state.currentFrame == 0)
+    if (state.currentFrame < 1) {
+        setColoursByVel();
         return;
+    }
 
     for (i = 0; i < state.particleCount; i++) {
 
         p = getParticleCurrentFrame(i);
+        pd = getParticleDetail(i);
         plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
-        distance(zero, p->vel, velSpeed1);
-        distance(p->vel, plast->vel, velSpeed2);
-        accCurrent = fabs(velSpeed2 - velSpeed1);
+
+        //acceleration = delta between current and last velocity
+        distance(plast->vel, p->vel, velSpeed1);
+        accCurrent = fabs(velSpeed1);
+        //old code
+        // distance(zero, p->vel, velSpeed1);
+        // distance(p->vel, plast->vel, velSpeed2);
+        // accCurrent = fabs(velSpeed2 - velSpeed1);
 
         if (i == 0) {
 
@@ -208,15 +219,16 @@ void setColoursByAcceleration() {
         }
 
     }
+    if (accMax < 0.0001) accMax=0.0001;
 
     for (i = 0; i < state.particleCount; i++) {
 
         p = getParticleCurrentFrame(i);
+        pd = getParticleDetail(i);
         plast = state.particleHistory + state.particleCount * (state.currentFrame-1) + i;
         distance(zero, p->vel, velSpeed1);
-        distance(p->vel, plast->vel, velSpeed2);
-        accCurrent = velSpeed2 - velSpeed1;
-        pd = getParticleDetail(i);
+        distance(zero, plast->vel, velSpeed2);
+        accCurrent = velSpeed1 - velSpeed2;
 
         d = accCurrent / accMax;
         colourFromNormal(pd->col, (float)fabs((double)d));
