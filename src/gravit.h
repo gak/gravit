@@ -212,7 +212,17 @@ Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 #define getParticleFirstFrame(i) state.particleHistory + (i)
 #define getParticleDetail(i) state.particleDetail + (i)
 
+/* just in case these macros don't already exist */
+#ifndef FALSE
+#define FALSE   0
+#endif
+#ifndef TRUE
+#define TRUE    1
+#endif
+
+#ifndef PI
 #define PI 3.14159265358979f
+#endif
 
 #define STRING_RECORD "Recording"
 #define STRING_PLAY "Playing"

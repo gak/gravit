@@ -86,6 +86,15 @@ AC_CHECK_HEADERS([omp.h],[
 	LDFLAGS="$LDFLAGS $OPENMP_CFLAGS"
      ])
 
+# if openMP is not supported -> try pthread
+if test x"$ac_cv_prog_c_openmp" = x"unsupported" ; then
+     AC_CHECK_HEADERS([pthread.h],[
+        CFLAGS="$CFLAGS -pthread"
+        CPPFLAGS="$CPPFLAGS -pthread"
+        LDFLAGS="$LDFLAGS -pthread"
+     ])
+fi
+
 # check for supported SIMD extensions (gcc specific)
 # if SSE is supported, HAVE_SSE will be set
 if test x"$ax_cv_c_compiler_vendor" != x"intel"; then
@@ -128,11 +137,21 @@ if test x"$ax_cv_c_compiler_vendor" = x"intel"; then
 else
    #check for gcc-style optimization flags
    if test x"$enable_debug" != x"yes"; then
+      ## gcc: optimize for speed, no debugging
       AX_CHECK_COMPILE_FLAG(-Ofast, CFLAGS="$CFLAGS -Ofast" LDFLAGS="$LDFLAGS -Ofast")
       AX_CHECK_COMPILE_FLAG(-fomit-frame-pointer, CFLAGS="$CFLAGS -fomit-frame-pointer")
+      ## enable AVX2 (incl. FMA) in gcc or clang
+      # AX_CHECK_COMPILE_FLAG(-mavx2, CFLAGS="$CFLAGS -mavx2")
+      # AX_CHECK_COMPILE_FLAG(-march=native, CFLAGS="$CFLAGS -march=native")
+      # AX_CHECK_COMPILE_FLAG(-ffp-contract=fast, CFLAGS="$CFLAGS -ffp-contract=fast")
    else
       AX_CHECK_COMPILE_FLAG(-O2, CFLAGS="$CFLAGS -O2" LDFLAGS="$LDFLAGS -O2")
       AX_CHECK_COMPILE_FLAG(-g3, CFLAGS="$CFLAGS -g3")
+      ## gcc: try to enable sanitizers
+      # AX_CHECK_COMPILE_FLAG(-fsanitize=address, CFLAGS="$CFLAGS -fsanitize=address" LDFLAGS="$LDFLAGS -fsanitize=address")
+      # AX_CHECK_COMPILE_FLAG(-fsanitize=thread, CFLAGS="$CFLAGS -fsanitize=thread" LDFLAGS="$LDFLAGS -fsanitize=thread")
+      AX_CHECK_COMPILE_FLAG(-fsanitize=undefined, CFLAGS="$CFLAGS -fsanitize=undefined" LDFLAGS="$LDFLAGS -fsanitize=undefined")
+
    fi
 
    AX_CHECK_COMPILE_FLAG(-ffast-math, CFLAGS="$CFLAGS -ffast-math")
