@@ -761,7 +761,7 @@ void drawFrame() {
                     continue;
 
                 if (view.tailFaded) {
-                    c = (float)(j-k) / (float)(state.currentFrame-k) * view.tailOpacity;
+                    c = (float)(j-k) / fmax(1.0, (float)(state.currentFrame-k)) * view.tailOpacity;
                     memcpy(sc, pd->col, sizeof(float)*4);
                     sc[3] *= c;
                     glColor4fv(sc);
