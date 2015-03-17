@@ -1,3 +1,6 @@
+# simle -*-Makefile-*- for gcc on MacOS
+#
+
 FINAL = gravit
 OBJS = 	main.o font.o frame.o frame-pp.o frame-pp_sse.o frame-ot.o gfx.o input.o console.o osd.o spawn.o tool.o command.o fps.o color.o config.o timer.o png_save.o
 

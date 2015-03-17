@@ -1,3 +1,5 @@
+# This -*-Makefile-*- is created by automake
+
 # path to cfg files
 sysconfdir=@sysconfdir@/gravit
 datadir=@datadir@/gravit

@@ -1,3 +1,5 @@
+# This is a generic -*-Makefile-*- for linux and other unix-like systems.
+
 FINAL = gravit
 OBJS = 	src/main.o src/font.o src/frame.o src/frame-pp.o src/frame-ot.o src/gfx.o src/input.o src/console.o src/osd.o src/spawn.o src/tool.o src/command.o src/fps.o src/color.o src/config.o src/timer.o src/lua.o src/png_save.o src/texture.o
 

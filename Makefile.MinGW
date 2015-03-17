@@ -1,4 +1,4 @@
-# Makefile for MinGW gcc (32 or 64 bit) on windows
+# -*-Makefile-*- for MinGW gcc (32 or 64 bit) on windows
 #
 
 FINAL = gravit.exe
@@ -139,6 +139,7 @@ install: final
 	@-$(INSTALL) $(GCCPATH)/../*/lib/libgomp*.dll  $(DESTDIR)
 	@-$(INSTALL) $(GCCPATH)/libgomp*.dll  $(DESTDIR)
 	@-$(INSTALL) $(GCCPATH)/*thread*.dll  $(DESTDIR)
+	@-$(INSTALL) $(GCCPATH)/libgcc*.dll  $(DESTDIR)
 	@$(INSTALL) ./MinGW/lib$(ARCH)/*.dll $(DESTDIR)
 	@echo ""
 	@echo "installation files copied into " $(DESTDIR) "and " $(NOARCH)
