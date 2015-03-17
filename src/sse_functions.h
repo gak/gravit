@@ -60,7 +60,9 @@ Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // x86intrin.h availeable since gcc 4.5.0
 #include <malloc.h>
 #include <xmmintrin.h>
+#if !defined(__INTEL_COMPILER)
 #include <x86intrin.h>
+#endif
 #else
 #include <xmmintrin.h>
 #endif

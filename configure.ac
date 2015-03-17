@@ -192,7 +192,12 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit floor ftime memset mkdir pow select setenv sqrt strchr strdup strerror strstr])
 
 # check for functions to do aligned malloc
-AC_CHECK_HEADERS([intrin.h x86intrin.h xmmintrin.h malloc.h memory.h])
+if test x"$ax_cv_c_compiler_vendor" != x"intel"; then
+    AC_CHECK_HEADERS([intrin.h x86intrin.h xmmintrin.h malloc.h memory.h])
+else
+    #intel compilers sometimes do not like x86intrin.h on linux (ubuntu 14.10)
+    AC_CHECK_HEADERS([xmmintrin.h malloc.h memory.h])
+fi
 AC_CHECK_FUNCS([memalign _mm_malloc _mm_free _aligned_malloc __mingw_aligned_malloc])
 # AC_CHECK_FUNCS([posix_memalign])
 AX_FUNC_POSIX_MEMALIGN
