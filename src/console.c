@@ -59,12 +59,14 @@ void conAdd(int mode, char *f, ... ) {
     va_end (argptr);
 
 #ifdef WIN32
-    if (view.useStdout != 0) {
+    if ((view.useStdout != 0) || ((mode == LERR) && (video.sdlStarted < 1))) {
         printf("%s\n", s);
 	fflush(stdout);
     }
 #else
-    if ((mode == LERR) || (view.useStdout != 0)) {
+    if ( (mode == LERR) || (view.useStdout != 0) ||
+        ((video.sdlStarted < 1) && (view.silentMode == 0) && (mode > LLOW) && (mode != LHELP)) ||
+        ((video.sdlStarted < 1) && (view.silentMode == 1) && (mode == LERR))) {
         printf("%s\n", s);
 	fflush(stdout);
     }
@@ -77,7 +79,7 @@ void conAdd(int mode, char *f, ... ) {
         mode = 0;
 
     if ((mode < LNORM) && !view.verboseMode ) return;
-
+    if ((mode < LERR) && (mode > LLOW) && (view.silentMode==1)) mode = mode-1;
 
     cpos++;
 

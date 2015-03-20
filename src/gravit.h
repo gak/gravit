@@ -585,6 +585,7 @@ typedef struct view_s {
 
     int verboseMode;
     int useStdout;         // 1 to copy console output to stdout
+    int silentMode;        // is set during script execution
 
     int blendMode;
 

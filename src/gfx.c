@@ -241,8 +241,6 @@ int gfxInit() {
 
     }
 
-    video.sdlStarted = 1;
-
     fileName = findFile(MISCDIR "/gravit.png");
     if (!fileName) {
         return 0;
@@ -251,6 +249,9 @@ int gfxInit() {
     if (!icon) {
         sdlCheck();
     }
+
+    video.sdlStarted = 1;
+
     SDL_WM_SetIcon(icon, NULL);
     SDL_FreeSurface(icon);
 
