@@ -147,6 +147,7 @@ void viewInit() {
     view.particleSizeMax = 127;
 
     view.verboseMode = 0;
+    view.silentMode = 0;
 
     view.screenshotLoop = 0;
     view.screenshotIndex = 0;
@@ -525,6 +526,7 @@ int main(int argc, char *argv[]) {
 
     if (init(argc, argv)) {
 
+        view.useStdout=1;
         conAdd(LERR, "There has been an error on start-up. Read your gravit configration file to possibly fix this.");
 
     } else {
@@ -542,6 +544,7 @@ int main(int argc, char *argv[]) {
 #define ShowHelp(p,v) conAdd(LLOW, "  %-25s%s", p, v);
 void usage() {
 
+    view.useStdout=1;
     conAdd(LLOW, GRAVIT_VERSION);
     conAdd(LLOW, GRAVIT_COPYRIGHT);
     conAdd(LLOW, "");
@@ -572,6 +575,7 @@ int commandLineRead(int argc, char *argv[]) {
 
         // version, quit
         if (CheckCommand("--version") || CheckCommand("-v")) {
+            view.useStdout=1;
             conAdd(LLOW, GRAVIT_VERSION);
             conAdd(LLOW, GRAVIT_COPYRIGHT);
             cmdQuit(0);

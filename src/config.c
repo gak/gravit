@@ -40,6 +40,7 @@ int configRead(char *filename, int ignoreMissing) {
     }
 
     conAdd(LLOW, "Executing Script: %s", filename);
+    view.silentMode=1;
 
     while (fgets(buffer, FILE_CHUNK_SIZE_SMALL, fp)) {
         int len = (int)strlen(buffer) - 1;
@@ -49,6 +50,7 @@ int configRead(char *filename, int ignoreMissing) {
         cmdExecute(buffer);
     }
 
+    view.silentMode=0;
     return 1;
 
 }
