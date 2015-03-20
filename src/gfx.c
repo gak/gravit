@@ -191,6 +191,7 @@ int gfxSetResolution() {
     
     video.sdlScreen = SDL_SetVideoMode(video.screenW, video.screenH, video.screenBPP, video.flags );
     if (!video.sdlScreen) {
+        video.sdlStarted = 0;
         conAdd(LERR, "SDL_SetVideoMode failed: %s", SDL_GetError()); SDL_ClearError();
         return 1;
     }
@@ -198,11 +199,17 @@ int gfxSetResolution() {
     glEnable(GL_TEXTURE_2D);
 
     // need to (re)load textures
-    if (!loadFonts())
+    if (!loadFonts()) {
+        video.sdlStarted = 0;
+        conAdd(LERR, "could not (re)load fonts");
         return 2;
+    }
 
-    if (!loadParticleTexture())
+    if (!loadParticleTexture()) {
+        video.sdlStarted = 0;
+        conAdd(LERR, "could not (re)load particle texture");
         return 3;
+    }
 
     loadSkyBox();
     
@@ -243,6 +250,7 @@ int gfxInit() {
 
     fileName = findFile(MISCDIR "/gravit.png");
     if (!fileName) {
+        conAdd(LERR, "Could not find " MISCDIR "/gravit.png");
         return 0;
     }
     icon = IMG_Load(fileName);
@@ -292,6 +300,7 @@ gfxInitRetry:
 
         }
 
+        sdlCheck();
         return 0;
 
     }
@@ -299,9 +308,9 @@ gfxInitRetry:
     conAdd(LLOW, "Your video mode is %ix%ix%i", video.screenW, video.screenH, video.gfxInfo->vfmt->BitsPerPixel );
 
     if (!video.screenAA && view.particleRenderMode == 1) {
-        conAdd(LERR, "Warning! You don't have videoantialiasing set to 1. From what I've seen so far");
-        conAdd(LERR, "this might cause particlerendermode 1 not to work. If you don't see any particles");
-        conAdd(LERR, "after spawning, hit the \\ (backslash) key).");
+        conAdd(LHELP, "Warning! You don't have videoantialiasing set to 1. From what I've seen so far");
+        conAdd(LHELP, "this might cause particlerendermode 1 not to work. If you don't see any particles");
+        conAdd(LHELP, "after spawning, hit the \\ (backslash) key).");
     }
 
     glClearColor(0, 0, 0, 0);
@@ -333,6 +342,7 @@ gfxInitRetry:
         osdInitDefaultWindows();
 #endif
     
+    sdlCheck();
     return 1;
 
 }

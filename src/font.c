@@ -43,13 +43,15 @@ int loadFonts() {
     p = findFile(va("%s/%s", MISCDIR, video.fontFile));
     
     if (!p) {
-        conAdd(LERR, "Could not open font");
+        video.sdlStarted = 0;
+        conAdd(LERR, "Could not find font %s/%s", MISCDIR, video.fontFile);
         return 0;
     }
 
     font = TTF_OpenFont(p, video.fontSize);
 
     if (!font) {
+        video.sdlStarted = 0;
         conAdd(LERR, "Could not open %s", p);
         return 0;
     }
