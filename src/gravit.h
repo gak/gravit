@@ -683,23 +683,11 @@ typedef struct pib_s {
 } pib_t;
 
 // main.c
-#ifdef WIN32
-
 #ifndef NO_GUI
 extern video_t video;
 #endif
 extern state_t state;
 extern view_t view;
-
-#else
-
-#ifndef NO_GUI
-video_t video;
-#endif
-state_t state;
-view_t view;
-
-#endif
 
 void cleanMemory();
 void runVideo();
